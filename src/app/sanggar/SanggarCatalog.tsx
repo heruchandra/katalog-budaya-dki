@@ -4,8 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Star,
-  MapPin,
-  Phone,
   Filter,
   Search,
   Users,
@@ -14,6 +12,7 @@ import {
   Inbox,
   AlertTriangle,
 } from "lucide-react";
+import ArtistCard from "@/components/ArtistCard";
 
 interface Sanggar {
   id: string;
@@ -141,15 +140,19 @@ export default function SanggarCatalog({
               )}
             </div>
             <h2 className="mt-6 text-xl font-bold text-surface-800">
-              {fetchError ? "Koneksi Database Belum Diatur" : "Belum Ada Data Sanggar"}
+              {fetchError ? "Database Error" : "Belum Ada Data Sanggar"}
             </h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-surface-500">
-              {fetchError
-                ? "Pastikan Anda telah mengisi kredensial di file .env.local dan tabel 'sanggars' sudah tersedia di Supabase."
-                : searchQuery || activeGrade !== "all"
-                ? "Tidak ditemukan sanggar yang sesuai dengan filter Anda. Coba ubah kriteria pencarian."
-                : "Data sanggar tari belum tersedia saat ini. Silakan kunjungi kembali nanti atau hubungi administrator."}
-            </p>
+            <div className="mx-auto mt-2 max-w-lg text-sm text-surface-500">
+              {fetchError ? (
+                <div className="rounded bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
+                  {fetchError}
+                </div>
+              ) : searchQuery || activeGrade !== "all" ? (
+                <p>Tidak ditemukan sanggar yang sesuai dengan filter Anda. Coba ubah kriteria pencarian.</p>
+              ) : (
+                <p>Data sanggar tari belum tersedia saat ini. Silakan kunjungi kembali nanti atau hubungi administrator.</p>
+              )}
+            </div>
             {!fetchError && (searchQuery || activeGrade !== "all") && (
               <button
                 type="button"
@@ -166,88 +169,26 @@ export default function SanggarCatalog({
         )}
 
         {/* Cards Grid */}
-        {filtered.length > 0 && (
+        {!fetchError && filtered.length > 0 && (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((sanggar) => (
-              <div
+              <ArtistCard
                 key={sanggar.id}
-                className="group relative overflow-hidden rounded-2xl border border-surface-200/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/10"
-              >
-                {/* Image Area */}
-                <div className="relative h-44 bg-gradient-to-br from-primary-100 to-primary-200">
-                  {sanggar.foto_url ? (
-                    <img
-                      src={sanggar.foto_url}
-                      alt={sanggar.nama_sanggar}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <Users className="h-12 w-12 text-primary-300" />
-                    </div>
-                  )}
-                  {/* Grade Badge */}
-                  <div className="absolute top-3 right-3">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm ${
-                        sanggar.grade?.toUpperCase() === "A"
-                          ? "bg-primary-600 text-white"
-                          : "bg-white text-primary-700"
-                      }`}
-                    >
-                      <Award className="h-3 w-3" />
-                      Grade {sanggar.grade}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-base font-bold text-surface-900 line-clamp-1">
-                    {sanggar.nama_sanggar}
-                  </h3>
-                  <p className="mt-0.5 text-xs text-surface-500">
-                    Pimpinan: {sanggar.nama_pimpinan}
-                  </p>
-
-                  {sanggar.jenis_tarian && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {sanggar.jenis_tarian
-                        .split(",")
-                        .slice(0, 3)
-                        .map((tarian) => (
-                          <span
-                            key={tarian.trim()}
-                            className="rounded-md bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700"
-                          >
-                            {tarian.trim()}
-                          </span>
-                        ))}
-                    </div>
-                  )}
-
-                  <div className="mt-4 space-y-1.5">
-                    {sanggar.kecamatan && (
-                      <p className="flex items-center gap-2 text-xs text-surface-500">
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-surface-400" />
-                        {sanggar.kecamatan}
-                        {sanggar.kota_kab ? `, ${sanggar.kota_kab}` : ""}
-                      </p>
-                    )}
-                    {sanggar.no_hp && (
-                      <a
-                        href={`https://wa.me/${sanggar.no_hp.replace(/\D/g, "")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-xs text-primary-600 transition-colors hover:text-primary-700"
-                      >
-                        <Phone className="h-3.5 w-3.5 shrink-0" />
-                        Hubungi via WhatsApp
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
+                name={sanggar.nama_sanggar}
+                subtitle={sanggar.nama_pimpinan ? `Pimpinan: ${sanggar.nama_pimpinan}` : undefined}
+                imageUrl={sanggar.foto_url}
+                badge={{
+                  label: sanggar.grade || "Grade",
+                  icon: Award,
+                  variant: sanggar.grade?.toUpperCase().includes("A") ? "filled" : "outline",
+                }}
+                tags={sanggar.jenis_tarian?.split(",").map((t: string) => t.trim()).filter(Boolean)}
+                location={
+                  [sanggar.kecamatan, sanggar.kota_kab].filter(Boolean).join(", ") || undefined
+                }
+                phone={sanggar.no_hp || undefined}
+                PlaceholderIcon={Users}
+              />
             ))}
           </div>
         )}

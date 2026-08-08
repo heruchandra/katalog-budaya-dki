@@ -36,13 +36,14 @@ export default async function SanggarPage() {
       .order("nama_sanggar", { ascending: true });
 
     if (error) {
+      console.error("Supabase return error:", error);
       fetchError = error.message;
     } else {
       sanggars = (data as Sanggar[]) ?? [];
     }
-  } catch {
-    fetchError =
-      "Tidak dapat terhubung ke database. Pastikan konfigurasi Supabase sudah benar.";
+  } catch (err: any) {
+    console.error("Supabase fetch error:", err);
+    fetchError = err?.message || "Unknown exception occurred during fetch.";
   }
 
   return <SanggarCatalog sanggars={sanggars} fetchError={fetchError} />;

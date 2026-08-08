@@ -40,9 +40,8 @@ export default async function PemusikPage() {
     } else {
       pemusiks = (data as Pemusik[]) ?? [];
     }
-  } catch {
-    fetchError =
-      "Tidak dapat terhubung ke database. Pastikan konfigurasi Supabase sudah benar.";
+  } catch (err: any) {
+    fetchError = err?.message || "Unknown exception occurred during fetch.";
   }
 
   return <PemusikCatalog pemusiks={pemusiks} fetchError={fetchError} />;
