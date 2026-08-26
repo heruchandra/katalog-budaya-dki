@@ -1,0 +1,213 @@
+"use client";
+
+import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+
+type Language = "id" | "en";
+
+const translations: Record<string, Record<Language, string>> = {
+  // ── Navbar ──
+  navHome: { id: "Beranda", en: "Home" },
+  navSanggar: { id: "Sanggar Tari", en: "Dance Studios" },
+  navPemusik: { id: "Seniman Musik", en: "Music Artists" },
+  navDashboard: { id: "Dasbor", en: "Dashboard" },
+  navDashboardAdmin: { id: "Dasbor Admin", en: "Admin Dashboard" },
+  navLogout: { id: "Keluar", en: "Sign Out" },
+  navLogin: { id: "Login", en: "Login" },
+
+  // ── Sanggar Detail Page ──
+  backToCatalog: { id: "KEMBALI KE KATALOG", en: "BACK TO CATALOG" },
+  verified: { id: "TERVERIFIKASI", en: "VERIFIED" },
+  descSanggar: { id: "DESKRIPSI SANGGAR", en: "STUDIO DESCRIPTION" },
+  est: { id: "BERDIRI SEJAK", en: "ESTABLISHED" },
+  members: { id: "ANGGOTA", en: "MEMBERS" },
+  featuredDances: { id: "TARI UNGGULAN", en: "FEATURED DANCES" },
+  profileContact: { id: "PROFIL & INFORMASI KONTAK", en: "PROFILE & CONTACT INFO" },
+  studioHead: { id: "KETUA SANGGAR", en: "STUDIO HEAD" },
+  secretariat: { id: "SEKRETARIAT", en: "SECRETARIAT" },
+  trainingVenue: { id: "TEMPAT LATIHAN", en: "TRAINING VENUE" },
+  picName: { id: "NAMA PIC", en: "PIC NAME" },
+  phone: { id: "TELEPON", en: "PHONE" },
+  contactBtn: { id: "HUBUNGI", en: "CONTACT" },
+  services: { id: "LAYANAN SANGGAR", en: "STUDIO SERVICES" },
+  achievements: { id: "PRESTASI", en: "ACHIEVEMENTS" },
+  gallery: { id: "GALERI & DOKUMENTASI", en: "GALLERY & DOCUMENTATION" },
+  sanggarNotFound: { id: "Sanggar tidak ditemukan.", en: "Studio not found." },
+
+  // ── Hero (Home) ──
+  heroDiscover: { id: "Temukan", en: "Discover" },
+  heroArtists: { id: "Pelaku Seni", en: "Traditional Artists" },
+  heroBestIn: { id: "Tradisional Terbaik di Jakarta", en: "The Best in Jakarta" },
+  searchPlaceholder: {
+    id: 'Cari seniman, genre... (cth: "Tari Betawi")',
+    en: 'Search artists, genres... (e.g. "Tari Betawi")',
+  },
+  btnSearch: { id: "Cari", en: "Search" },
+  categoryAll: { id: "Semua Kategori", en: "All Categories" },
+  categorySanggar: { id: "Sanggar Tari", en: "Dance Studios" },
+  categoryPemusik: { id: "Seniman Musik", en: "Music Artists" },
+  searchLoading: { id: "Mencari...", en: "Searching..." },
+  searchNoResults: { id: "Tidak ada hasil ditemukan.", en: "No results found." },
+  searchAriaLabel: { id: "Cari pelaku seni", en: "Search artists" },
+
+  // ── Editorial Banner ──
+  bannerSoul: { id: "Jiwa", en: "Soul" },
+  bannerJakarta: { id: "Jakarta.", en: "of Jakarta." },
+  bannerArt: { id: "Seni", en: "Art" },
+  bannerOurs: { id: "Kita.", en: "of Ours." },
+
+  // ── Category Grid (Home) ──
+  viewSanggar: { id: "Lihat Sanggar", en: "View Studios" },
+  viewPemusik: { id: "Lihat Pemusik", en: "View Musicians" },
+  categorySenimanMusik: { id: "Seniman Musik", en: "Music Artists" },
+
+  // ── Features Section (Home) ──
+  featuresTitle: { id: "Kenapa Menggunakan", en: "Why Use" },
+  featuresSubtitle: {
+    id: "Platform terpercaya dari Dinas Kebudayaan untuk menghubungkan masyarakat dengan pelaku seni terbaik Jakarta.",
+    en: "A trusted platform by the Department of Culture connecting the public with Jakarta's finest artists.",
+  },
+  featureVerifiedTitle: { id: "Terverifikasi Resmi", en: "Officially Verified" },
+  featureVerifiedDesc: {
+    id: "Setiap sanggar dan seniman telah melalui proses grading dan verifikasi oleh Dinas Kebudayaan DKI Jakarta.",
+    en: "Every studio and artist has been graded and verified by the DKI Jakarta Department of Culture.",
+  },
+  featureSearchTitle: { id: "Pencarian Mudah", en: "Easy Search" },
+  featureSearchDesc: {
+    id: "Cari berdasarkan kategori, genre, lokasi, atau nama. Temukan seniman yang tepat dalam hitungan detik.",
+    en: "Search by category, genre, location, or name. Find the right artist in seconds.",
+  },
+  featureContactTitle: { id: "Hubungi Langsung", en: "Direct Contact" },
+  featureContactDesc: {
+    id: "Setiap profil dilengkapi kontak WhatsApp PIC untuk memudahkan komunikasi dan pemesanan langsung.",
+    en: "Every profile includes a WhatsApp PIC contact for easy communication and direct booking.",
+  },
+
+  // ── Sanggar Catalog ──
+  sanggarBackBtn: { id: "Kembali", en: "Back" },
+  sanggarPageTitle: { id: "Koleksi Sanggar Tari", en: "Dance Studio Collection" },
+  sanggarRegistered: { id: "SANGGAR TERDAFTAR", en: "REGISTERED STUDIOS" },
+  sanggarCatalogFallback: { id: "KATALOG SANGGAR TARI TRADISIONAL JAKARTA", en: "JAKARTA TRADITIONAL DANCE STUDIO CATALOG" },
+  sanggarSearchTitle: { id: "Pencarian", en: "Search" },
+  sanggarSearchPlaceholder: { id: "Cari nama sanggar...", en: "Search studio name..." },
+  sanggarFilterGrade: { id: "Filter Grade", en: "Filter by Grade" },
+  sanggarGradeAll: { id: "SEMUA GRADE", en: "ALL GRADES" },
+  sanggarEmptyTitle: { id: "Belum Ada Data", en: "No Data Yet" },
+  sanggarEmptyFilter: { id: "Tidak ditemukan sanggar yang sesuai dengan filter Anda.", en: "No studios found matching your filters." },
+  sanggarEmptyDefault: { id: "Data sanggar tari belum tersedia saat ini.", en: "Dance studio data is not available at this time." },
+  sanggarResetFilter: { id: "RESET FILTER", en: "RESET FILTERS" },
+
+  // ── Pemusik Catalog ──
+  pemusikBackBtn: { id: "Kembali", en: "Back" },
+  pemusikPageTitle: { id: "Koleksi Seniman Musik", en: "Music Artists Collection" },
+  pemusikRegistered: { id: "SENIMAN MUSIK TERDAFTAR", en: "REGISTERED MUSIC ARTISTS" },
+  pemusikCatalogFallback: { id: "KATALOG SENIMAN MUSIK TRADISIONAL JAKARTA", en: "JAKARTA TRADITIONAL MUSIC ARTIST CATALOG" },
+  pemusikSearchTitle: { id: "Pencarian", en: "Search" },
+  pemusikSearchPlaceholder: { id: "Cari nama, genre, instrumen...", en: "Search name, genre, instrument..." },
+  pemusikFilterJenis: { id: "Filter Jenis", en: "Filter by Type" },
+  pemusikJenisAll: { id: "SEMUA JENIS", en: "ALL TYPES" },
+  pemusikEmptyTitle: { id: "Belum Ada Data", en: "No Data Yet" },
+  pemusikEmptyFilter: { id: "Tidak ditemukan seniman musik yang sesuai dengan filter Anda.", en: "No music artists found matching your filters." },
+  pemusikEmptyDefault: { id: "Data seniman musik belum tersedia saat ini.", en: "Music artist data is not available at this time." },
+  pemusikResetFilter: { id: "RESET FILTER", en: "RESET FILTERS" },
+
+  // ── Footer ──
+  footerDescription: {
+    id: "Platform katalog digital pelaku seni dan budaya tradisional Jakarta. Memudahkan pencarian seniman, sanggar tari, dan seniman musik berkualitas.",
+    en: "Digital catalog platform for Jakarta's traditional arts and cultural practitioners. Makes it easy to find high-quality artists, dance studios, and music artists.",
+  },
+  footerCatalog: { id: "Katalog", en: "Catalog" },
+  footerInfo: { id: "Informasi", en: "Information" },
+  footerAbout: { id: "Tentang Kami", en: "About Us" },
+  footerPrivacy: { id: "Kebijakan Privasi", en: "Privacy Policy" },
+  footerTerms: { id: "Syarat & Ketentuan", en: "Terms & Conditions" },
+  footerContact: { id: "Kontak", en: "Contact" },
+  footerCopyright: { id: "Hak Cipta Dilindungi.", en: "All Rights Reserved." },
+  footerBuiltWith: {
+    id: "Dibangun dengan dedikasi untuk pelestarian seni dan budaya tradisional DKI Jakarta.",
+    en: "Built with dedication to the preservation of DKI Jakarta's traditional arts and culture.",
+  },
+
+  // ── Admin Dashboard ──
+  adminSidebarDashboard: { id: "Dasbor", en: "Dashboard" },
+  adminSidebarSanggar: { id: "Data Sanggar", en: "Dance Studio Data" },
+  adminSidebarMusik: { id: "Data Seniman Musik", en: "Music Artist Data" },
+  adminSidebarSettings: { id: "Pengaturan", en: "Settings" },
+  adminSidebarWeb: { id: "Lihat Website", en: "View Website" },
+  adminSidebarLogout: { id: "Keluar", en: "Sign Out" },
+  adminTitleOverview: { id: "Dashboard Overview", en: "Dashboard Overview" },
+  adminDescOverview: {
+    id: "Ringkasan statistik dan aktivitas terbaru Katalog Seni DKI Jakarta.",
+    en: "Summary of statistics and recent activities in the Jakarta Art Catalog."
+  },
+  adminStatTotalSanggar: { id: "Total Sanggar", en: "Total Dance Studios" },
+  adminStatTotalMusik: { id: "Total Seniman Musik", en: "Total Music Artists" },
+  adminStatPending: { id: "Menunggu Verifikasi", en: "Pending Verification" },
+  adminStatVerified: { id: "Terverifikasi", en: "Verified" },
+  adminChartTitle: { id: "Statistik Pendaftaran (2026)", en: "Registration Statistics (2026)" },
+  adminDataSanggarTitle: { id: "Data Sanggar Tari", en: "Dance Studio Data" },
+  adminDataSanggarDesc: { id: "Kelola data sanggar tari tradisional di DKI Jakarta.", en: "Manage traditional dance studio data in Jakarta." },
+  adminBtnAddData: { id: "Tambah Data", en: "Add Data" },
+  adminSearchSanggar: { id: "Cari sanggar...", en: "Search studio..." },
+  colName: { id: "NAMA SANGGAR", en: "STUDIO NAME" },
+  colCategory: { id: "KATEGORI/GRADE", en: "CATEGORY/GRADE" },
+  colDanceType: { id: "JENIS TARIAN", en: "DANCE TYPE" },
+  colStatus: { id: "STATUS", en: "STATUS" },
+  colAction: { id: "AKSI", en: "ACTION" },
+  statusActive: { id: "Aktif", en: "Active" },
+  adminRecentActivityTitle: { id: "Aktivitas Terbaru", en: "Recent Activity" },
+  colEntityName: { id: "NAMA ENTITAS", en: "ENTITY NAME" },
+  colType: { id: "TIPE", en: "TYPE" },
+  colActivity: { id: "AKTIVITAS", en: "ACTIVITY" },
+  colTime: { id: "WAKTU", en: "TIME" },
+  newRegistration: { id: "Pendaftaran Baru", en: "New Registration" },
+  adminDataMusikTitle: { id: "Data Seniman Musik", en: "Music Artist Data" },
+  adminDataMusikDesc: { id: "Kelola data seniman dan pemusik tradisional di DKI Jakarta.", en: "Manage traditional music artist data in Jakarta." },
+  adminSearchMusik: { id: "Cari seniman...", en: "Search artist..." },
+  colArtistName: { id: "NAMA SENIMAN", en: "ARTIST NAME" },
+  colCategoryMusik: { id: "KATEGORI", en: "CATEGORY" },
+  colGenreInstrument: { id: "GENRE & INSTRUMEN", en: "GENRE & INSTRUMENT" },
+  adminSettingsTitle: { id: "Pengaturan Akun", en: "Account Settings" },
+  adminSettingsDesc: { id: "Kelola profil dan keamanan akun administrator Anda.", en: "Manage your administrator account profile and security." },
+  adminProfileTitle: { id: "Profil Administrator", en: "Administrator Profile" },
+  adminProfileDesc: { id: "Informasi dasar akun Anda.", en: "Basic information of your account." },
+  adminEmailLabel: { id: "Alamat Email", en: "Email Address" },
+  adminEmailNote: { id: "Email ini digunakan untuk login dan tidak dapat diubah.", en: "This email is used for login and cannot be changed." },
+  adminPassTitle: { id: "Ganti Password", en: "Change Password" },
+  adminPassDesc: { id: "Pastikan akun Anda menggunakan password yang kuat.", en: "Ensure your account uses a strong password." },
+  adminPassNew: { id: "Password Baru", en: "New Password" },
+  adminPassConfirm: { id: "Konfirmasi Password Baru", en: "Confirm New Password" },
+  adminBtnSavePass: { id: "Simpan Password", en: "Save Password" },
+};
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>("id");
+
+  const t = useCallback(
+    (key: string): string => {
+      return translations[key]?.[language] ?? key;
+    },
+    [language]
+  );
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
+  }
+  return context;
+}

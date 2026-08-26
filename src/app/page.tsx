@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Search,
@@ -7,171 +11,251 @@ import {
   Star,
   Users,
   Award,
+  Loader2,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { Dancing_Script } from 'next/font/google';
+import { useLanguage } from "@/context/LanguageContext";
+
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
 
 export default function HomePage() {
+  const { t } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchCategory, setSearchCategory] = useState("all");
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp'];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === backgrounds.length - 1 ? 0 : prev + 1));
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (searchQuery.trim().length === 0) {
+        setSuggestions([]);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const { data: sanggarData } = await supabase
+          .from('sanggar')
+          .select('id, namaSanggar')
+          .ilike('namaSanggar', `%${searchQuery}%`)
+          .limit(3);
+          
+        const { data: pemusikData } = await supabase
+          .from('pemusik')
+          .select('id, nama')
+          .ilike('nama', `%${searchQuery}%`)
+          .limit(3);
+
+        const formattedSanggar = (sanggarData || []).map((item) => ({
+          id: `s-${item.id}`,
+          name: item.namaSanggar,
+          type: 'Sanggar',
+          href: `/sanggar/${item.id}`
+        }));
+
+        const formattedPemusik = (pemusikData || []).map((item) => ({
+          id: `p-${item.id}`,
+          name: item.nama,
+          type: 'Pemusik',
+          href: `/pemusik/${item.id}`
+        }));
+
+        setSuggestions([...formattedSanggar, ...formattedPemusik]);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const targetPath = searchCategory === "pemusik" ? "/pemusik" : "/sanggar";
+    if (searchQuery.trim()) {
+      router.push(`${targetPath}?q=${encodeURIComponent(searchQuery)}`);
+    } else {
+      router.push(targetPath);
+    }
+  };
+
   return (
     <>
       {/* ===== Hero Section ===== */}
-      <section className="batik-pattern relative overflow-hidden pt-24 pb-20 sm:pt-32 sm:pb-28 lg:pt-40 lg:pb-36">
-        {/* Gradient background blobs */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary-200/30 blur-3xl" />
-          <div className="absolute top-1/2 -left-24 h-80 w-80 rounded-full bg-magenta-200/20 blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-accent-100/40 blur-3xl" />
-        </div>
+      <section 
+        className="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden"
+      >
+        {backgrounds.map((bg, index) => (
+          <img 
+            key={bg} 
+            src={bg} 
+            alt={`Background ${index + 1}`} 
+            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'} -z-10`} 
+          />
+        ))}
+        {/* Dark overlay for premium contrast */}
+        <div className="absolute inset-0 bg-black/65 z-0 pointer-events-none"></div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Badge */}
-          <div className="flex justify-center animate-fade-in">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white/80 px-4 py-1.5 text-xs font-semibold text-primary-700 shadow-sm backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5" />
-              Platform Resmi Dinas Kebudayaan DKI Jakarta
-            </div>
-          </div>
-
+        <div className="relative z-10 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-20">
           {/* Heading */}
-          <h1 className="mx-auto mt-6 max-w-4xl text-center text-3xl font-extrabold leading-tight tracking-tight text-surface-900 animate-fade-in sm:text-4xl md:text-5xl lg:text-6xl">
-            Temukan Pelaku Seni{" "}
-            <span className="text-gradient">Tradisional Terbaik</span>{" "}
-            di Jakarta
+          <h1 className="mx-auto max-w-5xl text-center text-3xl font-black leading-tight tracking-tight animate-fade-in sm:text-4xl md:text-5xl lg:text-6xl font-poppins drop-shadow-sm">
+            <span className="text-white">{t('heroDiscover')}</span>{" "}
+            <span className="relative inline-block">
+              <span className={`text-orange-500 inline-block drop-shadow-sm ${dancingScript.className} text-5xl md:text-7xl font-bold tracking-normal`}>{t('heroArtists')}</span>
+              <img src="/ondel-ondel.webp" alt="Aksen Ondel-ondel" className="absolute -top-10 -right-8 md:-top-14 md:-right-12 w-16 h-16 md:w-24 md:h-24 opacity-85 drop-shadow-lg rotate-12 pointer-events-none z-10" />
+            </span>
+            <br className="hidden md:block" />
+            <span className="text-white">
+              {t('heroBestIn')}
+            </span>
           </h1>
 
-          {/* Subheading */}
-          <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-surface-500 animate-fade-in sm:text-lg">
-            Katalog digital resmi yang memudahkan Anda menemukan sanggar tari
-            bersertifikat, pemusik tradisional, dan seniman budaya berkualitas
-            untuk berbagai acara dan kebutuhan kesenian.
-          </p>
-
           {/* ===== Search Bar ===== */}
-          <div className="mx-auto mt-10 max-w-2xl animate-slide-up">
-            <div className="group relative">
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary-400 via-amber-400 to-primary-500 opacity-20 blur-lg transition-opacity duration-500 group-hover:opacity-40" />
-              <div className="relative flex items-center overflow-hidden rounded-2xl bg-white shadow-xl shadow-surface-900/5 ring-1 ring-surface-200/60">
+          <div className="w-full max-w-3xl animate-slide-up">
+            <div className="group relative z-50">
+              <form 
+                onSubmit={handleSearch}
+                className="relative flex items-center overflow-hidden rounded-full bg-white shadow-2xl"
+              >
                 <Search className="ml-5 h-5 w-5 shrink-0 text-surface-400" />
-                <input
-                  type="text"
-                  placeholder='Cari sanggar, seniman, atau genre... (cth: "Tari Betawi")'
-                  className="w-full border-0 bg-transparent px-4 py-4.5 text-sm text-surface-800 placeholder:text-surface-400 focus:outline-none sm:text-base"
-                  disabled
-                  aria-label="Cari pelaku seni"
-                />
-                <button
-                  type="button"
-                  disabled
-                  className="mr-2 shrink-0 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-lg"
+                
+                <select
+                  value={searchCategory}
+                  onChange={(e) => setSearchCategory(e.target.value)}
+                  className="bg-transparent border-transparent border-none outline-none ring-0 focus:border-transparent focus:outline-none focus:ring-0 active:outline-none text-gray-600 font-medium cursor-pointer pl-3 pr-2 py-4.5 text-sm sm:text-base appearance-none"
                 >
-                  Cari
+                  <option value="all">{t('categoryAll')}</option>
+                  <option value="sanggar">{t('categorySanggar')}</option>
+                  <option value="pemusik">{t('categoryPemusik')}</option>
+                </select>
+                <div className="w-[1px] h-6 bg-gray-200 mx-2" />
+
+                <div className="flex-1 w-full relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                    placeholder={t('searchPlaceholder')}
+                    className="w-full border-none focus:border-transparent focus:ring-0 outline-none bg-transparent px-4 py-4.5 text-sm text-surface-800 placeholder:text-surface-400 sm:text-base"
+                    aria-label={t('searchAriaLabel')}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="mr-2 shrink-0 rounded-full bg-primary-600 px-8 py-3 text-sm font-bold text-white shadow-md shadow-primary-500/25 transition-all duration-200 hover:bg-primary-700 hover:shadow-lg"
+                >
+                  {t('btnSearch')}
                 </button>
-              </div>
+              </form>
+
+              {/* Autocomplete Dropdown */}
+              {isFocused && searchQuery.trim().length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                  {isLoading ? (
+                    <div className="p-4 flex items-center justify-center text-sm text-surface-500">
+                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                      {t('searchLoading')}
+                    </div>
+                  ) : suggestions.length > 0 ? (
+                    <ul>
+                      {suggestions.map((suggestion) => (
+                        <li key={suggestion.id}>
+                          <Link 
+                            href={suggestion.href}
+                            className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                            onClick={() => setIsFocused(false)}
+                          >
+                            <span className="font-medium text-surface-900">{suggestion.name}</span>
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                              suggestion.type === 'Sanggar' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'
+                            }`}>
+                              {suggestion.type}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="p-4 text-center text-sm text-surface-500">
+                      {t('searchNoResults')}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <p className="mt-3 text-center text-xs text-surface-400">
-              Fitur pencarian akan segera aktif — Cari berdasarkan nama, genre, atau lokasi
-            </p>
           </div>
 
-          {/* ===== Stats Row ===== */}
-          <div className="mx-auto mt-14 grid max-w-lg grid-cols-3 gap-6 animate-fade-in sm:max-w-xl">
-            {[
-              { icon: Users, value: "150+", label: "Sanggar Tari" },
-              { icon: Music, value: "200+", label: "Pemusik" },
-              { icon: Award, value: "Grade A/B", label: "Bersertifikat" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary-100 text-primary-600">
-                  <stat.icon className="h-5 w-5" />
-                </div>
-                <p className="mt-2 text-xl font-bold text-surface-900 sm:text-2xl">
-                  {stat.value}
-                </p>
-                <p className="text-xs text-surface-500">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+
+        </div>
+
+        <div className="absolute bottom-10 left-0 right-0 flex justify-center items-center gap-2 z-20">
+          {backgrounds.map((_, index) => (
+            <button 
+              key={index} 
+              onClick={() => setCurrentSlide(index)}
+              onMouseEnter={() => setCurrentSlide(index)}
+              className={`h-1.5 rounded-full transition-all duration-500 ease-in-out ${index === currentSlide ? 'w-10 bg-orange-600' : 'w-2 bg-gray-400/60 hover:bg-gray-800/80'}`}
+              aria-label={`Go to slide ${index + 1}`}
+            ></button>
+          ))}
         </div>
       </section>
 
-      {/* ===== Category Cards Section ===== */}
-      <section className="relative -mt-6 pb-20 sm:-mt-8 sm:pb-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:gap-8">
-            {/* Card: Sanggar Tari */}
-            <Link
-              href="/sanggar"
-              className="group relative overflow-hidden rounded-2xl border border-surface-200/60 bg-white p-6 shadow-lg shadow-surface-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/10 sm:p-8"
-            >
-              {/* Decorative gradient corner */}
-              <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br from-primary-100 to-primary-200/50 transition-transform duration-500 group-hover:scale-150" />
-              <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-magenta-100/30 transition-transform duration-500 group-hover:scale-125" />
+      {/* ===== Scroll 2: Full-Width Editorial Banner ===== */}
+      <section className="relative w-full aspect-video overflow-hidden bg-[#e5e5e5] mb-16">
+        <img src="/penari1.webp" alt="Jiwa Jakarta. Seni Kita." className="absolute inset-0 w-full h-full object-cover object-center opacity-90" />
+        <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8 lg:px-12 pointer-events-none">
+          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerSoul')}</span> {t('bannerJakarta')}</h2>
+          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerArt')}</span> {t('bannerOurs')}</h2>
+        </div>
+      </section>
 
-              <div className="relative">
-                {/* Icon Badge */}
-                <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-lg shadow-primary-500/30 transition-transform duration-300 group-hover:scale-110">
-                  <Star className="h-7 w-7" />
-                </div>
-
-                {/* Label Badge */}
-                <div className="mb-3 inline-flex ml-3 items-center gap-1 rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-700">
-                  <Award className="h-3 w-3" />
-                  Grade A &amp; B
-                </div>
-
-                <h2 className="text-xl font-bold text-surface-900 sm:text-2xl">
-                  Jelajahi Sanggar Tari
-                </h2>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-surface-500">
-                  Temukan sanggar tari tradisional bersertifikat di Jakarta.
-                  Lengkap dengan profil, galeri foto, dan kontak langsung untuk
-                  pemesanan pertunjukan.
-                </p>
-
-                {/* CTA */}
-                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary-600 transition-colors group-hover:text-primary-700">
-                  Lihat Semua Sanggar
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </div>
+      {/* ===== Scroll 3: Editorial Category Grid ===== */}
+      <section className="mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto px-4 md:px-8">
+          {/* Category: Sanggar Tari */}
+          <Link href="/sanggar" className="block group">
+            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer">
+              <img src="/penari2.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Sanggar Tari" />
+              <div className="absolute bottom-6 left-6 text-white">
+                <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySanggar')}</h3>
               </div>
-            </Link>
+            </div>
+            <div className="flex justify-center">
+              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-slate-900 hover:text-white transition-colors">{t('viewSanggar')}</span>
+            </div>
+          </Link>
 
-            {/* Card: Seniman Musik */}
-            <Link
-              href="/pemusik"
-              className="group relative overflow-hidden rounded-2xl border border-surface-200/60 bg-white p-6 shadow-lg shadow-surface-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-magenta-900/10 sm:p-8"
-            >
-              {/* Decorative gradient corner */}
-              <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br from-magenta-100 to-magenta-200/50 transition-transform duration-500 group-hover:scale-150" />
-              <div className="absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-primary-100/30 transition-transform duration-500 group-hover:scale-125" />
-
-              <div className="relative">
-                {/* Icon Badge */}
-                <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-magenta-500 to-magenta-700 text-white shadow-lg shadow-magenta-500/30 transition-transform duration-300 group-hover:scale-110">
-                  <Music className="h-7 w-7" />
-                </div>
-
-                {/* Label Badge */}
-                <div className="mb-3 inline-flex ml-3 items-center gap-1 rounded-full bg-magenta-100 px-3 py-1 text-xs font-bold text-magenta-700">
-                  <Sparkles className="h-3 w-3" />
-                  Musik Tradisional
-                </div>
-
-                <h2 className="text-xl font-bold text-surface-900 sm:text-2xl">
-                  Jelajahi Seniman Musik
-                </h2>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-surface-500">
-                  Cari pemusik tradisional Jakarta — dari gambang kromong hingga
-                  tanjidor. Profil lengkap dengan spesialisasi alat musik dan
-                  pengalaman tampil.
-                </p>
-
-                {/* CTA */}
-                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-magenta-600 transition-colors group-hover:text-magenta-700">
-                  Lihat Semua Pemusik
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </div>
+          {/* Category: Seniman Musik */}
+          <Link href="/pemusik" className="block group">
+            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer">
+              <img src="/musik1.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Seniman Musik" />
+              <div className="absolute bottom-6 left-6 text-white">
+                <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySenimanMusik')}</h3>
               </div>
-            </Link>
-          </div>
+            </div>
+            <div className="flex justify-center">
+              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-slate-900 hover:text-white transition-colors">{t('viewPemusik')}</span>
+            </div>
+          </Link>
         </div>
       </section>
 
@@ -179,48 +263,44 @@ export default function HomePage() {
       <section className="border-t border-surface-200/60 bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-surface-900 sm:text-3xl">
-              Kenapa Menggunakan{" "}
+            <h2 className="text-2xl font-black text-surface-900 sm:text-3xl font-poppins">
+              {t('featuresTitle')}{" "}
               <span className="text-gradient">Katalog Seni DKI?</span>
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-surface-500 sm:text-base">
-              Platform terpercaya dari Dinas Kebudayaan untuk menghubungkan
-              masyarakat dengan pelaku seni terbaik Jakarta.
+              {t('featuresSubtitle')}
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-24 max-w-6xl mx-auto">
             {[
               {
                 icon: Award,
-                title: "Terverifikasi Resmi",
-                description:
-                  "Setiap sanggar dan seniman telah melalui proses grading dan verifikasi oleh Dinas Kebudayaan DKI Jakarta.",
+                title: t('featureVerifiedTitle'),
+                description: t('featureVerifiedDesc'),
               },
               {
                 icon: Search,
-                title: "Pencarian Mudah",
-                description:
-                  "Cari berdasarkan kategori, genre, lokasi, atau nama. Temukan seniman yang tepat dalam hitungan detik.",
+                title: t('featureSearchTitle'),
+                description: t('featureSearchDesc'),
               },
               {
                 icon: Users,
-                title: "Hubungi Langsung",
-                description:
-                  "Setiap profil dilengkapi kontak WhatsApp PIC untuk memudahkan komunikasi dan pemesanan langsung.",
+                title: t('featureContactTitle'),
+                description: t('featureContactDesc'),
               },
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="group rounded-2xl border border-surface-100 bg-surface-50/50 p-6 transition-all duration-300 hover:border-primary-200 hover:bg-white hover:shadow-lg hover:shadow-primary-900/5"
+                className="flex flex-col items-center text-center"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-100 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
-                  <feature.icon className="h-6 w-6" />
+                <div className="flex items-center justify-center text-primary-600 mb-2">
+                  <feature.icon className="h-10 w-10 stroke-[1.5]" />
                 </div>
-                <h3 className="mt-4 text-base font-bold text-surface-900">
+                <h3 className="font-poppins uppercase tracking-[0.15em] text-sm md:text-base font-semibold text-slate-900 mt-4 mb-3">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-surface-500">
+                <p className="text-slate-500 font-light text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>

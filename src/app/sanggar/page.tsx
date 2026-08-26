@@ -21,7 +21,7 @@ interface Sanggar {
   kota_kab: string;
   no_hp: string;
   jenis_tarian: string;
-  foto_url: string | null;
+  thumbnail_url: string | null;
 }
 
 export default async function SanggarPage() {
@@ -29,7 +29,7 @@ export default async function SanggarPage() {
   let fetchError: string | null = null;
 
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("sanggars")
       .select("*")

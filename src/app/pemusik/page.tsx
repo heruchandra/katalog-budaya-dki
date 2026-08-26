@@ -12,16 +12,12 @@ export const dynamic = "force-dynamic";
 
 interface Pemusik {
   id: string;
-  nama: string;
-  jenis: string; // "Solo" | "Komunitas"
-  genre: string;
-  spesialisasi: string;
-  alamat: string;
-  kelurahan: string;
-  kecamatan: string;
-  kota_kab: string;
-  no_hp: string;
-  foto_url: string | null;
+  nama_seniman: string;
+  jenis_seniman: string;
+  genre_musik: string;
+  instrumen: string;
+  pengalaman: string;
+  deskripsi: string;
 }
 
 export default async function PemusikPage() {
@@ -29,11 +25,11 @@ export default async function PemusikPage() {
   let fetchError: string | null = null;
 
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("pemusiks")
       .select("*")
-      .order("nama", { ascending: true });
+      .order("nama_seniman", { ascending: true });
 
     if (error) {
       fetchError = error.message;
