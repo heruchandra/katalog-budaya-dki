@@ -40,6 +40,13 @@ export default function AdminLayout({
     router.push("/login");
   };
 
+  const isActive = (path: string) => {
+    if (path === '/admin') {
+      return pathname === '/admin';
+    }
+    return pathname?.startsWith(path);
+  };
+
   return (
     <div className="flex h-screen bg-gray-50 font-sans text-gray-900">
       {/* Mobile sidebar backdrop */}
@@ -69,20 +76,20 @@ export default function AdminLayout({
         <div className="flex flex-1 flex-col overflow-y-auto px-4 py-6">
           <nav className="flex-1 space-y-1">
             {navigation.map((item) => {
-              const isActive = pathname === item.href;
+              const active = isActive(item.href);
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                    isActive 
-                      ? "bg-primary-600 text-white shadow-sm" 
-                      : "text-surface-300 hover:bg-surface-800 hover:text-white"
+                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 gap-3 ${
+                    active 
+                      ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20" 
+                      : "text-surface-300 hover:bg-surface-800/50 hover:text-white"
                   }`}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                      isActive ? "text-white" : "text-surface-400 group-hover:text-white"
+                    className={`h-5 w-5 flex-shrink-0 transition-colors ${
+                      active ? "text-white" : "text-surface-400 group-hover:text-white"
                     }`}
                   />
                   {item.name}

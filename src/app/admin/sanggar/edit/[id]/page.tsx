@@ -7,8 +7,10 @@ import { ArrowLeft, Save, X, Plus, Trash2, Image as ImageIcon, MapPin, Info, Pho
 import { supabase } from "@/lib/supabase";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/lib/cropImage";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function EditSanggar({ params }: { params: Promise<{ id: string }> }) {
+  const { t } = useLanguage();
   const router = useRouter();
   const { id } = use(params);
   const [isLoading, setIsLoading] = useState(false);
@@ -281,13 +283,13 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
         className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-primary-600 mb-6 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Kembali ke Data Sanggar
+        {t('adminBackToSanggar')}
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Edit Data Sanggar</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">{t('adminEditSanggarTitle')}</h1>
         <p className="mt-2 text-base text-gray-500">
-          Ubah informasi sanggar dan simpan perubahan.
+          {t('adminEditSanggarDesc')}
         </p>
       </div>
 
@@ -313,13 +315,13 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Info className="h-5 w-5 text-primary-600" />
-                <h2 className="text-lg font-bold text-gray-900">Informasi Dasar</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminBasicInfo')}</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                      Nama Sanggar <span className="text-red-500">*</span>
+                      {t('adminSanggarName')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -332,7 +334,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                      Kategori / Grade <span className="text-red-500">*</span>
+                      {t('adminSanggarCategory')} <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="grade"
@@ -351,7 +353,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Tagline Sanggar
+                    {t('adminSanggarTagline')}
                   </label>
                   <input
                     type="text"
@@ -364,7 +366,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Deskripsi Sanggar
+                    {t('adminSanggarDesc')}
                   </label>
                   <textarea
                     name="deskripsiSanggar"
@@ -381,12 +383,12 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-amber-500" />
-                <h2 className="text-lg font-bold text-gray-900">Layanan & Prestasi</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminServicesSection')}</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Layanan Sanggar
+                    {t('adminStudioServices')}
                   </label>
                   <textarea
                     name="layananSanggar"
@@ -398,7 +400,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Prestasi / Penghargaan
+                    {t('adminAchievements')}
                   </label>
                   <textarea
                     name="prestasiPenghargaan"
@@ -416,7 +418,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 text-primary-500" />
-                  <h2 className="text-lg font-bold text-gray-900">Tari Unggulan</h2>
+                  <h2 className="text-lg font-bold text-gray-900">{t('adminFeaturedDance')}</h2>
                 </div>
                 <button
                   type="button"
@@ -424,7 +426,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700 hover:bg-primary-100 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Tambah Tari
+                  {t('adminBtnAddDance')}
                 </button>
               </div>
               <div className="p-6 space-y-4">
@@ -433,7 +435,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     <div className="flex-1 space-y-4">
                       <div>
                         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-                          Nama Tari
+                          {t('adminDanceName')}
                         </label>
                         <input
                           type="text"
@@ -444,7 +446,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-                          Deskripsi Tari
+                          {t('adminDanceDesc')}
                         </label>
                         <textarea
                           rows={2}
@@ -478,12 +480,12 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-gray-700" />
-                <h2 className="text-lg font-bold text-gray-900">Alamat & Kontak</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminAddressContact')}</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Alamat Sanggar (Sekretariat)
+                    {t('adminSanggarAddress')}
                   </label>
                   <textarea
                     name="alamatSanggar"
@@ -495,7 +497,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Alamat Tempat Latihan
+                    {t('adminSanggarPracticeAddress')}
                   </label>
                   <textarea
                     name="alamatTempatLatihan"
@@ -508,7 +510,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 <div className="border-t border-gray-100 my-4"></div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Ketua Sanggar
+                    {t('adminLeader')}
                   </label>
                   <input
                     type="text"
@@ -520,7 +522,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Nama PIC / Kontak
+                    {t('adminPICName')}
                   </label>
                   <input
                     type="text"
@@ -532,7 +534,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Nomor WhatsApp PIC
+                    {t('adminPICPhone')}
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -552,15 +554,15 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <ImageIcon className="h-5 w-5 text-gray-700" />
-                <h2 className="text-lg font-bold text-gray-900">Media & Galeri</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminMediaSection')}</h2>
               </div>
               <div className="p-6 space-y-8">
 
                 <div className="space-y-6">
-                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">Logo & Identitas Utama</h3>
+                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">{t('adminLogoIdentity')}</h3>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Logo Sanggar</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('adminStudioLogo')}</label>
                     <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "logo")} />
@@ -583,8 +585,8 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                             <svg className="mx-auto h-10 w-10 text-slate-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                               <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
                             </svg>
-                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">Klik untuk memilih gambar</span>
-                            <p className="text-xs leading-5 text-slate-500 mt-1">Mendukung JPG, PNG, WebP (Max 5MB)</p>
+                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">{t('adminClickToUpload')}</span>
+                            <p className="text-xs leading-5 text-slate-500 mt-1">{t('adminUploadSupport')}</p>
                           </div>
                         )}
                       </label>
@@ -592,7 +594,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Foto Ketua Sanggar</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('adminPhotoLeader')}</label>
                     <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "ketua")} />
@@ -615,8 +617,8 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                             <svg className="mx-auto h-10 w-10 text-slate-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                               <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
                             </svg>
-                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">Klik untuk memilih gambar</span>
-                            <p className="text-xs leading-5 text-slate-500 mt-1">Mendukung JPG, PNG, WebP (Max 5MB)</p>
+                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">{t('adminClickToUpload')}</span>
+                            <p className="text-xs leading-5 text-slate-500 mt-1">{t('adminUploadSupport')}</p>
                           </div>
                         )}
                       </label>
@@ -624,9 +626,9 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                   </div>
 
                   <div className="mt-6 border-t border-gray-100 pt-6">
-                    <h4 className="text-orange-600 font-semibold mb-4 text-sm">Gambar Thumbnail Katalog (3:4)</h4>
+                    <h4 className="text-orange-600 font-semibold mb-4 text-sm">{t('adminThumbnailSection')}</h4>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Foto Card Penari</label>
+                      <label className="block text-sm font-medium text-gray-700">{t('adminDancerCard')}</label>
                       <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                         <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                           <input type="file" accept="image/*" className="sr-only" onChange={(e) => handleFileChange(e, "thumbnail")} />
@@ -649,8 +651,8 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                               <svg className="mx-auto h-10 w-10 text-slate-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
                               </svg>
-                              <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">Klik untuk memilih gambar</span>
-                              <p className="text-xs leading-5 text-slate-500 mt-1">Mendukung JPG, PNG, WebP (Max 5MB)</p>
+                              <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">{t('adminClickToUpload')}</span>
+                              <p className="text-xs leading-5 text-slate-500 mt-1">{t('adminUploadSupport')}</p>
                             </div>
                           )}
                         </label>
@@ -660,10 +662,10 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 </div>
 
                 <div className="space-y-6 pt-4">
-                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">Galeri & Penampilan</h3>
+                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">{t('adminGallerySection')}</h3>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Foto Grup Tari</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('adminGroupPhoto')}</label>
                     <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "grup")} />
@@ -686,8 +688,8 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                             <svg className="mx-auto h-10 w-10 text-slate-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                               <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
                             </svg>
-                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">Klik untuk memilih gambar</span>
-                            <p className="text-xs leading-5 text-slate-500 mt-1">Mendukung JPG, PNG, WebP (Max 5MB)</p>
+                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">{t('adminClickToUpload')}</span>
+                            <p className="text-xs leading-5 text-slate-500 mt-1">{t('adminUploadSupport')}</p>
                           </div>
                         )}
                       </label>
@@ -695,7 +697,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Foto Tari Unggulan</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('adminFeaturedPhoto')}</label>
                     <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "unggulan")} />
@@ -718,8 +720,8 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                             <svg className="mx-auto h-10 w-10 text-slate-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                               <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
                             </svg>
-                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">Klik untuk memilih gambar</span>
-                            <p className="text-xs leading-5 text-slate-500 mt-1">Mendukung JPG, PNG, WebP (Max 5MB)</p>
+                            <span className="mt-4 block text-sm font-semibold text-orange-600 hover:text-orange-500">{t('adminClickToUpload')}</span>
+                            <p className="text-xs leading-5 text-slate-500 mt-1">{t('adminUploadSupport')}</p>
                           </div>
                         )}
                       </label>
@@ -741,7 +743,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
               className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
             >
               <X className="h-5 w-5" />
-              Batal
+              {t('adminBtnCancel')}
             </Link>
             <button
               type="submit"
@@ -753,7 +755,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
               ) : (
                 <Save className="h-5 w-5" />
               )}
-              {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
+              {isLoading ? "Menyimpan..." : t('adminBtnSaveChanges')}
             </button>
           </div>
         </div>

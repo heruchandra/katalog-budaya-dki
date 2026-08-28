@@ -4,6 +4,7 @@ import React, { useState, useCallback, useRef } from "react";
 import Cropper from "react-easy-crop";
 import { UploadCloud, X, Check, Crop } from "lucide-react";
 import getCroppedImg from "@/lib/cropImage";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface ImageUploadWithCropProps {
   label: string;
@@ -18,6 +19,7 @@ export default function ImageUploadWithCrop({
   onUpload,
   defaultPreview,
 }: ImageUploadWithCropProps) {
+  const { t } = useLanguage();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(defaultPreview || null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -91,10 +93,10 @@ export default function ImageUploadWithCrop({
         >
           <UploadCloud className="h-8 w-8 text-gray-400 group-hover:text-primary-500 mb-2 transition-colors" />
           <span className="text-sm font-medium text-gray-600 group-hover:text-primary-600">
-            Klik untuk memilih gambar
+            {t('adminClickToUpload')}
           </span>
           <span className="text-xs text-gray-400 mt-1">
-            Mendukung JPG, PNG (Max 5MB)
+            {t('adminUploadSupport')}
           </span>
         </div>
       ) : (
@@ -189,7 +191,7 @@ export default function ImageUploadWithCrop({
                   className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-sm transition-all"
                 >
                   <Check className="w-4 h-4" />
-                  Simpan Potongan
+                  {t('adminBtnUpload')}
                 </button>
               </div>
             </div>

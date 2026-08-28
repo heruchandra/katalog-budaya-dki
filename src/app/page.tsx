@@ -14,15 +14,20 @@ import {
   Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Dancing_Script } from 'next/font/google';
+import { Dancing_Script, Playfair_Display } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
+const playfair = Playfair_Display({ 
+  subsets: ['latin'], 
+  weight: ['400', '600', '700', '800'],
+});
 
 export default function HomePage() {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchCategory, setSearchCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,35 +91,52 @@ export default function HomePage() {
   }, [searchQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const targetPath = searchCategory === "pemusik" ? "/pemusik" : "/sanggar";
-    if (searchQuery.trim()) {
-      router.push(`${targetPath}?q=${encodeURIComponent(searchQuery)}`);
+    if (e) e.preventDefault();
+    
+    const queryParam = searchQuery.trim() ? `?q=${encodeURIComponent(searchQuery)}` : '';
+
+    if (selectedCategory === 'dance') {
+      router.push(`/sanggar${queryParam}`);
+    } else if (selectedCategory === 'music') {
+      router.push(`/pemusik${queryParam}`);
     } else {
-      router.push(targetPath);
+      // 'all' category selected
+      if (queryParam) {
+        router.push(`/search${queryParam}`);
+      } else {
+        const targetSection = document.getElementById('kategori');
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          router.push('/#kategori'); 
+        }
+      }
     }
+    setIsCategoryOpen(false);
   };
 
   return (
     <>
       {/* ===== Hero Section ===== */}
       <section 
-        className="relative w-full h-screen flex flex-col justify-center items-center overflow-hidden"
+        className="relative w-full h-screen flex flex-col justify-center items-center"
       >
-        {backgrounds.map((bg, index) => (
-          <img 
-            key={bg} 
-            src={bg} 
-            alt={`Background ${index + 1}`} 
-            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'} -z-10`} 
-          />
-        ))}
-        {/* Dark overlay for premium contrast */}
-        <div className="absolute inset-0 bg-black/65 z-0 pointer-events-none"></div>
+        <div className="absolute inset-0 overflow-hidden z-0">
+          {backgrounds.map((bg, index) => (
+            <img 
+              key={bg} 
+              src={bg} 
+              alt={`Background ${index + 1}`} 
+              className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'} -z-10`} 
+            />
+          ))}
+          {/* Dark overlay for premium contrast */}
+          <div className="absolute inset-0 bg-black/65 z-0 pointer-events-none"></div>
+        </div>
 
         <div className="relative z-10 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-20">
           {/* Heading */}
-          <h1 className="mx-auto max-w-5xl text-center text-3xl font-black leading-tight tracking-tight animate-fade-in sm:text-4xl md:text-5xl lg:text-6xl font-poppins drop-shadow-sm">
+          <h1 className="mx-auto max-w-5xl text-center text-3xl font-extrabold leading-tight tracking-tight animate-fade-in sm:text-4xl md:text-5xl lg:text-6xl font-sans drop-shadow-sm">
             <span className="text-white">{t('heroDiscover')}</span>{" "}
             <span className="relative inline-block">
               <span className={`text-orange-500 inline-block drop-shadow-sm ${dancingScript.className} text-5xl md:text-7xl font-bold tracking-normal`}>{t('heroArtists')}</span>
@@ -131,29 +153,70 @@ export default function HomePage() {
             <div className="group relative z-50">
               <form 
                 onSubmit={handleSearch}
-                className="relative flex items-center overflow-hidden rounded-full bg-white shadow-2xl"
+                className="relative flex items-center rounded-full bg-white shadow-2xl"
               >
                 <Search className="ml-5 h-5 w-5 shrink-0 text-surface-400" />
                 
-                <select
-                  value={searchCategory}
-                  onChange={(e) => setSearchCategory(e.target.value)}
-                  className="bg-transparent border-transparent border-none outline-none ring-0 focus:border-transparent focus:outline-none focus:ring-0 active:outline-none text-gray-600 font-medium cursor-pointer pl-3 pr-2 py-4.5 text-sm sm:text-base appearance-none"
-                >
-                  <option value="all">{t('categoryAll')}</option>
-                  <option value="sanggar">{t('categorySanggar')}</option>
-                  <option value="pemusik">{t('categoryPemusik')}</option>
-                </select>
-                <div className="w-[1px] h-6 bg-gray-200 mx-2" />
+                {/* Premium Category Dropdown */}
+                <div className="relative border-r border-slate-200">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setIsCategoryOpen(!isCategoryOpen);
+                      setIsFocused(false);
+                    }}
+                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 rounded-l-full bg-transparent hover:bg-slate-50 transition-colors w-[160px] sm:w-[190px] h-full"
+                  >
+                    <span className="text-sm font-semibold text-slate-700 truncate">
+                      {selectedCategory === 'all' ? t('searchAllCat') : selectedCategory === 'dance' ? t('searchDanceCat') : t('searchMusicCat')}
+                    </span>
+                    <svg className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Floating Animated Menu */}
+                  <div className={`absolute top-full left-0 mt-4 w-56 bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-white/50 overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
+                    <div className="p-2 flex flex-col gap-1">
+                      <button 
+                        type="button"
+                        onClick={() => { setSelectedCategory('all'); setIsCategoryOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm rounded-xl transition-colors ${selectedCategory === 'all' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'}`}
+                      >
+                        {t('searchAllCat')}
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => { setSelectedCategory('dance'); setIsCategoryOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm rounded-xl transition-colors ${selectedCategory === 'dance' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'}`}
+                      >
+                        {t('searchDanceCat')}
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => { setSelectedCategory('music'); setIsCategoryOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm rounded-xl transition-colors ${selectedCategory === 'music' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'}`}
+                      >
+                        {t('searchMusicCat')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="flex-1 w-full relative">
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setIsFocused(true)}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsCategoryOpen(false);
+                    }}
+                    onFocus={() => {
+                      setIsFocused(true);
+                      setIsCategoryOpen(false);
+                    }}
                     onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                    placeholder={t('searchPlaceholder')}
+                    placeholder={t('searchHeroPlaceholder')}
                     className="w-full border-none focus:border-transparent focus:ring-0 outline-none bg-transparent px-4 py-4.5 text-sm text-surface-800 placeholder:text-surface-400 sm:text-base"
                     aria-label={t('searchAriaLabel')}
                   />
@@ -162,13 +225,13 @@ export default function HomePage() {
                   type="submit"
                   className="mr-2 shrink-0 rounded-full bg-primary-600 px-8 py-3 text-sm font-bold text-white shadow-md shadow-primary-500/25 transition-all duration-200 hover:bg-primary-700 hover:shadow-lg"
                 >
-                  {t('btnSearch')}
+                  {t('searchBtn')}
                 </button>
               </form>
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                <div className="absolute top-full left-0 right-0 mt-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-white/50 overflow-hidden z-[999]">
                   {isLoading ? (
                     <div className="p-4 flex items-center justify-center text-sm text-surface-500">
                       <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -229,7 +292,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== Scroll 3: Editorial Category Grid ===== */}
-      <section className="mb-24">
+      <section id="kategori" className="mb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto px-4 md:px-8">
           {/* Category: Sanggar Tari */}
           <Link href="/sanggar" className="block group">

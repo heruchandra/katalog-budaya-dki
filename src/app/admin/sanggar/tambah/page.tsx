@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, X, Plus, Trash2, Image as ImageIcon, MapPin, Info, Phone, Trophy, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import ImageUploadWithCrop from "@/components/ImageUploadWithCrop";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AddSanggar() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -148,7 +150,7 @@ export default function AddSanggar() {
         className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-primary-600 mb-6 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Kembali ke Data Sanggar
+        {t('adminBackToSanggar')}
       </Link>
 
       <div className="mb-8">
@@ -180,13 +182,13 @@ export default function AddSanggar() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Info className="h-5 w-5 text-primary-600" />
-                <h2 className="text-lg font-bold text-gray-900">Informasi Dasar</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminBasicInfo')}</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                      Nama Sanggar <span className="text-red-500">*</span>
+                      {t('adminSanggarName')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -200,7 +202,7 @@ export default function AddSanggar() {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                      Kategori / Grade <span className="text-red-500">*</span>
+                      {t('adminSanggarCategory')} <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="grade"
@@ -219,7 +221,7 @@ export default function AddSanggar() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Tagline Sanggar
+                    {t('adminSanggarTagline')}
                   </label>
                   <input
                     type="text"
@@ -233,7 +235,7 @@ export default function AddSanggar() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Deskripsi Sanggar
+                    {t('adminSanggarDesc')}
                   </label>
                   <textarea
                     name="deskripsiSanggar"
@@ -251,12 +253,12 @@ export default function AddSanggar() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-amber-500" />
-                <h2 className="text-lg font-bold text-gray-900">Layanan & Prestasi</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminServicesSection')}</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Layanan Sanggar
+                    {t('adminStudioServices')}
                   </label>
                   <textarea
                     name="layananSanggar"
@@ -269,7 +271,7 @@ export default function AddSanggar() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Prestasi / Penghargaan
+                    {t('adminAchievements')}
                   </label>
                   <textarea
                     name="prestasiPenghargaan"
@@ -288,7 +290,7 @@ export default function AddSanggar() {
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 text-primary-500" />
-                  <h2 className="text-lg font-bold text-gray-900">Tari Unggulan</h2>
+                  <h2 className="text-lg font-bold text-gray-900">{t('adminFeaturedDance')}</h2>
                 </div>
                 <button
                   type="button"
@@ -296,7 +298,7 @@ export default function AddSanggar() {
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700 hover:bg-primary-100 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Tambah Tari
+                  {t('adminBtnAddDance')}
                 </button>
               </div>
               <div className="p-6 space-y-4">
@@ -305,7 +307,7 @@ export default function AddSanggar() {
                     <div className="flex-1 space-y-4">
                       <div>
                         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-                          Nama Tari
+                          {t('adminDanceName')}
                         </label>
                         <input
                           type="text"
@@ -317,7 +319,7 @@ export default function AddSanggar() {
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-                          Deskripsi Tari
+                          {t('adminDanceDesc')}
                         </label>
                         <textarea
                           rows={2}
@@ -352,12 +354,12 @@ export default function AddSanggar() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-gray-700" />
-                <h2 className="text-lg font-bold text-gray-900">Alamat & Kontak</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminAddressContact')}</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Alamat Sanggar (Sekretariat)
+                    {t('adminSanggarAddress')}
                   </label>
                   <textarea
                     name="alamatSanggar"
@@ -369,7 +371,7 @@ export default function AddSanggar() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Alamat Tempat Latihan
+                    {t('adminSanggarPracticeAddress')}
                   </label>
                   <textarea
                     name="alamatTempatLatihan"
@@ -382,7 +384,7 @@ export default function AddSanggar() {
                 <div className="border-t border-gray-100 my-4"></div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Ketua Sanggar
+                    {t('adminLeader')}
                   </label>
                   <input
                     type="text"
@@ -394,7 +396,7 @@ export default function AddSanggar() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Nama PIC / Kontak
+                    {t('adminPICName')}
                   </label>
                   <input
                     type="text"
@@ -406,7 +408,7 @@ export default function AddSanggar() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Nomor WhatsApp PIC
+                    {t('adminPICPhone')}
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -427,33 +429,33 @@ export default function AddSanggar() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <ImageIcon className="h-5 w-5 text-gray-700" />
-                <h2 className="text-lg font-bold text-gray-900">Media & Galeri</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t('adminMediaSection')}</h2>
               </div>
               <div className="p-6 space-y-8">
                 
                 <div className="space-y-6">
-                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">Logo & Identitas Utama (1:1)</h3>
+                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">{t('adminLogoIdentity')} (1:1)</h3>
                   <ImageUploadWithCrop
-                    label="Logo Sanggar"
+                    label={t('adminStudioLogo')}
                     aspectRatio={1}
                     onUpload={(blob) => setMediaData(prev => ({ ...prev, logoSanggar: blob }))}
                   />
                   <ImageUploadWithCrop
-                    label="Foto Ketua Sanggar"
+                    label={t('adminPhotoLeader')}
                     aspectRatio={1}
                     onUpload={(blob) => setMediaData(prev => ({ ...prev, fotoKetuaSanggar: blob }))}
                   />
                 </div>
                 
                 <div className="space-y-6 pt-4">
-                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">Galeri & Penampilan (16:9)</h3>
+                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">{t('adminGallerySection')} (16:9)</h3>
                   <ImageUploadWithCrop
-                    label="Foto Grup Tari"
+                    label={t('adminGroupPhoto')}
                     aspectRatio={16 / 9}
                     onUpload={(blob) => setMediaData(prev => ({ ...prev, fotoGrupTari: blob }))}
                   />
                   <ImageUploadWithCrop
-                    label="Foto Tari Unggulan"
+                    label={t('adminFeaturedPhoto')}
                     aspectRatio={16 / 9}
                     onUpload={(blob) => setMediaData(prev => ({ ...prev, fotoTariUnggulan: blob }))}
                   />
@@ -473,7 +475,7 @@ export default function AddSanggar() {
               className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
             >
               <X className="h-5 w-5" />
-              Batal
+              {t('adminBtnCancel')}
             </Link>
             <button
               type="submit"

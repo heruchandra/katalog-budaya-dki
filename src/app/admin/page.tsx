@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   const [totalPemusik, setTotalPemusik] = useState<number>(0);
   const [recentActivities, setRecentActivities] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -83,7 +83,10 @@ export default function AdminDashboard() {
     { name: 'Apr', Sanggar: 10, 'Seniman Musik': 6 },
     { name: 'Mei', Sanggar: 15, 'Seniman Musik': 12 },
     { name: 'Jun', Sanggar: 12, 'Seniman Musik': 18 },
-  ];
+  ].map(d => ({
+    ...d,
+    name: language === 'en' && d.name === 'Mei' ? 'May' : d.name
+  }));
 
   return (
     <div className="p-6 sm:p-8">
@@ -134,8 +137,8 @@ export default function AdminDashboard() {
               <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
               <Tooltip contentStyle={{ border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
               <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-              <Area type="monotone" dataKey="Sanggar" stroke="#f97316" fillOpacity={1} fill="url(#colorSanggar)" />
-              <Area type="monotone" dataKey="Seniman Musik" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorPemusik)" />
+              <Area type="monotone" dataKey="Sanggar" name={t('dashboardDance')} stroke="#f97316" fillOpacity={1} fill="url(#colorSanggar)" />
+              <Area type="monotone" dataKey="Seniman Musik" name={t('dashboardMusic')} stroke="#8b5cf6" fillOpacity={1} fill="url(#colorPemusik)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -174,10 +177,16 @@ export default function AdminDashboard() {
                     <div className="text-sm font-medium text-gray-900">{activity.name}</div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-500">{activity.type}</div>
+                    <div className="text-sm text-gray-500">
+                      {activity.type === 'Seniman Musik' ? t('dashboardMusic') : t('dashboardDance')}
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-500">{activity.action}</div>
+                    <div className="text-sm text-gray-500">
+                      {activity.action.includes('Pendaftaran Baru') || activity.action.includes('New Registration') 
+                        ? t('dashboardActNew') 
+                        : activity.action}
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium ${
@@ -185,11 +194,11 @@ export default function AdminDashboard() {
                       activity.status === 'Menunggu' ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20' :
                       'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'
                     }`}>
-                      {activity.status}
+                      {activity.status === 'Aktif' || activity.status === 'Active' ? t('dashboardStatusActive') : activity.status}
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
-                    {activity.date}
+                    {new Date(activity.rawDate).toLocaleDateString(language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                 </tr>
               ))}

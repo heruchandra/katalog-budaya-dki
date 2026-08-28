@@ -3,11 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, X } from "lucide-react";
+import { ArrowLeft, Save, X, Info, Star, MapPin, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
+import ImageUploadWithCrop from "@/components/ImageUploadWithCrop";
 
 export default function AddPemusik() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -18,9 +21,18 @@ export default function AddPemusik() {
     deskripsi: "",
     genre_musik: "",
     instrumen: "",
-    no_hp: "", // Dummy field for UI, not in DB
-    foto_url: "", // Dummy field for UI, not in DB
+    layanan: "", // Dummy field
+    prestasi: "", // Dummy field
+    alamat: "", // Dummy field
+    nama_pic: "", // Dummy field
+    no_hp: "", // Dummy field
   });
+
+  const [mediaData, setMediaData] = useState<{
+    logo?: Blob | null;
+    artistPhoto?: Blob | null;
+    groupPhoto?: Blob | null;
+  }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,14 +45,14 @@ export default function AddPemusik() {
     setSuccessMsg(null);
 
     try {
-      // The pemusiks table only has these specific columns:
-      // nama_seniman, jenis_seniman, genre_musik, instrumen, pengalaman, deskripsi
+      // For now we only insert the actual DB supported fields.
       const dbPayload = {
         nama_seniman: formData.nama_seniman,
         jenis_seniman: formData.jenis_seniman,
         deskripsi: formData.deskripsi,
         genre_musik: formData.genre_musik,
         instrumen: formData.instrumen,
+        // The other fields are dummy/UI only until DB is updated
       };
 
       const { error: insertError } = await supabase
@@ -60,178 +72,291 @@ export default function AddPemusik() {
   };
 
   return (
-    <div className="p-6 sm:p-8 max-w-3xl mx-auto">
+    <div className="p-6 sm:p-8 max-w-5xl mx-auto pb-24">
       {/* Back Link */}
       <Link
         href="/admin/pemusik"
         className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-primary-600 mb-6 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Kembali ke Data Pemusik
+        {t('adminBackToMusic')}
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Tambah Data Pemusik</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Masukkan informasi lengkap seniman atau pemusik tradisional.
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">{t('adminEditMusicTitle')}</h1>
+        <p className="mt-2 text-base text-gray-500">
+          {t('adminEditMusicDesc')}
         </p>
       </div>
 
-      <div className="rounded-xl bg-white shadow-sm border border-gray-200 overflow-hidden">
-        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-          {error && (
-            <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 border border-red-100">
-              {error}
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {error && (
+          <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700 border border-red-200 shadow-sm flex items-start gap-3">
+            <div className="font-bold">Error:</div>
+            <div>{error}</div>
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="rounded-xl bg-green-50 p-4 text-sm text-green-700 border border-green-200 shadow-sm font-semibold">
+            {successMsg} Mengalihkan...
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-24">
+          {/* Main Column (2/3 width) */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* 1. Informasi Dasar */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
+                <Info className="h-5 w-5 text-primary-600" />
+                <h2 className="text-lg font-bold text-gray-900">{t('adminBasicInfo')}</h2>
+              </div>
+              <div className="p-6 space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      {t('adminArtistName')} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="nama_seniman"
+                      required
+                      value={formData.nama_seniman}
+                      onChange={handleChange}
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      placeholder="Contoh: Gambang Kromong Sinar Harapan"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      {t('adminArtistCategory')} <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="jenis_seniman"
+                      required
+                      value={formData.jenis_seniman}
+                      onChange={handleChange}
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    >
+                      <option value="">Pilih Kategori</option>
+                      <option value="Solo">Solo / Individu</option>
+                      <option value="Komunitas">Grup / Komunitas</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      {t('adminMusicGenre')}
+                    </label>
+                    <input
+                      type="text"
+                      name="genre_musik"
+                      value={formData.genre_musik}
+                      onChange={handleChange}
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      placeholder="Contoh: Gambang Kromong"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      {t('adminMusicInstrument')}
+                    </label>
+                    <input
+                      type="text"
+                      name="instrumen"
+                      value={formData.instrumen}
+                      onChange={handleChange}
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      placeholder="Contoh: Tehyan, Kongahyan"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {t('adminArtistDesc')} <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="deskripsi"
+                    required
+                    rows={4}
+                    value={formData.deskripsi}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    placeholder="Ceritakan tentang profil, pengalaman, dll..."
+                  />
+                </div>
+              </div>
             </div>
-          )}
 
-          {successMsg && (
-            <div className="rounded-lg bg-green-50 p-4 text-sm text-green-700 border border-green-200 font-semibold">
-              {successMsg} Mengalihkan...
+            {/* 2. Layanan & Prestasi */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
+                <Star className="h-5 w-5 text-primary-600" />
+                <h2 className="text-lg font-bold text-gray-900">{t('adminServicesSection')}</h2>
+              </div>
+              <div className="p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {t('adminMusicServices')}
+                  </label>
+                  <textarea
+                    name="layanan"
+                    rows={3}
+                    value={formData.layanan}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    placeholder="Contoh: Pernikahan, Festival, Acara Adat..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {t('adminAchievements')}
+                  </label>
+                  <textarea
+                    name="prestasi"
+                    rows={3}
+                    value={formData.prestasi}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    placeholder="Prestasi atau penghargaan yang pernah diraih..."
+                  />
+                </div>
+              </div>
             </div>
-          )}
 
-          {/* Nama */}
-          <div>
-            <label htmlFor="nama_seniman" className="block text-sm font-medium text-gray-700 mb-1">
-              Nama Seniman / Grup <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="nama_seniman"
-              name="nama_seniman"
-              required
-              value={formData.nama_seniman}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-              placeholder="Contoh: Gambang Kromong Sinar Harapan"
-            />
-          </div>
-
-          {/* Kategori / Jenis Seniman */}
-          <div>
-            <label htmlFor="jenis_seniman" className="block text-sm font-medium text-gray-700 mb-1">
-              Kategori / Jenis <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="jenis_seniman"
-              name="jenis_seniman"
-              required
-              value={formData.jenis_seniman}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-            >
-              <option value="">Pilih Kategori</option>
-              <option value="Solo">Solo / Individu</option>
-              <option value="Komunitas">Grup / Komunitas</option>
-            </select>
-          </div>
-
-          {/* Genre & Instrumen */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="genre_musik" className="block text-sm font-medium text-gray-700 mb-1">
-                Genre Musik
-              </label>
-              <input
-                type="text"
-                id="genre_musik"
-                name="genre_musik"
-                value={formData.genre_musik}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-                placeholder="Contoh: Gambang Kromong"
-              />
+            {/* 3. Karya Unggulan */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
+                <Star className="h-5 w-5 text-primary-600" />
+                <h2 className="text-lg font-bold text-gray-900">{t('adminFeaturedWork')}</h2>
+              </div>
+              <div className="p-6 space-y-5">
+                <p className="text-sm text-gray-500 italic">Formulir karya/lagu dinamis belum diaktifkan.</p>
+              </div>
             </div>
-            <div>
-              <label htmlFor="instrumen" className="block text-sm font-medium text-gray-700 mb-1">
-                Instrumen / Spesialisasi
-              </label>
-              <input
-                type="text"
-                id="instrumen"
-                name="instrumen"
-                value={formData.instrumen}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-                placeholder="Contoh: Tehyan, Kongahyan"
-              />
+
+          </div>
+
+          {/* Side Column (1/3 width) */}
+          <div className="space-y-8">
+            
+            {/* 4. Alamat & Kontak */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-primary-600" />
+                <h2 className="text-lg font-bold text-gray-900">{t('adminAddressContact')}</h2>
+              </div>
+              <div className="p-6 space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {t('adminArtistAddress')}
+                  </label>
+                  <textarea
+                    name="alamat"
+                    rows={3}
+                    value={formData.alamat}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    placeholder="Alamat basecamp atau domisili..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {t('adminPICName')}
+                  </label>
+                  <input
+                    type="text"
+                    name="nama_pic"
+                    value={formData.nama_pic}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    placeholder="Nama kontak person"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    {t('adminPICPhone')}
+                  </label>
+                  <input
+                    type="text"
+                    name="no_hp"
+                    value={formData.no_hp}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    placeholder="Contoh: 081234567890"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Deskripsi */}
-          <div>
-            <label htmlFor="deskripsi" className="block text-sm font-medium text-gray-700 mb-1">
-              Deskripsi <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="deskripsi"
-              name="deskripsi"
-              required
-              rows={4}
-              value={formData.deskripsi}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-              placeholder="Ceritakan tentang profil, pengalaman, dll..."
-            />
-          </div>
+            {/* 5. Media & Galeri */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
+                <ImageIcon className="h-5 w-5 text-primary-600" />
+                <h2 className="text-lg font-bold text-gray-900">{t('adminMediaSection')}</h2>
+              </div>
+              
+              <div className="p-6 space-y-8">
+                <div className="space-y-6">
+                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">{t('adminLogoIdentity')}</h3>
+                  <ImageUploadWithCrop
+                    label={t('adminArtistLogo')}
+                    aspectRatio={1}
+                    onUpload={(blob) => setMediaData(prev => ({ ...prev, logo: blob }))}
+                  />
+                  <ImageUploadWithCrop
+                    label={t('adminMusicCard')}
+                    aspectRatio={3 / 4}
+                    onUpload={(blob) => setMediaData(prev => ({ ...prev, artistPhoto: blob }))}
+                  />
+                </div>
+                
+                <div className="space-y-6 pt-4">
+                  <h3 className="text-sm font-bold text-primary-600 border-b border-gray-100 pb-2">{t('adminGallerySection')} (16:9)</h3>
+                  <ImageUploadWithCrop
+                    label={t('adminMusicGroupPhoto')}
+                    aspectRatio={16 / 9}
+                    onUpload={(blob) => setMediaData(prev => ({ ...prev, groupPhoto: blob }))}
+                  />
+                </div>
+              </div>
+            </div>
 
-          {/* Kontak (Dummy for UI completeness) */}
-          <div>
-            <label htmlFor="no_hp" className="block text-sm font-medium text-gray-700 mb-1">
-              Kontak (WhatsApp)
-            </label>
-            <input
-              type="text"
-              id="no_hp"
-              name="no_hp"
-              value={formData.no_hp}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-              placeholder="Contoh: 081234567890"
-            />
           </div>
+        </div>
 
-          {/* Link URL Gambar (Dummy for UI completeness) */}
-          <div>
-            <label htmlFor="foto_url" className="block text-sm font-medium text-gray-700 mb-1">
-              Link/URL Gambar
-            </label>
-            <input
-              type="url"
-              id="foto_url"
-              name="foto_url"
-              value={formData.foto_url}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-100">
+        {/* Floating Action Bar for Submission */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 lg:ml-64">
+          <div className="max-w-5xl mx-auto flex items-center justify-end gap-4">
             <Link
               href="/admin/pemusik"
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
             >
-              <X className="h-4 w-4" />
-              Batal
+              <X className="h-5 w-5" />
+              {t('adminBtnCancel')}
             </Link>
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-sm transition-colors disabled:opacity-70"
+              className="flex items-center gap-2 px-8 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all disabled:opacity-70 disabled:shadow-none"
             >
               {isLoading ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               ) : (
-                <Save className="h-4 w-4" />
+                <Save className="h-5 w-5" />
               )}
-              Simpan
+              {isLoading ? "Menyimpan..." : t('adminBtnSaveChanges')}
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }
+
+
