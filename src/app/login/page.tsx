@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogIn, Mail, Lock, Eye, EyeOff, Landmark, ArrowLeft, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +56,7 @@ export default function LoginPage() {
           className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-surface-500 transition-colors hover:text-primary-600"
         >
           <ArrowLeft className="h-4 w-4" />
-          Kembali ke Beranda
+          {t('loginBackToHome')}
         </Link>
 
         {/* Login Card */}
@@ -65,10 +67,10 @@ export default function LoginPage() {
               <Landmark className="h-7 w-7" />
             </div>
             <h1 className="mt-4 text-xl font-extrabold text-surface-900">
-              Selamat Datang
+              {t('loginWelcomeTitle')}
             </h1>
             <p className="mt-1 text-sm text-surface-600">
-              Masuk ke Katalog Seni DKI Jakarta
+              {t('loginWelcomeSubtitle')}
             </p>
           </div>
 
@@ -87,7 +89,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 className="mb-1.5 block text-sm font-medium text-surface-700"
               >
-                Email
+                {t('loginEmailLabel')}
               </label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
@@ -96,7 +98,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="nama@email.com"
+                  placeholder={t('loginEmailPlaceholder')}
                   required
                   className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-3 pl-10 pr-4 text-sm text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
@@ -109,7 +111,7 @@ export default function LoginPage() {
                 htmlFor="password"
                 className="mb-1.5 block text-sm font-medium text-surface-700"
               >
-                Password
+                {t('loginPasswordLabel')}
               </label>
               <div className="relative">
                 <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
@@ -118,7 +120,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan password"
+                  placeholder={t('loginPasswordPlaceholder')}
                   required
                   className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-3 pl-10 pr-12 text-sm text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
@@ -148,14 +150,14 @@ export default function LoginPage() {
               ) : (
                 <>
                   <LogIn className="h-4 w-4" />
-                  Masuk
+                  {t('loginButton')}
                 </>
               )}
             </button>
 
             <div className="flex items-center my-5">
               <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-3 text-gray-500 text-sm">Atau</span>
+              <span className="px-3 text-gray-500 text-sm">{t('loginOr')}</span>
               <div className="flex-1 border-t border-gray-300"></div>
             </div>
 
@@ -182,21 +184,19 @@ export default function LoginPage() {
                   fill="#EA4335"
                 />
               </svg>
-              Masuk dengan Google
+              {t('loginGoogleButton')}
             </button>
 
             <p className="mt-6 text-center text-sm text-gray-600">
-              Belum punya akun?{' '}
+              {t('loginNoAccount')}{' '}
               <Link href="/register" className="text-orange-600 font-medium hover:underline">
-                Daftar di sini
+                {t('loginRegisterHere')}
               </Link>
             </p>
 
             {/* Help text */}
             <p className="mt-6 text-center text-xs text-surface-400">
-              Hanya untuk staf Dinas Kebudayaan DKI Jakarta yang terdaftar.
-              <br />
-              Hubungi administrator jika Anda memerlukan akses.
+              {t('loginDisclaimer')}
             </p>
           </form>
         </div>

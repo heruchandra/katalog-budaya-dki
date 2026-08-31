@@ -14,6 +14,21 @@ const translations: Record<string, Record<Language, string>> = {
   navLogout: { id: "Keluar", en: "Sign Out" },
   navLogin: { id: "Login", en: "Login" },
 
+  // ── Login ──
+  loginBackToHome: { id: "Kembali ke Beranda", en: "Back to Home" },
+  loginWelcomeTitle: { id: "Selamat Datang", en: "Welcome" },
+  loginWelcomeSubtitle: { id: "Masuk ke Katalog Seni DKI Jakarta", en: "Sign in to Katalog Seni DKI Jakarta" },
+  loginEmailLabel: { id: "Email", en: "Email" },
+  loginEmailPlaceholder: { id: "nama@email.com", en: "name@email.com" },
+  loginPasswordLabel: { id: "Password", en: "Password" },
+  loginPasswordPlaceholder: { id: "Masukkan password", en: "Enter password" },
+  loginButton: { id: "Masuk", en: "Sign In" },
+  loginOr: { id: "Atau", en: "Or" },
+  loginGoogleButton: { id: "Masuk dengan Google", en: "Sign in with Google" },
+  loginNoAccount: { id: "Belum punya akun?", en: "Don't have an account?" },
+  loginRegisterHere: { id: "Daftar di sini", en: "Register here" },
+  loginDisclaimer: { id: "Hanya untuk staf Dinas Kebudayaan DKI Jakarta yang terdaftar. Hubungi administrator jika Anda memerlukan akses.", en: "Only for registered Jakarta Culture Agency staff. Contact administrator if you need access." },
+
   // ── Sanggar Detail Page ──
   backToCatalog: { id: "KEMBALI KE KATALOG", en: "BACK TO CATALOG" },
   verified: { id: "TERVERIFIKASI", en: "VERIFIED" },
