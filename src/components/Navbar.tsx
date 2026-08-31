@@ -58,10 +58,14 @@ export default function Navbar() {
   }
 
   return (
-    <header className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[98%] max-w-[1600px] px-6 py-3 bg-white/75 backdrop-blur-lg border border-white/50 rounded-full shadow-2xl shadow-orange-900/10 flex items-center justify-between transition-all duration-500 ${jakarta.className}`}>
-      <nav className="relative flex w-full items-center justify-between">
+    <header className={`fixed left-1/2 -translate-x-1/2 z-50 w-[98%] max-w-[1600px] px-6 flex items-center justify-between transition-all duration-500 ease-in-out ${jakarta.className} ${
+      scrolled 
+        ? 'top-6 py-3 bg-transparent' 
+        : 'top-6 py-3 bg-white/95 backdrop-blur-lg border border-slate-200 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)]'
+    }`}>
+      <nav className="relative flex items-center justify-between w-full gap-4">
         {/* Group 1: Left - Logos & Title */}
-        <div className="flex items-center gap-3 z-10">
+        <div className="flex shrink-0 items-center gap-4 z-10">
           <Link
             href="/"
             className="group flex items-center gap-3 transition-transform duration-200 hover:scale-[1.02]"
@@ -79,7 +83,7 @@ export default function Navbar() {
         </div>
 
         {/* Group 2: Center - Nav Links */}
-        <div className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-8 z-10">
+        <div className="flex-1 hidden lg:flex items-center justify-center gap-8 z-10">
           {[
             { href: "/", labelKey: "navHome" },
             { href: "/sanggar", labelKey: "navSanggar" },
@@ -103,7 +107,7 @@ export default function Navbar() {
         </div>
 
         {/* Group 3: Right - Actions & Auth */}
-        <div className="hidden lg:flex items-center justify-end gap-5 z-10">
+        <div className="hidden lg:flex shrink-0 items-center justify-end gap-5 z-10">
           {user ? (
             <div className="flex items-center gap-3">
               {isAdmin && (
@@ -142,7 +146,7 @@ export default function Navbar() {
           <div className="w-px h-6 bg-slate-300 mx-1"></div>
           <button 
             onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-            className="flex items-center gap-2 group p-1.5 rounded-md hover:bg-slate-200/50 transition-colors"
+            className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 transition-colors rounded-full py-1.5 pl-4 pr-1.5 border border-slate-200 cursor-pointer group"
           >
             <span className="text-sm font-semibold text-slate-700 group-hover:text-orange-600 transition-colors">
               {language === 'id' ? 'Indonesia' : 'English'}

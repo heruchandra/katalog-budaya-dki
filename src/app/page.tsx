@@ -323,12 +323,12 @@ export default function HomePage() {
       </section>
 
       {/* ===== Feature Highlights ===== */}
-      <section className="border-t border-surface-200/60 bg-white py-16 sm:py-20">
+      <section className="border-t border-surface-200/60 bg-slate-50/50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-2xl font-black text-surface-900 sm:text-3xl font-poppins">
+            <h2 className="font-sans font-extrabold tracking-tight text-4xl text-slate-900">
               {t('featuresTitle')}{" "}
-              <span className="text-gradient">Katalog Seni DKI?</span>
+              <span className="text-orange-600">Katalog Seni DKI?</span>
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-surface-500 sm:text-base">
               {t('featuresSubtitle')}
@@ -355,15 +355,15 @@ export default function HomePage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="flex flex-col items-center text-center"
+                className="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-3 hover:shadow-[0_30px_60px_-15px_rgba(234,88,12,0.15)] flex flex-col items-center text-center relative z-10"
               >
-                <div className="flex items-center justify-center text-primary-600 mb-2">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-orange-600 mb-6 shadow-inner">
                   <feature.icon className="h-10 w-10 stroke-[1.5]" />
                 </div>
-                <h3 className="font-poppins uppercase tracking-[0.15em] text-sm md:text-base font-semibold text-slate-900 mt-4 mb-3">
+                <h3 className="font-bold text-slate-800 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-slate-500 font-light text-sm leading-relaxed">
+                <p className="text-slate-500 leading-relaxed">
                   {feature.description}
                 </p>
               </div>

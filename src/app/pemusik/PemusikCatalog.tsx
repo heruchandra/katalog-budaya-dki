@@ -17,6 +17,7 @@ interface Pemusik {
   instrumen: string;
   pengalaman: string;
   deskripsi: string;
+  foto_url?: string;
 }
 
 interface PemusikCatalogProps {
@@ -82,23 +83,8 @@ export default function PemusikCatalog({
   return (
     <div className="min-h-screen bg-white pb-16 pt-24">
       {/* Minimal Header */}
-      <div className="mx-auto max-w-[90vw] px-4 sm:px-6 lg:px-8 mb-12">
-      {/* Back Navigation - Premium Editorial Style */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4">
-        <Link className="group inline-flex items-center gap-4 text-xs sm:text-sm font-bold tracking-[0.2em] text-slate-500 hover:text-orange-600 transition-colors duration-300 uppercase" href="/">
-          <svg 
-            className="w-5 h-5 transform group-hover:-translate-x-2 transition-transform duration-300 ease-in-out" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor" 
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>{t('backToCatalog') || 'KEMBALI'}</span>
-        </Link>
-      </div>
-        <div>
+      <div className="mx-auto max-w-[90vw] px-4 sm:px-6 lg:px-8">
+        <div className="mt-20 mb-12">
           <h1 className={`text-4xl md:text-5xl font-light text-slate-900 ${dancingScript.className}`}>
             {t('pemusikPageTitle')}
           </h1>
@@ -205,14 +191,19 @@ export default function PemusikCatalog({
                   <Link href={`/pemusik/${pemusik.id}`} className="absolute inset-0 z-10" aria-label={pemusik.nama_seniman}></Link>
                   
                   {/* Image Wrapper */}
-                  <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-sm">
-                    {/* Placeholder image (since Pemusik doesn't seem to have foto_url in the interface) */}
-                    <img
-                      src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop"
-                      alt={pemusik.nama_seniman}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
+                  {pemusik.foto_url ? (
+                    <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-sm">
+                      <img
+                        src={pemusik.foto_url}
+                        alt={pemusik.nama_seniman}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full aspect-[3/4] bg-slate-50/80 flex items-center justify-center rounded-sm border border-slate-100 overflow-hidden">
+                      <span className="text-slate-400 text-xs font-semibold tracking-widest uppercase">No Image</span>
+                    </div>
+                  )}
 
                   {/* Text Area */}
                   <div className="mt-4 text-left">

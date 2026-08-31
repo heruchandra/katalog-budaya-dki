@@ -86,23 +86,8 @@ export default function SanggarCatalog({
   return (
     <div className="min-h-screen bg-white pb-16 pt-24">
       {/* Minimal Header */}
-      <div className="mx-auto max-w-[90vw] px-4 sm:px-6 lg:px-8 mb-12">
-      {/* Back Navigation - Premium Editorial Style */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4">
-        <Link className="group inline-flex items-center gap-4 text-xs sm:text-sm font-bold tracking-[0.2em] text-slate-500 hover:text-orange-600 transition-colors duration-300 uppercase" href="/">
-          <svg 
-            className="w-5 h-5 transform group-hover:-translate-x-2 transition-transform duration-300 ease-in-out" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor" 
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>{t('backToCatalog') || 'KEMBALI'}</span>
-        </Link>
-      </div>
-        <div>
+      <div className="mx-auto max-w-[90vw] px-4 sm:px-6 lg:px-8">
+        <div className="mt-20 mb-12">
           <h1 className={`text-4xl md:text-5xl font-light text-slate-900 ${dancingScript.className}`}>
             {t('sanggarPageTitle')}
           </h1>
