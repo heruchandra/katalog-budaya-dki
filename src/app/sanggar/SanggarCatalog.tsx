@@ -46,22 +46,7 @@ export default function SanggarCatalog({
     { value: "B", label: "GRADE B" },
   ];
 
-  const dummySanggars = [
-    { id: "1", nama_sanggar: "Ayodya Pala", grade: "GRADE B", kecamatan: "JAKARTA", jenis_tarian: "Tari Jaipong, Tari Piring", thumbnail_url: null },
-    { id: "2", nama_sanggar: "Tari Sribudaya", grade: "GRADE A", kecamatan: "JAKARTA", jenis_tarian: "Tari Topeng, Tari Sirih Kuning", thumbnail_url: null },
-    { id: "3", nama_sanggar: "Sanggar Citra Budaya", grade: "GRADE A", kecamatan: "JAKARTA", jenis_tarian: "Tari Betawi, Tari Saman", thumbnail_url: null },
-    { id: "4", nama_sanggar: "Kinarya GSP", grade: "GRADE B", kecamatan: "JAKARTA", jenis_tarian: "Tari Merak, Tari Pendet", thumbnail_url: null },
-    { id: "5", nama_sanggar: "Sanggar Tari Kencana", grade: "GRADE C", kecamatan: "JAKARTA", jenis_tarian: "Tari Bali, Tari Kecak", thumbnail_url: null },
-    { id: "6", nama_sanggar: "Laksita Kirana", grade: "GRADE A", kecamatan: "JAKARTA", jenis_tarian: "Tari Ronggeng, Tari Jaipong", thumbnail_url: null },
-    { id: "7", nama_sanggar: "Sanggar Bintang", grade: "GRADE A", kecamatan: "JAKARTA", jenis_tarian: "Tari Betawi", thumbnail_url: null },
-    { id: "8", nama_sanggar: "Tari Pusaka", grade: "GRADE B", kecamatan: "JAKARTA", jenis_tarian: "Tari Piring", thumbnail_url: null },
-    { id: "9", nama_sanggar: "Budaya Luhur", grade: "GRADE C", kecamatan: "JAKARTA", jenis_tarian: "Tari Saman", thumbnail_url: null },
-    { id: "10", nama_sanggar: "Melati Putih", grade: "GRADE A", kecamatan: "JAKARTA", jenis_tarian: "Tari Pendet", thumbnail_url: null },
-    { id: "11", nama_sanggar: "Cipta Pesona", grade: "GRADE B", kecamatan: "JAKARTA", jenis_tarian: "Tari Jaipong", thumbnail_url: null },
-    { id: "12", nama_sanggar: "Kenanga Art", grade: "GRADE A", kecamatan: "JAKARTA", jenis_tarian: "Tari Topeng", thumbnail_url: null }
-  ] as Sanggar[];
-
-  const filtered = dummySanggars.filter((s) => {
+  const filtered = (sanggars || []).filter((s) => {
     const matchGrade =
       activeGrade === "all" ||
       (s.grade && (s.grade.toUpperCase() === activeGrade.toUpperCase() || s.grade.toUpperCase() === `GRADE ${activeGrade.toUpperCase()}`));
@@ -73,8 +58,16 @@ export default function SanggarCatalog({
     return matchGrade && matchSearch;
   });
 
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const sortedSanggars = [...filtered].sort((a, b) => {
+    if (activeGrade === "all") {
+      return (a.nama_sanggar || "").localeCompare(b.nama_sanggar || "");
+    } else {
+      return Number(a.id) - Number(b.id);
+    }
+  });
+
+  const totalPages = Math.ceil(sortedSanggars.length / itemsPerPage);
+  const paginated = sortedSanggars.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -82,6 +75,17 @@ export default function SanggarCatalog({
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  const getVisiblePages = (current: number, total: number) => {
+    const start = Math.max(1, current - 3);
+    const end = Math.min(total, current + 3);
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+  const visiblePages = getVisiblePages(currentPage, totalPages);
 
   return (
     <div className="min-h-screen bg-white pb-16 pt-24">
@@ -92,8 +96,8 @@ export default function SanggarCatalog({
             {t('sanggarPageTitle')}
           </h1>
           <p className="mt-2 text-sm text-slate-500 uppercase tracking-widest">
-            {dummySanggars.length > 0
-              ? `${dummySanggars.length} ${t('sanggarRegistered')}`
+            {sanggars && sanggars.length > 0
+              ? `${sanggars.length} ${t('sanggarRegistered')}`
               : t('sanggarCatalogFallback')}
           </p>
         </div>
@@ -131,7 +135,7 @@ export default function SanggarCatalog({
                     setActiveGrade(filter.value);
                     setCurrentPage(1);
                   }}
-                  className={`text-left text-sm transition-colors uppercase tracking-widest ${
+                  className={`text-left text-sm transition-colors uppercase tracking-widest outline-none focus:outline-none ${
                     activeGrade === filter.value
                       ? "text-slate-900 font-semibold"
                       : "text-slate-400 hover:text-slate-600"
@@ -214,7 +218,10 @@ export default function SanggarCatalog({
                       {sanggar.nama_sanggar}
                     </h3>
                     <p className="text-xs text-slate-500 uppercase tracking-widest mt-1.5">
-                      {sanggar.grade ? `Grade ${sanggar.grade.replace(/grade/i, '').trim()}` : "Grade N/A"} • {sanggar.kecamatan || "Jakarta"}
+                      {activeGrade === "all" && sanggar.grade 
+                        ? `GRADE ${sanggar.grade.replace(/grade/i, '').trim()} • ` 
+                        : ""}
+                      {sanggar.kecamatan || "JAKARTA"}
                     </p>
                     {sanggar.jenis_tarian && (
                       <p className="text-xs text-slate-400 truncate mt-1">
@@ -227,32 +234,52 @@ export default function SanggarCatalog({
             </div>
           )}
 
-          {/* Minimalist Pagination */}
+          {/* Premium 3D Pagination */}
           {!fetchError && filtered.length > 0 && (
-            <div className="flex justify-center items-center gap-5 mt-14 mb-10 w-full">
+            <div className="flex items-center justify-center gap-4 w-full select-none mt-14 mb-10">
               <button 
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className={`w-12 h-12 flex items-center justify-center transition-colors mr-3 shadow-md ${currentPage === 1 ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-[#1a1a1a] text-white hover:bg-black'}`}
+                className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-white shadow-md border border-slate-100 text-slate-600 hover:shadow-lg transition-all duration-300 ease-out transform outline-none focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed ${currentPage === 1 ? '' : 'hover:scale-105 active:scale-95 hover:text-orange-600'}`}
                 aria-label="Previous Page"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
               </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                <button
-                  key={number}
-                  onClick={() => setCurrentPage(number)}
-                  className={`font-medium text-xl transition-colors ${currentPage === number ? 'text-gray-300' : 'text-slate-600 hover:text-slate-900'}`}
-                >
-                  {number}
-                </button>
-              ))}
+              
+              <div className="flex items-center justify-center w-64 h-16 relative overflow-visible gap-2">
+                {visiblePages.map((page) => {
+                  const distance = Math.abs(page - currentPage);
+                  
+                  let baseClasses = "flex items-center justify-center transition-all duration-300 ease-out transform outline-none focus:outline-none ";
+                  
+                  if (distance === 0) {
+                    baseClasses += "w-14 h-14 rounded-full bg-orange-500 text-white text-lg font-bold shadow-[0_10px_20px_-5px_rgba(249,115,22,0.4)] scale-100 opacity-100 z-10 cursor-default";
+                  } else if (distance === 1) {
+                    baseClasses += "w-11 h-11 rounded-full bg-slate-200 text-slate-700 text-sm font-semibold scale-90 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-300";
+                  } else if (distance === 2) {
+                    baseClasses += "w-9 h-9 rounded-full bg-slate-100 text-slate-500 text-xs scale-75 opacity-50 hover:opacity-80 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-200";
+                  } else {
+                    baseClasses += "w-8 h-8 rounded-full bg-slate-50 text-slate-400 text-xs scale-60 opacity-25 hover:opacity-60 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-100";
+                  }
+                  
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => distance !== 0 && setCurrentPage(page)}
+                      className={baseClasses}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
               <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className={`w-12 h-12 flex items-center justify-center transition-colors ml-3 shadow-md ${currentPage === totalPages ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-[#1a1a1a] text-white hover:bg-black'}`}
+                className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-white shadow-md border border-slate-100 text-slate-600 hover:shadow-lg transition-all duration-300 ease-out transform outline-none focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed ${currentPage === totalPages ? '' : 'hover:scale-105 active:scale-95 hover:text-orange-600'}`}
                 aria-label="Next Page"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">

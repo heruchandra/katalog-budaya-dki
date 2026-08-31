@@ -60,7 +60,7 @@ export default function Navbar() {
   return (
     <header className={`fixed left-1/2 -translate-x-1/2 z-50 w-[98%] max-w-[1600px] px-6 flex items-center justify-between transition-all duration-500 ease-in-out ${jakarta.className} ${
       scrolled 
-        ? 'top-6 py-3 bg-transparent' 
+        ? 'top-6 py-3 bg-transparent border border-transparent' 
         : 'top-6 py-3 bg-white/95 backdrop-blur-lg border border-slate-200 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)]'
     }`}>
       <nav className="relative flex items-center justify-between w-full gap-4">

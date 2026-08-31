@@ -33,7 +33,7 @@ export default async function SanggarPage() {
     const { data, error } = await supabase
       .from("sanggars")
       .select("*")
-      .order("nama_sanggar", { ascending: true });
+      .order("id", { ascending: true });
 
     if (error) {
       console.error("Supabase return error:", error);

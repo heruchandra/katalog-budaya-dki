@@ -29,7 +29,7 @@ export default async function PemusikPage() {
     const { data, error } = await supabase
       .from("pemusiks")
       .select("*")
-      .order("nama_seniman", { ascending: true });
+      .order("id", { ascending: true });
 
     if (error) {
       fetchError = error.message;

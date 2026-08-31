@@ -43,22 +43,7 @@ export default function PemusikCatalog({
     { value: "Komunitas", label: "KOMUNITAS" },
   ];
 
-  const dummyPemusik = [
-    { id: "1", nama_seniman: "Grup Gambang Kromong", grade: "GRADE A", kecamatan: "JAKARTA", genre_musik: "Musik Betawi Asli", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "2", nama_seniman: "Sanggar Karawitan", grade: "GRADE B", kecamatan: "JAKARTA", genre_musik: "Gamelan, Karawitan", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "3", nama_seniman: "Keroncong Tugu", grade: "GRADE A", kecamatan: "JAKARTA", genre_musik: "Musik Keroncong", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "4", nama_seniman: "Tanjidor Putra", grade: "GRADE B", kecamatan: "JAKARTA", genre_musik: "Tanjidor", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "5", nama_seniman: "Grup Marawis", grade: "GRADE C", kecamatan: "JAKARTA", genre_musik: "Marawis, Qasidah", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "6", nama_seniman: "Angklung Jakarta", grade: "GRADE A", kecamatan: "JAKARTA", genre_musik: "Musik Bambu, Angklung", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "7", nama_seniman: "Orkes Harmoni", grade: "GRADE A", kecamatan: "JAKARTA", genre_musik: "Keroncong", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "8", nama_seniman: "Gamelan Swara", grade: "GRADE B", kecamatan: "JAKARTA", genre_musik: "Gamelan", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "9", nama_seniman: "Senja Kustik", grade: "GRADE C", kecamatan: "JAKARTA", genre_musik: "Akustik", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "10", nama_seniman: "Rampak Kendang", grade: "GRADE A", kecamatan: "JAKARTA", genre_musik: "Perkusi", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "11", nama_seniman: "Nada Bambu", grade: "GRADE B", kecamatan: "JAKARTA", genre_musik: "Angklung", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" },
-    { id: "12", nama_seniman: "Tanjidor Abadi", grade: "GRADE A", kecamatan: "JAKARTA", genre_musik: "Tanjidor", instrumen: "", pengalaman: "", deskripsi: "", jenis_seniman: "Komunitas" }
-  ] as Pemusik[];
-
-  const filtered = dummyPemusik.filter((p) => {
+  const filtered = (pemusiks || []).filter((p) => {
     const matchJenis =
       activeJenis === "all" ||
       p.jenis_seniman?.toLowerCase() === activeJenis.toLowerCase();
@@ -70,8 +55,16 @@ export default function PemusikCatalog({
     return matchJenis && matchSearch;
   });
 
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const sortedPemusiks = [...filtered].sort((a, b) => {
+    if (activeJenis === "all") {
+      return (a.nama_seniman || "").localeCompare(b.nama_seniman || "");
+    } else {
+      return Number(a.id) - Number(b.id);
+    }
+  });
+
+  const totalPages = Math.ceil(sortedPemusiks.length / itemsPerPage);
+  const paginated = sortedPemusiks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -79,6 +72,17 @@ export default function PemusikCatalog({
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  const getVisiblePages = (current: number, total: number) => {
+    const start = Math.max(1, current - 3);
+    const end = Math.min(total, current + 3);
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+  const visiblePages = getVisiblePages(currentPage, totalPages);
 
   return (
     <div className="min-h-screen bg-white pb-16 pt-24">
@@ -89,8 +93,8 @@ export default function PemusikCatalog({
             {t('pemusikPageTitle')}
           </h1>
           <p className="mt-2 text-sm text-slate-500 uppercase tracking-widest">
-            {dummyPemusik.length > 0
-              ? `${dummyPemusik.length} ${t('pemusikRegistered')}`
+            {pemusiks && pemusiks.length > 0
+              ? `${pemusiks.length} ${t('pemusikRegistered')}`
               : t('pemusikCatalogFallback')}
           </p>
         </div>
@@ -128,7 +132,7 @@ export default function PemusikCatalog({
                     setActiveJenis(filter.value);
                     setCurrentPage(1);
                   }}
-                  className={`text-left text-sm transition-colors uppercase tracking-widest ${
+                  className={`text-left text-sm transition-colors uppercase tracking-widest outline-none focus:outline-none ${
                     activeJenis === filter.value
                       ? "text-slate-900 font-semibold"
                       : "text-slate-400 hover:text-slate-600"
@@ -224,32 +228,52 @@ export default function PemusikCatalog({
             </div>
           )}
 
-          {/* Minimalist Pagination */}
+          {/* Premium 3D Pagination */}
           {!fetchError && filtered.length > 0 && (
-            <div className="flex justify-center items-center gap-5 mt-14 mb-10 w-full">
+            <div className="flex items-center justify-center gap-4 w-full select-none mt-14 mb-10">
               <button 
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className={`w-12 h-12 flex items-center justify-center transition-colors mr-3 shadow-md ${currentPage === 1 ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-[#1a1a1a] text-white hover:bg-black'}`}
+                className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-white shadow-md border border-slate-100 text-slate-600 hover:shadow-lg transition-all duration-300 ease-out transform outline-none focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed ${currentPage === 1 ? '' : 'hover:scale-105 active:scale-95 hover:text-orange-600'}`}
                 aria-label="Previous Page"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
               </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                <button
-                  key={number}
-                  onClick={() => setCurrentPage(number)}
-                  className={`font-medium text-xl transition-colors ${currentPage === number ? 'text-gray-300' : 'text-slate-600 hover:text-slate-900'}`}
-                >
-                  {number}
-                </button>
-              ))}
+              
+              <div className="flex items-center justify-center w-64 h-16 relative overflow-visible gap-2">
+                {visiblePages.map((page) => {
+                  const distance = Math.abs(page - currentPage);
+                  
+                  let baseClasses = "flex items-center justify-center transition-all duration-300 ease-out transform outline-none focus:outline-none ";
+                  
+                  if (distance === 0) {
+                    baseClasses += "w-14 h-14 rounded-full bg-orange-500 text-white text-lg font-bold shadow-[0_10px_20px_-5px_rgba(249,115,22,0.4)] scale-100 opacity-100 z-10 cursor-default";
+                  } else if (distance === 1) {
+                    baseClasses += "w-11 h-11 rounded-full bg-slate-200 text-slate-700 text-sm font-semibold scale-90 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-300";
+                  } else if (distance === 2) {
+                    baseClasses += "w-9 h-9 rounded-full bg-slate-100 text-slate-500 text-xs scale-75 opacity-50 hover:opacity-80 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-200";
+                  } else {
+                    baseClasses += "w-8 h-8 rounded-full bg-slate-50 text-slate-400 text-xs scale-60 opacity-25 hover:opacity-60 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-100";
+                  }
+                  
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => distance !== 0 && setCurrentPage(page)}
+                      className={baseClasses}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
               <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className={`w-12 h-12 flex items-center justify-center transition-colors ml-3 shadow-md ${currentPage === totalPages ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-[#1a1a1a] text-white hover:bg-black'}`}
+                className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-white shadow-md border border-slate-100 text-slate-600 hover:shadow-lg transition-all duration-300 ease-out transform outline-none focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed ${currentPage === totalPages ? '' : 'hover:scale-105 active:scale-95 hover:text-orange-600'}`}
                 aria-label="Next Page"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
