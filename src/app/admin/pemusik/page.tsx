@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -59,7 +61,7 @@ export default function AdminPemusikList() {
         .eq("id", id);
 
       if (err) throw err;
-      
+
       setPemusiks((prev) => prev.filter((item) => item.id !== id));
       alert("Data berhasil dihapus.");
     } catch (err: any) {
@@ -67,7 +69,7 @@ export default function AdminPemusikList() {
     }
   };
 
-  const filteredPemusiks = pemusiks.filter(p => 
+  const filteredPemusiks = pemusiks.filter(p =>
     p.nama_seniman?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.jenis_seniman?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.genre_musik?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -147,7 +149,7 @@ export default function AdminPemusikList() {
                   </td>
                 </tr>
               )}
-              
+
               {!loading && !error && filteredPemusiks.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-sm text-gray-500">
@@ -179,9 +181,9 @@ export default function AdminPemusikList() {
                       <Link href={`/admin/pemusik/edit/${pemusik.id}`} className="text-blue-600 hover:text-blue-900" title="Edit">
                         <Edit className="h-4 w-4" />
                       </Link>
-                      <button 
+                      <button
                         onClick={() => handleDelete(pemusik.id, pemusik.nama_seniman)}
-                        className="text-red-600 hover:text-red-900" 
+                        className="text-red-600 hover:text-red-900"
                         title="Hapus"
                       >
                         <Trash2 className="h-4 w-4" />
