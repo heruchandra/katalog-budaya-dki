@@ -12,7 +12,7 @@ const translations: Record<string, Record<Language, string>> = {
   navDashboard: { id: "Dasbor", en: "Dashboard" },
   navDashboardAdmin: { id: "Dasbor Admin", en: "Admin Dashboard" },
   navLogout: { id: "Keluar", en: "Sign Out" },
-  navLogin: { id: "Login", en: "Login" },
+  login: { id: "Masuk", en: "Login" },
 
   // ── Login ──
   loginBackToHome: { id: "Kembali ke Beranda", en: "Back to Home" },

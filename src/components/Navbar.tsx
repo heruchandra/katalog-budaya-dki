@@ -140,7 +140,7 @@ export default function Navbar() {
               className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold tracking-wide shadow-md transition-all duration-200 whitespace-nowrap ${isTransparent ? 'bg-white text-black hover:bg-white/90 border border-transparent' : 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-primary-500/25 hover:from-primary-700 hover:to-primary-800 hover:shadow-lg hover:shadow-primary-500/40'}`}
             >
               <LogIn className="h-4 w-4" />
-              {t('navLogin')}
+              {t('login')}
             </Link>
           )}
 
@@ -253,7 +253,7 @@ export default function Navbar() {
                 className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-3 text-sm font-semibold text-white shadow-md"
               >
                 <LogIn className="h-4 w-4" />
-                {t('navLogin')}
+                {t('login')}
               </Link>
             )}
           </div>
