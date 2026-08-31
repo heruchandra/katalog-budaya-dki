@@ -21,6 +21,8 @@ export default function Navbar() {
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const isHomePage = pathname === '/';
+  const isTransparent = isHomePage && !scrolled;
 
   const isAdmin = user?.email === 'admindisbud@gmail.com';
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
@@ -59,7 +61,7 @@ export default function Navbar() {
 
   return (
     <header className={`flex items-center justify-between transition-all duration-300 ease-in-out px-6 md:px-12 ${jakarta.className} ${
-      !scrolled 
+      isTransparent 
         ? 'bg-transparent w-full py-6 absolute top-0 left-0 z-[9999] text-white' 
         : 'bg-white shadow-md py-4 w-full fixed top-0 left-0 z-[9999] text-slate-900'
     }`}>
@@ -76,8 +78,8 @@ export default function Navbar() {
             <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={36} height={36} className="h-9 w-auto object-contain" priority />
           </div>
           <div className="flex flex-col justify-center items-start text-left whitespace-nowrap">
-            <span className={`text-xl font-bold tracking-tight ${!scrolled ? 'text-white' : 'text-slate-900'}`}>Katalog Seni</span>
-            <span className={`text-[10px] font-bold tracking-[0.2em] mt-0.5 uppercase ${!scrolled ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
+            <span className={`text-xl font-bold tracking-tight ${isTransparent ? 'text-white' : 'text-slate-900'}`}>Katalog Seni</span>
+            <span className={`text-[10px] font-bold tracking-[0.2em] mt-0.5 uppercase ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
           </div>
           </Link>
         </div>
@@ -96,9 +98,9 @@ export default function Navbar() {
                 href={link.href}
                 className={`relative whitespace-nowrap text-sm tracking-wide transition-colors ${jakarta.className} ${
                   isActive 
-                    ? (!scrolled ? "text-white font-semibold" : "text-orange-700 font-semibold")
-                    : (!scrolled ? "text-white/80 hover:text-white font-medium" : "text-slate-600 hover:text-orange-600 font-medium")
-                } after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-full" : "after:w-0 hover:after:w-full"} ${!scrolled ? "after:bg-white" : "after:bg-orange-600"}`}
+                    ? (isTransparent ? "text-white font-semibold" : "text-orange-700 font-semibold")
+                    : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-slate-600 hover:text-orange-600 font-medium")
+                } after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-full" : "after:w-0 hover:after:w-full"} ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
               >
                 {t(link.labelKey)}
               </Link>
@@ -111,7 +113,7 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3">
               {isAdmin && (
-                <Link className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full transition-colors border whitespace-nowrap ${!scrolled ? 'text-white hover:bg-white/10 border-white/30' : 'text-orange-600 bg-orange-50 hover:bg-orange-100 border-orange-100'}`} href="/admin">
+                <Link className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full transition-colors border whitespace-nowrap ${isTransparent ? 'text-white hover:bg-white/10 border-white/30' : 'text-orange-600 bg-orange-50 hover:bg-orange-100 border-orange-100'}`} href="/admin">
                   <LayoutDashboard size={15}/>
                   <span className="hidden xl:inline">{t('navDashboard')}</span>
                 </Link>
@@ -120,13 +122,13 @@ export default function Navbar() {
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold text-xs border border-primary-200 shadow-sm">
                   {displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-3.5 w-3.5" />}
                 </div>
-                <span className={`text-sm font-medium hidden xl:block max-w-[120px] truncate whitespace-nowrap ${!scrolled ? 'text-white' : 'text-surface-700'}`}>
+                <span className={`text-sm font-medium hidden xl:block max-w-[120px] truncate whitespace-nowrap ${isTransparent ? 'text-white' : 'text-surface-700'}`}>
                   {displayName}
                 </span>
               </div>
               <button
                 onClick={handleLogout}
-                className={`inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${!scrolled ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-red-600 hover:bg-red-50'}`}
+                className={`inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${isTransparent ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-red-600 hover:bg-red-50'}`}
               >
                 <LogOut className="h-4 w-4" />
                 {t('navLogout')}
@@ -135,7 +137,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold tracking-wide shadow-md transition-all duration-200 whitespace-nowrap ${!scrolled ? 'bg-white text-black hover:bg-white/90 border border-transparent' : 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-primary-500/25 hover:from-primary-700 hover:to-primary-800 hover:shadow-lg hover:shadow-primary-500/40'}`}
+              className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold tracking-wide shadow-md transition-all duration-200 whitespace-nowrap ${isTransparent ? 'bg-white text-black hover:bg-white/90 border border-transparent' : 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-primary-500/25 hover:from-primary-700 hover:to-primary-800 hover:shadow-lg hover:shadow-primary-500/40'}`}
             >
               <LogIn className="h-4 w-4" />
               {t('navLogin')}
@@ -143,18 +145,18 @@ export default function Navbar() {
           )}
 
           {/* Standalone Language Switcher Pill */}
-          <div className={`w-px h-6 mx-1 ${!scrolled ? 'bg-white/30' : 'bg-slate-300'}`}></div>
+          <div className={`w-px h-6 mx-1 ${isTransparent ? 'bg-white/30' : 'bg-slate-300'}`}></div>
           <button 
             onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-            className={`flex items-center gap-2 transition-colors rounded-full py-1.5 pl-4 pr-1.5 border cursor-pointer group ${!scrolled ? 'bg-transparent border-white/30 hover:bg-white/10 text-white' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700'}`}
+            className={`flex items-center gap-2 transition-colors rounded-full py-1.5 pl-4 pr-1.5 border cursor-pointer group ${isTransparent ? 'bg-transparent border-white/30 hover:bg-white/10 text-white' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700'}`}
           >
-            <span className={`text-sm font-semibold transition-colors ${!scrolled ? 'group-hover:text-white/80' : 'group-hover:text-orange-600'}`}>
+            <span className={`text-sm font-semibold transition-colors ${isTransparent ? 'group-hover:text-white/80' : 'group-hover:text-orange-600'}`}>
               {language === 'id' ? 'Indonesia' : 'English'}
             </span>
             <img 
               src={language === 'id' ? 'https://flagcdn.com/id.svg' : 'https://flagcdn.com/gb.svg'} 
               alt={language === 'id' ? 'ID' : 'EN'} 
-              className={`w-5 h-5 rounded-full object-cover shadow-sm ${!scrolled ? 'border-none' : 'border border-gray-300'}`}
+              className={`w-5 h-5 rounded-full object-cover shadow-sm ${isTransparent ? 'border-none' : 'border border-gray-300'}`}
             />
           </button>
         </div>
@@ -163,7 +165,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`inline-flex items-center justify-center rounded-xl p-2.5 transition-colors lg:hidden ${!scrolled ? 'text-white hover:bg-white/10' : 'text-surface-600 hover:bg-surface-100'}`}
+          className={`inline-flex items-center justify-center rounded-xl p-2.5 transition-colors lg:hidden ${isTransparent ? 'text-white hover:bg-white/10' : 'text-surface-600 hover:bg-surface-100'}`}
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
         >
