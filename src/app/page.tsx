@@ -33,15 +33,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp'];
-  const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === backgrounds.length - 1 ? 0 : prev + 1));
-    }, 2000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -121,81 +113,84 @@ export default function HomePage() {
       <section 
         className="relative w-full h-screen flex flex-col justify-center items-center"
       >
-        <div className="absolute inset-0 overflow-hidden z-0">
-          {backgrounds.map((bg, index) => (
-            <img 
-              key={bg} 
-              src={bg} 
-              alt={`Background ${index + 1}`} 
-              className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'} -z-10`} 
-            />
-          ))}
-          {/* Dark overlay for premium contrast */}
-          <div className="absolute inset-0 bg-black/65 z-0 pointer-events-none"></div>
-        </div>
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute inset-0 w-full h-full object-cover -z-20"
+        >
+          <source src="/videoberanda.webm" type="video/webm" />
+        </video>
+        {/* Dark overlay for premium contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 -z-10 pointer-events-none"></div>
 
-        <div className="relative z-10 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-20">
-          {/* Heading */}
-          <h1 className="mx-auto max-w-5xl text-center text-3xl font-extrabold leading-tight tracking-tight animate-fade-in sm:text-4xl md:text-5xl lg:text-6xl font-sans drop-shadow-sm">
-            <span className="text-white">{t('heroDiscover')}</span>{" "}
-            <span className="relative inline-block">
-              <span className={`text-orange-500 inline-block drop-shadow-sm ${dancingScript.className} text-5xl md:text-7xl font-bold tracking-normal`}>{t('heroArtists')}</span>
-              <img src="/ondel-ondel.webp" alt="Aksen Ondel-ondel" className="absolute -top-10 -right-8 md:-top-14 md:-right-12 w-16 h-16 md:w-24 md:h-24 opacity-85 drop-shadow-lg rotate-12 pointer-events-none z-10" />
-            </span>
-            <br className="hidden md:block" />
-            <span className="text-white">
+        <div className="relative z-50 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-20">
+          <div className="flex flex-col items-center justify-center text-center px-4 space-y-2 mt-16 md:space-y-4">
+            <div className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
+              <h1 className="text-white text-3xl md:text-5xl font-light tracking-wide drop-shadow-md">
+                {t('heroDiscover')}{' '}
+                <span className={`relative inline-block ${dancingScript.className} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
+                  {t('heroArtists')}
+                  <img 
+                    src="/ondel-ondel.webp" 
+                    alt="Aksen Ondel-ondel" 
+                    className="absolute -top-6 -right-6 w-12 h-12 md:w-20 md:h-20 md:-top-10 md:-right-10 object-contain drop-shadow-2xl hover:scale-110 transition-transform duration-300 pointer-events-none" 
+                  />
+                </span>
+              </h1>
+            </div>
+            <h2 className="text-white text-3xl md:text-5xl font-light tracking-wide leading-tight drop-shadow-md max-w-3xl">
               {t('heroBestIn')}
-            </span>
-          </h1>
+            </h2>
+          </div>
 
           {/* ===== Search Bar ===== */}
           <div className="w-full max-w-3xl animate-slide-up">
             <div className="group relative z-50">
               <form 
                 onSubmit={handleSearch}
-                className="relative flex items-center rounded-full bg-white shadow-2xl"
+                className="mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto bg-black/20 backdrop-blur-md border border-white/20 p-2 shadow-2xl"
               >
-                <Search className="ml-5 h-5 w-5 shrink-0 text-surface-400" />
-                
                 {/* Premium Category Dropdown */}
-                <div className="relative border-r border-slate-200">
+                <div className="relative flex-shrink-0 w-full md:w-48 border-b md:border-b-0 md:border-r border-white/20">
                   <button 
                     type="button"
                     onClick={() => {
                       setIsCategoryOpen(!isCategoryOpen);
                       setIsFocused(false);
                     }}
-                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 rounded-l-full bg-transparent hover:bg-slate-50 transition-colors w-[160px] sm:w-[190px] h-full"
+                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 bg-transparent hover:bg-white/10 transition-colors w-full h-full text-white"
                   >
-                    <span className="text-sm font-semibold text-slate-700 truncate">
+                    <span className="text-sm font-semibold truncate">
                       {selectedCategory === 'all' ? t('searchAllCat') : selectedCategory === 'dance' ? t('searchDanceCat') : t('searchMusicCat')}
                     </span>
-                    <svg className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className={`w-4 h-4 text-white/70 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
                   {/* Floating Animated Menu */}
-                  <div className={`absolute top-full left-0 mt-4 w-56 bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-white/50 overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
+                  <div className={`absolute top-full left-0 mt-4 w-56 bg-black/80 backdrop-blur-md shadow-2xl border border-white/20 overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
                     <div className="p-2 flex flex-col gap-1">
                       <button 
                         type="button"
                         onClick={() => { setSelectedCategory('all'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm rounded-xl transition-colors ${selectedCategory === 'all' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'}`}
+                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'all' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
                       >
                         {t('searchAllCat')}
                       </button>
                       <button 
                         type="button"
                         onClick={() => { setSelectedCategory('dance'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm rounded-xl transition-colors ${selectedCategory === 'dance' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'}`}
+                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'dance' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
                       >
                         {t('searchDanceCat')}
                       </button>
                       <button 
                         type="button"
                         onClick={() => { setSelectedCategory('music'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm rounded-xl transition-colors ${selectedCategory === 'music' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'}`}
+                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'music' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
                       >
                         {t('searchMusicCat')}
                       </button>
@@ -203,7 +198,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex-1 w-full relative">
+                <div className="flex-grow relative">
                   <input
                     type="text"
                     value={searchQuery}
@@ -217,13 +212,13 @@ export default function HomePage() {
                     }}
                     onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                     placeholder={t('searchHeroPlaceholder')}
-                    className="w-full border-none focus:border-transparent focus:ring-0 outline-none bg-transparent px-4 py-4.5 text-sm text-surface-800 placeholder:text-surface-400 sm:text-base"
+                    className="w-full h-full bg-transparent text-white placeholder-white/70 px-6 py-4 outline-none text-sm tracking-wide"
                     aria-label={t('searchAriaLabel')}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="mr-2 shrink-0 rounded-full bg-primary-600 px-8 py-3 text-sm font-bold text-white shadow-md shadow-primary-500/25 transition-all duration-200 hover:bg-primary-700 hover:shadow-lg"
+                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-semibold text-xs tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white hover:border-orange-600 border border-white transition-all duration-500"
                 >
                   {t('searchBtn')}
                 </button>
@@ -269,17 +264,6 @@ export default function HomePage() {
 
         </div>
 
-        <div className="absolute bottom-10 left-0 right-0 flex justify-center items-center gap-2 z-20">
-          {backgrounds.map((_, index) => (
-            <button 
-              key={index} 
-              onClick={() => setCurrentSlide(index)}
-              onMouseEnter={() => setCurrentSlide(index)}
-              className={`h-1.5 rounded-full transition-all duration-500 ease-in-out ${index === currentSlide ? 'w-10 bg-orange-600' : 'w-2 bg-gray-400/60 hover:bg-gray-800/80'}`}
-              aria-label={`Go to slide ${index + 1}`}
-            ></button>
-          ))}
-        </div>
       </section>
 
       {/* ===== Scroll 2: Full-Width Editorial Banner ===== */}
