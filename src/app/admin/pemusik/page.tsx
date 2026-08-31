@@ -1,15 +1,13 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
-
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Edit, Trash2, Plus, Search, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 
-export default function AdminPemusikList() {
+function AdminPemusikContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { t } = useLanguage();
@@ -203,5 +201,13 @@ export default function AdminPemusikList() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminPemusikList() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Memuat data...</div>}>
+      <AdminPemusikContent />
+    </Suspense>
   );
 }
