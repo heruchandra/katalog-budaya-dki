@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
@@ -14,7 +14,7 @@ interface Sanggar {
   jenis_tarian: string;
 }
 
-export default function AdminSanggarList() {
+function AdminSanggarContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { t } = useLanguage();
@@ -205,5 +205,13 @@ export default function AdminSanggarList() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminSanggarList() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-500">Memuat data...</div>}>
+      <AdminSanggarContent />
+    </Suspense>
   );
 }
