@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
@@ -37,6 +37,16 @@ export default function SanggarCatalog({
   const [activeGrade, setActiveGrade] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentBg, setCurrentBg] = useState(0);
+
+  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
   const itemsPerPage = 6;
   const { t } = useLanguage();
 
@@ -89,19 +99,35 @@ export default function SanggarCatalog({
 
   return (
     <div className="min-h-screen bg-white pb-16 pt-24">
-      {/* Minimal Header */}
-      <div className="mx-auto max-w-[90vw] px-4 sm:px-6 lg:px-8">
-        <div className="mt-20 mb-12">
-          <h1 className={`text-4xl md:text-5xl font-light text-slate-900 ${dancingScript.className}`}>
+      {/* HERO SECTION */}
+      <section className="relative w-full py-16 md:py-24 overflow-hidden bg-slate-900 flex flex-col items-center justify-center text-center">
+        {/* Animated Backgrounds */}
+        {backgrounds.map((bg, index) => (
+          <img
+            key={bg}
+            src={bg}
+            alt={`Batik ${index + 1}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+              index === currentBg ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))}
+        
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+
+        {/* Content Wrapper */}
+        <div className="relative z-10 container mx-auto px-6 lg:px-8 flex flex-col items-start md:items-center text-left md:text-center">
+          <h1 className={`text-4xl md:text-5xl font-light text-white ${dancingScript.className}`}>
             {t('sanggarPageTitle')}
           </h1>
-          <p className="mt-2 text-sm text-slate-500 uppercase tracking-widest">
+          <p className="mt-3 text-sm text-gray-200 uppercase tracking-widest">
             {sanggars && sanggars.length > 0
               ? `${sanggars.length} ${t('sanggarRegistered')}`
               : t('sanggarCatalogFallback')}
           </p>
         </div>
-      </div>
+      </section>
 
       <div className={`flex flex-col md:flex-row gap-12 max-w-[90vw] mx-auto py-12 ${poppins.className}`}>
         

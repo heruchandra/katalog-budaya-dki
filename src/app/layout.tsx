@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
+
+const jakarta = Plus_Jakarta_Sans({ 
+  subsets: ['latin'], 
+  weight: ['400', '500', '600', '700'],
+  variable: "--font-jakarta",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,9 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-surface-50">
+      <body className={`${jakarta.className} flex min-h-full flex-col bg-surface-50 overflow-x-hidden`}>
         <LanguageProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

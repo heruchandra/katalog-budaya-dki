@@ -24,7 +24,7 @@ const playfair = Playfair_Display({
 });
 
 export default function HomePage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
@@ -44,31 +44,38 @@ export default function HomePage() {
 
       setIsLoading(true);
       try {
-        const { data: sanggarData } = await supabase
-          .from('sanggar')
-          .select('id, namaSanggar')
-          .ilike('namaSanggar', `%${searchQuery}%`)
-          .limit(3);
-          
-        const { data: pemusikData } = await supabase
-          .from('pemusik')
-          .select('id, nama')
-          .ilike('nama', `%${searchQuery}%`)
-          .limit(3);
+        let formattedSanggar: any[] = [];
+        let formattedPemusik: any[] = [];
 
-        const formattedSanggar = (sanggarData || []).map((item) => ({
-          id: `s-${item.id}`,
-          name: item.namaSanggar,
-          type: 'Sanggar',
-          href: `/sanggar/${item.id}`
-        }));
+        if (selectedCategory === 'all' || selectedCategory === 'dance') {
+          const { data: sanggarData } = await supabase
+            .from('sanggars')
+            .select('id, nama_sanggar')
+            .ilike('nama_sanggar', `${searchQuery}%`)
+            .limit(3);
+            
+          formattedSanggar = (sanggarData || []).map((item) => ({
+            id: `s-${item.id}`,
+            name: item.nama_sanggar,
+            type: 'Sanggar',
+            href: `/sanggar/${item.id}`
+          }));
+        }
 
-        const formattedPemusik = (pemusikData || []).map((item) => ({
-          id: `p-${item.id}`,
-          name: item.nama,
-          type: 'Pemusik',
-          href: `/pemusik/${item.id}`
-        }));
+        if (selectedCategory === 'all' || selectedCategory === 'music') {
+          const { data: pemusikData } = await supabase
+            .from('pemusiks')
+            .select('id, nama_seniman')
+            .ilike('nama_seniman', `${searchQuery}%`)
+            .limit(3);
+
+          formattedPemusik = (pemusikData || []).map((item) => ({
+            id: `p-${item.id}`,
+            name: item.nama_seniman,
+            type: 'Pemusik',
+            href: `/pemusik/${item.id}`
+          }));
+        }
 
         setSuggestions([...formattedSanggar, ...formattedPemusik]);
       } catch (error) {
@@ -80,7 +87,7 @@ export default function HomePage() {
 
     const debounceTimer = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounceTimer);
-  }, [searchQuery]);
+  }, [searchQuery, selectedCategory]);
 
   const handleSearch = (e: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -135,7 +142,7 @@ export default function HomePage() {
                   <img 
                     src="/ondel-ondel.webp" 
                     alt="Aksen Ondel-ondel" 
-                    className="absolute -top-6 -right-6 w-12 h-12 md:w-20 md:h-20 md:-top-10 md:-right-10 object-contain drop-shadow-2xl hover:scale-110 transition-transform duration-300 pointer-events-none" 
+                    className={`absolute -top-8 md:-top-12 w-12 h-12 md:w-20 md:h-20 object-contain rotate-12 scale-75 md:scale-100 z-10 drop-shadow-md hover:scale-110 transition-all duration-300 pointer-events-none ${language === 'id' ? '-right-8 md:-right-10' : '-right-2 md:-right-4'}`}
                   />
                 </span>
               </h1>
@@ -171,7 +178,7 @@ export default function HomePage() {
                   </button>
 
                   {/* Floating Animated Menu */}
-                  <div className={`absolute top-full left-0 mt-4 w-56 bg-black/80 backdrop-blur-md shadow-2xl border border-white/20 overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
+                  <div className={`absolute top-full -left-[1px] mt-4 w-full bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
                     <div className="p-2 flex flex-col gap-1">
                       <button 
                         type="button"
@@ -226,9 +233,9 @@ export default function HomePage() {
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-white/50 overflow-hidden z-[999]">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-black/50 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl z-50 overflow-hidden">
                   {isLoading ? (
-                    <div className="p-4 flex items-center justify-center text-sm text-surface-500">
+                    <div className="p-4 flex items-center justify-center text-sm text-white/70">
                       <Loader2 className="h-5 w-5 animate-spin mr-2" />
                       {t('searchLoading')}
                     </div>
@@ -238,21 +245,25 @@ export default function HomePage() {
                         <li key={suggestion.id}>
                           <Link 
                             href={suggestion.href}
-                            className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                            className="flex items-center justify-between px-6 py-4 hover:bg-white/10 transition-colors cursor-pointer border-b border-white/10 last:border-0"
                             onClick={() => setIsFocused(false)}
                           >
-                            <span className="font-medium text-surface-900">{suggestion.name}</span>
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                              suggestion.type === 'Sanggar' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'
-                            }`}>
-                              {suggestion.type}
-                            </span>
+                            <span className="text-white font-medium">{suggestion.name}</span>
+                            {selectedCategory === 'all' && (
+                              <span className={`px-3 py-1 rounded-[4px] text-[10px] uppercase tracking-widest font-medium border backdrop-blur-sm transition-colors ${
+                                suggestion.type === 'Sanggar'
+                                  ? 'bg-white/5 border-white/20 text-white/80' 
+                                  : 'bg-[#D4C8B8]/10 border-[#D4C8B8]/30 text-[#D4C8B8]'
+                              }`}>
+                                {suggestion.type}
+                              </span>
+                            )}
                           </Link>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <div className="p-4 text-center text-sm text-surface-500">
+                    <div className="p-4 text-center text-sm text-white/70">
                       {t('searchNoResults')}
                     </div>
                   )}
@@ -270,8 +281,8 @@ export default function HomePage() {
       <section className="relative w-full aspect-video overflow-hidden bg-[#e5e5e5] mb-16">
         <img src="/penari1.webp" alt="Jiwa Jakarta. Seni Kita." className="absolute inset-0 w-full h-full object-cover object-center opacity-90" />
         <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8 lg:px-12 pointer-events-none">
-          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerSoul')}</span> {t('bannerJakarta')}</h2>
-          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerArt')}</span> {t('bannerOurs')}</h2>
+          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto pr-4 md:pr-12 lg:pr-20"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerSoul')}</span> {t('bannerJakarta')}</h2>
+          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto pl-4 md:pl-12 lg:pl-20"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerArt')}</span> {t('bannerOurs')}</h2>
         </div>
       </section>
 
@@ -280,8 +291,9 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto px-4 md:px-8">
           {/* Category: Sanggar Tari */}
           <Link href="/sanggar" className="block group">
-            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer">
-              <img src="/penari2.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Sanggar Tari" />
+            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer group-hover:shadow-2xl transition-shadow duration-500">
+              {/* <img src="/penari2.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Sanggar Tari" /> */}
+              <div className="w-full h-full bg-slate-800 flex items-center justify-center text-white/50 text-lg font-medium tracking-widest uppercase group-hover:scale-105 transition-transform duration-700 ease-in-out">NO IMAGE</div>
               <div className="absolute bottom-6 left-6 text-white">
                 <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySanggar')}</h3>
               </div>
@@ -293,8 +305,9 @@ export default function HomePage() {
 
           {/* Category: Seniman Musik */}
           <Link href="/pemusik" className="block group">
-            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer">
-              <img src="/musik1.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Seniman Musik" />
+            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer group-hover:shadow-2xl transition-shadow duration-500">
+              {/* <img src="/musik1.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Seniman Musik" /> */}
+              <div className="w-full h-full bg-slate-800 flex items-center justify-center text-white/50 text-lg font-medium tracking-widest uppercase group-hover:scale-105 transition-transform duration-700 ease-in-out">NO IMAGE</div>
               <div className="absolute bottom-6 left-6 text-white">
                 <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySenimanMusik')}</h3>
               </div>
@@ -310,7 +323,7 @@ export default function HomePage() {
       <section className="border-t border-surface-200/60 bg-slate-50/50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="font-sans font-extrabold tracking-tight text-4xl text-slate-900">
+            <h2 className="font-extrabold tracking-tight text-4xl text-slate-900">
               {t('featuresTitle')}{" "}
               <span className="text-orange-600">Katalog Seni DKI?</span>
             </h2>

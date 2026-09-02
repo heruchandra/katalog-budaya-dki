@@ -22,7 +22,7 @@ export default function Footer() {
     { href: "#", label: t('footerTerms') },
   ];
 
-  if (pathname?.startsWith("/admin")) {
+  if (pathname?.startsWith("/admin") || pathname === "/login" || pathname === "/register") {
     return null;
   }
 

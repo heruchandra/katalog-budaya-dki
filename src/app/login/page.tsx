@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogIn, Mail, Lock, Eye, EyeOff, Landmark, ArrowLeft, AlertCircle } from "lucide-react";
@@ -15,6 +15,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentBg, setCurrentBg] = useState(0);
+
+  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+    }, 5000); // Changes image every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,53 +51,50 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center px-4 py-24">
-      {/* Background decoration */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="batik-pattern absolute inset-0 opacity-40" />
-        <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-primary-200/30 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-accent-200/20 blur-3xl" />
+    <div className="h-screen w-full flex bg-white overflow-hidden">
+      {/* Left Side - Animated Background */}
+      <div className="hidden lg:flex lg:w-[70%] bg-slate-900 relative items-center justify-center overflow-hidden">
+        {backgrounds.map((bg, index) => (
+          <img
+            key={bg}
+            src={bg}
+            alt="Batik Background"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+              currentBg === index ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50"></div>
+        {/* Optional elegant welcome text to fill the space temporarily */}
+        <h2 className="relative z-10 text-white text-4xl font-light tracking-[0.2em] uppercase">Welcome</h2>
       </div>
 
-      <div className="relative w-full max-w-md">
-        {/* Back to home */}
-        <Link
-          href="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-surface-500 transition-colors hover:text-primary-600"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t('loginBackToHome')}
-        </Link>
+      {/* Right Side - Form Container */}
+      <div className="w-full lg:w-[30%] flex flex-col items-center justify-center px-8 lg:px-8 xl:px-12 bg-white h-screen overflow-hidden">
+        <div className="w-full max-w-sm">
 
-        {/* Login Card */}
-        <div className="overflow-hidden rounded-2xl border border-surface-200/60 bg-white/80 shadow-xl shadow-surface-900/5 backdrop-blur-xl">
           {/* Header */}
-          <div className="bg-gradient-to-b from-orange-50/90 to-amber-50/40 border-b border-surface-100 px-8 py-8 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
-              <Landmark className="h-7 w-7" />
+          <div className="text-center mb-5">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
+              <Landmark className="h-5 w-5" />
             </div>
-            <h1 className="mt-4 text-xl font-extrabold text-surface-900">
+            <h1 className="mt-4 text-lg font-bold text-surface-900">
               {t('loginWelcomeTitle')}
             </h1>
-            <p className="mt-1 text-sm text-surface-600">
+            <p className="mt-1 text-[13px] text-gray-500">
               {t('loginWelcomeSubtitle')}
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="p-8">
-            {error && (
-              <div className="mb-5 flex items-center gap-2 rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-100">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <p>{error}</p>
-              </div>
-            )}
+          <form onSubmit={handleSubmit} className="w-full">
 
             {/* Email Field */}
-            <div className="mb-5">
+            <div className="mb-3">
               <label
                 htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-surface-700"
+                className="mb-1.5 block text-[13px] font-medium text-surface-700"
               >
                 {t('loginEmailLabel')}
               </label>
@@ -100,16 +107,16 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('loginEmailPlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-3 pl-10 pr-4 text-sm text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
               </div>
             </div>
 
             {/* Password Field */}
-            <div className="mb-6">
+            <div className="mb-4">
               <label
                 htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-surface-700"
+                className="mb-1.5 block text-[13px] font-medium text-surface-700"
               >
                 {t('loginPasswordLabel')}
               </label>
@@ -122,7 +129,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t('loginPasswordPlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-3 pl-10 pr-12 text-sm text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-12 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
                 <button
                   type="button"
@@ -140,10 +147,11 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
+            {error && <p className="text-red-500 text-xs mb-3 ml-1 text-left flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {error}</p>}
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-xl hover:shadow-primary-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-xl hover:shadow-primary-500/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -155,16 +163,16 @@ export default function LoginPage() {
               )}
             </button>
 
-            <div className="flex items-center my-5">
+            <div className="flex items-center my-4">
               <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-3 text-gray-500 text-sm">{t('loginOr')}</span>
+              <span className="px-3 text-gray-500 text-[11px]">{t('loginOr')}</span>
               <div className="flex-1 border-t border-gray-300"></div>
             </div>
 
             <button
               type="button"
               onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-surface-200 bg-white px-6 py-3 text-sm font-semibold text-surface-700 shadow-sm transition-all duration-200 hover:bg-surface-50 hover:text-surface-900"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-surface-200 bg-white px-6 py-2.5 text-[13px] font-semibold text-surface-700 shadow-sm transition-all duration-200 hover:bg-surface-50 hover:text-surface-900"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -187,7 +195,7 @@ export default function LoginPage() {
               {t('loginGoogleButton')}
             </button>
 
-            <p className="mt-6 text-center text-sm text-gray-600">
+            <p className="mt-5 text-center text-[13px] text-gray-600">
               {t('loginNoAccount')}{' '}
               <Link href="/register" className="text-orange-600 font-medium hover:underline">
                 {t('loginRegisterHere')}
@@ -195,7 +203,7 @@ export default function LoginPage() {
             </p>
 
             {/* Help text */}
-            <p className="mt-6 text-center text-xs text-surface-400">
+            <p className="mt-4 text-center text-[11px] leading-relaxed text-surface-400">
               {t('loginDisclaimer')}
             </p>
           </form>
