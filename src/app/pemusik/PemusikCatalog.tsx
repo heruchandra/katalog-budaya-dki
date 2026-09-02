@@ -36,12 +36,12 @@ export default function PemusikCatalog({
   const [currentPage, setCurrentPage] = useState(1);
   const [currentBg, setCurrentBg] = useState(0);
 
-  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp'];
+  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp', '/batik-4.webp'];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBg((prev) => (prev + 1) % backgrounds.length);
-    }, 5000);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
   const itemsPerPage = 6;
@@ -95,7 +95,7 @@ export default function PemusikCatalog({
   const visiblePages = getVisiblePages(currentPage, totalPages);
 
   return (
-    <div className="min-h-screen bg-white pb-16 pt-24">
+    <div className="min-h-screen bg-white pb-16 pt-[70px]">
       {/* HERO SECTION */}
       <section className="relative w-full py-16 md:py-24 overflow-hidden bg-slate-900 flex flex-col items-center justify-center text-center">
         {/* Animated Backgrounds */}
@@ -104,7 +104,7 @@ export default function PemusikCatalog({
             key={bg}
             src={bg}
             alt={`Batik ${index + 1}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
               index === currentBg ? 'opacity-100' : 'opacity-0'
             }`}
           />

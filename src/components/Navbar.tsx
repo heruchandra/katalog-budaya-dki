@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { Plus_Jakarta_Sans } from 'next/font/google';
@@ -21,8 +21,8 @@ export default function Navbar() {
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
-  const isHomePage = pathname === '/';
-  const isTransparent = isHomePage && !scrolled;
+  const isTransparentPage = pathname === '/';
+  const isTransparent = isTransparentPage && !scrolled;
 
   const isAdmin = user?.email === 'admindisbud@gmail.com';
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
@@ -60,52 +60,93 @@ export default function Navbar() {
   }
 
   return (
-    <header className={`flex items-center justify-center transition-all duration-300 ease-in-out ${jakarta.className} ${
-      isTransparent 
-        ? 'bg-transparent w-full py-6 absolute top-0 left-0 z-[9999] text-white' 
-        : 'bg-white shadow-md py-4 w-full fixed top-0 left-0 z-[9999] text-slate-900'
+    <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] py-2.5 ${jakarta.className} ${
+      scrolled ? 'bg-white shadow-md' : 'bg-transparent'
+    } ${
+      isTransparent ? 'text-white' : 'text-orange-600'
     }`}>
-      <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-6 lg:px-12 py-1 text-sm gap-4 lg:gap-8">
+      <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-6 lg:px-12 text-sm gap-4 lg:gap-8">
         {/* Group 1: Left - Logos & Title */}
         <div className="flex items-center gap-3 shrink-0 z-10">
           <Link
             href="/"
             className="group flex items-center gap-3 transition-transform duration-200 hover:scale-[1.02]"
           >
-          <div className="flex items-center gap-2.5 border-r border-slate-200 pr-3">
-            <Image src="/logo-jayaraya.webp" alt="Logo Jaya Raya DKI Jakarta" width={32} height={32} className="h-8 w-auto object-contain" priority />
-            <Image src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'} alt="Logo Jakarta 5 Abad" width={48} height={48} className="h-9 w-auto object-contain drop-shadow-sm" priority />
-            <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={32} height={32} className="h-8 w-auto object-contain" priority />
+          <div className="flex items-center gap-4 border-r border-slate-200 pr-4">
+            <Image src="/logo-jayaraya.webp" alt="Logo Jaya Raya DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain translate-y-[2px]" priority />
+            <Image src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'} alt="Logo Jakarta 5 Abad" width={44} height={44} className="h-11 w-auto object-contain drop-shadow-sm" priority />
+            <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain" priority />
           </div>
-          <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap pl-1 ${jakarta.className}`}>
-            <span className={`text-lg font-bold tracking-tight ${isTransparent ? 'text-white' : 'text-slate-900'}`}>Katalog Seni</span>
-            <span className={`text-[9px] font-bold tracking-[0.2em] mt-0.5 uppercase ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
+          <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap ${jakarta.className}`}>
+            <span className={`text-lg font-bold tracking-tight ${isTransparent ? 'text-white' : 'text-orange-600'}`}>Katalog Seni</span>
+            <span className={`text-[9px] font-bold tracking-[0.2em] mt-0.5 uppercase ml-[1px] ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
           </div>
           </Link>
         </div>
 
         {/* Group 2: Center - Nav Links */}
         <div className="hidden lg:flex items-center justify-center gap-4 lg:gap-6 z-10">
-          {[
-            { href: "/", labelKey: "navHome" },
-            { href: "/sanggar", labelKey: "navSanggar" },
-            { href: "/pemusik", labelKey: "navPemusik" },
-          ].map((link) => {
-            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+          {/* Beranda */}
+          {(() => {
+            const isActive = pathname === "/";
             return (
               <Link
-                key={link.href}
-                href={link.href}
+                href="/"
                 className={`relative px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors ${jakarta.className} ${
                   isActive 
-                    ? (isTransparent ? "text-white font-semibold" : "text-orange-700 font-semibold")
-                    : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-slate-600 hover:text-orange-600 font-medium")
+                    ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
+                    : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-orange-600 hover:text-orange-700 font-medium")
                 } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 hover:after:w-[calc(100%-16px)]"} ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
               >
-                {t(link.labelKey)}
+                {t('navHome')}
               </Link>
             );
-          })}
+          })()}
+
+          {/* Kategori Dropdown */}
+          {(() => {
+            const isActive = pathname.startsWith("/sanggar") || pathname.startsWith("/pemusik");
+            return (
+              <div className="relative group">
+                <button
+                  className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors ${jakarta.className} ${
+                    isActive 
+                      ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
+                      : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-orange-600 hover:text-orange-700 font-medium")
+                  } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)]"} ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
+                >
+                  {language === 'en' ? 'Category' : 'Kategori'}
+                  <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
+                </button>
+                {/* Dropdown Panel */}
+                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="bg-neutral-950/70 backdrop-blur-md border border-neutral-800/80 rounded-none shadow-lg w-48">
+                    <Link
+                      href="/sanggar"
+                      className={`block px-4 py-2.5 text-[13px] tracking-wide transition-all duration-300 ${jakarta.className} ${
+                        pathname.startsWith("/sanggar")
+                          ? "text-orange-400 font-semibold bg-neutral-900/60"
+                          : "text-gray-300 hover:text-orange-400 hover:bg-neutral-900/60"
+                      }`}
+                    >
+                      {t('navSanggar')}
+                    </Link>
+                    <div className="border-t border-neutral-800/60"></div>
+                    <Link
+                      href="/pemusik"
+                      className={`block px-4 py-2.5 text-[13px] tracking-wide transition-all duration-300 ${jakarta.className} ${
+                        pathname.startsWith("/pemusik")
+                          ? "text-orange-400 font-semibold bg-neutral-900/60"
+                          : "text-gray-300 hover:text-orange-400 hover:bg-neutral-900/60"
+                      }`}
+                    >
+                      {t('navPemusik')}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Group 3: Right - Actions & Auth */}
@@ -137,9 +178,9 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold tracking-wide shadow-md transition-all duration-200 whitespace-nowrap ${jakarta.className} ${isTransparent ? 'bg-white text-black hover:bg-white/90 border border-transparent' : 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-primary-500/25 hover:from-primary-700 hover:to-primary-800 hover:shadow-lg hover:shadow-primary-500/40'}`}
+              className={`bg-white text-slate-900 px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors shadow-sm ${jakarta.className}`}
             >
-              <LogIn className="h-3.5 w-3.5" />
+              <LogIn className="h-4 w-4" />
               {language === 'en' ? 'Sign In' : 'Masuk'}
             </Link>
           )}
@@ -148,15 +189,19 @@ export default function Navbar() {
           <div className={`w-px h-5 mx-1 ${isTransparent ? 'bg-white/30' : 'bg-slate-300'} shrink-0`}></div>
           <button 
             onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-            className={`flex shrink-0 items-center justify-center gap-2 transition-colors rounded-full px-3 py-1.5 border cursor-pointer group ${jakarta.className} ${isTransparent ? 'bg-transparent border-white/30 hover:bg-white/10 text-white' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700'}`}
+            className={`px-4 py-1.5 rounded-none flex items-center gap-2 transition-colors ${jakarta.className} ${
+              isTransparent 
+                ? 'text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10'
+                : 'text-slate-900 border border-gray-200 hover:bg-gray-100' 
+            }`}
           >
-            <span className={`text-xs font-semibold transition-colors ${isTransparent ? 'group-hover:text-white/80' : 'group-hover:text-orange-600'}`}>
+            <span className="text-[13px] font-medium">
               {language === 'id' ? 'Indonesia' : 'English'}
             </span>
             <img 
               src={language === 'id' ? 'https://flagcdn.com/id.svg' : 'https://flagcdn.com/gb.svg'} 
               alt={language === 'id' ? 'ID' : 'EN'} 
-              className={`w-4 h-4 rounded-full object-cover shadow-sm ${isTransparent ? 'border-none' : 'border border-gray-300'}`}
+              className="w-4 h-4 rounded-none object-cover shadow-sm"
             />
           </button>
         </div>

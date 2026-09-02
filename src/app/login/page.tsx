@@ -17,12 +17,12 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentBg, setCurrentBg] = useState(0);
 
-  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp'];
+  const backgrounds = ['/bg-login-1.webp', '/bg-login-2.webp', '/bg-login-3.webp', '/bg-login-4.webp'];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBg((prev) => (prev + 1) % backgrounds.length);
-    }, 5000); // Changes image every 5 seconds
+    }, 3000); // Changes image every 3 seconds
     return () => clearInterval(interval);
   }, []);
 
@@ -59,7 +59,7 @@ export default function LoginPage() {
             key={bg}
             src={bg}
             alt="Batik Background"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 w-full h-screen object-cover transition-opacity duration-1000 ease-in-out ${
               currentBg === index ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -71,7 +71,10 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Form Container */}
-      <div className="w-full lg:w-[30%] flex flex-col items-center justify-center px-8 lg:px-8 xl:px-12 bg-white h-screen overflow-hidden">
+      <div className="relative w-full lg:w-[30%] flex flex-col items-center justify-center px-8 lg:px-8 xl:px-12 bg-white h-screen overflow-hidden">
+        <Link href="/" className="absolute top-8 left-8 p-2 text-gray-400 hover:text-gray-900 transition-colors duration-300">
+          <ArrowLeft strokeWidth={1.5} className="w-6 h-6" />
+        </Link>
         <div className="w-full max-w-sm">
 
           {/* Header */}

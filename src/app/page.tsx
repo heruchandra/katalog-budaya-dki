@@ -18,8 +18,8 @@ import { Dancing_Script, Playfair_Display } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
-const playfair = Playfair_Display({ 
-  subsets: ['latin'], 
+const playfair = Playfair_Display({
+  subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
 });
 
@@ -53,7 +53,7 @@ export default function HomePage() {
             .select('id, nama_sanggar')
             .ilike('nama_sanggar', `${searchQuery}%`)
             .limit(3);
-            
+
           formattedSanggar = (sanggarData || []).map((item) => ({
             id: `s-${item.id}`,
             name: item.nama_sanggar,
@@ -91,7 +91,7 @@ export default function HomePage() {
 
   const handleSearch = (e: React.FormEvent) => {
     if (e) e.preventDefault();
-    
+
     const queryParam = searchQuery.trim() ? `?q=${encodeURIComponent(searchQuery)}` : '';
 
     if (selectedCategory === 'dance') {
@@ -107,7 +107,7 @@ export default function HomePage() {
         if (targetSection) {
           targetSection.scrollIntoView({ behavior: 'smooth' });
         } else {
-          router.push('/#kategori'); 
+          router.push('/#kategori');
         }
       }
     }
@@ -117,14 +117,14 @@ export default function HomePage() {
   return (
     <>
       {/* ===== Hero Section ===== */}
-      <section 
+      <section
         className="relative w-full h-screen flex flex-col justify-center items-center"
       >
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="absolute inset-0 w-full h-full object-cover -z-20"
         >
           <source src="/videoberanda.webm" type="video/webm" />
@@ -139,9 +139,9 @@ export default function HomePage() {
                 {t('heroDiscover')}{' '}
                 <span className={`relative inline-block ${dancingScript.className} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
                   {t('heroArtists')}
-                  <img 
-                    src="/ondel-ondel.webp" 
-                    alt="Aksen Ondel-ondel" 
+                  <img
+                    src="/ondel-ondel.webp"
+                    alt="Aksen Ondel-ondel"
                     className={`absolute -top-8 md:-top-12 w-12 h-12 md:w-20 md:h-20 object-contain rotate-12 scale-75 md:scale-100 z-10 drop-shadow-md hover:scale-110 transition-all duration-300 pointer-events-none ${language === 'id' ? '-right-8 md:-right-10' : '-right-2 md:-right-4'}`}
                   />
                 </span>
@@ -155,13 +155,13 @@ export default function HomePage() {
           {/* ===== Search Bar ===== */}
           <div className="w-full max-w-3xl animate-slide-up">
             <div className="group relative z-50">
-              <form 
+              <form
                 onSubmit={handleSearch}
                 className="mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto bg-black/20 backdrop-blur-md border border-white/20 p-2 shadow-2xl"
               >
                 {/* Premium Category Dropdown */}
                 <div className="relative flex-shrink-0 w-full md:w-48 border-b md:border-b-0 md:border-r border-white/20">
-                  <button 
+                  <button
                     type="button"
                     onClick={() => {
                       setIsCategoryOpen(!isCategoryOpen);
@@ -178,23 +178,23 @@ export default function HomePage() {
                   </button>
 
                   {/* Floating Animated Menu */}
-                  <div className={`absolute top-full -left-[1px] mt-4 w-full bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
+                  <div className={`absolute top-full -left-[9px] mt-[10px] w-[calc(100%+10px)] bg-neutral-900/80 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
                     <div className="p-2 flex flex-col gap-1">
-                      <button 
+                      <button
                         type="button"
                         onClick={() => { setSelectedCategory('all'); setIsCategoryOpen(false); }}
                         className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'all' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
                       >
                         {t('searchAllCat')}
                       </button>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => { setSelectedCategory('dance'); setIsCategoryOpen(false); }}
                         className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'dance' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
                       >
                         {t('searchDanceCat')}
                       </button>
-                      <button 
+                      <button
                         type="button"
                         onClick={() => { setSelectedCategory('music'); setIsCategoryOpen(false); }}
                         className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'music' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
@@ -233,7 +233,7 @@ export default function HomePage() {
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-black/50 backdrop-blur-2xl border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl z-50 overflow-hidden">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-neutral-900/80 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-none z-50 overflow-hidden">
                   {isLoading ? (
                     <div className="p-4 flex items-center justify-center text-sm text-white/70">
                       <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -243,18 +243,17 @@ export default function HomePage() {
                     <ul>
                       {suggestions.map((suggestion) => (
                         <li key={suggestion.id}>
-                          <Link 
+                          <Link
                             href={suggestion.href}
                             className="flex items-center justify-between px-6 py-4 hover:bg-white/10 transition-colors cursor-pointer border-b border-white/10 last:border-0"
                             onClick={() => setIsFocused(false)}
                           >
                             <span className="text-white font-medium">{suggestion.name}</span>
                             {selectedCategory === 'all' && (
-                              <span className={`px-3 py-1 rounded-[4px] text-[10px] uppercase tracking-widest font-medium border backdrop-blur-sm transition-colors ${
-                                suggestion.type === 'Sanggar'
-                                  ? 'bg-white/5 border-white/20 text-white/80' 
+                              <span className={`px-3 py-1 rounded-none text-[10px] uppercase tracking-widest font-medium border backdrop-blur-sm transition-colors ${suggestion.type === 'Sanggar'
+                                  ? 'bg-white/5 border-white/20 text-white/80'
                                   : 'bg-[#D4C8B8]/10 border-[#D4C8B8]/30 text-[#D4C8B8]'
-                              }`}>
+                                }`}>
                                 {suggestion.type}
                               </span>
                             )}
