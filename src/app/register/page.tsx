@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User, Mail, Lock, Eye, EyeOff, Landmark, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -86,14 +88,14 @@ export default function RegisterPage() {
         <div className="w-full max-w-sm">
           {/* Header */}
           <div className="text-center mb-5">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-none bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
               <Landmark className="h-5 w-5" />
             </div>
             <h1 className="mt-4 text-lg font-bold text-surface-900">
-              Daftar Akun Baru
+              {t('registerTitle')}
             </h1>
             <p className="mt-1 text-[13px] text-gray-500">
-              Buat akun untuk Katalog Seni DKI Jakarta
+              {t('registerSubtitle')}
             </p>
           </div>
 
@@ -106,7 +108,7 @@ export default function RegisterPage() {
                 htmlFor="name"
                 className="mb-1.5 block text-[13px] font-medium text-surface-700"
               >
-                Nama Lengkap
+                {t('registerFullNameLabel')}
               </label>
               <div className="relative">
                 <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
@@ -115,9 +117,9 @@ export default function RegisterPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Masukkan nama lengkap"
+                  placeholder={t('registerFullNamePlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-none border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
               </div>
             </div>
@@ -128,7 +130,7 @@ export default function RegisterPage() {
                 htmlFor="email"
                 className="mb-1.5 block text-[13px] font-medium text-surface-700"
               >
-                Email
+                {t('registerEmailLabel')}
               </label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
@@ -137,9 +139,9 @@ export default function RegisterPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="nama@email.com"
+                  placeholder={t('registerEmailPlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-none border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
               </div>
             </div>
@@ -150,7 +152,7 @@ export default function RegisterPage() {
                 htmlFor="password"
                 className="mb-1.5 block text-[13px] font-medium text-surface-700"
               >
-                Password
+                {t('registerPasswordLabel')}
               </label>
               <div className="relative">
                 <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
@@ -159,9 +161,9 @@ export default function RegisterPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan password"
+                  placeholder={t('registerPasswordPlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-12 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-none border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-12 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
                 <button
                   type="button"
@@ -184,19 +186,19 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading || success}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-xl hover:shadow-primary-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-xl hover:shadow-primary-500/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
               ) : (
-                "Daftar"
+                t('registerButton')
               )}
             </button>
 
             <p className="text-center text-[13px] text-gray-600 mt-5">
-              Sudah punya akun?{' '}
+              {t('registerAlreadyHaveAccount')}{' '}
               <Link href="/login" className="text-orange-600 font-medium hover:underline">
-                Masuk di sini
+                {t('registerLoginHere')}
               </Link>
             </p>
           </form>

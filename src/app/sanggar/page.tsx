@@ -40,6 +40,12 @@ export default async function SanggarPage() {
       fetchError = error.message;
     } else {
       sanggars = (data as Sanggar[]) ?? [];
+      
+      // Override thumbnail for testing aspect ratio on the first card
+      const ae = sanggars.find(s => s.nama_sanggar === "AE Production");
+      if (ae) {
+        ae.thumbnail_url = "/card-1.webp";
+      }
     }
   } catch (err: any) {
     console.error("Supabase fetch error:", err);

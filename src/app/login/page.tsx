@@ -79,7 +79,7 @@ export default function LoginPage() {
 
           {/* Header */}
           <div className="text-center mb-5">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-none bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
               <Landmark className="h-5 w-5" />
             </div>
             <h1 className="mt-4 text-lg font-bold text-surface-900">
@@ -110,7 +110,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('loginEmailPlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-none border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-4 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t('loginPasswordPlaceholder')}
                   required
-                  className="w-full rounded-xl border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-12 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
+                  className="w-full rounded-none border border-surface-200 bg-surface-50/50 py-2.5 pl-10 pr-12 text-[13px] text-surface-800 placeholder:text-surface-400 transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 outline-none"
                 />
                 <button
                   type="button"
@@ -154,7 +154,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-xl hover:shadow-primary-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-none bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-primary-500/25 transition-all duration-200 hover:from-primary-700 hover:to-primary-800 hover:shadow-xl hover:shadow-primary-500/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -175,7 +175,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-surface-200 bg-white px-6 py-2.5 text-[13px] font-semibold text-surface-700 shadow-sm transition-all duration-200 hover:bg-surface-50 hover:text-surface-900"
+              className="flex w-full items-center justify-center gap-2 rounded-none border border-surface-200 bg-white px-6 py-2.5 text-[13px] font-semibold text-surface-700 shadow-sm transition-all duration-200 hover:bg-surface-50 hover:text-surface-900"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path

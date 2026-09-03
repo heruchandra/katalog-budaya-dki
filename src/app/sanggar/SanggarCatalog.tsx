@@ -224,7 +224,7 @@ export default function SanggarCatalog({
                   <Link href={`/sanggar/${sanggar.id}`} className="absolute inset-0 z-10" aria-label={sanggar.nama_sanggar}></Link>
                   
                   {/* Image Wrapper */}
-                  <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-sm">
+                  <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-none">
                     {sanggar.thumbnail_url ? (
                       <img
                         src={sanggar.thumbnail_url}

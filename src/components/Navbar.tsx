@@ -74,7 +74,7 @@ export default function Navbar() {
           >
           <div className="flex items-center gap-4 border-r border-slate-200 pr-4">
             <Image src="/logo-jayaraya.webp" alt="Logo Jaya Raya DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain translate-y-[2px]" priority />
-            <Image src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'} alt="Logo Jakarta 5 Abad" width={44} height={44} className="h-11 w-auto object-contain drop-shadow-sm" priority />
+            <Image src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'} alt="Logo Jakarta 5 Abad" width={40} height={40} className="h-10 w-auto object-contain drop-shadow-sm" priority />
             <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain" priority />
           </div>
           <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap ${jakarta.className}`}>
@@ -120,7 +120,7 @@ export default function Navbar() {
                 </button>
                 {/* Dropdown Panel */}
                 <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="bg-neutral-950/70 backdrop-blur-md border border-neutral-800/80 rounded-none shadow-lg w-48">
+                  <div className="bg-neutral-950/70 backdrop-blur-md border border-neutral-800/80 rounded-none shadow-lg w-max">
                     <Link
                       href="/sanggar"
                       className={`block px-4 py-2.5 text-[13px] tracking-wide transition-all duration-300 ${jakarta.className} ${
@@ -178,7 +178,11 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className={`bg-white text-slate-900 px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 hover:bg-gray-100 transition-colors shadow-sm ${jakarta.className}`}
+              className={`px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm ${jakarta.className} ${
+                isTransparent 
+                  ? 'bg-white text-slate-900 hover:bg-gray-100'
+                  : 'bg-orange-600 text-white hover:bg-orange-700'
+              }`}
             >
               <LogIn className="h-4 w-4" />
               {language === 'en' ? 'Sign In' : 'Masuk'}
@@ -201,7 +205,7 @@ export default function Navbar() {
             <img 
               src={language === 'id' ? 'https://flagcdn.com/id.svg' : 'https://flagcdn.com/gb.svg'} 
               alt={language === 'id' ? 'ID' : 'EN'} 
-              className="w-4 h-4 rounded-none object-cover shadow-sm"
+              className="w-6 h-4 rounded-none object-cover shadow-sm"
             />
           </button>
         </div>

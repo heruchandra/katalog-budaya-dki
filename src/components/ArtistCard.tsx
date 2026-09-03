@@ -53,12 +53,12 @@ export default function ArtistCard({
 }: ArtistCardProps) {
   return (
     <div
-      className="group relative flex flex-col h-full cursor-pointer overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-surface-900/10"
+      className="group relative flex flex-col h-full cursor-pointer overflow-hidden rounded-none border border-slate-200/60 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-surface-900/10"
     >
       {/* Clickable Overlay */}
       <Link href={href} className="absolute inset-0 z-0" aria-label={name}></Link>
       {/* Image Area */}
-      <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden rounded-t-xl">
+      <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden rounded-none">
         {imageUrl && typeof imageUrl === 'string' ? (
           <img
             src={imageUrl}
@@ -66,9 +66,11 @@ export default function ArtistCard({
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <PlaceholderIcon className="h-12 w-12 text-slate-300" />
-          </div>
+          <img
+            src="/card-1.webp"
+            alt={name || 'Foto Default'}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
         )}
 
         {/* Badge */}

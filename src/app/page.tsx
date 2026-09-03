@@ -16,6 +16,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { Dancing_Script, Playfair_Display } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
+import HeroAudio from "@/components/HeroAudio";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
 const playfair = Playfair_Display({
@@ -273,15 +274,16 @@ export default function HomePage() {
 
 
         </div>
-
+        
+        <HeroAudio />
       </section>
 
       {/* ===== Scroll 2: Full-Width Editorial Banner ===== */}
       <section className="relative w-full aspect-video overflow-hidden bg-[#e5e5e5] mb-16">
         <img src="/penari1.webp" alt="Jiwa Jakarta. Seni Kita." className="absolute inset-0 w-full h-full object-cover object-center opacity-90" />
-        <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8 lg:px-12 pointer-events-none">
-          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto pr-4 md:pr-12 lg:pr-20"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerSoul')}</span> {t('bannerJakarta')}</h2>
-          <h2 className="relative z-10 text-white font-poppins text-2xl md:text-5xl tracking-wide drop-shadow-md pointer-events-auto pl-4 md:pl-12 lg:pl-20"><span className={`${dancingScript.className} text-4xl md:text-7xl font-normal tracking-normal mr-2`}>{t('bannerArt')}</span> {t('bannerOurs')}</h2>
+        <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8 lg:px-16 pointer-events-none">
+          <h2 className="relative z-10 text-white font-poppins text-xl md:text-3xl lg:text-4xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-3xl md:text-5xl lg:text-6xl font-normal tracking-normal mr-2`}>{t('bannerSoul')}</span> {t('bannerJakarta')}</h2>
+          <h2 className="relative z-10 text-white font-poppins text-xl md:text-3xl lg:text-4xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-3xl md:text-5xl lg:text-6xl font-normal tracking-normal mr-2`}>{t('bannerArt')}</span> {t('bannerOurs')}</h2>
         </div>
       </section>
 
@@ -291,9 +293,9 @@ export default function HomePage() {
           {/* Category: Sanggar Tari */}
           <Link href="/sanggar" className="block group">
             <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer group-hover:shadow-2xl transition-shadow duration-500">
-              {/* <img src="/penari2.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Sanggar Tari" /> */}
-              <div className="w-full h-full bg-slate-800 flex items-center justify-center text-white/50 text-lg font-medium tracking-widest uppercase group-hover:scale-105 transition-transform duration-700 ease-in-out">NO IMAGE</div>
-              <div className="absolute bottom-6 left-6 text-white">
+              <img src="/katalog-sanggar.webp" className="object-cover w-full h-full absolute inset-0 z-0 group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Sanggar Tari" />
+              <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+              <div className="absolute bottom-6 left-6 text-white z-10">
                 <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySanggar')}</h3>
               </div>
             </div>
@@ -305,9 +307,9 @@ export default function HomePage() {
           {/* Category: Seniman Musik */}
           <Link href="/pemusik" className="block group">
             <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer group-hover:shadow-2xl transition-shadow duration-500">
-              {/* <img src="/musik1.webp" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Seniman Musik" /> */}
-              <div className="w-full h-full bg-slate-800 flex items-center justify-center text-white/50 text-lg font-medium tracking-widest uppercase group-hover:scale-105 transition-transform duration-700 ease-in-out">NO IMAGE</div>
-              <div className="absolute bottom-6 left-6 text-white">
+              <img src="/katalog-musik.webp" className="object-cover w-full h-full absolute inset-0 z-0 group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Seniman Musik" />
+              <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+              <div className="absolute bottom-6 left-6 text-white z-10">
                 <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySenimanMusik')}</h3>
               </div>
             </div>
