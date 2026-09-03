@@ -241,7 +241,7 @@ export default function SanggarCatalog({
                   {/* Text Area */}
                   <div className="mt-4 text-left">
                     <h3 className="text-lg text-slate-900 truncate font-medium">
-                      {sanggar.nama_sanggar}
+                      {sanggar.nama_sanggar.replace(/^Sanggar\s+/i, '')}
                     </h3>
                     <p className="text-xs text-slate-500 uppercase tracking-widest mt-1.5">
                       {activeGrade === "all" && sanggar.grade 

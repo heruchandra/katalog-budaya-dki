@@ -17,6 +17,8 @@ import { supabase } from "@/lib/supabase";
 import { Dancing_Script, Playfair_Display } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
+import RotatingText from "@/components/RotatingText";
+import { motion, AnimatePresence } from "motion/react";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
 const playfair = Playfair_Display({
@@ -32,8 +34,12 @@ export default function HomePage() {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [heroWordIndex, setHeroWordIndex] = useState(0);
   const router = useRouter();
 
+  const heroWords = language === 'id'
+    ? ['Pelaku Seni', 'Sanggar Tari', 'Seniman Musik']
+    : ['Traditional Artists', 'Dance Studios', 'Music Artists'];
 
 
   useEffect(() => {
@@ -52,30 +58,38 @@ export default function HomePage() {
           const { data: sanggarData } = await supabase
             .from('sanggars')
             .select('id, nama_sanggar')
-            .ilike('nama_sanggar', `${searchQuery}%`)
-            .limit(3);
+            .ilike('nama_sanggar', `%${searchQuery}%`)
+            .limit(10);
 
-          formattedSanggar = (sanggarData || []).map((item) => ({
+          const rawSanggar = (sanggarData || []).map((item) => ({
             id: `s-${item.id}`,
-            name: item.nama_sanggar,
+            name: item.nama_sanggar.replace(/^Sanggar\s+/i, ''),
             type: 'Sanggar',
             href: `/sanggar/${item.id}`
           }));
+
+          formattedSanggar = rawSanggar
+            .filter(item => item.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+            .slice(0, 3);
         }
 
         if (selectedCategory === 'all' || selectedCategory === 'music') {
           const { data: pemusikData } = await supabase
             .from('pemusiks')
             .select('id, nama_seniman')
-            .ilike('nama_seniman', `${searchQuery}%`)
-            .limit(3);
+            .ilike('nama_seniman', `%${searchQuery}%`)
+            .limit(10);
 
-          formattedPemusik = (pemusikData || []).map((item) => ({
+          const rawPemusik = (pemusikData || []).map((item) => ({
             id: `p-${item.id}`,
             name: item.nama_seniman,
             type: 'Pemusik',
             href: `/pemusik/${item.id}`
           }));
+
+          formattedPemusik = rawPemusik
+            .filter(item => item.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+            .slice(0, 3);
         }
 
         setSuggestions([...formattedSanggar, ...formattedPemusik]);
@@ -133,20 +147,42 @@ export default function HomePage() {
         {/* Dark overlay for premium contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 -z-10 pointer-events-none"></div>
 
-        <div className="relative z-50 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-20">
-          <div className="flex flex-col items-center justify-center text-center px-4 space-y-2 mt-16 md:space-y-4">
+        <div className="relative z-50 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-8">
+          <div className="flex flex-col items-center justify-center text-center px-4 space-y-2 mt-8 md:space-y-4">
             <div className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
-              <h1 className="text-white text-3xl md:text-5xl font-light tracking-wide drop-shadow-md">
-                {t('heroDiscover')}{' '}
-                <span className={`relative inline-block ${dancingScript.className} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
-                  {t('heroArtists')}
-                  <img
-                    src="/ondel-ondel.webp"
-                    alt="Aksen Ondel-ondel"
-                    className={`absolute -top-8 md:-top-12 w-12 h-12 md:w-20 md:h-20 object-contain rotate-12 scale-75 md:scale-100 z-10 drop-shadow-md hover:scale-110 transition-all duration-300 pointer-events-none ${language === 'id' ? '-right-8 md:-right-10' : '-right-2 md:-right-4'}`}
+              <motion.h1
+                layout
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="text-white text-3xl md:text-5xl font-light tracking-wide drop-shadow-md flex flex-wrap items-center justify-center gap-x-3"
+              >
+                <span>{t('heroDiscover')}</span>
+                <span className={`relative inline-flex items-center ${dancingScript.className} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
+                  <RotatingText
+                    texts={heroWords}
+                    mainClassName="inline-flex"
+                    staggerDuration={0.03}
+                    staggerFrom="first"
+                    rotationInterval={3000}
+                    onNext={(index) => setHeroWordIndex(index)}
                   />
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={heroWords[heroWordIndex]}
+                      initial={{ opacity: 0, scale: 0.8, y: -5 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.8, y: 5 }}
+                      transition={{ duration: 0.3, delay: 0.4, ease: "easeInOut" }}
+                      className={`absolute z-10 ${heroWords[heroWordIndex] === 'Seniman Musik' || heroWords[heroWordIndex] === 'Music Artists' ? '-top-12 md:-top-16 -right-6 md:-right-8' : '-top-8 md:-top-12 -right-8 md:-right-10'}`}
+                    >
+                      <img
+                        src="/ondel-ondel.webp"
+                        alt="Aksen Ondel-ondel"
+                        className="w-12 h-12 md:w-20 md:h-20 object-contain rotate-12 scale-75 md:scale-100 drop-shadow-md hover:scale-110 pointer-events-none transition-transform duration-300"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
                 </span>
-              </h1>
+              </motion.h1>
             </div>
             <h2 className="text-white text-3xl md:text-5xl font-light tracking-wide leading-tight drop-shadow-md max-w-3xl">
               {t('heroBestIn')}
@@ -288,7 +324,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== Scroll 3: Editorial Category Grid ===== */}
-      <section id="kategori" className="mb-24">
+      <section id="kategori" className="mb-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto px-4 md:px-8">
           {/* Category: Sanggar Tari */}
           <Link href="/sanggar" className="block group">
@@ -300,7 +336,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex justify-center">
-              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-slate-900 hover:text-white transition-colors">{t('viewSanggar')}</span>
+              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-colors duration-300">{t('viewSanggar')}</span>
             </div>
           </Link>
 
@@ -314,14 +350,14 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex justify-center">
-              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-slate-900 hover:text-white transition-colors">{t('viewPemusik')}</span>
+              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-colors duration-300">{t('viewPemusik')}</span>
             </div>
           </Link>
         </div>
       </section>
 
       {/* ===== Feature Highlights ===== */}
-      <section className="border-t border-surface-200/60 bg-slate-50/50 py-16 sm:py-20">
+      <section className="border-t border-surface-200/60 bg-slate-50/50 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="font-extrabold tracking-tight text-4xl text-slate-900">
@@ -353,15 +389,15 @@ export default function HomePage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-3 hover:shadow-[0_30px_60px_-15px_rgba(234,88,12,0.15)] flex flex-col items-center text-center relative z-10"
+                className="rounded-none border border-neutral-200 bg-white p-8 hover:border-orange-500 transition-colors duration-300 shadow-sm flex flex-col items-center text-center"
               >
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-orange-600 mb-6 shadow-inner">
-                  <feature.icon className="h-10 w-10 stroke-[1.5]" />
+                <div className="rounded-none w-14 h-14 flex items-center justify-center bg-orange-50 border border-orange-100 mb-6 mx-auto">
+                  <feature.icon className="h-7 w-7 stroke-[1.5] text-orange-600" />
                 </div>
-                <h3 className="font-bold text-slate-800 mb-3">
+                <h3 className="text-lg font-semibold text-neutral-900 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-slate-500 leading-relaxed">
+                <p className="text-sm leading-relaxed text-neutral-600">
                   {feature.description}
                 </p>
               </div>

@@ -67,7 +67,10 @@ export default function LoginPage() {
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/50"></div>
         {/* Optional elegant welcome text to fill the space temporarily */}
-        <h2 className="relative z-10 text-white text-4xl font-light tracking-[0.2em] uppercase">Welcome</h2>
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <h2 className="text-white text-4xl font-light tracking-[0.2em] uppercase">{t('loginWelcomeTitle')}</h2>
+          <p className="text-sm md:text-base font-light text-white/90 mt-3 text-center tracking-wide max-w-lg leading-relaxed drop-shadow-md">{t('authWelcomeDescription')}</p>
+        </div>
       </div>
 
       {/* Right Side - Form Container */}
