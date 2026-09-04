@@ -52,6 +52,15 @@ export default async function SanggarPage() {
 
       const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
       if (arunika) arunika.thumbnail_url = "/sanggar3.webp";
+
+      const ayodya = sanggars.find(s => s.nama_sanggar === "Ayodya Pala");
+      if (ayodya) ayodya.thumbnail_url = "/sanggar4.webp";
+
+      const citra = sanggars.find(s => s.nama_sanggar === "Citra Art Studio");
+      if (citra) citra.thumbnail_url = "/sanggar5.webp";
+
+      const daya = sanggars.find(s => s.nama_sanggar === "Daya Presta");
+      if (daya) daya.thumbnail_url = "/sanggar6.webp";
     }
   } catch (err: any) {
     console.error("Supabase fetch error:", err);
