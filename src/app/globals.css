@@ -170,3 +170,7 @@ html {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+.font-cursive {
+  font-family: var(--font-script), 'Dancing Script', cursive;
+}

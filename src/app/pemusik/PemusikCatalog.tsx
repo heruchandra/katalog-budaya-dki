@@ -5,9 +5,20 @@ import Link from "next/link";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
+import DriftWall, { DriftWallItem } from "@/components/DriftWall";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
+
+const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = [
+  { image: '/musik1.webp', title: 'Musik Tradisional Betawi' },
+  { image: '/ondel-ondel.webp', title: 'Pemusik Ondel-Ondel' },
+  { image: '/katalog-musik.webp', title: 'Seniman Musik Jakarta' },
+  { image: '/penari1.webp', title: 'Seni Budaya Betawi' },
+  { image: '/sanggar2.webp', title: 'Pentas Seni Musik 1' },
+  { image: '/sanggar4.webp', title: 'Pentas Seni Musik 2' },
+  { image: '/sanggar6.webp', title: 'Alat Musik Tradisional' },
+];
 
 interface Pemusik {
   id: string;
@@ -34,16 +45,6 @@ export default function PemusikCatalog({
   const [activeJenis, setActiveJenis] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentBg, setCurrentBg] = useState(0);
-
-  const backgrounds = ['/batik-1.webp', '/batik-2.webp', '/batik-3.webp', '/batik-4.webp'];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
   const itemsPerPage = 6;
   const { t } = useLanguage();
 
@@ -96,35 +97,28 @@ export default function PemusikCatalog({
 
   return (
     <div className="min-h-screen bg-white pb-16 pt-[70px]">
-      {/* HERO SECTION */}
-      <section className="relative w-full py-16 md:py-24 overflow-hidden bg-slate-900 flex flex-col items-center justify-center text-center">
-        {/* Animated Backgrounds */}
-        {backgrounds.map((bg, index) => (
-          <img
-            key={bg}
-            src={bg}
-            alt={`Batik ${index + 1}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
-              index === currentBg ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        ))}
-        
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+      {/* HERO BANNER */}
+      <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f]">
+        {/* Drift Wall Background Layer */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+          <DriftWall items={PEMUSIK_DRIFT_ITEMS} />
+        </div>
 
-        {/* Content Wrapper */}
-        <div className="relative z-10 container mx-auto px-6 lg:px-8 flex flex-col items-start md:items-center text-left md:text-center">
-          <h1 className={`text-4xl md:text-5xl font-light text-white ${dancingScript.className}`}>
+        {/* Dark Vignette Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60 pointer-events-none" />
+
+        {/* Centered Heading Content */}
+        <div className="relative z-10 text-center px-4">
+          <h1 className={`font-cursive text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-md font-normal ${dancingScript.className}`}>
             {t('pemusikPageTitle')}
           </h1>
-          <p className="mt-3 text-sm text-gray-200 uppercase tracking-widest">
+          <p className="text-xs md:text-sm tracking-[0.25em] text-gray-300 uppercase mt-3 font-medium">
             {pemusiks && pemusiks.length > 0
               ? `${pemusiks.length} ${t('pemusikRegistered')}`
               : t('pemusikCatalogFallback')}
           </p>
         </div>
-      </section>
+      </div>
 
       <div className={`flex flex-col md:flex-row gap-12 max-w-[90vw] mx-auto py-12 ${poppins.className}`}>
         
