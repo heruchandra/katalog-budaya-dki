@@ -55,7 +55,7 @@ const columnFactor = (index: number, variance: number): number => {
 
 const DriftWall = ({
   items = DEFAULT_ITEMS,
-  columns = 5,
+  columns = 7,
   tileWidth = 210,
   tileHeight = 140,
   gap = 18,
@@ -70,7 +70,7 @@ const DriftWall = ({
   variance = 0.4,
   parallax = 0.5,
   pauseOnHover = false,
-  lift = 48,
+  lift = 54,
   fade = 0.5,
   dim = 1.0,
   grayscale = false,
@@ -156,7 +156,7 @@ const DriftWall = ({
       const plane = planeRef.current;
       if (!plane) return;
       plane.style.transform =
-        `translate(-50%, -50%) scale(1.15) ` +
+        `translate(-50%, -50%) scale(1.25) ` +
         `rotateX(${tilt + py}deg) rotateY(${turn + px}deg) rotateZ(${roll}deg) ` +
         `translateZ(${-depth}px)`;
     },
@@ -289,21 +289,24 @@ const DriftWall = ({
 
   const renderTile = (item: DriftWallItem, id: string, colIndex: number) => {
     const inner = (
-      <span className="drift-wall__inner">
+      <span className="drift-wall__inner border-none outline-none ring-0 focus:ring-0">
         <img
           src={item.image}
           alt={item.title ?? ''}
           loading="eager"
           decoding="async"
           draggable={false}
+          className="border-none outline-none ring-0"
         />
-        <span className="drift-wall__overlay" aria-hidden="true" />
+        <span className="drift-wall__overlay border-none outline-none ring-0" aria-hidden="true" />
       </span>
     );
     const commonProps = {
-      className: `drift-wall__tile${activeId === id ? ' is-active' : ''}`,
+      className: `drift-wall__tile border-none outline-none ring-0 focus:ring-0${activeId === id ? ' is-active' : ''}`,
       'data-tile-id': id,
       'data-col': colIndex,
+      onMouseEnter: () => activate(id, colIndex),
+      onMouseLeave: release,
       onFocus: () => activate(id, colIndex),
       onBlur: release
     };

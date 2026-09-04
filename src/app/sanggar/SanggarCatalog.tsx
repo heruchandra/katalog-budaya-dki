@@ -99,23 +99,23 @@ export default function SanggarCatalog({
   const visiblePages = getVisiblePages(currentPage, totalPages);
 
   return (
-    <div className="min-h-screen bg-white pb-16 pt-[70px]">
+    <div className="min-h-screen bg-white pb-16 pt-16">
       {/* HERO BANNER */}
-      <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f]">
+      <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f] -mt-px">
         {/* Drift Wall Background Layer */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-          <DriftWall items={SANGGAR_DRIFT_ITEMS} />
+        <div className="absolute top-0 -left-[10%] w-[120%] h-full pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
+          <DriftWall items={SANGGAR_DRIFT_ITEMS} columns={7} />
         </div>
 
         {/* Dark Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80 pointer-events-none" />
 
         {/* Centered Heading Content */}
-        <div className="relative z-10 text-center px-4">
+        <div className="relative z-20 text-center px-4 pointer-events-none">
           <h1 className={`font-cursive text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-md font-normal ${dancingScript.className}`}>
             {t('sanggarPageTitle')}
           </h1>
-          <p className="text-xs md:text-sm tracking-[0.25em] text-gray-300 uppercase mt-3 font-medium">
+          <p className="text-xs md:text-sm tracking-[0.25em] text-gray-200 uppercase mt-3 font-medium drop-shadow">
             {sanggars && sanggars.length > 0
               ? `${sanggars.length} ${t('sanggarRegistered')}`
               : t('sanggarCatalogFallback')}

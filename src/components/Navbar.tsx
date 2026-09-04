@@ -60,10 +60,8 @@ export default function Navbar() {
   }
 
   return (
-    <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] py-2.5 ${jakarta.className} ${
-      scrolled ? 'bg-white shadow-md' : 'bg-transparent'
-    } ${
-      isTransparent ? 'text-white' : 'text-orange-600'
+    <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} ${
+      isTransparent ? 'bg-transparent text-white' : 'bg-white shadow-sm border-b border-gray-100 text-orange-600'
     }`}>
       <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-6 lg:px-12 text-sm gap-4 lg:gap-8">
         {/* Group 1: Left - Logos & Title */}

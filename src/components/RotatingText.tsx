@@ -26,7 +26,7 @@ interface RotatingTextProps {
   onNext?: (index: number) => void;
   mainClassName?: string;
   splitLevelClassName?: string;
-  elementLevelClassName?: string;
+  elementLevelClassName?: string; 
 }
 
 const RotatingText = forwardRef((props: RotatingTextProps, ref) => {
