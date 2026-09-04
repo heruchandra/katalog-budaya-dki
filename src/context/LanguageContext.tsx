@@ -283,6 +283,9 @@ const translations: Record<string, Record<Language, string>> = {
   // Hero Banner Side Typography
   bannerLeftText: { id: "Jiwa Jakarta.", en: "Jakarta's Soul." },
   bannerRightText: { id: "Seni Kita.", en: "Our Art." },
+
+  // Brand
+  brandTitle: { id: "Katalog Seni", en: "Art Catalog" },
 };
 
 interface LanguageContextType {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
@@ -23,14 +24,17 @@ const SANGGAR_DRIFT_ITEMS: DriftWallItem[] = [
 interface Sanggar {
   id: string;
   nama_sanggar: string;
-  nama_pimpinan: string;
-  grade: string;
-  alamat: string;
-  kelurahan: string;
-  kecamatan: string;
-  kota_kab: string;
-  no_hp: string;
-  jenis_tarian: string;
+  nama_pimpinan?: string;
+  grade?: string;
+  alamat?: string;
+  kelurahan?: string;
+  kecamatan?: string;
+  kota_kab?: string;
+  no_hp?: string;
+  kontak_pic?: string;
+  whatsapp?: string;
+  youtubeUrl?: string;
+  jenis_tarian?: string;
   thumbnail_url: string | null;
 }
 
@@ -39,12 +43,11 @@ interface SanggarCatalogProps {
   fetchError: string | null;
 }
 
-
-
 export default function SanggarCatalog({
   sanggars,
   fetchError,
 }: SanggarCatalogProps) {
+  const router = useRouter();
   const [activeGrade, setActiveGrade] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -218,7 +221,7 @@ export default function SanggarCatalog({
                   <Link href={`/sanggar/${sanggar.id}`} className="absolute inset-0 z-10" aria-label={sanggar.nama_sanggar}></Link>
                   
                   {/* Image Wrapper */}
-                  <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-none">
+                  <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden group rounded-lg">
                     {sanggar.thumbnail_url ? (
                       <img
                         src={sanggar.thumbnail_url}
@@ -230,6 +233,43 @@ export default function SanggarCatalog({
                         <span className="text-slate-400 text-xs uppercase tracking-widest">No Image</span>
                       </div>
                     )}
+
+                    {/* Cinema XXI-Style Hover Action Overlay */}
+                    <div 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/sanggar/${sanggar.id}`);
+                      }}
+                      className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3 p-4 z-20"
+                    >
+                      {/* Button 1: YouTube / Video Showcase */}
+                      <a
+                        href={sanggar.youtubeUrl || "https://www.youtube.com"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full max-w-[190px] py-2.5 px-4 rounded-full border border-white/80 bg-white/10 hover:bg-white text-white hover:text-black font-semibold text-xs tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+                      >
+                        <svg className="w-4 h-4 fill-red-500" viewBox="0 0 24 24">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        <span>Tonton Video</span>
+                      </a>
+
+                      {/* Button 2: WhatsApp Contact */}
+                      <a
+                        href={`https://wa.me/${sanggar.whatsapp || '6281318702623'}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full max-w-[190px] py-2.5 px-4 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-xs tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:scale-105"
+                      >
+                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.077-2.02-.472-1.583-.655-2.612-2.28-2.693-2.387-.078-.107-.647-.862-.647-1.644 0-.783.41-1.168.556-1.328.147-.16.323-.2.43-.2.107 0 .215.002.309.006.104.004.243-.039.38.29.144.343.491 1.196.534 1.283.043.088.072.19.014.305-.058.117-.087.19-.174.292-.087.102-.184.228-.263.307-.089.088-.182.184-.078.363.104.18.461.761.99 1.233.682.608 1.258.797 1.438.887.18.089.286.078.393-.045.107-.123.461-.536.584-.72.123-.185.246-.154.412-.093.167.062 1.056.498 1.238.589.182.091.303.136.347.212.045.077.045.447-.099.852z"/>
+                        </svg>
+                        <span>WhatsApp</span>
+                      </a>
+                    </div>
                   </div>
 
                   {/* Text Area */}

@@ -18,6 +18,7 @@ import { Dancing_Script, Playfair_Display } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
 import RotatingText from "@/components/RotatingText";
+import AccordionGallery from "@/components/AccordionGallery";
 import { motion, AnimatePresence } from "motion/react";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
@@ -38,12 +39,44 @@ export default function HomePage() {
   const router = useRouter();
 
   const isEnglish = language === 'en';
-  const leftText = isEnglish ? "Jakarta's Soul." : "Jiwa Jakarta.";
-  const rightText = isEnglish ? "Our Art." : "Seni Kita.";
-
   const heroWords = language === 'id'
     ? ['Pelaku Seni', 'Sanggar Tari', 'Seniman Musik']
     : ['Traditional Artists', 'Dance Studios', 'Music Artists'];
+
+  const culturalPillars = [
+    {
+      id: 'penari',
+      title: isEnglish ? 'Penari (Sanggar Tari)' : 'Penari (Sanggar Tari)',
+      label: isEnglish ? 'Penari (Sanggar Tari)' : 'Penari (Sanggar Tari)',
+      subtitle: isEnglish ? 'Grace of Traditional Betawi Dance' : 'Keanggunan Gerak Tradisional Betawi',
+      image: '/penari1.webp',
+      link: '/sanggar'
+    },
+    {
+      id: 'pemusik',
+      title: isEnglish ? 'Pemusik (Seniman Musik)' : 'Pemusik (Seniman Musik)',
+      label: isEnglish ? 'Pemusik (Seniman Musik)' : 'Pemusik (Seniman Musik)',
+      subtitle: isEnglish ? 'Harmonies & Classical Rhythms' : 'Harmoni Nada & Irama Klasik',
+      image: '/sanggar2.webp',
+      link: '/seniman-musik'
+    },
+    {
+      id: 'ondel-ondel',
+      title: 'Ondel-Ondel',
+      label: 'Ondel-Ondel',
+      subtitle: isEnglish ? 'Grand Icon of Jakarta Folk Festivity' : 'Ikon Megah Pesta Rakyat Jakarta',
+      image: '/sanggar4.webp',
+      link: '#'
+    },
+    {
+      id: 'pesilat',
+      title: isEnglish ? 'Pesilat (Silat Betawi)' : 'Pesilat (Silat Betawi)',
+      label: isEnglish ? 'Pesilat (Silat Betawi)' : 'Pesilat (Silat Betawi)',
+      subtitle: isEnglish ? 'Stances & Agility of Betawi Martial Arts' : 'Jurus & Ketangkasan Main Pukulan',
+      image: '/sanggar3.webp',
+      link: '#'
+    }
+  ];
 
 
   useEffect(() => {
@@ -320,22 +353,21 @@ export default function HomePage() {
         <HeroAudio />
       </section>
 
-      {/* ===== Scroll 2: Full-Width Editorial Banner ===== */}
-      <section className="relative w-full aspect-video overflow-hidden bg-[#e5e5e5] mb-16">
-        <img src="/penari1.webp" alt="Katalog Seni Budaya DKI Jakarta" className="w-full h-full object-cover object-center" />
-
-        {/* Left Block */}
-        <div className="absolute left-6 md:left-10 lg:left-16 top-1/2 -translate-y-1/2 z-10 hidden md:block select-none pointer-events-none text-left">
-          <span className="font-cursive text-3xl md:text-4xl lg:text-5xl text-white/90 drop-shadow-md whitespace-nowrap">
-            {leftText}
-          </span>
-        </div>
-
-        {/* Right Block */}
-        <div className="absolute right-6 md:right-10 lg:right-16 top-1/2 -translate-y-1/2 z-10 hidden md:block select-none pointer-events-none text-right">
-          <span className="font-cursive text-3xl md:text-4xl lg:text-5xl text-white/90 drop-shadow-md whitespace-nowrap">
-            {rightText}
-          </span>
+      {/* ===== Hero 4-Panel Accordion Gallery ===== */}
+      <section className="w-full bg-surface-50 py-4 sm:py-6">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+          <AccordionGallery
+            items={culturalPillars}
+            defaultIndex={0}
+            height={560}
+            radius={20}
+            gap={14}
+            expandRatio={0.52}
+            accentColor="#ff7b00"
+            overlayColor="#060010"
+            trigger="hover"
+            className="shadow-2xl"
+          />
         </div>
       </section>
 

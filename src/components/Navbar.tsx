@@ -24,6 +24,9 @@ export default function Navbar() {
   const isTransparentPage = pathname === '/';
   const isTransparent = isTransparentPage && !scrolled;
 
+  const isEnglish = language === 'en';
+  const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
+
   const isAdmin = user?.email === 'admindisbud@gmail.com';
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
 
@@ -76,7 +79,7 @@ export default function Navbar() {
             <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain" priority />
           </div>
           <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap ${jakarta.className}`}>
-            <span className={`text-lg font-bold tracking-tight ${isTransparent ? 'text-white' : 'text-orange-600'}`}>Katalog Seni</span>
+            <span className={`text-lg font-bold tracking-tight ${isTransparent ? 'text-white' : 'text-orange-600'}`}>{brandTitle}</span>
             <span className={`text-[9px] font-bold tracking-[0.2em] mt-0.5 uppercase ml-[1px] ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
           </div>
           </Link>

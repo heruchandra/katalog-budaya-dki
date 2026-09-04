@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/seniman-musik',
+        destination: '/pemusik',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
