@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogIn, Mail, Lock, Eye, EyeOff, Landmark, ArrowLeft, AlertCircle } from "lucide-react";
+import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -82,10 +83,17 @@ export default function LoginPage() {
 
           {/* Header */}
           <div className="text-center mb-5">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-none bg-primary-100 text-primary-600 border border-primary-200/60 shadow-sm">
-              <Landmark className="h-5 w-5" />
+            <div className="flex justify-center mb-3">
+              <Image 
+                src="/logo-disbud.webp" 
+                alt="Dinas Kebudayaan DKI Jakarta" 
+                width={140} 
+                height={56} 
+                className="h-12 w-auto object-contain" 
+                priority 
+              />
             </div>
-            <h1 className="mt-4 text-lg font-bold text-surface-900">
+            <h1 className="mt-2 text-lg font-bold text-surface-900">
               {t('loginWelcomeTitle')}
             </h1>
             <p className="mt-1 text-[13px] text-gray-500">

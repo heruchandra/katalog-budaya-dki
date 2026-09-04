@@ -215,7 +215,7 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
   return (
     <div
       ref={rootRef}
-      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${className ? ` ${className}` : ''}`}
+      className={`accordion-gallery bg-transparent border-none shadow-none ring-0${vertical ? ' accordion-gallery--vertical' : ''}${className ? ` ${className}` : ''}`}
       style={{
         // @ts-ignore
         '--ag-accent': accentColor,
@@ -259,11 +259,11 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
               <span className="ag-panel__label" aria-hidden="true">
                 <span className="ag-panel__bar" ref={el => { barRefs.current[i] = el; }} />
                 <span className="ag-panel__text-wrap" ref={el => { textRefs.current[i] = el; }}>
-                  <span className="ag-panel__text">
+                  <span className="ag-panel__text font-cursive font-script text-2xl md:text-3xl lg:text-4xl font-bold">
                     {displayLabel}
                   </span>
                   {item.subtitle && (
-                    <span className="ag-panel__subtext">
+                    <span className="ag-panel__subtext font-sans">
                       {item.subtitle}
                     </span>
                   )}

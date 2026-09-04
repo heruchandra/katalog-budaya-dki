@@ -14,7 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Dancing_Script, Playfair_Display } from 'next/font/google';
+import { Dancing_Script } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
 import RotatingText from "@/components/RotatingText";
@@ -22,10 +22,6 @@ import AccordionGallery from "@/components/AccordionGallery";
 import { motion, AnimatePresence } from "motion/react";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-});
 
 export default function HomePage() {
   const { t, language } = useLanguage();
@@ -45,35 +41,35 @@ export default function HomePage() {
 
   const culturalPillars = [
     {
-      id: 'penari',
-      title: isEnglish ? 'Penari (Sanggar Tari)' : 'Penari (Sanggar Tari)',
-      label: isEnglish ? 'Penari (Sanggar Tari)' : 'Penari (Sanggar Tari)',
+      id: 'sanggar-tari',
+      title: isEnglish ? 'Dance Studio' : 'Sanggar Tari',
+      label: isEnglish ? 'Dance Studio' : 'Sanggar Tari',
       subtitle: isEnglish ? 'Grace of Traditional Betawi Dance' : 'Keanggunan Gerak Tradisional Betawi',
       image: '/penari1.webp',
       link: '/sanggar'
     },
     {
-      id: 'pemusik',
-      title: isEnglish ? 'Pemusik (Seniman Musik)' : 'Pemusik (Seniman Musik)',
-      label: isEnglish ? 'Pemusik (Seniman Musik)' : 'Pemusik (Seniman Musik)',
-      subtitle: isEnglish ? 'Harmonies & Classical Rhythms' : 'Harmoni Nada & Irama Klasik',
+      id: 'seniman-musik',
+      title: isEnglish ? 'Music Artists' : 'Seniman Musik',
+      label: isEnglish ? 'Music Artists' : 'Seniman Musik',
+      subtitle: isEnglish ? 'Harmony of Melodic Traditions' : 'Harmoni Nada & Irama Klasik',
       image: '/koleksi2.webp',
       link: '/seniman-musik'
+    },
+    {
+      id: 'pesilat',
+      title: isEnglish ? 'Martial Artists' : 'Pesilat',
+      label: isEnglish ? 'Martial Artists' : 'Pesilat',
+      subtitle: isEnglish ? 'Mastery of Traditional Combat' : 'Jurus & Ketangkasan Bela Diri',
+      image: '/koleksi4.webp',
+      link: '#'
     },
     {
       id: 'ondel-ondel',
       title: 'Ondel-Ondel',
       label: 'Ondel-Ondel',
-      subtitle: isEnglish ? 'Grand Icon of Jakarta Folk Festivity' : 'Ikon Megah Pesta Rakyat Jakarta',
+      subtitle: isEnglish ? 'Grand Icon of Jakarta Folklore' : 'Ikon Megah Pesta Rakyat Jakarta',
       image: '/koleksi3.webp',
-      link: '#'
-    },
-    {
-      id: 'pesilat',
-      title: isEnglish ? 'Pesilat (Silat Betawi)' : 'Pesilat (Silat Betawi)',
-      label: isEnglish ? 'Pesilat (Silat Betawi)' : 'Pesilat (Silat Betawi)',
-      subtitle: isEnglish ? 'Stances & Agility of Betawi Martial Arts' : 'Jurus & Ketangkasan Bela Diri Betawi',
-      image: '/koleksi4.webp',
       link: '#'
     }
   ];
@@ -354,8 +350,21 @@ export default function HomePage() {
       </section>
 
       {/* ===== Hero 4-Panel Accordion Gallery ===== */}
-      <section className="w-full bg-surface-50 py-4 sm:py-6">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+      <section id="kategori" className="w-full bg-transparent border-none shadow-none ring-0 py-8 sm:py-12 pb-16 sm:pb-20">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 text-center">
+          <span className="inline-block text-xs font-semibold tracking-[0.2em] text-[#ff7b00] uppercase mb-2">
+            {isEnglish ? "Cultural Exploration" : "Eksplorasi Budaya"}
+          </span>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+            {isEnglish ? "The Living Arts of Jakarta" : "Ragam Pesona Kesenian Jakarta"}
+          </h1>
+          <p className="text-sm md:text-base text-gray-500 max-w-2xl mx-auto mt-2">
+            {isEnglish 
+              ? "Explore the rhythmic heritage, melodic harmonies, and living folklore rooted in Jakarta's cultural tapestry."
+              : "Temukan kekayaan seni gerak, harmoni musik, dan tradisi warisan Betawi yang terus bertumbuh."}
+          </p>
+        </div>
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-transparent border-none shadow-none ring-0">
           <AccordionGallery
             items={culturalPillars}
             defaultIndex={0}
@@ -366,41 +375,7 @@ export default function HomePage() {
             accentColor="#ff7b00"
             overlayColor="#060010"
             trigger="hover"
-            className="shadow-2xl"
           />
-        </div>
-      </section>
-
-      {/* ===== Scroll 3: Editorial Category Grid ===== */}
-      <section id="kategori" className="mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto px-4 md:px-8">
-          {/* Category: Sanggar Tari */}
-          <Link href="/sanggar" className="block group">
-            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer group-hover:shadow-2xl transition-shadow duration-500">
-              <img src="/katalog-sanggar.webp" className="object-cover w-full h-full absolute inset-0 z-0 group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Sanggar Tari" />
-              <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
-              <div className="absolute bottom-6 left-6 text-white z-10">
-                <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySanggar')}</h3>
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-colors duration-300">{t('viewSanggar')}</span>
-            </div>
-          </Link>
-
-          {/* Category: Seniman Musik */}
-          <Link href="/pemusik" className="block group">
-            <div className="relative w-full aspect-[3/4] bg-slate-200 overflow-hidden mb-4 cursor-pointer group-hover:shadow-2xl transition-shadow duration-500">
-              <img src="/katalog-musik.webp" className="object-cover w-full h-full absolute inset-0 z-0 group-hover:scale-105 transition-transform duration-700 ease-in-out" alt="Seniman Musik" />
-              <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
-              <div className="absolute bottom-6 left-6 text-white z-10">
-                <h3 className={`${dancingScript.className} text-4xl md:text-5xl tracking-wide relative inline-block pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all after:duration-500 group-hover:after:w-full`}>{t('categorySenimanMusik')}</h3>
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <span className="inline-block px-8 py-3 border border-slate-300 text-slate-800 text-sm tracking-[0.2em] uppercase hover:bg-orange-600 hover:border-orange-600 hover:text-white transition-colors duration-300">{t('viewPemusik')}</span>
-            </div>
-          </Link>
         </div>
       </section>
 

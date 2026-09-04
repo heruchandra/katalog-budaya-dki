@@ -13,6 +13,10 @@
   max-width: 100%;
   perspective: 1400px;
   perspective-origin: 50% 50%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
 }
 
 .accordion-gallery--vertical {
@@ -101,7 +105,7 @@
 .ag-panel__bar {
   flex: 0 0 auto;
   width: 3px;
-  height: 26px;
+  height: 38px;
   border-radius: 3px;
   background: var(--ag-accent);
   opacity: 0;
@@ -119,18 +123,20 @@
 
 .ag-panel__text {
   color: var(--ag-text);
-  font-family: inherit;
-  font-weight: 600;
-  font-size: clamp(1rem, 1.4vw, 1.4rem);
-  letter-spacing: 0.01em;
+  font-family: var(--font-script), 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.2vw, 2.25rem);
+  letter-spacing: 0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  line-height: 1.25;
 }
 
 .ag-panel__subtext {
   color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 0.825rem;
   font-weight: 400;
   letter-spacing: 0.02em;
