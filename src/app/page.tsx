@@ -57,7 +57,7 @@ export default function HomePage() {
       title: isEnglish ? 'Pemusik (Seniman Musik)' : 'Pemusik (Seniman Musik)',
       label: isEnglish ? 'Pemusik (Seniman Musik)' : 'Pemusik (Seniman Musik)',
       subtitle: isEnglish ? 'Harmonies & Classical Rhythms' : 'Harmoni Nada & Irama Klasik',
-      image: '/sanggar2.webp',
+      image: '/koleksi2.webp',
       link: '/seniman-musik'
     },
     {
@@ -65,15 +65,15 @@ export default function HomePage() {
       title: 'Ondel-Ondel',
       label: 'Ondel-Ondel',
       subtitle: isEnglish ? 'Grand Icon of Jakarta Folk Festivity' : 'Ikon Megah Pesta Rakyat Jakarta',
-      image: '/sanggar4.webp',
+      image: '/koleksi3.webp',
       link: '#'
     },
     {
       id: 'pesilat',
       title: isEnglish ? 'Pesilat (Silat Betawi)' : 'Pesilat (Silat Betawi)',
       label: isEnglish ? 'Pesilat (Silat Betawi)' : 'Pesilat (Silat Betawi)',
-      subtitle: isEnglish ? 'Stances & Agility of Betawi Martial Arts' : 'Jurus & Ketangkasan Main Pukulan',
-      image: '/sanggar3.webp',
+      subtitle: isEnglish ? 'Stances & Agility of Betawi Martial Arts' : 'Jurus & Ketangkasan Bela Diri Betawi',
+      image: '/koleksi4.webp',
       link: '#'
     }
   ];
