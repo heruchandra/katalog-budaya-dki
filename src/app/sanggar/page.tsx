@@ -41,11 +41,17 @@ export default async function SanggarPage() {
     } else {
       sanggars = (data as Sanggar[]) ?? [];
       
-      // Override thumbnail for testing aspect ratio on the first card
       const ae = sanggars.find(s => s.nama_sanggar === "AE Production");
       if (ae) {
         ae.thumbnail_url = "/card-1.webp";
       }
+
+      // Assign images to specific Sanggar cards
+      const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
+      if (am) am.thumbnail_url = "/sanggar2.webp";
+
+      const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
+      if (arunika) arunika.thumbnail_url = "/sanggar3.webp";
     }
   } catch (err: any) {
     console.error("Supabase fetch error:", err);

@@ -20,7 +20,7 @@ import HeroAudio from "@/components/HeroAudio";
 import RotatingText from "@/components/RotatingText";
 import { motion, AnimatePresence } from "motion/react";
 
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] });
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const playfair = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
@@ -159,7 +159,9 @@ export default function HomePage() {
                 <span className={`relative inline-flex items-center ${dancingScript.className} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
                   <RotatingText
                     texts={heroWords}
-                    mainClassName="inline-flex"
+                    mainClassName={`inline-flex ${dancingScript.className} text-orange-500`}
+                    splitLevelClassName={dancingScript.className}
+                    elementLevelClassName={dancingScript.className}
                     staggerDuration={0.03}
                     staggerFrom="first"
                     rotationInterval={3000}
