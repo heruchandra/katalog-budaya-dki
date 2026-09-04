@@ -316,11 +316,7 @@ export default function HomePage() {
 
       {/* ===== Scroll 2: Full-Width Editorial Banner ===== */}
       <section className="relative w-full aspect-video overflow-hidden bg-[#e5e5e5] mb-16">
-        <img src="/penari1.webp" alt="Jiwa Jakarta. Seni Kita." className="absolute inset-0 w-full h-full object-cover object-center opacity-90" />
-        <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8 lg:px-16 pointer-events-none">
-          <h2 className="relative z-10 text-white font-poppins text-xl md:text-3xl lg:text-4xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-3xl md:text-5xl lg:text-6xl font-normal tracking-normal mr-2`}>{t('bannerSoul')}</span> {t('bannerJakarta')}</h2>
-          <h2 className="relative z-10 text-white font-poppins text-xl md:text-3xl lg:text-4xl tracking-wide drop-shadow-md pointer-events-auto"><span className={`${dancingScript.className} text-3xl md:text-5xl lg:text-6xl font-normal tracking-normal mr-2`}>{t('bannerArt')}</span> {t('bannerOurs')}</h2>
-        </div>
+        <img src="/penari1.webp" alt="Katalog Seni Budaya DKI Jakarta" className="w-full h-full object-cover object-center" />
       </section>
 
       {/* ===== Scroll 3: Editorial Category Grid ===== */}
