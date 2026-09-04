@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans, Dancing_Script } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -27,6 +27,12 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-script",
+});
+
 export const metadata: Metadata = {
   title: "Katalog Seni DKI Jakarta — Direktori Pelaku Seni Budaya Tradisional",
   description:
@@ -46,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${dancingScript.variable} h-full antialiased`}
     >
       <body className={`${jakarta.className} flex min-h-full flex-col bg-surface-50 overflow-x-hidden`}>
         <LanguageProvider>

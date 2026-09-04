@@ -279,6 +279,10 @@ const translations: Record<string, Record<Language, string>> = {
   dashboardMusic: { id: "Seniman Musik", en: "Music Artist" },
   dashboardActNew: { id: "Pendaftaran Baru", en: "New Registration" },
   dashboardStatusActive: { id: "Aktif", en: "Active" },
+
+  // Hero Banner Side Typography
+  bannerLeftText: { id: "Jiwa Jakarta.", en: "Jakarta's Soul." },
+  bannerRightText: { id: "Seni Kita.", en: "Our Art." },
 };
 
 interface LanguageContextType {

@@ -37,6 +37,10 @@ export default function HomePage() {
   const [heroWordIndex, setHeroWordIndex] = useState(0);
   const router = useRouter();
 
+  const isEnglish = language === 'en';
+  const leftText = isEnglish ? "Jakarta's Soul." : "Jiwa Jakarta.";
+  const rightText = isEnglish ? "Our Art." : "Seni Kita.";
+
   const heroWords = language === 'id'
     ? ['Pelaku Seni', 'Sanggar Tari', 'Seniman Musik']
     : ['Traditional Artists', 'Dance Studios', 'Music Artists'];
@@ -319,6 +323,20 @@ export default function HomePage() {
       {/* ===== Scroll 2: Full-Width Editorial Banner ===== */}
       <section className="relative w-full aspect-video overflow-hidden bg-[#e5e5e5] mb-16">
         <img src="/penari1.webp" alt="Katalog Seni Budaya DKI Jakarta" className="w-full h-full object-cover object-center" />
+
+        {/* Left Block */}
+        <div className="absolute left-6 md:left-10 lg:left-16 top-1/2 -translate-y-1/2 z-10 hidden md:block select-none pointer-events-none text-left">
+          <span className="font-cursive text-3xl md:text-4xl lg:text-5xl text-white/90 drop-shadow-md whitespace-nowrap">
+            {leftText}
+          </span>
+        </div>
+
+        {/* Right Block */}
+        <div className="absolute right-6 md:right-10 lg:right-16 top-1/2 -translate-y-1/2 z-10 hidden md:block select-none pointer-events-none text-right">
+          <span className="font-cursive text-3xl md:text-4xl lg:text-5xl text-white/90 drop-shadow-md whitespace-nowrap">
+            {rightText}
+          </span>
+        </div>
       </section>
 
       {/* ===== Scroll 3: Editorial Category Grid ===== */}
