@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Inbox, AlertTriangle } from "lucide-react";
+import { Search, Inbox, AlertTriangle, Play, MessageCircle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import DriftWall, { DriftWallItem } from "@/components/DriftWall";
@@ -240,7 +240,7 @@ export default function SanggarCatalog({
                         e.stopPropagation();
                         router.push(`/sanggar/${sanggar.id}`);
                       }}
-                      className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3 p-4 z-20"
+                      className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2.5 p-4 z-20"
                     >
                       {/* Button 1: YouTube / Video Showcase */}
                       <a
@@ -248,11 +248,9 @@ export default function SanggarCatalog({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full max-w-[190px] py-2.5 px-4 rounded-full border border-white/80 bg-white/10 hover:bg-white text-white hover:text-black font-semibold text-xs tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+                        className="h-10 w-full max-w-[200px] px-5 rounded-full bg-white/95 text-zinc-900 hover:bg-white shadow-md transition-all duration-200 active:scale-95 border border-white/20 flex items-center justify-center gap-2 text-xs font-semibold tracking-wider uppercase"
                       >
-                        <svg className="w-4 h-4 fill-red-500" viewBox="0 0 24 24">
-                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
+                        <Play className="w-4 h-4 fill-current shrink-0" />
                         <span>Tonton Video</span>
                       </a>
 
@@ -262,11 +260,9 @@ export default function SanggarCatalog({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full max-w-[190px] py-2.5 px-4 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-xs tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:scale-105"
+                        className="h-10 w-full max-w-[200px] px-5 rounded-full bg-zinc-950/90 text-white hover:bg-black shadow-md transition-all duration-200 active:scale-95 border border-zinc-700/50 backdrop-blur-sm flex items-center justify-center gap-2 text-xs font-semibold tracking-wider uppercase"
                       >
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.077-2.02-.472-1.583-.655-2.612-2.28-2.693-2.387-.078-.107-.647-.862-.647-1.644 0-.783.41-1.168.556-1.328.147-.16.323-.2.43-.2.107 0 .215.002.309.006.104.004.243-.039.38.29.144.343.491 1.196.534 1.283.043.088.072.19.014.305-.058.117-.087.19-.174.292-.087.102-.184.228-.263.307-.089.088-.182.184-.078.363.104.18.461.761.99 1.233.682.608 1.258.797 1.438.887.18.089.286.078.393-.045.107-.123.461-.536.584-.72.123-.185.246-.154.412-.093.167.062 1.056.498 1.238.589.182.091.303.136.347.212.045.077.045.447-.099.852z"/>
-                        </svg>
+                        <MessageCircle className="w-4 h-4 shrink-0" />
                         <span>WhatsApp</span>
                       </a>
                     </div>

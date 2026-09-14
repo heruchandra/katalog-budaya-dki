@@ -32,64 +32,91 @@ export default async function SanggarPage() {
   let fetchError: string | null = null;
 
   try {
-    const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from("sanggars")
-      .select("*")
-      .order("id", { ascending: true });
+    // Validate environment variables before attempting connection
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey =
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (error) {
-      console.error("Supabase return error:", error);
-      fetchError = error.message;
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase env vars missing:", {
+        NEXT_PUBLIC_SUPABASE_URL: supabaseUrl ? "SET" : "MISSING",
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+          ? "SET"
+          : "MISSING",
+        SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY
+          ? "SET"
+          : "MISSING",
+      });
+      fetchError =
+        "Konfigurasi database belum lengkap. Hubungi administrator.";
     } else {
-      sanggars = (data as Sanggar[]) ?? [];
-      
-      const ae = sanggars.find(s => s.nama_sanggar === "AE Production");
-      if (ae) {
-        ae.thumbnail_url = "/card-1.webp";
-        ae.whatsapp = "6281318702623";
-        ae.youtubeUrl = "https://www.youtube.com";
-      }
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
+        .from("sanggars")
+        .select("*")
+        .order("id", { ascending: true });
 
-      // Assign images to specific Sanggar cards
-      const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
-      if (am) {
-        am.thumbnail_url = "/sanggar2.webp";
-        am.whatsapp = "6281289214320";
-        am.youtubeUrl = "https://www.youtube.com";
-      }
+      if (error) {
+        console.error("Supabase Query Error Details:", {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        });
+        fetchError = error.message || "Gagal mengambil data sanggar.";
+      } else {
+        sanggars = (data as Sanggar[]) ?? [];
 
-      const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
-      if (arunika) {
-        arunika.thumbnail_url = "/sanggar3.webp";
-        arunika.whatsapp = "6281289214320";
-        arunika.youtubeUrl = "https://www.youtube.com";
-      }
+        const ae = sanggars.find(s => s.nama_sanggar === "AE Production");
+        if (ae) {
+          ae.thumbnail_url = "/card-1.webp";
+          ae.whatsapp = "6281318702623";
+          ae.youtubeUrl = "https://www.youtube.com";
+        }
 
-      const ayodya = sanggars.find(s => s.nama_sanggar === "Ayodya Pala");
-      if (ayodya) {
-        ayodya.thumbnail_url = "/sanggar4.webp";
-        ayodya.whatsapp = "6281399160062";
-        ayodya.youtubeUrl = "https://www.youtube.com";
-      }
+        // Assign images to specific Sanggar cards
+        const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
+        if (am) {
+          am.thumbnail_url = "/sanggar2.webp";
+          am.whatsapp = "6281289214320";
+          am.youtubeUrl = "https://www.youtube.com";
+        }
 
-      const citra = sanggars.find(s => s.nama_sanggar === "Citra Art Studio");
-      if (citra) {
-        citra.thumbnail_url = "/sanggar5.webp";
-        citra.whatsapp = "6281289214320";
-        citra.youtubeUrl = "https://www.youtube.com";
-      }
+        const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
+        if (arunika) {
+          arunika.thumbnail_url = "/sanggar3.webp";
+          arunika.whatsapp = "6281289214320";
+          arunika.youtubeUrl = "https://www.youtube.com";
+        }
 
-      const daya = sanggars.find(s => s.nama_sanggar === "Daya Presta");
-      if (daya) {
-        daya.thumbnail_url = "/sanggar6.webp";
-        daya.whatsapp = "6281289214320";
-        daya.youtubeUrl = "https://www.youtube.com";
+        const ayodya = sanggars.find(s => s.nama_sanggar === "Ayodya Pala");
+        if (ayodya) {
+          ayodya.thumbnail_url = "/sanggar4.webp";
+          ayodya.whatsapp = "6281399160062";
+          ayodya.youtubeUrl = "https://www.youtube.com";
+        }
+
+        const citra = sanggars.find(s => s.nama_sanggar === "Citra Art Studio");
+        if (citra) {
+          citra.thumbnail_url = "/sanggar5.webp";
+          citra.whatsapp = "6281289214320";
+          citra.youtubeUrl = "https://www.youtube.com";
+        }
+
+        const daya = sanggars.find(s => s.nama_sanggar === "Daya Presta");
+        if (daya) {
+          daya.thumbnail_url = "/sanggar6.webp";
+          daya.whatsapp = "6281289214320";
+          daya.youtubeUrl = "https://www.youtube.com";
+        }
       }
     }
-  } catch (err: any) {
-    console.error("Supabase fetch error:", err);
-    fetchError = err?.message || "Unknown exception occurred during fetch.";
+  } catch (err: unknown) {
+    const errMsg =
+      err instanceof Error ? err.message : String(err);
+    console.error("Unexpected fetch exception:", errMsg, err);
+    fetchError = errMsg || "Terjadi kesalahan koneksi ke server database.";
   }
 
   return <SanggarCatalog sanggars={sanggars} fetchError={fetchError} />;

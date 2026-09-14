@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 
-export default function HomePage() {
+export default function HomePage() {  
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
