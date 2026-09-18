@@ -11,13 +11,12 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = [
-  { image: '/musik1.webp', title: 'Musik Tradisional Betawi' },
-  { image: '/ondel-ondel.webp', title: 'Pemusik Ondel-Ondel' },
-  { image: '/katalog-musik.webp', title: 'Seniman Musik Jakarta' },
-  { image: '/penari1.webp', title: 'Seni Budaya Betawi' },
-  { image: '/sanggar2.webp', title: 'Pentas Seni Musik 1' },
-  { image: '/sanggar4.webp', title: 'Pentas Seni Musik 2' },
-  { image: '/sanggar6.webp', title: 'Alat Musik Tradisional' },
+  { image: '/dinamis-musik-1.webp', title: 'Seniman Musik 1' },
+  { image: '/dinamis-musik-2.webp', title: 'Seniman Musik 2' },
+  { image: '/dinamis-musik-3.webp', title: 'Seniman Musik 3' },
+  { image: '/dinamis-musik-4.webp', title: 'Seniman Musik 4' },
+  { image: '/dinamis-musik-5.webp', title: 'Seniman Musik 5' },
+  { image: '/dinamis-musik-6.webp', title: 'Seniman Musik 6' },
 ];
 
 interface Pemusik {
@@ -101,7 +100,7 @@ export default function PemusikCatalog({
       <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f] -mt-px">
         {/* Drift Wall Background Layer */}
         <div className="absolute top-0 -left-[10%] w-[120%] h-full pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
-          <DriftWall items={PEMUSIK_DRIFT_ITEMS} columns={7} />
+          <DriftWall items={PEMUSIK_DRIFT_ITEMS} columns={6} />
         </div>
 
         {/* Dark Vignette Overlay */}

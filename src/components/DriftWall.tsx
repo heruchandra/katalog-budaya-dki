@@ -36,13 +36,12 @@ export interface DriftWallProps {
 }
 
 const DEFAULT_ITEMS: DriftWallItem[] = [
-  { image: '/sanggar1.webp', title: 'Tari Tradisional 1' },
-  { image: '/sanggar2.webp', title: 'Tari Tradisional 2' },
-  { image: '/sanggar3.webp', title: 'Tari Tradisional 3' },
-  { image: '/sanggar4.webp', title: 'Tari Tradisional 4' },
-  { image: '/sanggar5.webp', title: 'Tari Tradisional 5' },
-  { image: '/sanggar6.webp', title: 'Tari Tradisional 6' },
-  { image: '/penari1.webp', title: 'Budaya Jakarta' }
+  { image: '/dinamis-sanggar-1.webp', title: 'Seni Tari Betawi' },
+  { image: '/dinamis-sanggar-2.webp', title: 'Pentas Kreasi Budaya' },
+  { image: '/dinamis-sanggar-3.webp', title: 'Harmoni Nusantara' },
+  { image: '/dinamis-sanggar-4.webp', title: 'Pusaka Tradisi Jakarta' },
+  { image: '/dinamis-sanggar-5.webp', title: 'Ekspresi Panggung Budaya' },
+  { image: '/dinamis-sanggar-6.webp', title: 'Koreografi Tari Kolosal' }
 ];
 
 const prefersReducedMotion = (): boolean =>
@@ -55,7 +54,7 @@ const columnFactor = (index: number, variance: number): number => {
 
 const DriftWall = ({
   items = DEFAULT_ITEMS,
-  columns = 7,
+  columns = 6,
   tileWidth = 210,
   tileHeight = 140,
   gap = 18,
@@ -107,9 +106,11 @@ const DriftWall = ({
 
   const columnItems = useMemo(() => {
     const validItems = items && items.length > 0 ? items : DEFAULT_ITEMS;
-    const cols: DriftWallItem[][] = Array.from({ length: columns }, () => []);
-    validItems.forEach((item, i) => cols[i % columns].push(item));
-    return cols.map(col => (col.length ? col : validItems.slice(0, 1)));
+    return Array.from({ length: columns }, (_, colIdx) => {
+      // Assign image i to column i (modulo validItems.length), repeating the exact same image vertically within its respective column track
+      const assignedItem = validItems[colIdx % validItems.length];
+      return [assignedItem];
+    });
   }, [items, columns]);
 
   const columnMeta = useMemo(() => {
@@ -117,7 +118,7 @@ const DriftWall = ({
     const effectiveHeight = Math.max(containerHeight, 400);
     return columnItems.map(col => {
       const copyHeight = Math.max(unit, col.length * unit);
-      const copies = Math.max(2, Math.ceil((effectiveHeight * 1.8) / copyHeight) + 1);
+      const copies = Math.max(8, Math.ceil((effectiveHeight * 2.5) / copyHeight) + 2);
       return { copyHeight, copies };
     });
   }, [columnItems, tileHeight, gap, containerHeight]);
@@ -296,7 +297,7 @@ const DriftWall = ({
           loading="eager"
           decoding="async"
           draggable={false}
-          className="border-none outline-none ring-0"
+          className="w-full h-full object-cover object-center border-none outline-none ring-0"
         />
         <span className="drift-wall__overlay border-none outline-none ring-0" aria-hidden="true" />
       </span>

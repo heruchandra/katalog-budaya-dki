@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Inbox, AlertTriangle, Play, MessageCircle } from "lucide-react";
+import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import DriftWall, { DriftWallItem } from "@/components/DriftWall";
@@ -12,13 +12,12 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const SANGGAR_DRIFT_ITEMS: DriftWallItem[] = [
-  { image: '/sanggar1.webp', title: 'Tari Tradisional 1' },
-  { image: '/sanggar2.webp', title: 'Tari Tradisional 2' },
-  { image: '/sanggar3.webp', title: 'Tari Tradisional 3' },
-  { image: '/sanggar4.webp', title: 'Tari Tradisional 4' },
-  { image: '/sanggar5.webp', title: 'Tari Tradisional 5' },
-  { image: '/sanggar6.webp', title: 'Tari Tradisional 6' },
-  { image: '/penari1.webp', title: 'Budaya Jakarta' },
+  { image: '/dinamis-sanggar-1.webp', title: 'Seni Tari Betawi' },
+  { image: '/dinamis-sanggar-2.webp', title: 'Pentas Kreasi Budaya' },
+  { image: '/dinamis-sanggar-3.webp', title: 'Harmoni Nusantara' },
+  { image: '/dinamis-sanggar-4.webp', title: 'Pusaka Tradisi Jakarta' },
+  { image: '/dinamis-sanggar-5.webp', title: 'Ekspresi Panggung Budaya' },
+  { image: '/dinamis-sanggar-6.webp', title: 'Koreografi Tari Kolosal' },
 ];
 
 interface Sanggar {
@@ -107,7 +106,7 @@ export default function SanggarCatalog({
       <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f] -mt-px">
         {/* Drift Wall Background Layer */}
         <div className="absolute top-0 -left-[10%] w-[120%] h-full pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
-          <DriftWall items={SANGGAR_DRIFT_ITEMS} columns={7} />
+          <DriftWall items={SANGGAR_DRIFT_ITEMS} columns={6} />
         </div>
 
         {/* Dark Vignette Overlay */}
@@ -248,10 +247,12 @@ export default function SanggarCatalog({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="h-10 w-full max-w-[200px] px-5 rounded-full bg-white/95 text-zinc-900 hover:bg-white shadow-md transition-all duration-200 active:scale-95 border border-white/20 flex items-center justify-center gap-2 text-xs font-semibold tracking-wider uppercase"
+                        className="group/yt w-full max-w-[200px] bg-red-600/90 hover:bg-red-600 text-white rounded-full px-5 py-2.5 text-xs font-bold tracking-wider uppercase flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-600/25 active:scale-95 gap-2.5 backdrop-blur-sm"
                       >
-                        <Play className="w-4 h-4 fill-current shrink-0" />
-                        <span>Tonton Video</span>
+                        <svg className="w-4 h-4 fill-current text-white shrink-0 group-hover/yt:scale-110 transition-transform duration-300" viewBox="0 0 24 24">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        <span className="translate-y-[0.5px]">Tonton Video</span>
                       </a>
 
                       {/* Button 2: WhatsApp Contact */}
@@ -260,10 +261,12 @@ export default function SanggarCatalog({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="h-10 w-full max-w-[200px] px-5 rounded-full bg-zinc-950/90 text-white hover:bg-black shadow-md transition-all duration-200 active:scale-95 border border-zinc-700/50 backdrop-blur-sm flex items-center justify-center gap-2 text-xs font-semibold tracking-wider uppercase"
+                        className="group/wa w-full max-w-[200px] bg-emerald-600/90 hover:bg-emerald-600 text-white rounded-full px-5 py-2.5 text-xs font-bold tracking-wider uppercase flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-600/25 active:scale-95 gap-2.5 backdrop-blur-sm"
                       >
-                        <MessageCircle className="w-4 h-4 shrink-0" />
-                        <span>WhatsApp</span>
+                        <svg className="w-4 h-4 fill-current text-white shrink-0 group-hover/wa:scale-110 group-hover/wa:rotate-6 transition-transform duration-300" viewBox="0 0 24 24">
+                          <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.12.553 4.108 1.519 5.84L.16 23.479l5.774-1.513a11.97 11.97 0 006.097 1.665c6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm.016 21.986a9.92 9.92 0 01-5.06-1.385l-.363-.216-3.763.987.1004-3.669-.237-.377A9.924 9.924 0 012.05 12.03c0-5.503 4.478-9.981 9.981-9.981 5.503 0 9.981 4.478 9.981 9.981 0 5.503-4.478 9.981-9.981 9.981zm5.474-7.481c-.301-.15-1.782-.879-2.057-.979-.275-.1-.475-.15-.675.15-.2.3-.775.979-.95 1.179-.175.2-.35.225-.65.075-.3-.15-1.267-.467-2.414-1.489-.893-.796-1.495-1.78-1.67-2.08-.175-.3-.018-.462.13-.61.135-.133.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.582-.492-.503-.675-.512-.175-.008-.375-.01-.575-.01-.2 0-.525.075-.8.375s-1.05 1.025-1.05 2.5 1.075 2.898 1.225 3.1 2.113 3.227 5.118 4.524c.714.309 1.272.494 1.707.632.716.228 1.368.196 1.883.119.575-.086 1.782-.729 2.032-1.43.25-.701.25-1.301.175-1.43-.075-.129-.275-.204-.575-.354z"/>
+                        </svg>
+                        <span className="translate-y-[0.5px]">WhatsApp</span>
                       </a>
                     </div>
                   </div>

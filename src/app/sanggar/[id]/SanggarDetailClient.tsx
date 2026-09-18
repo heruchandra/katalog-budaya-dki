@@ -2,26 +2,20 @@
 
 import Link from "next/link";
 import { 
-  MapPin, 
   Phone, 
   Mail, 
-  CheckCircle2, 
   Award, 
   Clock, 
-  User, 
   ArrowUpRight, 
-  ArrowLeft,
-  MessageCircle, 
   Sparkles,
   Building2,
   Calendar,
   Share2
 } from "lucide-react";
-import { Dancing_Script, Poppins, Playfair_Display } from 'next/font/google';
+import { Poppins, Playfair_Display } from 'next/font/google';
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600'] });
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
@@ -80,319 +74,38 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
 
   return (
-    <div className={`min-h-screen bg-white text-slate-900 pt-20 md:pt-24 selection:bg-orange-100 selection:text-orange-900 ${poppins.className}`}>
+    <main className={`min-h-screen bg-zinc-50 text-zinc-900 pt-16 selection:bg-orange-100 selection:text-orange-900 ${poppins.className}`}>
       
-      {/* Top Breadcrumb / Return Link */}
-      <div className="border-b border-slate-100 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* Top Container: Back Button & Pengurus Sanggar Card */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-4">
+        {/* Subtle, elegant back link */}
+        <div className="mb-4">
           <Link 
             href="/sanggar" 
-            className="inline-flex items-center gap-2 text-xs tracking-widest uppercase text-slate-600 hover:text-[#ea580c] transition-colors group font-medium"
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-zinc-500 hover:text-orange-600 uppercase transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-            <span>{t('backToCatalog') || 'KEMBALI KE KATALOG SANGGAR'}</span>
+            ← Kembali ke Katalog
           </Link>
         </div>
-      </div>
 
-      {/* Cinematic Hero Media */}
-      <section className="w-full relative h-[45vh] md:h-[65vh] bg-slate-950 overflow-hidden">
-        <img 
-          src={sanggar.imageUrl} 
-          alt={sanggar.name} 
-          className="w-full h-full object-cover opacity-90 transition-transform duration-1000 hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
-        
-        {/* Subtle Bottom Vignette Ribbon */}
-        <div className="absolute bottom-6 left-0 right-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-end text-white">
-          <div className="space-y-1">
-            <p className="text-xs uppercase tracking-[0.3em] text-orange-400 font-medium">
-              DIREKTORI SENI & BUDAYA JAKARTA
-            </p>
-            <p className="text-sm text-slate-300 font-light tracking-wide">
-              {sanggar.wilayah} • Terdaftar Resmi Dinas Kebudayaan
-            </p>
+        {/* Pengurus Sanggar Card immediately follows */}
+        <section className="bg-white rounded-3xl p-6 md:p-8 border border-zinc-200/80 shadow-sm transition-all duration-300">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-1 block">
+              PIMPINAN & MANAJEMEN
+            </span>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight">
+              Pengurus Sanggar — {sanggar.name || "AE Production"}
+            </h1>
           </div>
-        </div>
-      </section>
 
-      {/* Hero Header Extension: Title, Tagline & Sleek Metadata Ribbon */}
-      <section className="bg-white border-b border-slate-200/80 pt-12 pb-10">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          
-          {/* Cursive Studio Title */}
-          <motion.h1 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className={`text-5xl sm:text-6xl md:text-7xl font-normal text-slate-900 tracking-normal ${dancingScript.className}`}
-          >
-            {sanggar.name}
-          </motion.h1>
+          {/* Internal Divider */}
+          <div className="border-t border-zinc-100 my-6" />
 
-          {/* Tagline in subtle serif italic */}
-          {sanggar.tagline && (
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className={`text-lg sm:text-xl md:text-2xl text-slate-600 italic mt-4 max-w-3xl mx-auto leading-relaxed ${playfair.className}`}
-            >
-              “{sanggar.tagline}”
-            </motion.p>
-          )}
-
-          {/* Sleek Metadata Ribbon flanked by hairline borders */}
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-8 pt-4 pb-4 border-y border-slate-200 flex flex-wrap items-center justify-center sm:justify-between gap-4 text-xs md:text-sm tracking-wider uppercase text-slate-500"
-          >
-            <div className="flex flex-wrap items-center justify-center gap-6 text-slate-700">
-              <div className="flex items-center gap-2 font-medium normal-case font-sans">
-                <User className="w-4 h-4 text-[#ea580c]" />
-                <span className="text-slate-500 uppercase text-xs tracking-wider">Pimpinan:</span>
-                <span className="font-semibold text-slate-800">{sanggar.kontak.ketua}</span>
-              </div>
-              <span className="hidden sm:inline text-slate-300">|</span>
-              <div className="flex items-center gap-2 font-medium normal-case font-sans">
-                <MapPin className="w-4 h-4 text-[#ea580c]" />
-                <span className="text-slate-500 uppercase text-xs tracking-wider">Wilayah:</span>
-                <span className="font-semibold text-slate-800">{sanggar.wilayah}</span>
-              </div>
-              <span className="hidden sm:inline text-slate-300">|</span>
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 text-xs font-semibold tracking-wider text-[#ea580c] bg-orange-50 border border-orange-200">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>{sanggar.grade}</span>
-              </div>
-            </div>
-
-            {/* Quick WhatsApp Booking CTA with brand orange accents */}
-            <a 
-              href={waLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#ff7b00] hover:bg-[#ea580c] text-white font-medium text-xs tracking-widest uppercase transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5"
-            >
-              <MessageCircle className="w-4 h-4 fill-white text-[#ff7b00]" />
-              <span>Hubungi via WhatsApp</span>
-            </a>
-          </motion.div>
-
-        </div>
-      </section>
-
-      {/* Split Editorial Grid: About & Services */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
-          {/* Left Column (60% / 7 cols): Long-form storytelling typography */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-7 space-y-6"
-          >
-            <div>
-              <span className="text-xs font-semibold tracking-[0.25em] text-[#ea580c] uppercase block mb-2">
-                PROFIL & REKAM JEJAK
-              </span>
-              <h2 className={`text-3xl sm:text-4xl font-normal text-slate-900 tracking-tight ${playfair.className}`}>
-                Merawat Jiwa Seni Tradisi
-              </h2>
-              <div className="w-16 h-0.5 bg-[#ea580c] mt-4 mb-8" />
-            </div>
-
-            {/* Storytelling Paragraphs with Drop-Cap on first paragraph */}
-            {sanggar.description && sanggar.description.length > 0 && (
-              <div className="text-slate-700 text-base sm:text-lg leading-relaxed space-y-5 font-light">
-                <p className="text-justify">
-                  <span className={`float-left text-5xl md:text-6xl text-slate-900 leading-none pr-3 pt-1 font-normal select-none ${playfair.className}`}>
-                    {sanggar.description[0].charAt(0)}
-                  </span>
-                  {sanggar.description[0].slice(1)}
-                </p>
-
-                {sanggar.description.slice(1).map((paragraph, idx) => (
-                  <p key={idx} className="text-justify">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            )}
-
-            {/* Philosophy Callout Quote */}
-            {sanggar.philosophy && (
-              <blockquote className="border-l-2 border-[#ea580c] pl-6 my-8 py-2 text-slate-800 bg-orange-50/30">
-                <p className={`font-serif italic text-lg sm:text-xl text-slate-800 leading-relaxed ${playfair.className}`}>
-                  &ldquo;{sanggar.philosophy}&rdquo;
-                </p>
-                <footer className="text-xs uppercase tracking-widest text-slate-400 font-sans mt-2 font-medium">
-                  — Filosofi {sanggar.name}
-                </footer>
-              </blockquote>
-            )}
-
-            {/* Architectural Dual Location Blocks (No Bulky Cards) */}
-            <div className="border-t border-slate-200 pt-8 mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#ea580c] font-semibold">
-                  <Building2 className="w-4 h-4" />
-                  <span>Alamat Sanggar / Sekretariat</span>
-                </div>
-                <p className="text-sm text-slate-700 leading-relaxed font-sans">
-                  {sanggar.alamatSanggar}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#ea580c] font-semibold">
-                  <Clock className="w-4 h-4" />
-                  <span>Tempat & Jadwal Latihan</span>
-                </div>
-                <p className="text-sm text-slate-700 leading-relaxed font-sans">
-                  {sanggar.alamatLatihan}
-                </p>
-              </div>
-            </div>
-
-          </motion.div>
-
-          {/* Right Column (40% / 5 cols): Bordered minimalist list for "Layanan Sanggar" */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="lg:col-span-5 bg-slate-50/60 p-8 border border-slate-200/80 space-y-6"
-          >
-            <div>
-              <span className="text-xs font-semibold tracking-[0.25em] text-[#ea580c] uppercase block mb-2">
-                PROGRAM & LAYANAN
-              </span>
-              <h3 className={`text-2xl sm:text-3xl font-normal text-slate-900 tracking-tight ${playfair.className}`}>
-                Layanan Sanggar
-              </h3>
-              <div className="w-12 h-0.5 bg-[#ea580c] mt-3 mb-6" />
-              <p className="text-xs text-slate-500 font-sans tracking-wide">
-                Layanan resmi yang dikelola oleh pengurus sanggar dengan instruktur bersertifikat.
-              </p>
-            </div>
-
-            {/* Minimalist Bordered List */}
-            <ul className="divide-y divide-slate-200 border-y border-slate-200">
-              {sanggar.layanan && sanggar.layanan.map((item, idx) => (
-                <li 
-                  key={idx}
-                  className="group py-4 flex items-center justify-between transition-all duration-200 hover:pl-2 cursor-default"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 bg-[#ea580c] group-hover:scale-150 transition-transform"></span>
-                    <span className="text-sm sm:text-base text-slate-800 font-medium group-hover:text-[#ea580c] transition-colors">
-                      {item}
-                    </span>
-                  </div>
-                  <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-[#ea580c] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                </li>
-              ))}
-            </ul>
-
-            {/* Inquire CTA Box */}
-            <div className="pt-2">
-              <p className="text-xs text-slate-500 mb-3">
-                Memerlukan jadwal khusus atau pementasan tari untuk kegiatan korporasi / kenegaraan?
-              </p>
-              <a 
-                href={waLink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 border border-slate-900 hover:bg-slate-900 hover:text-white text-slate-900 text-xs font-semibold uppercase tracking-widest transition-all duration-300"
-              >
-                <span>Konsultasi Layanan via WhatsApp</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-
-          </motion.div>
-
-        </div>
-      </section>
-
-      {/* Accolades & Leadership: "Prestasi & Pengurus" */}
-      <section className="border-t border-slate-200 bg-slate-50/50 py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
-          {/* Left / Main (7 cols): Clean Chronological Accolades List with Hairline Borders */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-7 space-y-6"
-          >
-            <div>
-              <span className="text-xs font-semibold tracking-[0.25em] text-[#ea580c] uppercase block mb-2">
-                REKAM JEJAK & PENGHARGAAN
-              </span>
-              <h2 className={`text-3xl sm:text-4xl font-normal text-slate-900 tracking-tight ${playfair.className}`}>
-                Prestasi & Penghargaan
-              </h2>
-              <div className="w-16 h-0.5 bg-[#ea580c] mt-4 mb-8" />
-            </div>
-
-            {sanggar.prestasi && sanggar.prestasi.length > 0 ? (
-              <div className="divide-y divide-slate-200 border-y border-slate-200">
-                {sanggar.prestasi.map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className="py-5 flex items-start gap-4 group hover:bg-slate-50/50 px-2 transition-colors"
-                  >
-                    <span className={`text-2xl sm:text-3xl font-normal text-slate-300 group-hover:text-[#ea580c] transition-colors leading-none font-serif ${playfair.className}`}>
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
-                    <div className="space-y-1">
-                      <p className="text-base sm:text-lg font-medium text-slate-800 leading-snug">
-                        {item}
-                      </p>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-sans">
-                        Pencapaian Seni Resmi
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-slate-500 italic">
-                Data prestasi sedang dalam verifikasi arsip dinas.
-              </p>
-            )}
-          </motion.div>
-
-          {/* Right (5 cols): Leadership & Circular Portrait Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="lg:col-span-5 bg-white border border-slate-200/90 p-8 space-y-8"
-          >
-            <div>
-              <span className="text-xs font-semibold tracking-[0.25em] text-[#ea580c] uppercase block mb-2">
-                PIMPINAN & MANAJEMEN
-              </span>
-              <h3 className={`text-2xl sm:text-3xl font-normal text-slate-900 tracking-tight ${playfair.className}`}>
-                Pengurus Sanggar
-              </h3>
-              <div className="w-12 h-0.5 bg-[#ea580c] mt-3 mb-6" />
-            </div>
-
-            {/* Classic Circular Portrait Card */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 pt-2">
-              <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-orange-500/40 p-1 shrink-0 bg-slate-50">
+          <div className="md:grid md:grid-cols-2 gap-8 items-center">
+            {/* Left Column: Ketua Sanggar photo & info */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-orange-500/40 p-1 shrink-0 bg-zinc-50">
                 <img 
                   src={sanggar.fotoKetuaUrl || "/penari1.webp"} 
                   alt={sanggar.kontak.ketua} 
@@ -400,68 +113,269 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 />
               </div>
 
-              <div className="space-y-2 text-center sm:text-left">
-                <span className="text-xs uppercase tracking-widest text-[#ea580c] font-semibold block">
+              <div className="space-y-1.5 text-center sm:text-left">
+                <span className="text-xs uppercase tracking-widest text-orange-600 font-semibold block">
                   Ketua Sanggar
                 </span>
-                <h4 className={`text-xl font-medium text-slate-900 ${playfair.className}`}>
+                <h4 className="text-xl font-bold text-zinc-900">
                   {sanggar.kontak.ketua}
                 </h4>
-                <p className="text-xs text-slate-500 font-light leading-relaxed">
+                <p className="text-xs text-zinc-500 font-light leading-relaxed">
                   Bertanggung jawab atas pembinaan mutu kurikulum tari dan arah kebijakan sanggar seni.
                 </p>
               </div>
             </div>
 
-            {/* PIC & Hubungan Masyarakat */}
-            <div className="border-t border-slate-100 pt-6 space-y-3 text-sm">
-              <div className="flex items-center justify-between py-1">
-                <span className="text-xs uppercase tracking-wider text-slate-400">Nama PIC Kontak:</span>
-                <span className="font-medium text-slate-800">{sanggar.kontak.pic}</span>
-              </div>
-              <div className="flex items-center justify-between py-1">
-                <span className="text-xs uppercase tracking-wider text-slate-400">Nomor WhatsApp:</span>
-                <span className="font-medium text-slate-800">{sanggar.kontak.phone}</span>
-              </div>
-              {sanggar.kontak.email && (
-                <div className="flex items-center justify-between py-1">
-                  <span className="text-xs uppercase tracking-wider text-slate-400">Email:</span>
-                  <span className="font-medium text-slate-800">{sanggar.kontak.email}</span>
+            {/* Right Column: PIC details & WhatsApp button */}
+            <div className="mt-6 md:mt-0 space-y-4">
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center justify-between py-2 border-b border-zinc-100">
+                  <span className="text-xs uppercase text-zinc-400 font-medium">Nama PIC Kontak:</span>
+                  <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak.pic}</span>
                 </div>
+                <div className="flex items-center justify-between py-2 border-b border-zinc-100">
+                  <span className="text-xs uppercase text-zinc-400 font-medium">Nomor WhatsApp:</span>
+                  <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak.phone}</span>
+                </div>
+                {sanggar.kontak.email && (
+                  <div className="flex items-center justify-between py-2 border-b border-zinc-100">
+                    <span className="text-xs uppercase text-zinc-400 font-medium">Email:</span>
+                    <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak.email}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Direct Booking CTA */}
+              <a 
+                href={waLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-sm tracking-wide shadow-sm flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95"
+              >
+                <svg className="w-5 h-5 fill-current text-white shrink-0" viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                </svg>
+                <span>HUBUNGI KETUA / PIC SANGGAR</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* 2-Column Grid: Main Content & Sticky Sidebar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          
+          {/* LEFT COLUMN: Main Narrative & Content (Span 2) */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* 1. Tagline Quote & Deskripsi / Merawat Jiwa Seni Tradisi */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
+              <div>
+                <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
+                  PROFIL & REKAM JEJAK
+                </span>
+                <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+                  Merawat Jiwa Seni Tradisi
+                </h2>
+                <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
+              </div>
+
+              {sanggar.tagline && (
+                <div className="border-l-4 border-orange-500 pl-4 py-2 my-6 bg-orange-50/50 rounded-r-xl">
+                  <p className="text-lg md:text-xl font-serif italic text-zinc-800 leading-relaxed">
+                    "{sanggar.tagline}"
+                  </p>
+                </div>
+              )}
+
+              {/* Storytelling Paragraphs with Drop-Cap on first paragraph */}
+              {sanggar.description && sanggar.description.length > 0 && (
+                <div className="text-zinc-700 text-base sm:text-lg leading-relaxed space-y-5 font-light">
+                  <p className="text-justify">
+                    <span className={`float-left text-5xl md:text-6xl text-zinc-900 leading-none pr-3 pt-1 font-normal select-none ${playfair.className}`}>
+                      {sanggar.description[0].charAt(0)}
+                    </span>
+                    {sanggar.description[0].slice(1)}
+                  </p>
+
+                  {sanggar.description.slice(1).map((paragraph, idx) => (
+                    <p key={idx} className="text-justify">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {/* Philosophy Callout Quote */}
+              {sanggar.philosophy && (
+                <blockquote className="border-l-2 border-orange-500 pl-6 my-8 py-3 text-zinc-800 bg-orange-50/50 rounded-r-xl">
+                  <p className={`font-serif italic text-lg sm:text-xl text-zinc-800 leading-relaxed ${playfair.className}`}>
+                    &ldquo;{sanggar.philosophy}&rdquo;
+                  </p>
+                  <footer className="text-xs uppercase tracking-widest text-zinc-400 font-sans mt-2 font-medium">
+                    — Filosofi {sanggar.name}
+                  </footer>
+                </blockquote>
+              )}
+
+              {/* Architectural Dual Location Blocks */}
+              <div className="border-t border-zinc-200 pt-8 mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
+                    <Building2 className="w-4 h-4" />
+                    <span>Alamat Sanggar / Sekretariat</span>
+                  </div>
+                  <p className="text-sm text-zinc-700 leading-relaxed font-sans">
+                    {sanggar.alamatSanggar}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
+                    <Clock className="w-4 h-4" />
+                    <span>Tempat & Jadwal Latihan</span>
+                  </div>
+                  <p className="text-sm text-zinc-700 leading-relaxed font-sans">
+                    {sanggar.alamatLatihan}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Layanan Sanggar Section */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
+              <div>
+                <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
+                  PROGRAM & LAYANAN
+                </span>
+                <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+                  Layanan Sanggar
+                </h3>
+                <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-6" />
+                <p className="text-xs text-zinc-500 font-sans tracking-wide">
+                  Layanan resmi yang dikelola oleh pengurus sanggar dengan instruktur bersertifikat.
+                </p>
+              </div>
+
+              {/* Minimalist Bordered List */}
+              <ul className="divide-y divide-zinc-100 border-y border-zinc-100">
+                {sanggar.layanan && sanggar.layanan.map((item, idx) => (
+                  <li 
+                    key={idx}
+                    className="group py-4 flex items-center justify-between transition-all duration-200 hover:pl-2 cursor-default"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="w-1.5 h-1.5 bg-orange-600 group-hover:scale-150 transition-transform rounded-full"></span>
+                      <span className="text-sm sm:text-base text-zinc-800 font-medium group-hover:text-orange-600 transition-colors">
+                        {item}
+                      </span>
+                    </div>
+                    <ArrowUpRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 3. Prestasi & Penghargaan Section */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
+              <div>
+                <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
+                  REKAM JEJAK & PENGHARGAAN
+                </span>
+                <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+                  Prestasi & Penghargaan
+                </h2>
+                <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
+              </div>
+
+              {sanggar.prestasi && sanggar.prestasi.length > 0 ? (
+                <div className="divide-y divide-zinc-100 border-y border-zinc-100">
+                  {sanggar.prestasi.map((item, idx) => (
+                    <div 
+                      key={idx} 
+                      className="py-5 flex items-start gap-4 group hover:bg-zinc-50/60 px-2 rounded-xl transition-colors"
+                    >
+                      <span className={`text-2xl sm:text-3xl font-normal text-zinc-300 group-hover:text-orange-600 transition-colors leading-none font-serif ${playfair.className}`}>
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <div className="space-y-1">
+                        <p className="text-base sm:text-lg font-medium text-zinc-800 leading-snug">
+                          {item}
+                        </p>
+                        <p className="text-xs text-zinc-400 uppercase tracking-wider font-sans">
+                          Pencapaian Seni Resmi
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-zinc-500 italic">
+                  Data prestasi sedang dalam verifikasi arsip dinas.
+                </p>
               )}
             </div>
 
-            {/* Direct Booking CTA */}
-            <a 
-              href={waLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 bg-[#ff7b00] hover:bg-[#ea580c] text-white font-medium text-xs tracking-widest uppercase transition-all duration-300 shadow-sm hover:shadow-md"
-            >
-              <MessageCircle className="w-4 h-4 fill-white text-[#ff7b00]" />
-              <span>Hubungi Ketua / PIC Sanggar</span>
-            </a>
+          </div>
 
-          </motion.div>
+          {/* RIGHT COLUMN: Sticky Sidebar / Info Cards (Span 1) */}
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-24">
+            
+            {/* Card 1: Informasi Operasional & Jadwal */}
+            <div className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm transition-all duration-300">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">Informasi Latihan</h3>
+              <div className="space-y-3 text-sm text-zinc-700">
+                <div className="flex justify-between border-b border-zinc-100 pb-2.5">
+                  <span className="text-zinc-500">Jadwal Rutin:</span>
+                  <span className="font-semibold text-right text-zinc-800">Sabtu & Minggu</span>
+                </div>
+                <div className="flex justify-between border-b border-zinc-100 pb-2.5">
+                  <span className="text-zinc-500">Jam Operasional:</span>
+                  <span className="font-semibold text-right text-zinc-800">09:00 - 16:00 WIB</span>
+                </div>
+                <div className="flex justify-between pt-1">
+                  <span className="text-zinc-500">Status Sanggar:</span>
+                  <span className="font-semibold text-emerald-600">Aktif & Terverifikasi</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Lokasi & Alamat */}
+            <div className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm transition-all duration-300">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">Lokasi Sanggar</h3>
+              <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                {sanggar.alamatSanggar || "Jl. Raya Cipinang Besar No. 12, Jatinegara, Jakarta Timur, DKI Jakarta 13410"}
+              </p>
+              <a 
+                href={sanggar.alamatSanggar ? `https://maps.google.com/?q=${encodeURIComponent(sanggar.alamatSanggar)}` : "https://maps.google.com"} 
+                target="_blank" 
+                rel="noreferrer"
+                className="block w-full text-center py-2.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-xl transition-all"
+              >
+                Buka di Google Maps ↗
+              </a>
+            </div>
 
           </div>
+
         </div>
-      </section>
+      </div>
 
       {/* Gallery Section */}
       {sanggar.gallery && sanggar.gallery.length > 0 && (
-        <section className="bg-slate-900 text-white py-20 lg:py-24">
+        <section className="border-t border-zinc-200 bg-white py-16 lg:py-20 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 border-b border-slate-800 pb-6 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 border-b border-zinc-200 pb-6 gap-4">
               <div>
-                <span className="text-xs font-semibold tracking-[0.25em] text-orange-400 uppercase block mb-2">
+                <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
                   DOKUMENTASI VISUAL
                 </span>
-                <h2 className={`text-3xl sm:text-4xl font-normal text-white tracking-tight ${playfair.className}`}>
+                <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
                   Galeri Foto & Aktivitas
                 </h2>
               </div>
-              <p className="text-xs text-slate-400 uppercase tracking-widest font-sans">
+              <p className="text-xs text-zinc-500 uppercase tracking-widest font-sans">
                 {sanggar.gallery.length} Dokumentasi Terpilih
               </p>
             </div>
@@ -470,14 +384,14 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               {sanggar.gallery.map((img, idx) => (
                 <div 
                   key={idx} 
-                  className="group relative overflow-hidden bg-slate-800 aspect-[4/3] border border-slate-800 hover:border-orange-500/50 transition-all duration-300"
+                  className="group relative overflow-hidden bg-zinc-100 rounded-2xl aspect-[4/3] border border-zinc-200 shadow-sm hover:border-orange-500/50 transition-all duration-300"
                 >
                   <img 
                     src={img.url} 
                     alt={img.type} 
-                    className="w-full h-full object-cover opacity-85 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <span className="text-xs font-medium text-white tracking-wide">
                       {img.type}
                     </span>
@@ -489,6 +403,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
         </section>
       )}
 
-    </div>
+    </main>
   );
 }
