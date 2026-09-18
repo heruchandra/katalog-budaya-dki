@@ -202,19 +202,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             
             {/* 1. Tagline Quote & Deskripsi / Merawat Jiwa Seni Tradisi */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300 group">
               <div>
                 <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
                   Profil Sanggar
                 </h2>
                 <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
-                <div className="relative inline-block mb-4">
-                  <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                    Profil Sanggar
-                  </h2>
-                  {/* Expandable Accent Line */}
-                  <span className="block h-[3px] bg-orange-600 rounded-full w-12 group-hover:w-full transition-all duration-300 ease-in-out mt-1.5" />
-                </div>
               </div>
 
               <div className="border-l-4 border-orange-500 pl-4 py-2 my-6 bg-orange-50/50 rounded-r-xl">
@@ -279,19 +271,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* 2. Layanan Sanggar Section */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300 group">
               <div>
                 <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
                   Layanan Sanggar
                 </h3>
                 <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-6" />
-                <div className="relative inline-block mb-3">
-                  <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                    Layanan Sanggar
-                  </h3>
-                  {/* Expandable Accent Line */}
-                  <span className="block h-[3px] bg-orange-600 rounded-full w-12 group-hover:w-full transition-all duration-300 ease-in-out mt-1.5" />
-                </div>
                 <p className="text-xs text-zinc-500 font-sans tracking-wide">
                   Layanan resmi yang dikelola oleh pengurus sanggar dengan instruktur bersertifikat.
                 </p>
@@ -318,19 +302,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* 3. Prestasi & Penghargaan Section */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300 group">
               <div>
                 <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
                   Prestasi & Penghargaan
                 </h2>
                 <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
-                <div className="relative inline-block mb-4">
-                  <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                    Prestasi & Penghargaan
-                  </h2>
-                  {/* Expandable Accent Line */}
-                  <span className="block h-[3px] bg-orange-600 rounded-full w-12 group-hover:w-full transition-all duration-300 ease-in-out mt-1.5" />
-                </div>
               </div>
 
               {(() => {
