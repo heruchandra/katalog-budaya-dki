@@ -68,45 +68,59 @@ export default async function SanggarPage() {
       } else {
         sanggars = (data as Sanggar[]) ?? [];
 
-        const ae = sanggars.find(s => s.nama_sanggar === "AE Production");
+        const cardImages = [
+          "/card-1.webp",
+          "/card-2.webp",
+          "/card-3.webp",
+          "/card-4.webp",
+          "/card-5.webp",
+          "/card-6.webp",
+        ];
+
+        sanggars.forEach((s, idx) => {
+          s.thumbnail_url = cardImages[idx % cardImages.length];
+        });
+
+        const ae = sanggars.find(s => s.nama_sanggar.includes("AE Production") || s.nama_sanggar.includes("Art Enthusiast"));
         if (ae) {
+          ae.nama_sanggar = "Art Enthusiast Production";
           ae.thumbnail_url = "/card-1.webp";
           ae.whatsapp = "6281318702623";
-          ae.youtubeUrl = "https://www.youtube.com";
+          ae.youtubeUrl = "https://www.youtube.com/@ae.production_";
         }
 
         // Assign images to specific Sanggar cards
         const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
         if (am) {
-          am.thumbnail_url = "/sanggar2.webp";
+          am.thumbnail_url = "/card-2.webp";
           am.whatsapp = "6281289214320";
           am.youtubeUrl = "https://www.youtube.com";
         }
 
         const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
         if (arunika) {
-          arunika.thumbnail_url = "/sanggar3.webp";
+          arunika.thumbnail_url = "/card-3.webp";
           arunika.whatsapp = "6281289214320";
           arunika.youtubeUrl = "https://www.youtube.com";
         }
 
         const ayodya = sanggars.find(s => s.nama_sanggar === "Ayodya Pala");
         if (ayodya) {
-          ayodya.thumbnail_url = "/sanggar4.webp";
+          ayodya.thumbnail_url = "/card-4.webp";
           ayodya.whatsapp = "6281399160062";
           ayodya.youtubeUrl = "https://www.youtube.com";
         }
 
         const citra = sanggars.find(s => s.nama_sanggar === "Citra Art Studio");
         if (citra) {
-          citra.thumbnail_url = "/sanggar5.webp";
+          citra.thumbnail_url = "/card-5.webp";
           citra.whatsapp = "6281289214320";
           citra.youtubeUrl = "https://www.youtube.com";
         }
 
         const daya = sanggars.find(s => s.nama_sanggar === "Daya Presta");
         if (daya) {
-          daya.thumbnail_url = "/sanggar6.webp";
+          daya.thumbnail_url = "/card-6.webp";
           daya.whatsapp = "6281289214320";
           daya.youtubeUrl = "https://www.youtube.com";
         }

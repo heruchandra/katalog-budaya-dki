@@ -171,6 +171,7 @@ html {
   border-radius: 4px;
 }
 
-.font-cursive {
+.font-cursive,
+.font-dancing {
   font-family: var(--font-script), 'Dancing Script', cursive;
 }

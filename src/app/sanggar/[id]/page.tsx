@@ -30,22 +30,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Sirih Kuning",
         description: "Tari pergaulan klasik khas Betawi yang anggun dan dinamis, dibawakan dengan selendang kuning keemasan sebagai simbol kehangatan silaturahmi masyarakat Jakarta.",
-        image: "/sanggar3.webp"
+        image: "/card-3.webp"
       },
       {
         name: "Tari Yapong",
         description: "Tari kreasi bernuansa riang gembira ciptaan maestro Bagong Kussudiardja yang memancarkan keceriaan dan dinamika gerak kaki serta tepuk tangan penari.",
-        image: "/sanggar2.webp"
+        image: "/card-2.webp"
       },
       {
         name: "Tari Nandak Ganjen",
         description: "Koreografi lincah remaja putri Betawi yang menggambarkan kecentilan dan kebebasan berekspresi dengan langkah kaki yang terampil dan bersahaja.",
-        image: "/sanggar4.webp"
+        image: "/card-4.webp"
       },
       {
         name: "Tari Lenggang Nyai",
         description: "Mengisahkan ketegaran tokoh Nyai Dasima dalam balutan busana peranakan dengan gerak luwes yang menyiratkan kekuatan emansipasi wanita Betawi.",
-        image: "/sanggar5.webp"
+        image: "/card-5.webp"
       }
     ],
     prestasi: [
@@ -60,36 +60,35 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       phone: "+62 812-8921-4320",
       email: "info@arunika-art.com"
     },
-    imageUrl: "/sanggar3.webp",
-    fotoKetuaUrl: "/penari1.webp",
+    imageUrl: "/card-3.webp",
+    fotoKetuaUrl: "/profile-sanggar-1.webp",
     gallery: [
-      { type: "Foto Grup Tari", url: "/sanggar3.webp" },
-      { type: "Foto Tari Unggulan", url: "/sanggar2.webp" },
-      { type: "Dokumentasi Pementasan", url: "/sanggar4.webp" },
-      { type: "Workshop Tari Remaja", url: "/sanggar5.webp" }
+      { type: "Foto Grup Tari", url: "/card-3.webp" },
+      { type: "Foto Tari Unggulan", url: "/card-2.webp" },
+      { type: "Dokumentasi Pementasan", url: "/card-4.webp" },
+      { type: "Workshop Tari Remaja", url: "/card-5.webp" }
     ]
   },
 
-  // ID 40: AE Production (Grade B)
-  "40": {
-    name: "AE Production",
+  // ID 1 & 40: AE Production (Art Enthusiast Production) (Grade B)
+  "1": {
+    name: "Art Enthusiast Production",
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
-    philosophy: "Menyulam keanggunan gerak tari tradisi dengan tata artistik panggung masa kini untuk menyentuh hati setiap penonton.",
+    philosophy: "Seni tari dan musik sebagai wahana ekspresi generasi muda dalam melestarikan serta mengembangkan kekayaan tradisi Betawi dan Nusantara.",
     description: [
-      "AE Production merupakan rumah produksi seni pertunjukan dan sanggar tari yang berfokus pada kolaborasi gerak tari tradisional Betawi dengan komposisi teatrikal modern. Berdiri di jantung Jakarta Timur, sanggar ini telah mewarnai berbagai panggung prestisius ibu kota.",
-      "Dengan bimbingan koreografer profesional, AE Production memadukan ketegasan ritme tabuhan perkusi dengan kehalusan lenggok penari, menghasilkan pertunjukan megah yang memukau ribuan pasang mata di festival budaya maupun pagelaran resmi kenegaraan.",
-      "Kami terus membuka pintu bagi generasi penerus bangsa untuk mendalami filosofi tari tradisi, mengasah disiplin olah gerak, dan menampilkan jati diri Betawi yang berkilau di era global."
+      "Sanggar kesenian di bidang seni tari dan musik yang mengusung seni budaya Betawi, Jawa Barat, dan seni daerah Nusantara lainnya. Resmi berdiri sejak 1 Mei 2023 dengan rekam jejak pembinaan sejak 2011.",
+      "Dengan bimbingan koreografer profesional dan kurikulum pembinaan berkesinambungan, sanggar ini terus berinovasi dalam mengemas pertunjukan yang memukau tanpa menanggalkan pakem dan filosofi tradisi leluhur.",
+      "Melalui program pembinaan rutin dan sanggar terbuka bagi masyarakat, kami berkomitmen menjaga keaslian seni Betawi sekaligus menghadirkannya secara anggun dan relevan dengan panggung seni modern di ibu kota."
     ],
-    alamatSanggar: "Jl. Balai Pustaka Timur No. 18, Kel. Rawamangun, Kec. Pulo Gadung, Jakarta Timur 13220",
-    alamatLatihan: "Gelanggang Remaja Jakarta Timur (GRJT) & Studio AE Production (Rabu & Minggu, 16.00 - 19.30 WIB)",
+    alamatSanggar: "Jl. Pondok Kelapa VIII Blok H2 No. 2, Kel. Pondok Kelapa, Kec. Duren Sawit, Jakarta Timur, 13450",
+    alamatLatihan: "Studio AE Production, Jl. Pondok Kelapa VIII Blok H2 No. 2, Kel. Pondok Kelapa, Kec. Duren Sawit, Jakarta Timur, 13450 (Rabu & Minggu, 16.00 - 19.30 WIB)",
     layanan: [
-      "Pementasan Seni Teater Tari Kolosal",
-      "Pelatihan Tari Kreasi Betawi & Nusantara",
-      "Jasa Koreografer Tari Kontemporer & Teater Musik",
-      "Penyewaan Kostum Panggung & Tata Rias Pengantin Tradisional",
-      "Produksi Musik Tari & Live Accompaniment"
+      "Jasa Pentas Tari Tradisional (Betawi, Jaipong & Medley Nusantara)",
+      "Pengiring Musik Tradisional (Kecapi, Suling & Musik Betawi)",
+      "Pelatihan & Kursus Seni Tari & Musik Tradisional",
+      "Sewa Kostum Tari Tradisional & Tata Rias Budaya"
     ],
     tariUnggulan: [
       {
@@ -100,33 +99,184 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Sirih Kuning",
         description: "Tari penyambutan klasik Betawi dengan selendang sutra keemasan yang menyimbolkan ketulusan dan penghormatan kepada tamu agung.",
-        image: "/sanggar1.webp"
+        image: "/card-1.webp"
       },
       {
         name: "Tari Renggong Manis",
         description: "Koreografi penuh keceriaan perpaduan ritme kendang Betawi dengan sentuhan tari Sunda dan Melayu pesisir.",
-        image: "/sanggar6.webp"
+        image: "/card-6.webp"
+      }
+    ],
+    achievements: [
+      {
+        title: "Juara III Lomba AKPJT Sudinpora Jakarta Timur",
+        organizer: "Sudinpora Jakarta Timur",
+        year: "2025"
+      },
+      {
+        title: "Juara I Lomba Memperingati Hari Ibu Dursavaganza",
+        organizer: "Kecamatan Duren Sawit Jakarta Timur",
+        year: "2024"
+      },
+      {
+        title: "Harapan I Lomba Karya Cipta Tari Betawi",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2024"
+      },
+      {
+        title: "Juara I & Juara 2 Lomba Tari Kreasi Nusantara",
+        organizer: "PN Production & Disbud Jak-Tim",
+        year: "2024"
+      },
+      {
+        title: "Juara I & Juara Umum Lomba Tari Kreasi Nusantara",
+        organizer: "PN Production & Disbud Jak-Tim",
+        year: "2023"
+      },
+      {
+        title: "Juara I & Juara Umum 3 Lomba Tari Kreasi Nusantara",
+        organizer: "Real Art & Disbud Jak-Ut",
+        year: "2023"
+      },
+      {
+        title: "Juara III Lomba Tari Kreasi Nusantara",
+        organizer: "Real Art & Disbud Jak-Ut",
+        year: "2023"
+      },
+      {
+        title: "Lolos Kurasi Sanggar Seni Tari Tahap 1 Grade B",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2025"
       }
     ],
     prestasi: [
-      "Penyaji Terbaik Festival Teater & Tari Tradisi DKI Jakarta 2024",
-      "Juara 2 Lomba Tari Kreasi Nusantara Tingkat Nasional 2023",
-      "Pengisi Acara Utama Perayaan HUT DKI Jakarta ke-497 di Monas 2024",
-      "Penghargaan Apresiasi Seni Budaya Dinas Kebudayaan DKI Jakarta 2022"
+      "Juara III Lomba AKPJT Sudinpora Jakarta Timur (2025)",
+      "Juara I Lomba Memperingati Hari Ibu Dursavaganza (2024)",
+      "Harapan I Lomba Karya Cipta Tari Betawi - Dinas Kebudayaan DKI Jakarta (2024)",
+      "Juara I & Juara 2 Lomba Tari Kreasi Nusantara (2024)",
+      "Juara I & Juara Umum Lomba Tari Kreasi Nusantara (2023)",
+      "Juara I & Juara Umum 3 Lomba Tari Kreasi Nusantara (2023)",
+      "Juara III Lomba Tari Kreasi Nusantara (2023)",
+      "Lolos Kurasi Sanggar Seni Tari Tahap 1 Grade B - Dinas Kebudayaan DKI Jakarta (2025)"
     ],
     kontak: {
-      ketua: "Ahmad Erlangga, M.Sn.",
-      pic: "Erika Wulandari",
-      phone: "+62 813-1870-2623",
-      email: "aeproduction.jkt@gmail.com"
+      ketua: "Vini Nurmala Putri",
+      pic: "Vini Nurmala Putri",
+      phone: "6281318702623",
+      email: "art.enthusiastproduction@gmail.com",
+      instagram: "ae.pro_"
     },
     imageUrl: "/card-1.webp",
-    fotoKetuaUrl: "/penari1.webp",
+    fotoKetuaUrl: "/profile-sanggar-1.webp",
     gallery: [
       { type: "Foto Grup Tari", url: "/card-1.webp" },
-      { type: "Foto Tari Unggulan", url: "/sanggar1.webp" },
-      { type: "Dokumentasi Kolosal", url: "/sanggar6.webp" },
-      { type: "Kostum & Rias Seni", url: "/sanggar2.webp" }
+      { type: "Foto Tari Unggulan", url: "/card-1.webp" },
+      { type: "Dokumentasi Kolosal", url: "/card-6.webp" },
+      { type: "Kostum & Rias Seni", url: "/card-2.webp" }
+    ]
+  },
+  "40": {
+    name: "Art Enthusiast Production",
+    tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
+    grade: "Grade B",
+    wilayah: "Jakarta Timur",
+    philosophy: "Seni tari dan musik sebagai wahana ekspresi generasi muda dalam melestarikan serta mengembangkan kekayaan tradisi Betawi dan Nusantara.",
+    description: [
+      "Sanggar kesenian di bidang seni tari dan musik yang mengusung seni budaya Betawi, Jawa Barat, dan seni daerah Nusantara lainnya. Resmi berdiri sejak 1 Mei 2023 dengan rekam jejak pembinaan sejak 2011.",
+      "Dengan bimbingan koreografer profesional dan kurikulum pembinaan berkesinambungan, sanggar ini terus berinovasi dalam mengemas pertunjukan yang memukau tanpa menanggalkan pakem dan filosofi tradisi leluhur.",
+      "Melalui program pembinaan rutin dan sanggar terbuka bagi masyarakat, kami berkomitmen menjaga keaslian seni Betawi sekaligus menghadirkannya secara anggun dan relevan dengan panggung seni modern di ibu kota."
+    ],
+    alamatSanggar: "Jl. Pondok Kelapa VIII Blok H2 No. 2, Kel. Pondok Kelapa, Kec. Duren Sawit, Jakarta Timur, 13450",
+    alamatLatihan: "Studio AE Production, Jl. Pondok Kelapa VIII Blok H2 No. 2, Kel. Pondok Kelapa, Kec. Duren Sawit, Jakarta Timur, 13450 (Rabu & Minggu, 16.00 - 19.30 WIB)",
+    layanan: [
+      "Jasa Pentas Tari Tradisional (Betawi, Jaipong & Medley Nusantara)",
+      "Pengiring Musik Tradisional (Kecapi, Suling & Musik Betawi)",
+      "Pelatihan & Kursus Seni Tari & Musik Tradisional",
+      "Sewa Kostum Tari Tradisional & Tata Rias Budaya"
+    ],
+    tariUnggulan: [
+      {
+        name: "Tari Kembang Lambang Sari",
+        description: "Simbol keanggunan penari putri dengan ornamen bunga kembang goyang yang memukau serta formasi pola lantai geometris dinamis.",
+        image: "/card-1.webp"
+      },
+      {
+        name: "Tari Sirih Kuning",
+        description: "Tari penyambutan klasik Betawi dengan selendang sutra keemasan yang menyimbolkan ketulusan dan penghormatan kepada tamu agung.",
+        image: "/card-1.webp"
+      },
+      {
+        name: "Tari Renggong Manis",
+        description: "Koreografi penuh keceriaan perpaduan ritme kendang Betawi dengan sentuhan tari Sunda dan Melayu pesisir.",
+        image: "/card-6.webp"
+      }
+    ],
+    achievements: [
+      {
+        title: "Juara III Lomba AKPJT Sudinpora Jakarta Timur",
+        organizer: "Sudinpora Jakarta Timur",
+        year: "2025"
+      },
+      {
+        title: "Juara I Lomba Memperingati Hari Ibu Dursavaganza",
+        organizer: "Kecamatan Duren Sawit Jakarta Timur",
+        year: "2024"
+      },
+      {
+        title: "Harapan I Lomba Karya Cipta Tari Betawi",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2024"
+      },
+      {
+        title: "Juara I & Juara 2 Lomba Tari Kreasi Nusantara",
+        organizer: "PN Production & Disbud Jak-Tim",
+        year: "2024"
+      },
+      {
+        title: "Juara I & Juara Umum Lomba Tari Kreasi Nusantara",
+        organizer: "PN Production & Disbud Jak-Tim",
+        year: "2023"
+      },
+      {
+        title: "Juara I & Juara Umum 3 Lomba Tari Kreasi Nusantara",
+        organizer: "Real Art & Disbud Jak-Ut",
+        year: "2023"
+      },
+      {
+        title: "Juara III Lomba Tari Kreasi Nusantara",
+        organizer: "Real Art & Disbud Jak-Ut",
+        year: "2023"
+      },
+      {
+        title: "Lolos Kurasi Sanggar Seni Tari Tahap 1 Grade B",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2025"
+      }
+    ],
+    prestasi: [
+      "Juara III Lomba AKPJT Sudinpora Jakarta Timur (2025)",
+      "Juara I Lomba Memperingati Hari Ibu Dursavaganza (2024)",
+      "Harapan I Lomba Karya Cipta Tari Betawi - Dinas Kebudayaan DKI Jakarta (2024)",
+      "Juara I & Juara 2 Lomba Tari Kreasi Nusantara (2024)",
+      "Juara I & Juara Umum Lomba Tari Kreasi Nusantara (2023)",
+      "Juara I & Juara Umum 3 Lomba Tari Kreasi Nusantara (2023)",
+      "Juara III Lomba Tari Kreasi Nusantara (2023)",
+      "Lolos Kurasi Sanggar Seni Tari Tahap 1 Grade B - Dinas Kebudayaan DKI Jakarta (2025)"
+    ],
+    kontak: {
+      ketua: "Vini Nurmala Putri",
+      pic: "Vini Nurmala Putri",
+      phone: "6281318702623",
+      email: "art.enthusiastproduction@gmail.com",
+      instagram: "ae.pro_"
+    },
+    imageUrl: "/card-1.webp",
+    fotoKetuaUrl: "/profile-sanggar-1.webp",
+    gallery: [
+      { type: "Foto Grup Tari", url: "/card-1.webp" },
+      { type: "Foto Tari Unggulan", url: "/card-1.webp" },
+      { type: "Dokumentasi Kolosal", url: "/card-6.webp" },
+      { type: "Kostum & Rias Seni", url: "/card-2.webp" }
     ]
   },
 
@@ -155,27 +305,27 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Mpok Cantik",
         description: "Tari kreasi Betawi yang menggambarkan kecantikan, keluwesan, dan budi pekerti luhur putri Jakarta dalam balutan busana cerah nan mempesona.",
-        image: "/sanggar4.webp"
+        image: "/card-4.webp"
       },
       {
         name: "Tari Kembang Merona",
         description: "Koreografi rancak penuh keceriaan remaja Betawi yang menyiratkan semarak kembang mekar di bawah mentari ibu kota.",
-        image: "/sanggar5.webp"
+        image: "/card-5.webp"
       },
       {
         name: "Tari Goyang Ngamprok",
         description: "Gerak ritmis interaktif yang memadukan kelincahan langkah kaki dan hentakan irama kendang ronggeng Betawi.",
-        image: "/sanggar2.webp"
+        image: "/card-2.webp"
       },
       {
         name: "Tari Jari Manis",
         description: "Kelembutan gerak jemari dan lentiknya kiprah tangan dalam iringan alunan musik tradisi yang syahdu dan memikat.",
-        image: "/sanggar6.webp"
+        image: "/card-6.webp"
       },
       {
         name: "Tari Zapin Habibana",
         description: "Harmoni akulturasi budaya Melayu-Arab di pesisir Jakarta dengan ayunan langkah zapin yang khidmat dan bersahaja.",
-        image: "/sanggar3.webp"
+        image: "/card-3.webp"
       }
     ],
     prestasi: [
@@ -190,13 +340,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       phone: "081399160062",
       email: "ayodyapala.art@gmail.com"
     },
-    imageUrl: "/sanggar4.webp",
-    fotoKetuaUrl: "/penari1.webp",
+    imageUrl: "/card-4.webp",
+    fotoKetuaUrl: "/profile-sanggar-1.webp",
     gallery: [
-      { type: "Foto Grup Tari", url: "/sanggar4.webp" },
-      { type: "Foto Tari Unggulan", url: "/sanggar5.webp" },
-      { type: "Pentas MURI Tari Bhinneka", url: "/sanggar2.webp" },
-      { type: "Delegasi Internasional", url: "/sanggar6.webp" }
+      { type: "Foto Grup Tari", url: "/card-4.webp" },
+      { type: "Foto Tari Unggulan", url: "/card-5.webp" },
+      { type: "Pentas MURI Tari Bhinneka", url: "/card-2.webp" },
+      { type: "Delegasi Internasional", url: "/card-6.webp" }
     ]
   },
 
@@ -225,17 +375,17 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Sirih Kuning",
         description: "Tari pergaulan yang menggambarkan rasa gembira dan silaturahmi yang erat di kalangan masyarakat Betawi.",
-        image: "/sanggar6.webp"
+        image: "/card-6.webp"
       },
       {
         name: "Tari Renggong Manis",
         description: "Perpaduan harmonis gerak tari Betawi dan Sunda yang memancarkan dinamika serta kelembutan penari wanita.",
-        image: "/sanggar3.webp"
+        image: "/card-3.webp"
       },
       {
         name: "Tari Golek Manis",
         description: "Tari klasik dengan keluwesan gerak selendang yang mencerminkan kedewasaan dan keanggunan putri Nusantara.",
-        image: "/sanggar2.webp"
+        image: "/card-2.webp"
       }
     ],
     prestasi: [
@@ -250,13 +400,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       phone: "+62 812-9724-9285",
       email: "dayapresta14@gmail.com"
     },
-    imageUrl: "/sanggar6.webp",
-    fotoKetuaUrl: "/penari1.webp",
+    imageUrl: "/card-6.webp",
+    fotoKetuaUrl: "/profile-sanggar-1.webp",
     gallery: [
-      { type: "Foto Grup Tari", url: "/sanggar6.webp" },
-      { type: "Foto Tari Unggulan", url: "/sanggar3.webp" },
-      { type: "Pementasan Cikini", url: "/sanggar2.webp" },
-      { type: "Workshop Tari", url: "/sanggar5.webp" }
+      { type: "Foto Grup Tari", url: "/card-6.webp" },
+      { type: "Foto Tari Unggulan", url: "/card-3.webp" },
+      { type: "Pementasan Cikini", url: "/card-2.webp" },
+      { type: "Workshop Tari", url: "/card-5.webp" }
     ]
   }
 };
@@ -299,9 +449,9 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
   const wilayah = data?.kota_kab || data?.kecamatan || "DKI Jakarta";
 
   const imageIndex = (Math.abs(Number(id) || 1) % 6) + 1;
-  const mainImage = `/sanggar${imageIndex}.webp`;
-  const companionImage = `/sanggar${((imageIndex) % 6) + 1}.webp`;
-  const altImage = `/sanggar${((imageIndex + 1) % 6) + 1}.webp`;
+  const mainImage = `/card-${imageIndex}.webp`;
+  const companionImage = `/card-${((imageIndex) % 6) + 1}.webp`;
+  const altImage = `/card-${((imageIndex + 1) % 6) + 1}.webp`;
 
   return {
     id,
@@ -354,7 +504,7 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
       email: data?.email || `kontak@${cleanName.toLowerCase().replace(/\s+/g, '')}.id`
     },
     imageUrl: data?.thumbnail_url || data?.foto_grup_url || mainImage,
-    fotoKetuaUrl: data?.foto_ketua_url || "/penari1.webp",
+    fotoKetuaUrl: data?.foto_ketua_url || "/profile-sanggar-1.webp",
     gallery: [
       { type: "Foto Pementasan", url: mainImage },
       { type: "Dokumentasi Tari", url: companionImage },
@@ -387,39 +537,46 @@ export default async function SanggarDetail({
   }
 
   // Check specific curated profile first
-  const specific = SPECIFIC_PROFILES[id];
+  let specific = SPECIFIC_PROFILES[id];
+  if (!specific && (data?.nama_sanggar?.toLowerCase().includes("ae production") || data?.nama_sanggar?.toLowerCase().includes("art enthusiast"))) {
+    specific = SPECIFIC_PROFILES["1"];
+  }
   const fallback = generateFallbackSanggar(data, id);
 
   // Parse fields from database if present, otherwise merge specific / fallback
   const finalSanggar: SanggarDetailData = {
     id: data?.id || id,
     name: specific?.name || data?.nama_sanggar || fallback.name,
-    tagline: data?.tagline || specific?.tagline || fallback.tagline,
-    grade: data?.grade ? (data.grade.toLowerCase().includes('grade') ? data.grade : `Grade ${data.grade}`) : (specific?.grade || fallback.grade),
-    wilayah: data?.kota_kab || data?.kecamatan || specific?.wilayah || fallback.wilayah,
+    tagline: specific?.tagline || data?.tagline || fallback.tagline,
+    grade: specific?.grade || (data?.grade ? (data.grade.toLowerCase().includes('grade') ? data.grade : `Grade ${data.grade}`) : fallback.grade),
+    wilayah: specific?.wilayah || data?.kota_kab || data?.kecamatan || fallback.wilayah,
     philosophy: specific?.philosophy || fallback.philosophy,
-    description: (data?.deskripsi ? [data.deskripsi] : (specific?.description || fallback.description)),
-    alamatSanggar: data?.alamat || specific?.alamatSanggar || fallback.alamatSanggar,
-    alamatLatihan: data?.alamat_tempat_latihan || specific?.alamatLatihan || fallback.alamatLatihan,
-    layanan: (data?.layanan && Array.isArray(data.layanan) ? data.layanan : (specific?.layanan || fallback.layanan)),
-    tariUnggulan: (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
+    description: specific?.description || (data?.deskripsi ? [data.deskripsi] : fallback.description),
+    alamatSanggar: specific?.alamatSanggar || data?.alamat || fallback.alamatSanggar,
+    alamatLatihan: specific?.alamatLatihan || data?.alamat_tempat_latihan || fallback.alamatLatihan,
+    layanan: specific?.layanan || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
+    tariUnggulan: specific?.tariUnggulan || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
       ? data.tari_unggulan
-      : (specific?.tariUnggulan || fallback.tariUnggulan)),
-    prestasi: (data?.prestasi && Array.isArray(data.prestasi) && data.prestasi.length > 0
+      : fallback.tariUnggulan),
+    prestasi: specific?.prestasi || (data?.prestasi && Array.isArray(data.prestasi) && data.prestasi.length > 0
       ? data.prestasi
-      : (specific?.prestasi || fallback.prestasi)),
+      : fallback.prestasi),
+    achievements: specific?.achievements,
     kontak: {
-      ketua: data?.ketua_sanggar || data?.nama_pimpinan || specific?.kontak?.ketua || fallback.kontak.ketua,
-      pic: data?.nama_pic || specific?.kontak?.pic || fallback.kontak.pic,
-      phone: data?.kontak_pic || specific?.kontak?.phone || fallback.kontak.phone,
-      email: data?.email || specific?.kontak?.email || fallback.kontak.email,
+      ketua: specific?.kontak?.ketua || data?.ketua_sanggar || data?.nama_pimpinan || fallback.kontak.ketua,
+      pic: specific?.kontak?.pic || data?.nama_pic || fallback.kontak.pic,
+      phone: specific?.kontak?.phone || data?.kontak_pic || fallback.kontak.phone,
+      email: specific?.kontak?.email || data?.email || fallback.kontak.email,
+      instagram: specific?.kontak?.instagram,
     },
-    imageUrl: data?.foto_grup_url || specific?.imageUrl || data?.thumbnail_url || fallback.imageUrl,
+    whatsappNumber: specific?.kontak?.phone || data?.kontak_pic || data?.no_hp,
+    instagram: specific?.kontak?.instagram,
+    imageUrl: specific?.imageUrl || data?.foto_grup_url || data?.thumbnail_url || fallback.imageUrl,
     logoUrl: data?.logo_url || null,
-    fotoKetuaUrl: data?.foto_ketua_url || specific?.fotoKetuaUrl || fallback.fotoKetuaUrl,
-    gallery: (data?.list_foto && Array.isArray(data.list_foto) && data.list_foto.length > 0)
+    fotoKetuaUrl: specific?.fotoKetuaUrl || data?.foto_ketua_url || fallback.fotoKetuaUrl,
+    gallery: specific?.gallery || ((data?.list_foto && Array.isArray(data.list_foto) && data.list_foto.length > 0)
       ? data.list_foto.map((url: string, i: number) => ({ type: `Galeri Foto #${i + 1}`, url }))
-      : (specific?.gallery || fallback.gallery),
+      : fallback.gallery),
   };
 
   return <SanggarDetailClient sanggar={finalSanggar} />;
