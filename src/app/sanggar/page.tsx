@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-interface Sanggar {
+export interface Sanggar {
   id: string;
   nama_sanggar: string;
   nama_pimpinan?: string;
@@ -22,7 +22,12 @@ interface Sanggar {
   no_hp?: string;
   kontak_pic?: string;
   whatsapp?: string;
+  whatsappNumber?: string;
+  whatsappUrl?: string;
+  instagram?: string;
+  instagramUrl?: string;
   youtubeUrl?: string;
+  youtube?: string;
   jenis_tarian?: string;
   thumbnail_url: string | null;
 }

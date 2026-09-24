@@ -317,7 +317,6 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
 
   // ID 1 & 40: AE Production (Art Enthusiast Production) (Grade B)
   "1": {
-    name: "AE Production (Art Enthusiast Production)",
     name: "Art Enthusiast Production",
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",
@@ -422,7 +421,6 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     ]
   },
   "40": {
-    name: "AE Production (Art Enthusiast Production)",
     name: "Art Enthusiast Production",
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",

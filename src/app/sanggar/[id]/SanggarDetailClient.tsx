@@ -23,7 +23,7 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'
 
 export interface TariItem {
   name: string;
-  description: string;
+  description?: string;
   image?: string;
   choreographer?: string;
   composer?: string;

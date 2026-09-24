@@ -11,6 +11,15 @@ export interface DanceSpecialtyItem {
   image?: string;
 }
 
+export interface TariItem {
+  name: string;
+  description?: string;
+  image?: string;
+  choreographer?: string;
+  composer?: string;
+  synopsis?: string;
+}
+
 export interface SanggarItem {
   id: string;
   name: string;
@@ -35,6 +44,33 @@ export interface SanggarItem {
     instagram: string;
     youtube: string;
   };
+}
+
+export interface Sanggar {
+  id: string;
+  nama_sanggar?: string;
+  name?: string;
+  nama_pimpinan?: string;
+  leader?: string;
+  grade?: string;
+  alamat?: string;
+  kelurahan?: string;
+  kecamatan?: string;
+  kota_kab?: string;
+  wilayah?: string;
+  no_hp?: string;
+  kontak_pic?: string;
+  whatsapp?: string;
+  whatsappNumber?: string;
+  whatsappUrl?: string;
+  instagram?: string;
+  instagramUrl?: string;
+  youtubeUrl?: string;
+  youtube?: string;
+  jenis_tarian?: string;
+  thumbnail_url?: string | null;
+  coverImage?: string;
+  image?: string;
 }
 
 export const SINAR_NORRAY_DATA: SanggarItem = {
