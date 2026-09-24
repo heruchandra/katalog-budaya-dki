@@ -4,6 +4,7 @@ export interface ServiceItem {
   titleEn?: string;
   descriptionEn?: string;
   icon?: string;
+  image?: string;
 }
 
 export interface DanceSpecialtyItem {
@@ -82,7 +83,6 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
   name: "Sinar Norray",
   leader: "Engkar Karmilasari (Engkar Nori)",
   tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
-  description: "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
   description: "Sanggar Seni Sinar Norray didirikan pada tahun 1995 oleh almarhumah Hj. Nori (Mpok Nori). Berawal dari panggung pertunjukan Lenong Betawi, sanggar ini telah berkembang menjadi pusat pelestarian seni tradisi Betawi yang saat ini dipimpin oleh putri bungsu Hj. Nori.",
   descriptionEn: "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
   address: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
@@ -97,15 +97,18 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
   services: [
     {
       title: "Betawi Dance Classes",
-      description: "Teaching traditional Betawi dances for all age groups."
+      description: "Teaching traditional Betawi dances for all age groups.",
+      image: "/dinamis-sanggar-1.webp"
     },
     {
       title: "Lenong Betawi Shows",
-      description: "Presenting traditional Betawi theater for diverse audiences."
+      description: "Presenting traditional Betawi theater for diverse audiences.",
+      image: "/dinamis-sanggar-2.webp"
     },
     {
       title: "Traditional Music Performances (Gambang Kromong)",
-      description: "Showcasing authentic Betawi music for cultural celebrations."
+      description: "Showcasing authentic Betawi music for cultural celebrations.",
+      image: "/dinamis-sanggar-3.webp"
     }
   ],
   danceSpecialties: [

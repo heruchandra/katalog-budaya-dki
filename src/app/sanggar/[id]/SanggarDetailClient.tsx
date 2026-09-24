@@ -44,6 +44,7 @@ export interface ServiceItem {
   titleEn?: string;
   descriptionEn?: string;
   icon?: string;
+  image?: string;
 }
 
 export interface SanggarDetailData {
@@ -61,6 +62,7 @@ export interface SanggarDetailData {
   alamatLatihan: string;
   address?: string;
   logo?: string;
+  image?: string;
   whatsappNumber?: string;
   instagram?: string;
   whatsappUrl?: string | null;
@@ -134,6 +136,18 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   );
   
   const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
+
+  const getServiceWaLink = (service: ServiceItem) => {
+    const serviceTitle = isEn 
+      ? (service.titleEn || service.title) 
+      : service.title;
+      
+    const text = isEn
+      ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to inquire about the service: "${serviceTitle}".`
+      : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin berkonsultasi mengenai layanan: "${serviceTitle}".`;
+
+    return `https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`;
+  };
 
   return (
     <main className={`min-h-screen bg-zinc-50 text-zinc-900 pt-16 selection:bg-orange-100 selection:text-orange-900 ${poppins.className}`}>
@@ -379,7 +393,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
                     {serviceList.map((item, idx) => {
                       const isObj = typeof item === 'object' && item !== null;
-                      const serviceObj: ServiceItem = isObj ? item : { title: item, description: '' };
+                      const serviceObj: ServiceItem = isObj 
+                        ? { ...item, image: item.image || `/dinamis-sanggar-${(idx % 3) + 1}.webp` } 
+                        : { title: item, description: '', image: `/dinamis-sanggar-${(idx % 3) + 1}.webp` };
                       const title = isObj ? ((isEn && item.titleEn) ? item.titleEn : item.title) : item;
                       const desc = isObj ? ((isEn && item.descriptionEn) ? item.descriptionEn : item.description) : null;
 
@@ -663,12 +679,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
           ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
           : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
 
-        const modalWaMessage = encodeURIComponent(
-          isEn 
-            ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to inquire about the service: "${modalTitle}".`
-            : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin berkonsultasi mengenai layanan: "${modalTitle}".`
-        );
-        const modalWaLink = `https://wa.me/${waNumber}?text=${modalWaMessage}`;
 
         return (
           <div 
@@ -676,13 +686,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             onClick={() => setSelectedService(null)}
           >
             <div 
-              className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-zinc-100 space-y-6 animate-in zoom-in-95 duration-200"
+              className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-zinc-100 space-y-5 animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedService(null)}
-                className="absolute top-5 right-5 p-2 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
+                className="absolute top-5 right-5 p-2 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors z-10"
                 aria-label={isEn ? "Close modal" : "Tutup modal"}
               >
                 <X className="w-5 h-5" />
@@ -701,6 +711,18 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     {modalTitle}
                   </h3>
                 </div>
+              </div>
+
+              {/* Featured Service Image */}
+              <div className="relative w-full h-48 sm:h-56 rounded-xl overflow-hidden my-4 border border-zinc-200/80 shadow-inner bg-zinc-100">
+                <img
+                  src={selectedService.image || sanggar?.image || "/dinamis-sanggar-1.webp"}
+                  alt={selectedService.title}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/dinamis-sanggar-1.webp";
+                  }}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                />
               </div>
 
               {/* Description */}
@@ -736,7 +758,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               {/* Targeted WhatsApp CTA */}
               <div className="pt-2">
                 <a
-                  href={modalWaLink}
+                  href={getServiceWaLink(selectedService)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-[0.98]"

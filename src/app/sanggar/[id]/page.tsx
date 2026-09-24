@@ -34,19 +34,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         title: "Betawi Dance Classes",
         description: "Teaching traditional Betawi dances for all age groups.",
         titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups."
+        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
+        image: "/dinamis-sanggar-1.webp"
       },
       {
         title: "Lenong Betawi Shows",
         description: "Presenting traditional Betawi theater for diverse audiences.",
         titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
+        image: "/dinamis-sanggar-2.webp"
       },
       {
         title: "Traditional Music Performances (Gambang Kromong)",
         description: "Showcasing authentic Betawi music for cultural celebrations.",
         titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
+        image: "/dinamis-sanggar-3.webp"
       }
     ],
     layanan: [
@@ -54,19 +57,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         title: "Kelas Tari Betawi",
         description: "Pelatihan tari tradisional Betawi untuk berbagai tingkatan usia dan kemahiran.",
         titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups."
+        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
+        image: "/dinamis-sanggar-1.webp"
       },
       {
         title: "Pentas Lenong Betawi",
         description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
         titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
+        image: "/dinamis-sanggar-2.webp"
       },
       {
         title: "Pentas Musik Gambang Kromong",
         description: "Penyajian musik tradisional khas Betawi untuk berbagai acara perayaan.",
         titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
+        image: "/dinamis-sanggar-3.webp"
       }
     ],
     danceSpecialties: [
@@ -187,19 +193,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         title: "Betawi Dance Classes",
         description: "Teaching traditional Betawi dances for all age groups.",
         titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups."
+        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
+        image: "/dinamis-sanggar-1.webp"
       },
       {
         title: "Lenong Betawi Shows",
         description: "Presenting traditional Betawi theater for diverse audiences.",
         titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
+        image: "/dinamis-sanggar-2.webp"
       },
       {
         title: "Traditional Music Performances (Gambang Kromong)",
         description: "Showcasing authentic Betawi music for cultural celebrations.",
         titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
+        image: "/dinamis-sanggar-3.webp"
       }
     ],
     layanan: [
@@ -207,19 +216,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         title: "Kelas Tari Betawi",
         description: "Pelatihan tari tradisional Betawi untuk berbagai tingkatan usia dan kemahiran.",
         titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups."
+        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
+        image: "/dinamis-sanggar-1.webp"
       },
       {
         title: "Pentas Lenong Betawi",
         description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
         titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
+        image: "/dinamis-sanggar-2.webp"
       },
       {
         title: "Pentas Musik Gambang Kromong",
         description: "Penyajian musik tradisional khas Betawi untuk berbagai acara perayaan.",
         titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
+        image: "/dinamis-sanggar-3.webp"
       }
     ],
     danceSpecialties: [
@@ -813,6 +825,7 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
       email: data?.email || `kontak@${cleanName.toLowerCase().replace(/\s+/g, '')}.id`
     },
     imageUrl: data?.thumbnail_url || data?.foto_grup_url || mainImage,
+    image: data?.thumbnail_url || data?.foto_grup_url || mainImage,
     fotoKetuaUrl: data?.foto_ketua_url || "/profile-sanggar-1.webp",
     gallery: [
       { type: "Foto Pementasan", url: mainImage },
@@ -899,6 +912,7 @@ export default async function SanggarDetail({
     instagram: specific?.contacts?.instagram || specific?.kontak?.instagram,
     instagramUrl: specific?.instagramUrl || specific?.contacts?.instagram || (specific?.instagram ? (specific.instagram.startsWith("http") ? specific.instagram : `https://instagram.com/${specific.instagram.replace("@", "")}`) : null),
     imageUrl: specific?.imageUrl || data?.foto_grup_url || data?.thumbnail_url || fallback.imageUrl,
+    image: specific?.image || data?.thumbnail_url || fallback.imageUrl,
     logoUrl: specific?.logo || data?.logo_url || null,
     fotoKetuaUrl: specific?.logo || specific?.fotoKetuaUrl || data?.foto_ketua_url || fallback.fotoKetuaUrl,
     youtubeUrl: specific?.youtubeUrl || specific?.contacts?.youtube || null,
