@@ -660,101 +660,102 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
         </section>
       )}
 
-      {/* Service Detail Modal */}
-      {selectedService && (() => {
-        const modalTitle = isEn 
-          ? (selectedService.titleEn || selectedService.title) 
-          : selectedService.title;
-        const modalDesc = (isEn && selectedService.descriptionEn)
-          ? selectedService.descriptionEn
-          : (selectedService.description || (isEn 
-              ? "In-depth studio training, performance programs, and cultural consultation guided by experienced mentors." 
-              : "Program pelatihan terarah, pementasan kesenian, dan konsultasi budaya yang dibimbing langsung oleh instruktur berpengalaman."));
-        
-        const danceHighlights = isEn
-          ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
-          : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
+{/* Service Detail Modal */}
+    {selectedService && (() => {
+      const modalTitle = isEn
+        ? (selectedService.titleEn || selectedService.title)
+        : selectedService.title;
 
+      const modalDesc = (isEn && selectedService.descriptionEn)
+        ? selectedService.descriptionEn
+        : (selectedService.description || (isEn
+            ? "In-depth studio training, performance programs, and cultural consultation guided by experienced mentors."
+            : "Program pelatihan terarah, pementasan kesenian, dan konsultasi budaya yang dibimbing langsung oleh instruktur berpengalaman."));
 
-        return (
-          <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-            onClick={() => setSelectedService(null)}
+      const danceHighlights = isEn
+        ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
+        : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
+
+      return (
+        <div
+          className="fixed inset-0 z-[99999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
+          onClick={() => setSelectedService(null)}
+        >
+          <div
+            className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-zinc-100 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div 
-              className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-zinc-100 space-y-6 animate-in zoom-in-95 duration-200"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
+            {/* Header Title & Close Button */}
+            <div className="flex items-start justify-between gap-4 pb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 leading-tight">
+                {modalTitle}
+              </h3>
               <button
                 onClick={() => setSelectedService(null)}
-                className="absolute top-5 right-5 p-2 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
+                className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
                 aria-label={isEn ? "Close modal" : "Tutup modal"}
               >
-                <X className="w-5 h-5" />
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-
-              {/* Header */}
-              <div className="flex items-start gap-4 pr-8">
-                <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-orange-600 block">
-                    {isEn ? "Studio Service & Program" : "Layanan & Program Sanggar"}
-                  </span>
-                  <h3 className={`text-xl sm:text-2xl font-bold text-zinc-900 mt-0.5 ${playfair.className}`}>
-                    {modalTitle}
-                  </h3>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="space-y-2 bg-zinc-50/70 p-4 rounded-2xl border border-zinc-100">
-                <span className="text-xs uppercase tracking-wider text-zinc-500 font-semibold block">
-                  {isEn ? "Service Overview" : "Ringkasan Layanan"}
-                </span>
-                <p className="text-sm text-zinc-700 leading-relaxed font-sans">
-                  {modalDesc}
-                </p>
-              </div>
-
-              {/* Performance/Class Highlight Chips */}
-              {danceHighlights && danceHighlights.length > 0 && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
-                    <Music className="w-3.5 h-3.5" />
-                    <span>{isEn ? "Related Dance & Performance Scope" : "Cakupan Materi & Pementasan Terkait"}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {danceHighlights.slice(0, 5).map((dance, dIdx) => (
-                      <span 
-                        key={dIdx}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-800 border border-orange-200/60"
-                      >
-                        {dance.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Targeted WhatsApp CTA */}
-              <div className="pt-2">
-                <a
-                  href={getServiceWaLink(selectedService)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
-                >
-                  <Phone className="w-4 h-4 fill-white" />
-                  <span>{isEn ? "Inquire on WhatsApp" : "Konsultasi via WhatsApp"}</span>
-                </a>
-              </div>
             </div>
+
+            {/* Featured Service Image Banner */}
+            <div className="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden my-4 border border-zinc-200/80 shadow-sm bg-zinc-100">
+              <img
+              src={(selectedService as any)?.image || (sanggar as any)?.image || "/card-7.webp"}
+                alt={modalTitle}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Service Summary */}
+            <div className="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 my-4">
+              <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mb-1">
+                {isEn ? "Service Summary" : "Ringkasan Layanan"}
+              </p>
+              <p className="text-sm text-zinc-700 leading-relaxed">
+                {modalDesc}
+              </p>
+            </div>
+
+            {/* Related Specialties */}
+            {danceHighlights && danceHighlights.length > 0 && (
+              <div className="mb-6">
+                <p className="text-xs font-semibold tracking-wider text-orange-600 uppercase mb-2 flex items-center gap-1.5">
+                  <span>♫</span> {isEn ? "Related Performances" : "Cakupan Materi & Pementasan Terkait"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {danceHighlights.map((item, idx) => (
+                    <span key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/60">
+                      {typeof item === 'string' ? item : item.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* WhatsApp CTA */}
+            <a
+              href={`https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(
+                isEn
+                  ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to inquire about the service: "${modalTitle}".`
+                  : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin berkonsultasi mengenai layanan: "${modalTitle}".`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition-colors shadow-lg shadow-emerald-600/20"
+            >
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.762.459 3.48 1.332 5.002l-1.416 5.169 5.293-1.387c1.462.798 3.109 1.218 4.777 1.219h.004c5.505 0 9.988-4.478 9.99-9.985 0-2.668-1.038-5.176-2.925-7.062a9.924 9.924 0 00-7.062-2.94zm0 1.62c4.615 0 8.37 3.754 8.371 8.368 0 2.235-.87 4.336-2.45 5.915-1.58 1.58-3.68 2.45-5.917 2.45h-.003c-1.42 0-2.825-.378-4.062-1.092l-.292-.168-3.021.791.806-2.941-.185-.295c-.782-1.246-1.196-2.671-1.196-4.135.002-4.614 3.758-8.368 8.372-8.368z"/>
+              </svg>
+              {isEn ? "Consult via WhatsApp" : "Konsultasi via WhatsApp"}
+            </a>
           </div>
-        );
-      })()}
+        </div>
+      );
+    })()}
 
     </main>
   );
