@@ -44,6 +44,7 @@ export interface ServiceItem {
   titleEn?: string;
   descriptionEn?: string;
   icon?: string;
+  image?: string;
 }
 
 export interface SanggarDetailData {
@@ -61,6 +62,8 @@ export interface SanggarDetailData {
   alamatLatihan: string;
   address?: string;
   logo?: string;
+  image?: string;
+  coverImage?: string;
   whatsappNumber?: string;
   instagram?: string;
   whatsappUrl?: string | null;
@@ -164,17 +167,12 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
         {/* Pengurus Sanggar Card immediately follows */}
         <section className="bg-white rounded-3xl p-6 md:p-8 border border-zinc-200/80 shadow-sm transition-all duration-300">
-          <div>
-            <span className="text-xs font-semibold tracking-widest text-orange-600 uppercase">
-              {isEn ? "Leadership & Management" : "Pimpinan & Manajemen"}
+          <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 mb-6">
+            <span>{isEn ? "Studio Management" : "Pengurus Sanggar"}</span>
+            <span className={`${dancingScript.className} text-orange-600 text-3xl sm:text-4xl font-normal`}>
+              {studioName}
             </span>
-            <h1 className="text-2xl sm:text-3xl font-medium text-zinc-800 tracking-tight flex items-center gap-2 flex-wrap mt-1">
-              <span>{isEn ? "Studio Management —" : "Pengurus Sanggar —"}</span>
-              <span className={`font-dancing text-3xl sm:text-4xl text-orange-600 font-normal ${dancingScript.className}`}>
-                {sanggar.name || "Sinar Norray"}
-              </span>
-            </h1>
-          </div>
+          </h2>
 
           {/* Internal Divider */}
           <div className="border-t border-zinc-100 my-6" />
