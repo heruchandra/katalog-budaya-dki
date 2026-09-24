@@ -32,9 +32,15 @@ export interface Sanggar {
   thumbnail_url: string | null;
 }
 
-export default async function SanggarPage() {
+interface SanggarPageProps {
+  searchParams?: Promise<{ q?: string }> | { q?: string };
+}
+
+export default async function SanggarPage({ searchParams }: SanggarPageProps) {
   let sanggars: Sanggar[] = [];
   let fetchError: string | null = null;
+  const resolvedParams = searchParams ? await searchParams : {};
+  const initialQuery = resolvedParams?.q || "";
 
   try {
     // Validate environment variables before attempting connection
@@ -169,5 +175,32 @@ export default async function SanggarPage() {
     fetchError = errMsg || "Terjadi kesalahan koneksi ke server database.";
   }
 
-  return <SanggarCatalog sanggars={sanggars} fetchError={fetchError} />;
+  if (!sanggars || sanggars.length === 0) {
+    sanggars = [
+      {
+        id: "sinar-norray",
+        nama_sanggar: "Sinar Norray",
+        nama_pimpinan: "Engkar Karmilasari (Engkar Nori)",
+        grade: "B",
+        alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
+        jenis_tarian: "Tari Betawi, Lenong Betawi",
+        thumbnail_url: "/card-7.webp",
+        whatsapp: "6281310998647",
+        whatsappUrl: "https://wa.me/6281310998647",
+        instagramUrl: "https://instagram.com/sinar_norray",
+        youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
+      },
+      {
+        id: "1",
+        nama_sanggar: "Art Enthusiast Production",
+        nama_pimpinan: "Ahmad",
+        grade: "A",
+        alamat: "Jakarta",
+        thumbnail_url: "/card-1.webp",
+        whatsapp: "6281318702623"
+      }
+    ];
+  }
+
+  return <SanggarCatalog sanggars={sanggars} fetchError={fetchError} initialQuery={initialQuery} />;
 }

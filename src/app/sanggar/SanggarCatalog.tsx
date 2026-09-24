@@ -45,18 +45,27 @@ export interface Sanggar {
 interface SanggarCatalogProps {
   sanggars: Sanggar[];
   fetchError: string | null;
+  initialQuery?: string;
 }
 
 export default function SanggarCatalog({
   sanggars,
   fetchError,
+  initialQuery = "",
 }: SanggarCatalogProps) {
   const router = useRouter();
   const [activeGrade, setActiveGrade] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (initialQuery) {
+      setSearchQuery(initialQuery);
+      setCurrentPage(1);
+    }
+  }, [initialQuery]);
 
   const gradeFilters = [
     { value: "all", label: t('sanggarGradeAll') },
@@ -64,16 +73,44 @@ export default function SanggarCatalog({
     { value: "B", label: "GRADE B" },
   ];
 
-  const filtered = (sanggars || []).filter((s) => {
+  const filtered = (sanggars || []).filter((s: any) => {
+    const query = searchQuery.toLowerCase().trim();
+
+    // Multi-field specialties / tari unggulan matching
+    const specialtiesStr = Array.isArray(s.danceSpecialties)
+      ? s.danceSpecialties.map((d: any) => typeof d === 'string' ? d : d.name).join(" ")
+      : Array.isArray(s.tariUnggulan)
+        ? s.tariUnggulan.map((d: any) => typeof d === 'string' ? d : d.name).join(" ")
+        : (s.jenis_tarian || "");
+
+    const matchesQuery = !query ||
+      s.nama_sanggar?.toLowerCase().includes(query) ||
+      s.name?.toLowerCase().includes(query) ||
+      s.category?.toLowerCase().includes(query) ||
+      s.jenis_tarian?.toLowerCase().includes(query) ||
+      s.description?.toLowerCase().includes(query) ||
+      s.alamat?.toLowerCase().includes(query) ||
+      s.kelurahan?.toLowerCase().includes(query) ||
+      s.kecamatan?.toLowerCase().includes(query) ||
+      s.kota_kab?.toLowerCase().includes(query) ||
+      s.nama_pimpinan?.toLowerCase().includes(query) ||
+      s.leaderName?.toLowerCase().includes(query) ||
+      s.leader?.toLowerCase().includes(query) ||
+      s.kontak_pic?.toLowerCase().includes(query) ||
+      specialtiesStr.toLowerCase().includes(query);
+
+    // Flexible Grade Filter: if specific query directly matches studio name, include it
+    const isDirectStudioMatch = query && (
+      s.nama_sanggar?.toLowerCase().includes(query) ||
+      s.name?.toLowerCase().includes(query)
+    );
+
     const matchGrade =
       activeGrade === "all" ||
+      isDirectStudioMatch ||
       (s.grade && (s.grade.toUpperCase() === activeGrade.toUpperCase() || s.grade.toUpperCase() === `GRADE ${activeGrade.toUpperCase()}`));
-    const matchSearch =
-      searchQuery === "" ||
-      s.nama_sanggar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.jenis_tarian?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.kecamatan?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchGrade && matchSearch;
+
+    return matchGrade && matchesQuery;
   });
 
   const sortedSanggars = [...filtered].sort((a, b) => {
@@ -132,6 +169,42 @@ export default function SanggarCatalog({
 
       <div className={`flex flex-col md:flex-row gap-12 max-w-[90vw] mx-auto py-12 ${poppins.className}`}>
         
+        {/* Mobile Search & Grade Filter Bar (visible only on mobile) */}
+        <div className="w-full md:hidden flex flex-col gap-4 -mt-4 mb-2">
+          <div className="relative border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus-within:bg-white focus-within:border-orange-500 transition-colors">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder={t('sanggarSearchPlaceholder')}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
+            />
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {gradeFilters.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => {
+                  setActiveGrade(filter.value);
+                  setCurrentPage(1);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider whitespace-nowrap transition-colors ${
+                  activeGrade === filter.value
+                    ? "bg-orange-600 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Left Sidebar (Filters) */}
         <aside className="w-full md:w-1/4 hidden md:flex flex-col gap-8 sticky top-36 self-start max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar">
           <div className="border-t border-slate-200 pt-6">

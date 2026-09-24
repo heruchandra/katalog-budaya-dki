@@ -419,7 +419,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                             )}
                           </div>
                           <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-orange-600 font-semibold group-hover:text-orange-700 transition-colors">
-                            <span>{isEn ? "View Details →" : "Lihat Detail →"}</span>
+                            <span>{isEn ? "View Details" : "Lihat Detail"}</span>
                             <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                           </div>
                         </div>
