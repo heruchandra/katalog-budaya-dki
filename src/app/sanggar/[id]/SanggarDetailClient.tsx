@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   Phone, 
@@ -7,11 +8,12 @@ import {
   Award, 
   Clock, 
   ArrowUpRight, 
-  Sparkles,
-  Building2,
-  Calendar,
-  Share2,
-  Music
+  Sparkles, 
+  Building2, 
+  Calendar, 
+  Share2, 
+  Music,
+  X 
 } from "lucide-react";
 import { Poppins, Playfair_Display, Dancing_Script } from 'next/font/google';
 import { motion } from "framer-motion";
@@ -39,6 +41,9 @@ export interface AchievementItem {
 export interface ServiceItem {
   title: string;
   description?: string;
+  titleEn?: string;
+  descriptionEn?: string;
+  icon?: string;
 }
 
 export interface SanggarDetailData {
@@ -49,7 +54,9 @@ export interface SanggarDetailData {
   grade: string;
   wilayah: string;
   philosophy?: string;
+  philosophyEn?: string;
   description: string[];
+  descriptionEn?: string[];
   alamatSanggar: string;
   alamatLatihan: string;
   address?: string;
@@ -85,7 +92,26 @@ export interface SanggarDetailData {
 }
 
 export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetailData }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
+
+  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedService(null);
+      }
+    };
+    if (selectedService) {
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedService]);
 
   // Safely format phone number for WhatsApp API
   const formatWaNumber = (phone?: string) => {
@@ -102,7 +128,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   
   const studioName = sanggar?.name || 'Sanggar Seni';
   const waMessage = encodeURIComponent(
-    `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta. Saya ingin berkonsultasi mengenai program kelas dan pementasan seni tari.`
+    isEn 
+      ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog. I would like to inquire about dance class programs and performances.`
+      : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta. Saya ingin berkonsultasi mengenai program kelas dan pementasan seni tari.`
   );
   
   const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
@@ -118,7 +146,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             href="/sanggar" 
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-zinc-500 hover:text-orange-600 uppercase transition-colors"
           >
-            ← Kembali ke Katalog
+            {isEn ? "← Back to Catalog" : "← Kembali ke Katalog"}
           </Link>
         </div>
 
@@ -126,10 +154,10 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
         <section className="bg-white rounded-3xl p-6 md:p-8 border border-zinc-200/80 shadow-sm transition-all duration-300">
           <div>
             <span className="text-xs font-semibold tracking-widest text-orange-600 uppercase">
-              Pimpinan & Manajemen
+              {isEn ? "Leadership & Management" : "Pimpinan & Manajemen"}
             </span>
             <h1 className="text-2xl sm:text-3xl font-medium text-zinc-800 tracking-tight flex items-center gap-2 flex-wrap mt-1">
-              <span>Pengurus Sanggar —</span>
+              <span>{isEn ? "Studio Management —" : "Pengurus Sanggar —"}</span>
               <span className={`font-dancing text-3xl sm:text-4xl text-orange-600 font-normal ${dancingScript.className}`}>
                 {sanggar.name || "Sinar Norray"}
               </span>
@@ -145,7 +173,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-orange-500/40 p-1 shrink-0 bg-zinc-50">
                 <img 
                   src={sanggar.logo || sanggar.logoUrl || (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/profile-sanggar-2.webp")} 
-                  alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || "Ketua Sanggar"} 
+                  alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || (isEn ? "Studio Leader" : "Ketua Sanggar")} 
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "/profile-sanggar-2.webp";
                   }}
@@ -155,13 +183,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
               <div className="space-y-1.5 text-center sm:text-left">
                 <span className="text-xs uppercase tracking-widest text-orange-600 font-semibold block">
-                  Ketua Sanggar
+                  {isEn ? "Studio Leader" : "Ketua Sanggar"}
                 </span>
                 <h4 className="text-xl font-bold text-zinc-900">
                   {sanggar.leader || sanggar.kontak?.ketua}
                 </h4>
                 <p className="text-xs text-zinc-500 font-light leading-relaxed">
-                  Bertanggung jawab atas pembinaan mutu kurikulum tari dan arah kebijakan sanggar seni.
+                  {isEn 
+                    ? "Responsible for dance curriculum quality development and studio policy direction."
+                    : "Bertanggung jawab atas pembinaan mutu kurikulum tari dan arah kebijakan sanggar seni."}
                 </p>
               </div>
             </div>
@@ -170,11 +200,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <div className="mt-6 md:mt-0 space-y-4">
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between py-2 border-b border-zinc-100">
-                  <span className="text-xs uppercase text-zinc-400 font-medium">Nama PIC Kontak:</span>
+                  <span className="text-xs uppercase text-zinc-400 font-medium">
+                    {isEn ? "Contact Person (PIC):" : "Nama PIC Kontak:"}
+                  </span>
                   <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak?.pic || sanggar.leader || sanggar.kontak?.ketua}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-zinc-100">
-                  <span className="text-xs uppercase text-zinc-400 font-medium">Nomor WhatsApp:</span>
+                  <span className="text-xs uppercase text-zinc-400 font-medium">
+                    {isEn ? "WhatsApp Number:" : "Nomor WhatsApp:"}
+                  </span>
                   <span className="text-sm font-semibold text-zinc-800">
                     {Array.isArray(sanggar.contacts?.phone) ? sanggar.contacts.phone.join(' / ') : (sanggar.whatsappNumber || sanggar.kontak?.phone)}
                   </span>
@@ -197,7 +231,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     waLink = directWaUrl;
                   } else {
                     const phoneNum = formatWaNumber(Array.isArray(sanggar.contacts?.phone) ? sanggar.contacts.phone[0] : (sanggar.whatsappNumber || sanggar.kontak?.phone || "6281310998647"));
-                    waLink = `https://wa.me/${phoneNum}?text=${encodeURIComponent(`Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin bertanya mengenai sewa kostum / jasa pentas / kelas tari.`)}`;
+                    waLink = `https://wa.me/${phoneNum}?text=${encodeURIComponent(isEn ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to ask about costume rental / performance services / dance classes.` : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin bertanya mengenai sewa kostum / jasa pentas / kelas tari.`)}`;
                   }
                   return (
                     <a
@@ -249,7 +283,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
               <div>
                 <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                  Profil Sanggar
+                  {isEn ? "Studio Profile" : "Profil Sanggar"}
                 </h2>
                 <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
               </div>
@@ -261,31 +295,39 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               </div>
 
               {/* Storytelling Paragraphs with Drop-Cap on first paragraph */}
-              {sanggar.description && sanggar.description.length > 0 && (
-                <div className="text-zinc-700 text-base sm:text-lg leading-relaxed space-y-5 font-light">
-                  <p className="text-justify">
-                    <span className={`float-left text-5xl md:text-6xl text-zinc-900 leading-none pr-3 pt-1 font-normal select-none ${playfair.className}`}>
-                      {sanggar.description[0].charAt(0)}
-                    </span>
-                    {sanggar.description[0].slice(1)}
-                  </p>
+              {(() => {
+                const descList = (isEn && sanggar.descriptionEn && sanggar.descriptionEn.length > 0)
+                  ? sanggar.descriptionEn
+                  : (sanggar.description || []);
 
-                  {sanggar.description.slice(1).map((paragraph, idx) => (
-                    <p key={idx} className="text-justify">
-                      {paragraph}
+                if (!descList || descList.length === 0) return null;
+
+                return (
+                  <div className="text-zinc-700 text-base sm:text-lg leading-relaxed space-y-5 font-light">
+                    <p className="text-justify">
+                      <span className={`float-left text-5xl md:text-6xl text-zinc-900 leading-none pr-3 pt-1 font-normal select-none ${playfair.className}`}>
+                        {descList[0].charAt(0)}
+                      </span>
+                      {descList[0].slice(1)}
                     </p>
-                  ))}
-                </div>
-              )}
+
+                    {descList.slice(1).map((paragraph, idx) => (
+                      <p key={idx} className="text-justify">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                );
+              })()}
 
               {/* Philosophy Callout Quote */}
-              {sanggar.philosophy && (
+              {(sanggar.philosophy || sanggar.philosophyEn) && (
                 <blockquote className="border-l-2 border-orange-500 pl-6 my-8 py-3 text-zinc-800 bg-orange-50/50 rounded-r-xl">
                   <p className={`font-serif italic text-lg sm:text-xl text-zinc-800 leading-relaxed ${playfair.className}`}>
-                    &ldquo;{sanggar.philosophy}&rdquo;
+                    &ldquo;{(isEn && sanggar.philosophyEn) ? sanggar.philosophyEn : sanggar.philosophy}&rdquo;
                   </p>
                   <footer className="text-xs uppercase tracking-widest text-zinc-400 font-sans mt-2 font-medium">
-                    — Filosofi {sanggar.name}
+                    {isEn ? `— ${sanggar.name} Philosophy` : `— Filosofi ${sanggar.name}`}
                   </footer>
                 </blockquote>
               )}
@@ -295,7 +337,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
                     <Building2 className="w-4 h-4" />
-                    <span>Alamat Sanggar / Sekretariat</span>
+                    <span>{isEn ? "Studio / Secretariat Address" : "Alamat Sanggar / Sekretariat"}</span>
                   </div>
                   <p className="text-sm text-zinc-700 leading-relaxed font-sans">
                     {sanggar.address || sanggar.alamatSanggar}
@@ -305,7 +347,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
                     <Clock className="w-4 h-4" />
-                    <span>Tempat & Jadwal Latihan</span>
+                    <span>{isEn ? "Practice Venue & Schedule" : "Tempat & Jadwal Latihan"}</span>
                   </div>
                   <p className="text-sm text-zinc-700 leading-relaxed font-sans">
                     {sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar}
@@ -316,32 +358,36 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* 2. Layanan Sanggar Section (Structured Service Cards) */}
             {(() => {
-              const serviceList = (sanggar.services && sanggar.services.length > 0)
-                ? sanggar.services
-                : (sanggar.layanan || []);
+              const serviceList = isEn 
+                ? ((sanggar.services && sanggar.services.length > 0) ? sanggar.services : (sanggar.layanan || []))
+                : ((sanggar.layanan && sanggar.layanan.length > 0) ? sanggar.layanan : (sanggar.services || []));
 
               return (
                 <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
                   <div>
                     <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                      Layanan Sanggar
+                      {isEn ? "Studio Services" : "Layanan Sanggar"}
                     </h3>
                     <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-4" />
                     <p className="text-xs text-zinc-500 font-sans tracking-wide">
-                      Layanan resmi yang dikelola langsung oleh pengurus sanggar dengan instruktur bersertifikat.
+                      {isEn 
+                        ? "Official services managed directly by studio administration with certified instructors."
+                        : "Layanan resmi yang dikelola langsung oleh pengurus sanggar dengan instruktur bersertifikat."}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
                     {serviceList.map((item, idx) => {
                       const isObj = typeof item === 'object' && item !== null;
-                      const title = isObj ? item.title : item;
-                      const desc = isObj ? item.description : null;
+                      const serviceObj: ServiceItem = isObj ? item : { title: item, description: '' };
+                      const title = isObj ? ((isEn && item.titleEn) ? item.titleEn : item.title) : item;
+                      const desc = isObj ? ((isEn && item.descriptionEn) ? item.descriptionEn : item.description) : null;
 
                       return (
                         <div 
                           key={idx}
-                          className="group relative bg-gradient-to-br from-zinc-50/80 to-orange-50/30 hover:to-orange-100/50 p-5 rounded-2xl border border-zinc-200/80 hover:border-orange-400/60 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                          onClick={() => setSelectedService(serviceObj)}
+                          className="group relative bg-gradient-to-br from-zinc-50/80 to-orange-50/30 hover:to-orange-100/50 p-5 rounded-2xl border border-zinc-200/80 hover:border-orange-500 hover:shadow-md transition-all duration-300 flex flex-col justify-between cursor-pointer"
                         >
                           <div>
                             <div className="w-10 h-10 rounded-xl bg-orange-100/90 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -357,14 +403,14 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                               {title}
                             </h4>
                             {desc && (
-                              <p className="text-xs sm:text-sm text-zinc-600 mt-2 leading-relaxed font-light">
+                              <p className="text-xs sm:text-sm text-zinc-600 mt-2 leading-relaxed font-light line-clamp-3">
                                 {desc}
                               </p>
                             )}
                           </div>
-                          <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-orange-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span>Informasi &amp; Konsultasi</span>
-                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-orange-600 font-semibold group-hover:text-orange-700 transition-colors">
+                            <span>{isEn ? "View Details →" : "Lihat Detail →"}</span>
+                            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                           </div>
                         </div>
                       );
@@ -376,9 +422,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* 3. Karya Tari Unggulan (Specialized Dance Synopses) */}
             {(() => {
-              const specialtiesList = (sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0)
-                ? sanggar.danceSpecialties
-                : (sanggar.tariUnggulan || []);
+              const specialtiesList = isEn
+                ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
+                : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
 
               if (!specialtiesList || specialtiesList.length === 0) return null;
 
@@ -386,11 +432,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
                   <div>
                     <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                      Karya Tari Unggulan
+                      {isEn ? "Featured Dance Works" : "Karya Tari Unggulan"}
                     </h3>
                     <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-4" />
                     <p className="text-xs text-zinc-500 font-sans tracking-wide">
-                      Koreografi unggulan dan sinopsis latar belakang seni budaya yang dibawakan oleh sanggar.
+                      {isEn 
+                        ? "Featured choreography and cultural background synopses performed by the studio."
+                        : "Koreografi unggulan dan sinopsis latar belakang seni budaya yang dibawakan oleh sanggar."}
                     </p>
                   </div>
 
@@ -412,12 +460,12 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                           <div className="flex flex-wrap items-center gap-2 text-xs">
                             {dance.choreographer && (
                               <span className="px-2.5 py-1 rounded-full bg-orange-100/80 text-orange-800 font-medium">
-                                Koreografer: <strong className="font-semibold">{dance.choreographer}</strong>
+                                {isEn ? "Choreographer:" : "Koreografer:"} <strong className="font-semibold">{dance.choreographer}</strong>
                               </span>
                             )}
                             {dance.composer && (
                               <span className="px-2.5 py-1 rounded-full bg-amber-100/80 text-amber-800 font-medium">
-                                Komposer: <strong className="font-semibold">{dance.composer}</strong>
+                                {isEn ? "Composer:" : "Komposer:"} <strong className="font-semibold">{dance.composer}</strong>
                               </span>
                             )}
                           </div>
@@ -426,7 +474,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                         {(dance.synopsis || dance.description) && (
                           <div className="pt-1">
                             <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
-                              Sinopsis Karya:
+                              {isEn ? "Work Synopsis:" : "Sinopsis Karya:"}
                             </p>
                             <p className="text-sm sm:text-base text-zinc-700 font-light leading-relaxed text-justify">
                               {dance.synopsis || dance.description}
@@ -444,22 +492,22 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
               <div>
                 <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                  Prestasi & Penghargaan
+                  {isEn ? "Achievements & Awards" : "Prestasi & Penghargaan"}
                 </h2>
                 <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
               </div>
 
               {(() => {
-                const achievementList = (sanggar.achievements && sanggar.achievements.length > 0)
-                  ? sanggar.achievements
-                  : (sanggar.prestasi || []);
+                const achievementList = isEn
+                  ? ((sanggar.achievements && sanggar.achievements.length > 0) ? sanggar.achievements : (sanggar.prestasi || []))
+                  : ((sanggar.prestasi && sanggar.prestasi.length > 0) ? sanggar.prestasi : (sanggar.achievements || []));
 
                 return achievementList && achievementList.length > 0 ? (
                   <div className="max-h-[420px] overflow-y-auto pr-2 divide-y divide-zinc-100 border-y border-zinc-100">
                     {achievementList.map((item, idx) => {
                       const isObj = typeof item === 'object' && item !== null;
                       const title = isObj ? item.title : item;
-                      const organizer = isObj && item.organizer ? item.organizer : "Pencapaian Seni Resmi";
+                      const organizer = isObj && item.organizer ? item.organizer : (isEn ? "Official Artistic Achievement" : "Pencapaian Seni Resmi");
                       const year = isObj ? item.year : null;
 
                       return (
@@ -491,7 +539,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </div>
                 ) : (
                   <p className="text-sm text-zinc-500 italic">
-                    Data prestasi sedang dalam verifikasi arsip dinas.
+                    {isEn 
+                      ? "Achievement data is currently being verified in department archives."
+                      : "Data prestasi sedang dalam verifikasi arsip dinas."}
                   </p>
                 );
               })()}
@@ -504,32 +554,36 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             
             {/* Card 1: Informasi Operasional & Jadwal */}
             <div className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm transition-all duration-300">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">Informasi Latihan</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
+                {isEn ? "Practice Information" : "Informasi Latihan"}
+              </h3>
               <div className="space-y-3 text-sm text-zinc-700">
                 <div className="flex justify-between border-b border-zinc-100 pb-2.5">
-                  <span className="text-zinc-500">Jadwal Rutin:</span>
-                  <span className="font-semibold text-right text-zinc-800">Sabtu & Minggu</span>
+                  <span className="text-zinc-500">{isEn ? "Routine Schedule:" : "Jadwal Rutin:"}</span>
+                  <span className="font-semibold text-right text-zinc-800">{isEn ? "Saturday & Sunday" : "Sabtu & Minggu"}</span>
                 </div>
                 <div className="flex justify-between border-b border-zinc-100 pb-2.5">
-                  <span className="text-zinc-500">Jam Operasional:</span>
+                  <span className="text-zinc-500">{isEn ? "Operating Hours:" : "Jam Operasional:"}</span>
                   <span className="font-semibold text-right text-zinc-800">09:00 - 16:00 WIB</span>
                 </div>
                 <div className="flex justify-between pt-1">
-                  <span className="text-zinc-500">Status Sanggar:</span>
-                  <span className="font-semibold text-emerald-600">Aktif & Terverifikasi</span>
+                  <span className="text-zinc-500">{isEn ? "Studio Status:" : "Status Sanggar:"}</span>
+                  <span className="font-semibold text-emerald-600">{isEn ? "Active & Verified" : "Aktif & Terverifikasi"}</span>
                 </div>
               </div>
             </div>
 
             {/* Card 2: Lokasi & Alamat */}
             <div className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm transition-all duration-300">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">Lokasi Sanggar</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
+                {isEn ? "Studio Location" : "Lokasi Sanggar"}
+              </h3>
               <p className="text-sm text-zinc-600 leading-relaxed mb-3">
                 {sanggar.address || sanggar.alamatSanggar || "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur"}
               </p>
               <div className="w-full h-44 sm:h-52 my-3 rounded-xl overflow-hidden border border-zinc-200 shadow-sm">
                 <iframe
-                  title="Lokasi Sanggar"
+                  title={isEn ? "Studio Location" : "Lokasi Sanggar"}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -544,7 +598,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 rel="noreferrer"
                 className="block w-full text-center py-2.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-xl transition-all"
               >
-                Buka di Google Maps ↗
+                {isEn ? "Open in Google Maps ↗" : "Buka di Google Maps ↗"}
               </a>
             </div>
 
@@ -560,14 +614,14 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 border-b border-zinc-200 pb-6 gap-4">
               <div>
                 <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
-                  DOKUMENTASI VISUAL
+                  {isEn ? "VISUAL DOCUMENTATION" : "DOKUMENTASI VISUAL"}
                 </span>
                 <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                  Galeri Foto & Aktivitas
+                  {isEn ? "Photo Gallery & Activities" : "Galeri Foto & Aktivitas"}
                 </h2>
               </div>
               <p className="text-xs text-zinc-500 uppercase tracking-widest font-sans">
-                {sanggar.gallery.length} Dokumentasi Terpilih
+                {sanggar.gallery.length} {isEn ? "Selected Records" : "Dokumentasi Terpilih"}
               </p>
             </div>
 
@@ -593,6 +647,108 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
           </div>
         </section>
       )}
+
+      {/* Service Detail Modal */}
+      {selectedService && (() => {
+        const modalTitle = isEn 
+          ? (selectedService.titleEn || selectedService.title) 
+          : selectedService.title;
+        const modalDesc = (isEn && selectedService.descriptionEn)
+          ? selectedService.descriptionEn
+          : (selectedService.description || (isEn 
+              ? "In-depth studio training, performance programs, and cultural consultation guided by experienced mentors." 
+              : "Program pelatihan terarah, pementasan kesenian, dan konsultasi budaya yang dibimbing langsung oleh instruktur berpengalaman."));
+        
+        const danceHighlights = isEn
+          ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
+          : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
+
+        const modalWaMessage = encodeURIComponent(
+          isEn 
+            ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to inquire about the service: "${modalTitle}".`
+            : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin berkonsultasi mengenai layanan: "${modalTitle}".`
+        );
+        const modalWaLink = `https://wa.me/${waNumber}?text=${modalWaMessage}`;
+
+        return (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setSelectedService(null)}
+          >
+            <div 
+              className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-zinc-100 space-y-6 animate-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedService(null)}
+                className="absolute top-5 right-5 p-2 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
+                aria-label={isEn ? "Close modal" : "Tutup modal"}
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Header */}
+              <div className="flex items-start gap-4 pr-8">
+                <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-orange-600 block">
+                    {isEn ? "Studio Service & Program" : "Layanan & Program Sanggar"}
+                  </span>
+                  <h3 className={`text-xl sm:text-2xl font-bold text-zinc-900 mt-0.5 ${playfair.className}`}>
+                    {modalTitle}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2 bg-zinc-50/70 p-4 rounded-2xl border border-zinc-100">
+                <span className="text-xs uppercase tracking-wider text-zinc-500 font-semibold block">
+                  {isEn ? "Service Overview" : "Ringkasan Layanan"}
+                </span>
+                <p className="text-sm text-zinc-700 leading-relaxed font-sans">
+                  {modalDesc}
+                </p>
+              </div>
+
+              {/* Performance/Class Highlight Chips */}
+              {danceHighlights && danceHighlights.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
+                    <Music className="w-3.5 h-3.5" />
+                    <span>{isEn ? "Related Dance & Performance Scope" : "Cakupan Materi & Pementasan Terkait"}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {danceHighlights.slice(0, 5).map((dance, dIdx) => (
+                      <span 
+                        key={dIdx}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-800 border border-orange-200/60"
+                      >
+                        {dance.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Targeted WhatsApp CTA */}
+              <div className="pt-2">
+                <a
+                  href={modalWaLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+                >
+                  <Phone className="w-4 h-4 fill-white" />
+                  <span>{isEn ? "Inquire on WhatsApp" : "Konsultasi via WhatsApp"}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
     </main>
   );

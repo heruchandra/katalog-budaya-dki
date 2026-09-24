@@ -14,10 +14,16 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     grade: "Grade B",
     wilayah: "Jakarta Timur",
     philosophy: "Seni Betawi adalah nafas dan marwah masyarakat Jakarta. Boleh orangnya tiada, namun warisan seni dan budayanya harus tetap hidup dan berkobar di hati generasi penerus.",
+    philosophyEn: "Betawi art is the breath and dignity of Jakarta's people. A person may pass away, but the artistic and cultural heritage must remain alive and burning in the hearts of future generations.",
     description: [
-      "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
+      "Sanggar Seni Sinar Norray didirikan pada tahun 1995 oleh almarhumah Hj. Nori (Mpok Nori). Berawal dari panggung pertunjukan Lenong Betawi, sanggar ini telah berkembang menjadi pusat pelestarian seni tradisi Betawi yang saat ini dipimpin oleh putri bungsu Hj. Nori.",
       "Berangkat dari panggung sandiwara rakyat Lenong Betawi yang melegenda, sanggar ini terus meregenerasi bakat-bakat seni tradisi mulai dari seni tari klasik hingga tabuhan irama musik Gambang Kromong.",
       "Kini di bawah kepemimpinan Engkar Karmilasari, Sinar Norray tetap setia menjaga orisinalitas kesenian Betawi seraya membuka diri pada kolaborasi panggung teater modern ibu kota."
+    ],
+    descriptionEn: [
+      "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
+      "Originating from the legendary folk theater stage of Lenong Betawi, this studio continuously regenerates traditional artistic talents ranging from classical dance to the rhythmic beats of Gambang Kromong music.",
+      "Now under the leadership of Engkar Karmilasari, Sinar Norray remains faithful to preserving the originality of Betawi art while embracing collaborations on modern theatrical stages in the capital."
     ],
     alamatSanggar: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
     alamatLatihan: "Studio Sinar Norray, Jl. Daman 1 No.39 RT.008/002 Bambu Apus, Cipayung, Jakarta Timur (Rabu & Sabtu, 15.00 - 18.00 WIB)",
@@ -26,29 +32,41 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     services: [
       {
         title: "Betawi Dance Classes",
-        description: "Teaching traditional Betawi dances for all age groups."
+        description: "Teaching traditional Betawi dances for all age groups.",
+        titleEn: "Betawi Dance Classes",
+        descriptionEn: "Teaching traditional Betawi dances for all age groups."
       },
       {
         title: "Lenong Betawi Shows",
-        description: "Presenting traditional Betawi theater for diverse audiences."
+        description: "Presenting traditional Betawi theater for diverse audiences.",
+        titleEn: "Lenong Betawi Shows",
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
       },
       {
         title: "Traditional Music Performances (Gambang Kromong)",
-        description: "Showcasing authentic Betawi music for cultural celebrations."
+        description: "Showcasing authentic Betawi music for cultural celebrations.",
+        titleEn: "Traditional Music Performances (Gambang Kromong)",
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
       }
     ],
     layanan: [
       {
-        title: "Betawi Dance Classes",
-        description: "Teaching traditional Betawi dances for all age groups."
+        title: "Kelas Tari Betawi",
+        description: "Pelatihan tari tradisional Betawi untuk berbagai tingkatan usia dan kemahiran.",
+        titleEn: "Betawi Dance Classes",
+        descriptionEn: "Teaching traditional Betawi dances for all age groups."
       },
       {
-        title: "Lenong Betawi Shows",
-        description: "Presenting traditional Betawi theater for diverse audiences."
+        title: "Pentas Lenong Betawi",
+        description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
+        titleEn: "Lenong Betawi Shows",
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
       },
       {
-        title: "Traditional Music Performances (Gambang Kromong)",
-        description: "Showcasing authentic Betawi music for cultural celebrations."
+        title: "Pentas Musik Gambang Kromong",
+        description: "Penyajian musik tradisional khas Betawi untuk berbagai acara perayaan.",
+        titleEn: "Traditional Music Performances (Gambang Kromong)",
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
       }
     ],
     danceSpecialties: [
@@ -70,13 +88,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         name: "Tari Lenggok Dara",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+        synopsis: "Lenggok bermakna lenggang atau gerak berirama, sedangkan Dara adalah gadis muda. Tarian ini menggambarkan keluwesan, keanggunan, dan keceriaan gadis Betawi melalui gerak tari indah berpadu alunan musik tradisional khas Betawi."
       },
       {
         name: "Tari Nindak Si None",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+        synopsis: "Nindak bermakna melangkah maju, terinspirasi oleh sosok Si None Betawi sebagai representasi ikon budaya Abang None Jakarta. Tarian ini mencerminkan rasa percaya diri, keramahan, dan semangat gadis muda Betawi dalam melestarikan warisan budayanya."
       }
     ],
     achievements: [
@@ -97,9 +115,21 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       }
     ],
     prestasi: [
-      "Grade B in Dance Studio Evaluation by Jakarta Provincial Department of Culture (2025)",
-      "Mata Local Award 2025 'Local Ace in Betawi Heritage Performance'",
-      "Collaboration with Abang None Theater Production 'Gelora Muda' (2025)"
+      {
+        title: "Predikat Grade B Evaluasi Sanggar Seni Dinas Kebudayaan Provinsi DKI Jakarta",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2025"
+      },
+      {
+        title: "Mata Local Award 'Local Ace in Betawi Heritage Performance'",
+        organizer: "Mata Local Award",
+        year: "2025"
+      },
+      {
+        title: "Kolaborasi Produksi Teater Abang None Jakarta 'Gelora Muda'",
+        organizer: "Teater Abang None Jakarta",
+        year: "2025"
+      }
     ],
     youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ",
     contacts: {
@@ -137,8 +167,16 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     grade: "Grade B",
     wilayah: "Jakarta Timur",
     philosophy: "Seni Betawi adalah nafas dan marwah masyarakat Jakarta. Boleh orangnya tiada, namun warisan seni dan budayanya harus tetap hidup dan berkobar di hati generasi penerus.",
+    philosophyEn: "Betawi art is the breath and dignity of Jakarta's people. A person may pass away, but the artistic and cultural heritage must remain alive and burning in the hearts of future generations.",
     description: [
-      "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter."
+      "Sanggar Seni Sinar Norray didirikan pada tahun 1995 oleh almarhumah Hj. Nori (Mpok Nori). Berawal dari panggung pertunjukan Lenong Betawi, sanggar ini telah berkembang menjadi pusat pelestarian seni tradisi Betawi yang saat ini dipimpin oleh putri bungsu Hj. Nori.",
+      "Berangkat dari panggung sandiwara rakyat Lenong Betawi yang melegenda, sanggar ini terus meregenerasi bakat-bakat seni tradisi mulai dari seni tari klasik hingga tabuhan irama musik Gambang Kromong.",
+      "Kini di bawah kepemimpinan Engkar Karmilasari, Sinar Norray tetap setia menjaga orisinalitas kesenian Betawi seraya membuka diri pada kolaborasi panggung teater modern ibu kota."
+    ],
+    descriptionEn: [
+      "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
+      "Originating from the legendary folk theater stage of Lenong Betawi, this studio continuously regenerates traditional artistic talents ranging from classical dance to the rhythmic beats of Gambang Kromong music.",
+      "Now under the leadership of Engkar Karmilasari, Sinar Norray remains faithful to preserving the originality of Betawi art while embracing collaborations on modern theatrical stages in the capital."
     ],
     alamatSanggar: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
     alamatLatihan: "Studio Sinar Norray, Jl. Daman 1 No.39 RT.008/002 Bambu Apus, Cipayung, Jakarta Timur (Rabu & Sabtu, 15.00 - 18.00 WIB)",
@@ -147,29 +185,41 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     services: [
       {
         title: "Betawi Dance Classes",
-        description: "Teaching traditional Betawi dances for all age groups."
+        description: "Teaching traditional Betawi dances for all age groups.",
+        titleEn: "Betawi Dance Classes",
+        descriptionEn: "Teaching traditional Betawi dances for all age groups."
       },
       {
         title: "Lenong Betawi Shows",
-        description: "Presenting traditional Betawi theater for diverse audiences."
+        description: "Presenting traditional Betawi theater for diverse audiences.",
+        titleEn: "Lenong Betawi Shows",
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
       },
       {
         title: "Traditional Music Performances (Gambang Kromong)",
-        description: "Showcasing authentic Betawi music for cultural celebrations."
+        description: "Showcasing authentic Betawi music for cultural celebrations.",
+        titleEn: "Traditional Music Performances (Gambang Kromong)",
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
       }
     ],
     layanan: [
       {
-        title: "Betawi Dance Classes",
-        description: "Teaching traditional Betawi dances for all age groups."
+        title: "Kelas Tari Betawi",
+        description: "Pelatihan tari tradisional Betawi untuk berbagai tingkatan usia dan kemahiran.",
+        titleEn: "Betawi Dance Classes",
+        descriptionEn: "Teaching traditional Betawi dances for all age groups."
       },
       {
-        title: "Lenong Betawi Shows",
-        description: "Presenting traditional Betawi theater for diverse audiences."
+        title: "Pentas Lenong Betawi",
+        description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
+        titleEn: "Lenong Betawi Shows",
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
       },
       {
-        title: "Traditional Music Performances (Gambang Kromong)",
-        description: "Showcasing authentic Betawi music for cultural celebrations."
+        title: "Pentas Musik Gambang Kromong",
+        description: "Penyajian musik tradisional khas Betawi untuk berbagai acara perayaan.",
+        titleEn: "Traditional Music Performances (Gambang Kromong)",
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
       }
     ],
     danceSpecialties: [
@@ -191,13 +241,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         name: "Tari Lenggok Dara",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+        synopsis: "Lenggok bermakna lenggang atau gerak berirama, sedangkan Dara adalah gadis muda. Tarian ini menggambarkan keluwesan, keanggunan, dan keceriaan gadis Betawi melalui gerak tari indah berpadu alunan musik tradisional khas Betawi."
       },
       {
         name: "Tari Nindak Si None",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+        synopsis: "Nindak bermakna melangkah maju, terinspirasi oleh sosok Si None Betawi sebagai representasi ikon budaya Abang None Jakarta. Tarian ini mencerminkan rasa percaya diri, keramahan, dan semangat gadis muda Betawi dalam melestarikan warisan budayanya."
       }
     ],
     achievements: [
@@ -218,9 +268,21 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       }
     ],
     prestasi: [
-      "Grade B in Dance Studio Evaluation by Jakarta Provincial Department of Culture (2025)",
-      "Mata Local Award 2025 'Local Ace in Betawi Heritage Performance'",
-      "Collaboration with Abang None Theater Production 'Gelora Muda' (2025)"
+      {
+        title: "Predikat Grade B Evaluasi Sanggar Seni Dinas Kebudayaan Provinsi DKI Jakarta",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2025"
+      },
+      {
+        title: "Mata Local Award 'Local Ace in Betawi Heritage Performance'",
+        organizer: "Mata Local Award",
+        year: "2025"
+      },
+      {
+        title: "Kolaborasi Produksi Teater Abang None Jakarta 'Gelora Muda'",
+        organizer: "Teater Abang None Jakarta",
+        year: "2025"
+      }
     ],
     youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ",
     contacts: {
@@ -807,15 +869,17 @@ export default async function SanggarDetail({
     grade: specific?.grade || (data?.grade ? (data.grade.toLowerCase().includes('grade') ? data.grade : `Grade ${data.grade}`) : fallback.grade),
     wilayah: specific?.wilayah || data?.kota_kab || data?.kecamatan || fallback.wilayah,
     philosophy: specific?.philosophy || fallback.philosophy,
+    philosophyEn: specific?.philosophyEn,
     description: specific?.description || (data?.deskripsi ? [data.deskripsi] : fallback.description),
+    descriptionEn: specific?.descriptionEn,
     alamatSanggar: specific?.alamatSanggar || data?.alamat || fallback.alamatSanggar,
     alamatLatihan: specific?.alamatLatihan || data?.alamat_tempat_latihan || fallback.alamatLatihan,
     address: specific?.address || specific?.alamatSanggar || data?.alamat || fallback?.address || fallback?.alamatSanggar || '',
     logo: specific?.logo,
     services: specific?.services,
-    layanan: specific?.services || specific?.layanan || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
+    layanan: specific?.layanan || specific?.services || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
     danceSpecialties: specific?.danceSpecialties || specific?.tariUnggulan || fallback.tariUnggulan,
-    tariUnggulan: specific?.danceSpecialties || specific?.tariUnggulan || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
+    tariUnggulan: specific?.tariUnggulan || specific?.danceSpecialties || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
       ? data.tari_unggulan
       : fallback.tariUnggulan),
     prestasi: specific?.prestasi || (data?.prestasi && Array.isArray(data.prestasi) && data.prestasi.length > 0

@@ -28,6 +28,9 @@ export interface Sanggar {
 export interface ServiceItem {
   title: string;
   description: string;
+  titleEn?: string;
+  descriptionEn?: string;
+  icon?: string;
 }
 
 export interface TariItem {
@@ -60,6 +63,7 @@ export interface SanggarItem {
   leader: string;
   tagline: string;
   description: string;
+  descriptionEn?: string;
   address: string;
   logo: string;
   image?: string;
