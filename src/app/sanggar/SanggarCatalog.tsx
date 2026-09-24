@@ -246,9 +246,10 @@ export default function SanggarCatalog({
                         <button
                           type="button"
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
-                            if (sanggar.youtubeUrl) window.open(sanggar.youtubeUrl, '_blank');
-                            else window.open("https://www.youtube.com", '_blank');
+                            const targetUrl = sanggar.youtubeUrl || "https://www.youtube.com";
+                            window.open(targetUrl, '_blank', 'noopener,noreferrer');
                           }}
                           className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-full py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors cursor-pointer"
                         >
@@ -262,9 +263,16 @@ export default function SanggarCatalog({
                         <button
                           type="button"
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
-                            const wa = sanggar.whatsappNumber || sanggar.whatsapp || '6281318702623';
-                            if (wa) window.open(`https://wa.me/${wa}`, '_blank');
+                            const wa = sanggar.whatsappUrl || sanggar.whatsappNumber || sanggar.whatsapp || '6281310998647';
+                            if (wa.startsWith('http')) {
+                              window.open(wa, '_blank', 'noopener,noreferrer');
+                            } else {
+                              const cleaned = wa.replace(/\D/g, '');
+                              const formatted = cleaned.startsWith('0') ? '62' + cleaned.substring(1) : cleaned;
+                              window.open(`https://wa.me/${formatted}`, '_blank', 'noopener,noreferrer');
+                            }
                           }}
                           className="flex-1 bg-[#16a34a] hover:bg-[#15803d] text-white rounded-full py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors cursor-pointer"
                         >

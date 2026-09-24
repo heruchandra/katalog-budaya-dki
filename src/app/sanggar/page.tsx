@@ -89,6 +89,37 @@ export default async function SanggarPage() {
           ae.youtubeUrl = "https://www.youtube.com/@ae.production_";
         }
 
+        // Sinar Norray (Replaces Sandyakala Art Performance if present)
+        const norray = sanggars.find(s => 
+          s.nama_sanggar?.toLowerCase().includes("sinar norray") || 
+          s.nama_sanggar?.toLowerCase().includes("sandyakala") ||
+          s.id === "sinar-norray"
+        );
+        if (norray) {
+          norray.nama_sanggar = "Sinar Norray";
+          norray.nama_pimpinan = "Engkar Karmilasari (Engkar Nori)";
+          norray.grade = "B";
+          norray.alamat = "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur";
+          norray.thumbnail_url = "/card-7.webp";
+          norray.whatsapp = "6281310998647";
+          norray.whatsappUrl = "https://wa.me/6281310998647";
+          norray.instagramUrl = "https://instagram.com/sinar_norray";
+          norray.youtubeUrl = "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ";
+        } else {
+          sanggars.push({
+            id: "sinar-norray",
+            nama_sanggar: "Sinar Norray",
+            nama_pimpinan: "Engkar Karmilasari (Engkar Nori)",
+            grade: "B",
+            alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
+            thumbnail_url: "/card-7.webp",
+            whatsapp: "6281310998647",
+            whatsappUrl: "https://wa.me/6281310998647",
+            instagramUrl: "https://instagram.com/sinar_norray",
+            youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
+          });
+        }
+
         // Assign images to specific Sanggar cards
         const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
         if (am) {

@@ -5,6 +5,251 @@ export const dynamic = "force-dynamic";
 
 // Known rich profiles based on INFORMASI SANGGAR.docx and official survey data
 const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
+  // Sinar Norray (Grade B) - Founded by late Hj. Nori (Mpok Nori) in 1995
+  "sinar-norray": {
+    id: "sinar-norray",
+    name: "Sinar Norray",
+    leader: "Engkar Karmilasari (Engkar Nori)",
+    tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
+    grade: "Grade B",
+    wilayah: "Jakarta Timur",
+    philosophy: "Seni Betawi adalah nafas dan marwah masyarakat Jakarta. Boleh orangnya tiada, namun warisan seni dan budayanya harus tetap hidup dan berkobar di hati generasi penerus.",
+    description: [
+      "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
+      "Berangkat dari panggung sandiwara rakyat Lenong Betawi yang melegenda, sanggar ini terus meregenerasi bakat-bakat seni tradisi mulai dari seni tari klasik hingga tabuhan irama musik Gambang Kromong.",
+      "Kini di bawah kepemimpinan Engkar Karmilasari, Sinar Norray tetap setia menjaga orisinalitas kesenian Betawi seraya membuka diri pada kolaborasi panggung teater modern ibu kota."
+    ],
+    alamatSanggar: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
+    alamatLatihan: "Studio Sinar Norray, Jl. Daman 1 No.39 RT.008/002 Bambu Apus, Cipayung, Jakarta Timur (Rabu & Sabtu, 15.00 - 18.00 WIB)",
+    address: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
+    logo: "/profile-sanggar-2.webp",
+    services: [
+      {
+        title: "Betawi Dance Classes",
+        description: "Teaching traditional Betawi dances for all age groups."
+      },
+      {
+        title: "Lenong Betawi Shows",
+        description: "Presenting traditional Betawi theater for diverse audiences."
+      },
+      {
+        title: "Traditional Music Performances (Gambang Kromong)",
+        description: "Showcasing authentic Betawi music for cultural celebrations."
+      }
+    ],
+    layanan: [
+      {
+        title: "Betawi Dance Classes",
+        description: "Teaching traditional Betawi dances for all age groups."
+      },
+      {
+        title: "Lenong Betawi Shows",
+        description: "Presenting traditional Betawi theater for diverse audiences."
+      },
+      {
+        title: "Traditional Music Performances (Gambang Kromong)",
+        description: "Showcasing authentic Betawi music for cultural celebrations."
+      }
+    ],
+    danceSpecialties: [
+      {
+        name: "Tari Lenggok Dara",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+      },
+      {
+        name: "Tari Nindak Si None",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+      }
+    ],
+    tariUnggulan: [
+      {
+        name: "Tari Lenggok Dara",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+      },
+      {
+        name: "Tari Nindak Si None",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+      }
+    ],
+    achievements: [
+      {
+        title: "Grade B in Dance Studio Evaluation by Jakarta Provincial Department of Culture",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2025"
+      },
+      {
+        title: "Mata Local Award 'Local Ace in Betawi Heritage Performance'",
+        organizer: "Mata Local Award",
+        year: "2025"
+      },
+      {
+        title: "Collaboration with Abang None Theater Production 'Gelora Muda'",
+        organizer: "Teater Abang None Jakarta",
+        year: "2025"
+      }
+    ],
+    prestasi: [
+      "Grade B in Dance Studio Evaluation by Jakarta Provincial Department of Culture (2025)",
+      "Mata Local Award 2025 'Local Ace in Betawi Heritage Performance'",
+      "Collaboration with Abang None Theater Production 'Gelora Muda' (2025)"
+    ],
+    youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ",
+    contacts: {
+      phone: ["081310998647", "083895124557"],
+      whatsapp: "https://wa.me/6281310998647",
+      instagram: "https://instagram.com/sinar_norray",
+      youtube: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
+    },
+    kontak: {
+      ketua: "Engkar Karmilasari (Engkar Nori)",
+      pic: "Engkar Karmilasari",
+      phone: "081310998647",
+      email: "sinarnorray.art@gmail.com",
+      instagram: "@sinar_norray"
+    },
+    whatsappNumber: "6281310998647",
+    whatsappUrl: "https://wa.me/6281310998647",
+    instagram: "https://instagram.com/sinar_norray",
+    instagramUrl: "https://instagram.com/sinar_norray",
+    imageUrl: "/card-7.webp",
+    fotoKetuaUrl: "/profile-sanggar-2.webp",
+    gallery: [
+      { type: "Pentas Lenong Betawi", url: "/card-1.webp" },
+      { type: "Tari Lenggok Dara", url: "/card-3.webp" },
+      { type: "Tari Nindak Si None", url: "/card-2.webp" },
+      { type: "Musik Gambang Kromong", url: "/card-6.webp" }
+    ]
+  },
+  "sandyakala": {
+    // Replaced / Aliased to Sinar Norray
+    id: "sinar-norray",
+    name: "Sinar Norray",
+    leader: "Engkar Karmilasari (Engkar Nori)",
+    tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
+    grade: "Grade B",
+    wilayah: "Jakarta Timur",
+    philosophy: "Seni Betawi adalah nafas dan marwah masyarakat Jakarta. Boleh orangnya tiada, namun warisan seni dan budayanya harus tetap hidup dan berkobar di hati generasi penerus.",
+    description: [
+      "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter."
+    ],
+    alamatSanggar: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
+    alamatLatihan: "Studio Sinar Norray, Jl. Daman 1 No.39 RT.008/002 Bambu Apus, Cipayung, Jakarta Timur (Rabu & Sabtu, 15.00 - 18.00 WIB)",
+    address: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
+    logo: "/profile-sanggar-2.webp",
+    services: [
+      {
+        title: "Betawi Dance Classes",
+        description: "Teaching traditional Betawi dances for all age groups."
+      },
+      {
+        title: "Lenong Betawi Shows",
+        description: "Presenting traditional Betawi theater for diverse audiences."
+      },
+      {
+        title: "Traditional Music Performances (Gambang Kromong)",
+        description: "Showcasing authentic Betawi music for cultural celebrations."
+      }
+    ],
+    layanan: [
+      {
+        title: "Betawi Dance Classes",
+        description: "Teaching traditional Betawi dances for all age groups."
+      },
+      {
+        title: "Lenong Betawi Shows",
+        description: "Presenting traditional Betawi theater for diverse audiences."
+      },
+      {
+        title: "Traditional Music Performances (Gambang Kromong)",
+        description: "Showcasing authentic Betawi music for cultural celebrations."
+      }
+    ],
+    danceSpecialties: [
+      {
+        name: "Tari Lenggok Dara",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+      },
+      {
+        name: "Tari Nindak Si None",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+      }
+    ],
+    tariUnggulan: [
+      {
+        name: "Tari Lenggok Dara",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+      },
+      {
+        name: "Tari Nindak Si None",
+        choreographer: "Adinda Chamila",
+        composer: "Sumitra Adi Kusuma Tohir",
+        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+      }
+    ],
+    achievements: [
+      {
+        title: "Grade B in Dance Studio Evaluation by Jakarta Provincial Department of Culture",
+        organizer: "Dinas Kebudayaan Provinsi DKI Jakarta",
+        year: "2025"
+      },
+      {
+        title: "Mata Local Award 'Local Ace in Betawi Heritage Performance'",
+        organizer: "Mata Local Award",
+        year: "2025"
+      },
+      {
+        title: "Collaboration with Abang None Theater Production 'Gelora Muda'",
+        organizer: "Teater Abang None Jakarta",
+        year: "2025"
+      }
+    ],
+    prestasi: [
+      "Grade B in Dance Studio Evaluation by Jakarta Provincial Department of Culture (2025)",
+      "Mata Local Award 2025 'Local Ace in Betawi Heritage Performance'",
+      "Collaboration with Abang None Theater Production 'Gelora Muda' (2025)"
+    ],
+    youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ",
+    contacts: {
+      phone: ["081310998647", "083895124557"],
+      whatsapp: "https://wa.me/6281310998647",
+      instagram: "https://instagram.com/sinar_norray",
+      youtube: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
+    },
+    kontak: {
+      ketua: "Engkar Karmilasari (Engkar Nori)",
+      pic: "Engkar Karmilasari",
+      phone: "081310998647",
+      email: "sinarnorray.art@gmail.com",
+      instagram: "@sinar_norray"
+    },
+    whatsappNumber: "6281310998647",
+    whatsappUrl: "https://wa.me/6281310998647",
+    instagram: "https://instagram.com/sinar_norray",
+    instagramUrl: "https://instagram.com/sinar_norray",
+    imageUrl: "/card-7.webp",
+    fotoKetuaUrl: "/profile-sanggar-2.webp",
+    gallery: [
+      { type: "Pentas Lenong Betawi", url: "/card-1.webp" },
+      { type: "Tari Lenggok Dara", url: "/card-3.webp" },
+      { type: "Tari Nindak Si None", url: "/card-2.webp" },
+      { type: "Musik Gambang Kromong", url: "/card-6.webp" }
+    ]
+  },
+
   // ID 21: Arunika Art Production (Grade B)
   "21": {
     name: "Arunika Art Production",
@@ -72,6 +317,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
 
   // ID 1 & 40: AE Production (Art Enthusiast Production) (Grade B)
   "1": {
+    name: "AE Production (Art Enthusiast Production)",
     name: "Art Enthusiast Production",
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",
@@ -176,6 +422,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     ]
   },
   "40": {
+    name: "AE Production (Art Enthusiast Production)",
     name: "Art Enthusiast Production",
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",
@@ -414,7 +661,9 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
 interface SanggarDbRow {
   id?: number | string;
   nama_sanggar?: string;
+  nama?: string;
   nama_pimpinan?: string;
+  ketua?: string;
   grade?: string;
   alamat?: string;
   kelurahan?: string;
@@ -541,12 +790,21 @@ export default async function SanggarDetail({
   if (!specific && (data?.nama_sanggar?.toLowerCase().includes("ae production") || data?.nama_sanggar?.toLowerCase().includes("art enthusiast"))) {
     specific = SPECIFIC_PROFILES["1"];
   }
+  if (!specific && (
+    data?.nama_sanggar?.toLowerCase().includes("sinar norray") ||
+    data?.nama_sanggar?.toLowerCase().includes("sandyakala") ||
+    id?.toLowerCase().includes("sinar-norray") ||
+    id?.toLowerCase().includes("sandyakala")
+  )) {
+    specific = SPECIFIC_PROFILES["sinar-norray"];
+  }
   const fallback = generateFallbackSanggar(data, id);
 
   // Parse fields from database if present, otherwise merge specific / fallback
   const finalSanggar: SanggarDetailData = {
     id: data?.id || id,
-    name: specific?.name || data?.nama_sanggar || fallback.name,
+    name: specific?.name || data?.nama_sanggar || data?.nama || fallback?.name || '',
+    leader: specific?.leader || data?.nama_pimpinan || data?.ketua_sanggar || data?.ketua || fallback?.kontak?.ketua || '',
     tagline: specific?.tagline || data?.tagline || fallback.tagline,
     grade: specific?.grade || (data?.grade ? (data.grade.toLowerCase().includes('grade') ? data.grade : `Grade ${data.grade}`) : fallback.grade),
     wilayah: specific?.wilayah || data?.kota_kab || data?.kecamatan || fallback.wilayah,
@@ -554,26 +812,34 @@ export default async function SanggarDetail({
     description: specific?.description || (data?.deskripsi ? [data.deskripsi] : fallback.description),
     alamatSanggar: specific?.alamatSanggar || data?.alamat || fallback.alamatSanggar,
     alamatLatihan: specific?.alamatLatihan || data?.alamat_tempat_latihan || fallback.alamatLatihan,
-    layanan: specific?.layanan || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
-    tariUnggulan: specific?.tariUnggulan || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
+    address: specific?.address || specific?.alamatSanggar || data?.alamat || fallback?.address || fallback?.alamatSanggar || '',
+    logo: specific?.logo,
+    services: specific?.services,
+    layanan: specific?.services || specific?.layanan || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
+    danceSpecialties: specific?.danceSpecialties || specific?.tariUnggulan || fallback.tariUnggulan,
+    tariUnggulan: specific?.danceSpecialties || specific?.tariUnggulan || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
       ? data.tari_unggulan
       : fallback.tariUnggulan),
     prestasi: specific?.prestasi || (data?.prestasi && Array.isArray(data.prestasi) && data.prestasi.length > 0
       ? data.prestasi
       : fallback.prestasi),
-    achievements: specific?.achievements,
+    achievements: specific?.achievements || specific?.prestasi,
+    contacts: specific?.contacts,
     kontak: {
-      ketua: specific?.kontak?.ketua || data?.ketua_sanggar || data?.nama_pimpinan || fallback.kontak.ketua,
+      ketua: specific?.kontak?.ketua || specific?.leader || data?.ketua_sanggar || data?.nama_pimpinan || fallback.kontak.ketua,
       pic: specific?.kontak?.pic || data?.nama_pic || fallback.kontak.pic,
-      phone: specific?.kontak?.phone || data?.kontak_pic || fallback.kontak.phone,
+      phone: (specific?.contacts?.phone ? specific.contacts.phone[0] : null) || specific?.kontak?.phone || data?.kontak_pic || fallback.kontak.phone,
       email: specific?.kontak?.email || data?.email || fallback.kontak.email,
-      instagram: specific?.kontak?.instagram,
+      instagram: specific?.contacts?.instagram || specific?.kontak?.instagram,
     },
-    whatsappNumber: specific?.kontak?.phone || data?.kontak_pic || data?.no_hp,
-    instagram: specific?.kontak?.instagram,
+    whatsappNumber: (specific?.contacts?.phone ? specific.contacts.phone[0] : null) || specific?.kontak?.phone || data?.kontak_pic || data?.no_hp,
+    whatsappUrl: specific?.whatsappUrl || specific?.contacts?.whatsapp || (specific?.whatsappNumber ? `https://wa.me/${specific.whatsappNumber}` : null),
+    instagram: specific?.contacts?.instagram || specific?.kontak?.instagram,
+    instagramUrl: specific?.instagramUrl || specific?.contacts?.instagram || (specific?.instagram ? (specific.instagram.startsWith("http") ? specific.instagram : `https://instagram.com/${specific.instagram.replace("@", "")}`) : null),
     imageUrl: specific?.imageUrl || data?.foto_grup_url || data?.thumbnail_url || fallback.imageUrl,
-    logoUrl: data?.logo_url || null,
-    fotoKetuaUrl: specific?.fotoKetuaUrl || data?.foto_ketua_url || fallback.fotoKetuaUrl,
+    logoUrl: specific?.logo || data?.logo_url || null,
+    fotoKetuaUrl: specific?.logo || specific?.fotoKetuaUrl || data?.foto_ketua_url || fallback.fotoKetuaUrl,
+    youtubeUrl: specific?.youtubeUrl || specific?.contacts?.youtube || null,
     gallery: specific?.gallery || ((data?.list_foto && Array.isArray(data.list_foto) && data.list_foto.length > 0)
       ? data.list_foto.map((url: string, i: number) => ({ type: `Galeri Foto #${i + 1}`, url }))
       : fallback.gallery),

@@ -10,7 +10,8 @@ import {
   Sparkles,
   Building2,
   Calendar,
-  Share2
+  Share2,
+  Music
 } from "lucide-react";
 import { Poppins, Playfair_Display, Dancing_Script } from 'next/font/google';
 import { motion } from "framer-motion";
@@ -23,7 +24,10 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'
 export interface TariItem {
   name: string;
   description: string;
-  image: string;
+  image?: string;
+  choreographer?: string;
+  composer?: string;
+  synopsis?: string;
 }
 
 export interface AchievementItem {
@@ -32,9 +36,15 @@ export interface AchievementItem {
   year?: string;
 }
 
+export interface ServiceItem {
+  title: string;
+  description?: string;
+}
+
 export interface SanggarDetailData {
   id: string | number;
   name: string;
+  leader?: string;
   tagline: string;
   grade: string;
   wilayah: string;
@@ -43,12 +53,17 @@ export interface SanggarDetailData {
   alamatSanggar: string;
   alamatLatihan: string;
   address?: string;
+  logo?: string;
   whatsappNumber?: string;
   instagram?: string;
-  layanan: string[];
+  whatsappUrl?: string | null;
+  instagramUrl?: string | null;
+  layanan: (string | ServiceItem)[];
+  services?: ServiceItem[];
   tariUnggulan: TariItem[];
+  danceSpecialties?: TariItem[];
   prestasi: (string | AchievementItem)[];
-  achievements?: AchievementItem[];
+  achievements?: (string | AchievementItem)[];
   kontak: {
     ketua: string;
     pic: string;
@@ -56,9 +71,16 @@ export interface SanggarDetailData {
     email?: string;
     instagram?: string;
   };
+  contacts?: {
+    phone: string[];
+    whatsapp?: string;
+    instagram: string;
+    youtube: string;
+  };
   imageUrl: string;
   logoUrl?: string | null;
   fotoKetuaUrl?: string | null;
+  youtubeUrl?: string | null;
   gallery: { type: string; url: string }[];
 }
 
@@ -109,7 +131,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <h1 className="text-2xl sm:text-3xl font-medium text-zinc-800 tracking-tight flex items-center gap-2 flex-wrap mt-1">
               <span>Pengurus Sanggar —</span>
               <span className={`font-dancing text-3xl sm:text-4xl text-orange-600 font-normal ${dancingScript.className}`}>
-                {sanggar.name || "Art Enthusiast Production"}
+                {sanggar.name || "Sinar Norray"}
               </span>
             </h1>
           </div>
@@ -122,8 +144,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-orange-500/40 p-1 shrink-0 bg-zinc-50">
                 <img 
-                  src={(sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1")) ? sanggar.fotoKetuaUrl : "/profile-sanggar-1.webp"} 
-                  alt={sanggar.kontak.ketua} 
+                  src={sanggar.logo || sanggar.logoUrl || (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/profile-sanggar-2.webp")} 
+                  alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || "Ketua Sanggar"} 
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/profile-sanggar-2.webp";
+                  }}
                   className="w-full h-full object-cover object-center rounded-full"
                 />
               </div>
@@ -133,7 +158,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   Ketua Sanggar
                 </span>
                 <h4 className="text-xl font-bold text-zinc-900">
-                  {sanggar.kontak.ketua}
+                  {sanggar.leader || sanggar.kontak?.ketua}
                 </h4>
                 <p className="text-xs text-zinc-500 font-light leading-relaxed">
                   Bertanggung jawab atas pembinaan mutu kurikulum tari dan arah kebijakan sanggar seni.
@@ -146,13 +171,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                   <span className="text-xs uppercase text-zinc-400 font-medium">Nama PIC Kontak:</span>
-                  <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak.pic}</span>
+                  <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak?.pic || sanggar.leader || sanggar.kontak?.ketua}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                   <span className="text-xs uppercase text-zinc-400 font-medium">Nomor WhatsApp:</span>
-                  <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak.phone}</span>
+                  <span className="text-sm font-semibold text-zinc-800">
+                    {Array.isArray(sanggar.contacts?.phone) ? sanggar.contacts.phone.join(' / ') : (sanggar.whatsappNumber || sanggar.kontak?.phone)}
+                  </span>
                 </div>
-                {sanggar.kontak.email && (
+                {sanggar.kontak?.email && (
                   <div className="flex items-center justify-between py-2 border-b border-zinc-100">
                     <span className="text-xs uppercase text-zinc-400 font-medium">Email:</span>
                     <span className="text-sm font-semibold text-zinc-800">{sanggar.kontak.email}</span>
@@ -163,30 +190,48 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               {/* Dual Action Buttons: WhatsApp & Instagram */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 {/* WhatsApp Button */}
-                <a
-                  href={`https://wa.me/${sanggar.whatsappNumber || (sanggar.kontak && sanggar.kontak.phone ? formatWaNumber(sanggar.kontak.phone) : "") || "6281318702623"}?text=${encodeURIComponent("Halo, saya melihat profil sanggar di Katalog Seni DKI Jakarta dan ingin bertanya mengenai sewa kostum / jasa pentas / kelas tari.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-xs sm:text-sm rounded-xl transition-colors shadow-sm"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                  </svg>
-                  <span>WhatsApp</span>
-                </a>
+                {(() => {
+                  const directWaUrl = sanggar.whatsappUrl || sanggar.contacts?.whatsapp;
+                  let waLink = "";
+                  if (directWaUrl && directWaUrl.startsWith("http")) {
+                    waLink = directWaUrl;
+                  } else {
+                    const phoneNum = formatWaNumber(Array.isArray(sanggar.contacts?.phone) ? sanggar.contacts.phone[0] : (sanggar.whatsappNumber || sanggar.kontak?.phone || "6281310998647"));
+                    waLink = `https://wa.me/${phoneNum}?text=${encodeURIComponent(`Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin bertanya mengenai sewa kostum / jasa pentas / kelas tari.`)}`;
+                  }
+                  return (
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-xs sm:text-sm rounded-xl transition-colors shadow-sm"
+                    >
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                      </svg>
+                      <span>WhatsApp</span>
+                    </a>
+                  );
+                })()}
 
                 {/* Instagram Button */}
-                <a
-                  href={`https://instagram.com/${(sanggar.instagram || (sanggar.kontak && sanggar.kontak.instagram) || "ae.pro_").replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 hover:opacity-90 text-white font-medium text-xs sm:text-sm rounded-xl transition-opacity shadow-sm"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                  <span>Instagram</span>
-                </a>
+                {(() => {
+                  const igRaw = sanggar.instagramUrl || sanggar.contacts?.instagram || sanggar.instagram || (sanggar.kontak && sanggar.kontak.instagram) || "https://instagram.com/sinar_norray";
+                  const igHref = igRaw.startsWith("http") ? igRaw : `https://instagram.com/${igRaw.replace('@', '')}`;
+                  return (
+                    <a
+                      href={igHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 hover:opacity-90 text-white font-medium text-xs sm:text-sm rounded-xl transition-opacity shadow-sm"
+                    >
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      </svg>
+                      <span>Instagram</span>
+                    </a>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -211,7 +256,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
               <div className="border-l-4 border-orange-500 pl-4 py-2 my-6 bg-orange-50/50 rounded-r-xl">
                 <p className="text-lg md:text-xl font-serif italic text-zinc-800 leading-relaxed">
-                  "Berbudaya, Berprestasi, Berkualitas, Santun dan Kreatif."
+                  &ldquo;{sanggar.tagline || "Berbudaya, Berprestasi, Berkualitas, Santun dan Kreatif."}&rdquo;
                 </p>
               </div>
 
@@ -253,7 +298,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     <span>Alamat Sanggar / Sekretariat</span>
                   </div>
                   <p className="text-sm text-zinc-700 leading-relaxed font-sans">
-                    {sanggar.alamatSanggar}
+                    {sanggar.address || sanggar.alamatSanggar}
                   </p>
                 </div>
 
@@ -263,42 +308,137 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     <span>Tempat & Jadwal Latihan</span>
                   </div>
                   <p className="text-sm text-zinc-700 leading-relaxed font-sans">
-                    {sanggar.alamatLatihan}
+                    {sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* 2. Layanan Sanggar Section */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
-              <div>
-                <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                  Layanan Sanggar
-                </h3>
-                <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-6" />
-                <p className="text-xs text-zinc-500 font-sans tracking-wide">
-                  Layanan resmi yang dikelola oleh pengurus sanggar dengan instruktur bersertifikat.
-                </p>
-              </div>
+            {/* 2. Layanan Sanggar Section (Structured Service Cards) */}
+            {(() => {
+              const serviceList = (sanggar.services && sanggar.services.length > 0)
+                ? sanggar.services
+                : (sanggar.layanan || []);
 
-              {/* Minimalist Bordered List */}
-              <ul className="divide-y divide-zinc-100 border-y border-zinc-100">
-                {sanggar.layanan && sanggar.layanan.map((item, idx) => (
-                  <li 
-                    key={idx}
-                    className="group py-4 flex items-center justify-between transition-all duration-200 hover:pl-2 cursor-default"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-1.5 h-1.5 bg-orange-600 group-hover:scale-150 transition-transform rounded-full"></span>
-                      <span className="text-sm sm:text-base text-zinc-800 font-medium group-hover:text-orange-600 transition-colors">
-                        {item}
-                      </span>
-                    </div>
-                    <ArrowUpRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                  </li>
-                ))}
-              </ul>
-            </div>
+              return (
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
+                  <div>
+                    <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+                      Layanan Sanggar
+                    </h3>
+                    <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-4" />
+                    <p className="text-xs text-zinc-500 font-sans tracking-wide">
+                      Layanan resmi yang dikelola langsung oleh pengurus sanggar dengan instruktur bersertifikat.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                    {serviceList.map((item, idx) => {
+                      const isObj = typeof item === 'object' && item !== null;
+                      const title = isObj ? item.title : item;
+                      const desc = isObj ? item.description : null;
+
+                      return (
+                        <div 
+                          key={idx}
+                          className="group relative bg-gradient-to-br from-zinc-50/80 to-orange-50/30 hover:to-orange-100/50 p-5 rounded-2xl border border-zinc-200/80 hover:border-orange-400/60 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="w-10 h-10 rounded-xl bg-orange-100/90 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                              {idx % 3 === 0 ? (
+                                <Sparkles className="w-5 h-5" />
+                              ) : idx % 3 === 1 ? (
+                                <Building2 className="w-5 h-5" />
+                              ) : (
+                                <Music className="w-5 h-5" />
+                              )}
+                            </div>
+                            <h4 className="text-base font-semibold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug">
+                              {title}
+                            </h4>
+                            {desc && (
+                              <p className="text-xs sm:text-sm text-zinc-600 mt-2 leading-relaxed font-light">
+                                {desc}
+                              </p>
+                            )}
+                          </div>
+                          <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-orange-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span>Informasi &amp; Konsultasi</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* 3. Karya Tari Unggulan (Specialized Dance Synopses) */}
+            {(() => {
+              const specialtiesList = (sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0)
+                ? sanggar.danceSpecialties
+                : (sanggar.tariUnggulan || []);
+
+              if (!specialtiesList || specialtiesList.length === 0) return null;
+
+              return (
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
+                  <div>
+                    <h3 className={`text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+                      Karya Tari Unggulan
+                    </h3>
+                    <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-4" />
+                    <p className="text-xs text-zinc-500 font-sans tracking-wide">
+                      Koreografi unggulan dan sinopsis latar belakang seni budaya yang dibawakan oleh sanggar.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-5">
+                    {specialtiesList.map((dance, idx) => (
+                      <div 
+                        key={idx}
+                        className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-zinc-50/90 to-orange-50/20 border border-zinc-200/90 hover:border-orange-300 transition-all duration-300 space-y-3 shadow-sm hover:shadow"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200/60 pb-3">
+                          <div className="flex items-center gap-3">
+                            <span className="w-8 h-8 rounded-full bg-orange-600 text-white text-xs font-bold flex items-center justify-center shrink-0">
+                              {String(idx + 1).padStart(2, '0')}
+                            </span>
+                            <h4 className="text-lg sm:text-xl font-bold text-zinc-900">
+                              {dance.name}
+                            </h4>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 text-xs">
+                            {dance.choreographer && (
+                              <span className="px-2.5 py-1 rounded-full bg-orange-100/80 text-orange-800 font-medium">
+                                Koreografer: <strong className="font-semibold">{dance.choreographer}</strong>
+                              </span>
+                            )}
+                            {dance.composer && (
+                              <span className="px-2.5 py-1 rounded-full bg-amber-100/80 text-amber-800 font-medium">
+                                Komposer: <strong className="font-semibold">{dance.composer}</strong>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {(dance.synopsis || dance.description) && (
+                          <div className="pt-1">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                              Sinopsis Karya:
+                            </p>
+                            <p className="text-sm sm:text-base text-zinc-700 font-light leading-relaxed text-justify">
+                              {dance.synopsis || dance.description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* 3. Prestasi & Penghargaan Section */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
@@ -385,7 +525,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             <div className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm transition-all duration-300">
               <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">Lokasi Sanggar</h3>
               <p className="text-sm text-zinc-600 leading-relaxed mb-3">
-                {sanggar.alamatSanggar || sanggar.address || "Jl. Balai Pustaka Timur No. 18, Kel. Rawamangun, Kec. Pulo Gadung, Jakarta Timur 13220"}
+                {sanggar.address || sanggar.alamatSanggar || "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur"}
               </p>
               <div className="w-full h-44 sm:h-52 my-3 rounded-xl overflow-hidden border border-zinc-200 shadow-sm">
                 <iframe
@@ -395,11 +535,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   style={{ border: 0 }}
                   loading="lazy"
                   allowFullScreen
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(sanggar.alamatSanggar || sanggar.address || "Jl. Balai Pustaka Timur No. 18, Kel. Rawamangun, Kec. Pulo Gadung, Jakarta Timur 13220")}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(sanggar.address || sanggar.alamatSanggar || "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur")}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                 />
               </div>
               <a 
-                href={sanggar.alamatSanggar || sanggar.address ? `https://maps.google.com/?q=${encodeURIComponent(sanggar.alamatSanggar || sanggar.address || "")}` : "https://maps.google.com"} 
+                href={sanggar.address || sanggar.alamatSanggar ? `https://maps.google.com/?q=${encodeURIComponent(sanggar.address || sanggar.alamatSanggar || "")}` : "https://maps.google.com"} 
                 target="_blank" 
                 rel="noreferrer"
                 className="block w-full text-center py-2.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-xl transition-all"
