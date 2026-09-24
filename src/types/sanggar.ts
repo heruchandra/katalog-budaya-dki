@@ -31,7 +31,6 @@ export interface ServiceItem {
   titleEn?: string;
   descriptionEn?: string;
   icon?: string;
-  image?: string;
 }
 
 export interface TariItem {
