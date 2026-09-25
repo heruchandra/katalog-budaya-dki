@@ -4,23 +4,34 @@ export interface ServiceItem {
   titleEn?: string;
   descriptionEn?: string;
   icon?: string;
+  image?: string;
 }
 
 export interface DanceSpecialtyItem {
   name: string;
+  title?: string;
   choreographer?: string;
   composer?: string;
   synopsis: string;
+  description?: string;
   image?: string;
 }
 
 export interface TariItem {
-  name: string;
+  name?: string;
+  title?: string;
   description?: string;
   image?: string;
   choreographer?: string;
   composer?: string;
   synopsis?: string;
+}
+
+export interface AchievementItem {
+  title: string;
+  organizer?: string;
+  year?: string;
+  image?: string;
 }
 
 export interface SanggarItem {
