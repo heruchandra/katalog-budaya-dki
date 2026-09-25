@@ -96,15 +96,18 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
   services: [
     {
       title: "Betawi Dance Classes",
-      description: "Teaching traditional Betawi dances for all age groups."
+      description: "Teaching traditional Betawi dances for all age groups.",
+      image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
     },
     {
       title: "Lenong Betawi Shows",
-      description: "Presenting traditional Betawi theater for diverse audiences."
+      description: "Presenting traditional Betawi theater for diverse audiences.",
+      image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
     },
     {
       title: "Traditional Music Performances (Gambang Kromong)",
-      description: "Showcasing authentic Betawi music for cultural celebrations."
+      description: "Showcasing authentic Betawi music for cultural celebrations.",
+      image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp"
     }
   ],
   danceSpecialties: [
@@ -112,13 +115,15 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       name: "Tari Lenggok Dara",
       choreographer: "Adinda Chamila",
       composer: "Sumitra Adi Kusuma Tohir",
-      synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+      synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music.",
+      image: "/tari-lenggok-dara.webp"
     },
     {
       name: "Tari Nindak Si None",
       choreographer: "Adinda Chamila",
       composer: "Sumitra Adi Kusuma Tohir",
-      synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+      synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage.",
+      image: "/tari-nindak-si-none.webp"
     }
   ],
   achievements: [

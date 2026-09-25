@@ -3,17 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
-  Phone, 
-  Mail, 
-  Award, 
-  Clock, 
-  ArrowUpRight, 
-  Sparkles, 
-  Building2, 
-  Calendar, 
-  Share2, 
+  Phone,
+  Mail,
+  Award,
+  Clock,
+  ArrowUpRight,
+  Sparkles,
+  Building2,
+  Calendar,
+  Share2,
   Music,
-  X 
+  X,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { Poppins, Playfair_Display, Dancing_Script } from 'next/font/google';
 import { motion } from "framer-motion";
@@ -25,6 +27,7 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'
 
 export interface TariItem {
   name: string;
+  title?: string;
   description?: string;
   image?: string;
   choreographer?: string;
@@ -91,22 +94,60 @@ export interface SanggarDetailData {
   logoUrl?: string | null;
   fotoKetuaUrl?: string | null;
   youtubeUrl?: string | null;
-  gallery: { type: string; url: string }[];
+  gallery?: { type: string; url: string; typeEn?: string }[];
 }
+
+const DEFAULT_GALLERY_IMAGES = [
+  { type: "Pentas Seni & Tari Betawi", typeEn: "Betawi Art & Dance Performance", url: "/dinamis-sanggar-1.webp" },
+  { type: "Kelas & Pelatihan Rutin", typeEn: "Routine Classes & Training", url: "/dinamis-sanggar-2.webp" },
+  { type: "Pentas Lenong Tradisional", typeEn: "Traditional Lenong Theater", url: "/dinamis-sanggar-3.webp" },
+  { type: "Dokumentasi Tata Busana Betawi", typeEn: "Betawi Traditional Attire", url: "/dinamis-sanggar-4.webp" },
+  { type: "Pentas Tari Lenggok Dara", typeEn: "Lenggok Dara Dance Show", url: "/dinamis-sanggar-5.webp" },
+  { type: "Koreografi & Gerak Berirama", typeEn: "Choreography & Motion", url: "/dinamis-sanggar-6.webp" },
+  { type: "Gladi Resik & Persiapan Pentas", typeEn: "Rehearsal & Stage Prep", url: "/dinamis-sanggar-7.webp" },
+  { type: "Kolaborasi Musik Gambang Kromong", typeEn: "Gambang Kromong Collaboration", url: "/dinamis-sanggar-8.webp" },
+  { type: "Pentas Teater Sandiwara Betawi", typeEn: "Betawi Folk Theater Show", url: "/dinamis-sanggar-9.webp" },
+  { type: "Festival Budaya Nusantara", typeEn: "Cultural Heritage Festival", url: "/dinamis-sanggar-10.webp" },
+  { type: "Apresiasi Tari Nindak Si None", typeEn: "Nindak Si None Presentation", url: "/dinamis-sanggar-11.webp" },
+  { type: "Dokumentasi Generasi Muda Seni", typeEn: "Youth Performing Arts Archive", url: "/dinamis-sanggar-12.webp" },
+  { type: "Gelar Seni Tradisi Jakarta", typeEn: "Jakarta Heritage Art Exhibition", url: "/dinamis-sanggar-13.webp" },
+  { type: "Pembinaan Siswa Tari", typeEn: "Dance Mentorship Program", url: "/dinamis-sanggar-14.webp" },
+  { type: "Penampilan Pentas Akbar", typeEn: "Grand Gala Showcase", url: "/dinamis-sanggar-15.webp" },
+];
 
 export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetailData }) {
   const { language, t } = useLanguage();
   const isEn = language === "en";
 
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
+
+  const galleryList = (sanggar.gallery && sanggar.gallery.length >= 15)
+    ? sanggar.gallery
+    : DEFAULT_GALLERY_IMAGES;
+
+  const previewPhotos = galleryList.slice(0, 4);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setSelectedService(null);
+        if (activePhotoIndex !== null) {
+          setActivePhotoIndex(null);
+        } else if (isGalleryOpen) {
+          setIsGalleryOpen(false);
+        } else if (selectedService) {
+          setSelectedService(null);
+        }
+      } else if (isGalleryOpen && activePhotoIndex !== null) {
+        if (e.key === "ArrowRight") {
+          setActivePhotoIndex((prev) => (prev !== null ? (prev + 1) % galleryList.length : 0));
+        } else if (e.key === "ArrowLeft") {
+          setActivePhotoIndex((prev) => (prev !== null ? (prev - 1 + galleryList.length) % galleryList.length : 0));
+        }
       }
     };
-    if (selectedService) {
+    if (selectedService || isGalleryOpen) {
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
     }
@@ -114,7 +155,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";
     };
-  }, [selectedService]);
+  }, [selectedService, isGalleryOpen, activePhotoIndex, galleryList.length]);
 
   // Safely format phone number for WhatsApp API
   const formatWaNumber = (phone?: string) => {
@@ -389,7 +430,19 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
                     {serviceList.map((item, idx) => {
                       const isObj = typeof item === 'object' && item !== null;
-                      const serviceObj: ServiceItem = isObj ? item : { title: item, description: '' };
+                      const serviceObj: ServiceItem = isObj ? { ...item } : { title: item, description: '' };
+                      const tLower = (serviceObj.title || '').toLowerCase();
+                      const tEnLower = (serviceObj.titleEn || '').toLowerCase();
+
+                      if (!serviceObj.image) {
+                        if (tLower.includes('kelas tari') || tEnLower.includes('dance class') || tLower.includes('tari betawi')) {
+                          serviceObj.image = '/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp';
+                        } else if (tLower.includes('lenong betawi') || tEnLower.includes('lenong betawi')) {
+                          serviceObj.image = '/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp';
+                        } else if (tLower.includes('gambang kromong') || tEnLower.includes('gambang kromong') || tLower.includes('musik') || tEnLower.includes('music')) {
+                          serviceObj.image = '/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp';
+                        }
+                      }
                       const title = isObj ? ((isEn && item.titleEn) ? item.titleEn : item.title) : item;
                       const desc = isObj ? ((isEn && item.descriptionEn) ? item.descriptionEn : item.description) : null;
 
@@ -453,46 +506,58 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </div>
 
                   <div className="grid grid-cols-1 gap-5">
-                    {specialtiesList.map((dance, idx) => (
-                      <div 
-                        key={idx}
-                        className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-zinc-50/90 to-orange-50/20 border border-zinc-200/90 hover:border-orange-300 transition-all duration-300 space-y-3 shadow-sm hover:shadow"
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200/60 pb-3">
-                          <div className="flex items-center gap-3">
-                            <span className="w-8 h-8 rounded-full bg-orange-600 text-white text-xs font-bold flex items-center justify-center shrink-0">
-                              {String(idx + 1).padStart(2, '0')}
-                            </span>
-                            <h4 className="text-lg sm:text-xl font-bold text-zinc-900">
-                              {dance.name}
-                            </h4>
+                    {specialtiesList.map((dance, index) => {
+                      const item = { 
+                        ...dance, 
+                        title: dance.name || (dance as any).title || "", 
+                        description: dance.synopsis || dance.description || "" 
+                      };
+                      return (
+                        <div 
+                          key={index}
+                          className="p-5 sm:p-6 border border-zinc-200/80 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row gap-5 md:gap-6 items-stretch"
+                        >
+                          {/* Left: Auto-Stretched Image Thumbnail */}
+                          <div className="w-full md:w-72 shrink-0 rounded-xl overflow-hidden border border-zinc-100 bg-zinc-100 relative self-stretch min-h-[160px]">
+                            <img
+                              src={
+                                (item as any)?.image ||
+                                (item.title.toLowerCase().includes("lenggok")
+                                  ? "/tari-lenggok-dara.webp"
+                                  : item.title.toLowerCase().includes("nindak")
+                                  ? "/tari-nindak-si-none.webp"
+                                  : "/card-7.webp")
+                              }
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
-                          <div className="flex flex-wrap items-center gap-2 text-xs">
-                            {dance.choreographer && (
-                              <span className="px-2.5 py-1 rounded-full bg-orange-100/80 text-orange-800 font-medium">
-                                {isEn ? "Choreographer:" : "Koreografer:"} <strong className="font-semibold">{dance.choreographer}</strong>
+
+                          {/* Right: Clean Content Block */}
+                          <div className="flex-1 min-w-0 flex flex-col gap-2.5">
+                            {/* Title & Number Badge Row */}
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-full bg-orange-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                                {String(index + 1).padStart(2, "0")}
                               </span>
-                            )}
-                            {dance.composer && (
-                              <span className="px-2.5 py-1 rounded-full bg-amber-100/80 text-amber-800 font-medium">
-                                {isEn ? "Composer:" : "Komposer:"} <strong className="font-semibold">{dance.composer}</strong>
-                              </span>
-                            )}
+                              <h3 className="text-lg sm:text-xl font-bold text-zinc-900">
+                                {item.title}
+                              </h3>
+                            </div>
+
+                            {/* Synopsis Label & Body */}
+                            <div className="mt-1">
+                              <p className="text-[11px] font-bold tracking-wider text-zinc-400 uppercase mb-1">
+                                {isEn ? "Work Synopsis:" : "Sinopsis Karya:"}
+                              </p>
+                              <p className="text-zinc-600 text-sm leading-relaxed text-justify">
+                                {item.description}
+                              </p>
+                            </div>
                           </div>
                         </div>
-
-                        {(dance.synopsis || dance.description) && (
-                          <div className="pt-1">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
-                              {isEn ? "Work Synopsis:" : "Sinopsis Karya:"}
-                            </p>
-                            <p className="text-sm sm:text-base text-zinc-700 font-light leading-relaxed text-justify">
-                              {dance.synopsis || dance.description}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -618,44 +683,195 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       </div>
 
       {/* Gallery Section */}
-      {sanggar.gallery && sanggar.gallery.length > 0 && (
-        <section className="border-t border-zinc-200 bg-white py-16 lg:py-20 mt-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 border-b border-zinc-200 pb-6 gap-4">
-              <div>
-                <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
-                  {isEn ? "VISUAL DOCUMENTATION" : "DOKUMENTASI VISUAL"}
-                </span>
-                <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
-                  {isEn ? "Photo Gallery & Activities" : "Galeri Foto & Aktivitas"}
-                </h2>
-              </div>
-              <p className="text-xs text-zinc-500 uppercase tracking-widest font-sans">
-                {sanggar.gallery.length} {isEn ? "Selected Records" : "Dokumentasi Terpilih"}
-              </p>
+      <section className="border-t border-zinc-200 bg-white py-16 lg:py-20 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 border-b border-zinc-200 pb-6 gap-4">
+            <div>
+              <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
+                {isEn ? "VISUAL DOCUMENTATION" : "DOKUMENTASI VISUAL"}
+              </span>
+              <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+                {isEn ? "Photo Gallery & Activities" : "Galeri Foto & Aktivitas"}
+              </h2>
             </div>
+            
+            {/* Top-Right Action Button with Total Count Badge */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsGalleryOpen(true);
+                setActivePhotoIndex(null);
+              }}
+              className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs sm:text-sm font-semibold border border-orange-200/80 transition-all hover:shadow-sm active:scale-[0.98]"
+            >
+              <span>{isEn ? "View All Photos" : "Lihat Semua Foto"}</span>
+              <span className="px-2 py-0.5 rounded-full bg-orange-600 text-white text-xs font-bold">
+                {galleryList.length} {isEn ? "Photos" : "Foto"}
+              </span>
+            </button>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-              {sanggar.gallery.map((img, idx) => (
+          {/* 4-photo preview row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {previewPhotos.map((img, idx) => {
+              const label = (img as any).typeEn && isEn ? (img as any).typeEn : img.type;
+              return (
                 <div 
                   key={idx} 
-                  className="group relative overflow-hidden bg-zinc-100 rounded-2xl aspect-[4/3] border border-zinc-200 shadow-sm hover:border-orange-500/50 transition-all duration-300"
+                  onClick={() => {
+                    setIsGalleryOpen(true);
+                    setActivePhotoIndex(null);
+                  }}
+                  className="group relative overflow-hidden bg-zinc-100 rounded-2xl aspect-[4/3] border border-zinc-200 shadow-sm hover:border-orange-500/50 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
                 >
                   <img 
                     src={img.url} 
-                    alt={img.type} 
+                    alt={label} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <span className="text-xs font-medium text-white tracking-wide">
-                      {img.type}
+                      {label}
                     </span>
                   </div>
                 </div>
-              ))}
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Fullscreen Lightbox Gallery Modal */}
+      {isGalleryOpen && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-[99999] backdrop-blur-sm p-4 sm:p-8 flex flex-col animate-in fade-in duration-200"
+          onClick={() => {
+            if (activePhotoIndex !== null) {
+              setActivePhotoIndex(null);
+            } else {
+              setIsGalleryOpen(false);
+            }
+          }}
+        >
+          {/* Modal Header & Close Button */}
+          <div 
+            className="flex items-center justify-between pb-4 border-b border-white/10 shrink-0 max-w-7xl w-full mx-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>
+              <h3 className="text-lg sm:text-2xl font-bold text-white tracking-tight">
+                {isEn ? "Studio Documentation & Activities" : "Dokumentasi & Aktivitas Sanggar"}
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-400">
+                {galleryList.length} {isEn ? "verified gallery photos" : "foto dokumentasi terverifikasi"}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {activePhotoIndex !== null && (
+                <button
+                  type="button"
+                  onClick={() => setActivePhotoIndex(null)}
+                  className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium transition-colors"
+                >
+                  {isEn ? "← Back to Grid" : "← Kembali ke Grid"}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsGalleryOpen(false);
+                  setActivePhotoIndex(null);
+                }}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                aria-label={isEn ? "Close gallery" : "Tutup galeri"}
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
             </div>
           </div>
-        </section>
+
+          {/* Modal Content */}
+          <div 
+            className="flex-1 overflow-hidden max-w-7xl w-full mx-auto flex flex-col justify-center pt-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {activePhotoIndex === null ? (
+              /* Grid View: Responsive Masonry/Grid */
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto max-h-[80vh] p-2">
+                {galleryList.map((img, idx) => {
+                  const label = (img as any).typeEn && isEn ? (img as any).typeEn : img.type;
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => setActivePhotoIndex(idx)}
+                      className="group relative overflow-hidden bg-zinc-900 rounded-2xl aspect-[4/3] border border-white/10 shadow-md hover:border-orange-500/80 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+                    >
+                      <img
+                        src={img.url}
+                        alt={label}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                        <span className="text-xs font-medium text-white line-clamp-1">
+                          {label}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Enlarged Focused View with Next/Previous */
+              <div className="relative w-full h-full flex flex-col items-center justify-center p-2 sm:p-4">
+                <div className="relative max-w-5xl w-full max-h-[72vh] flex items-center justify-center">
+                  {/* Prev Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePhotoIndex((prev) => (prev !== null ? (prev - 1 + galleryList.length) % galleryList.length : 0));
+                    }}
+                    className="absolute left-2 sm:left-4 z-10 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-sm border border-white/20 transition-all hover:scale-110 active:scale-95"
+                    aria-label={isEn ? "Previous photo" : "Foto sebelumnya"}
+                  >
+                    <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </button>
+
+                  {/* Main Enlarged Image */}
+                  <img
+                    src={galleryList[activePhotoIndex].url}
+                    alt={(galleryList[activePhotoIndex] as any).typeEn && isEn ? (galleryList[activePhotoIndex] as any).typeEn : galleryList[activePhotoIndex].type}
+                    className="max-w-full max-h-[70vh] object-contain rounded-2xl shadow-2xl border border-white/10"
+                  />
+
+                  {/* Next Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePhotoIndex((prev) => (prev !== null ? (prev + 1) % galleryList.length : 0));
+                    }}
+                    className="absolute right-2 sm:right-4 z-10 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-sm border border-white/20 transition-all hover:scale-110 active:scale-95"
+                    aria-label={isEn ? "Next photo" : "Foto selanjutnya"}
+                  >
+                    <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </button>
+                </div>
+
+                {/* Caption & Counter */}
+                <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 max-w-5xl w-full px-4 text-center sm:text-left">
+                  <p className="text-sm sm:text-base font-medium text-white">
+                    {(galleryList[activePhotoIndex] as any).typeEn && isEn ? (galleryList[activePhotoIndex] as any).typeEn : galleryList[activePhotoIndex].type}
+                  </p>
+                  <p className="text-xs sm:text-sm text-zinc-400 font-mono">
+                    {activePhotoIndex + 1} / {galleryList.length}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
 {/* Service Detail Modal */}
@@ -673,6 +889,24 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       const danceHighlights = isEn
         ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
         : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
+
+      const getServiceImage = (service: any) => {
+        if (service?.image) return service.image;
+        const tLower = (service?.title || '').toLowerCase();
+        const tEnLower = (service?.titleEn || '').toLowerCase();
+        if (tLower.includes('kelas tari') || tEnLower.includes('dance class') || tLower.includes('tari betawi')) {
+          return '/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp';
+        }
+        if (tLower.includes('lenong betawi') || tEnLower.includes('lenong betawi')) {
+          return '/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp';
+        }
+        if (tLower.includes('gambang kromong') || tEnLower.includes('gambang kromong') || tLower.includes('musik') || tEnLower.includes('music')) {
+          return '/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp';
+        }
+        return (service as any)?.image || (sanggar as any)?.image || (sanggar as any)?.coverImage || "/card-7.webp";
+      };
+
+      const modalImage = getServiceImage(selectedService);
 
       return (
         <div
@@ -700,9 +934,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             </div>
 
             {/* Featured Service Image Banner */}
-            <div className="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden my-4 border border-zinc-200/80 shadow-sm bg-zinc-100">
+            <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden my-4 border border-zinc-200/80 shadow-sm bg-zinc-100">
               <img
-              src={(selectedService as any)?.image || (sanggar as any)?.image || "/card-7.webp"}
+                src={modalImage}
                 alt={modalTitle}
                 className="w-full h-full object-cover"
               />
@@ -721,12 +955,12 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             {/* Related Specialties */}
             {danceHighlights && danceHighlights.length > 0 && (
               <div className="mb-6">
-                <p className="text-xs font-semibold tracking-wider text-orange-600 uppercase mb-2 flex items-center gap-1.5">
+                <p className="text-xs font-semibold tracking-wider text-orange-600 uppercase mb-2.5 flex items-center gap-1.5">
                   <span>♫</span> {isEn ? "Related Performances" : "Cakupan Materi & Pementasan Terkait"}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {danceHighlights.map((item, idx) => (
-                    <span key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/60">
+                    <span key={idx} className="inline-flex items-center rounded-full bg-orange-50 text-orange-700 text-xs font-medium px-3.5 py-1.5 border border-orange-200/60">
                       {typeof item === 'string' ? item : item.name}
                     </span>
                   ))}
@@ -743,12 +977,12 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition-colors shadow-lg shadow-emerald-600/20"
+              className="w-full flex items-center justify-center gap-2.5 py-3 px-5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm rounded-xl sm:rounded-2xl transition-all shadow-sm active:scale-[0.98]"
             >
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.762.459 3.48 1.332 5.002l-1.416 5.169 5.293-1.387c1.462.798 3.109 1.218 4.777 1.219h.004c5.505 0 9.988-4.478 9.99-9.985 0-2.668-1.038-5.176-2.925-7.062a9.924 9.924 0 00-7.062-2.94zm0 1.62c4.615 0 8.37 3.754 8.371 8.368 0 2.235-.87 4.336-2.45 5.915-1.58 1.58-3.68 2.45-5.917 2.45h-.003c-1.42 0-2.825-.378-4.062-1.092l-.292-.168-3.021.791.806-2.941-.185-.295c-.782-1.246-1.196-2.671-1.196-4.135.002-4.614 3.758-8.368 8.372-8.368z"/>
+              <svg className="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
               </svg>
-              {isEn ? "Consult via WhatsApp" : "Konsultasi via WhatsApp"}
+              <span>{isEn ? "Consult via WhatsApp" : "Konsultasi via WhatsApp"}</span>
             </a>
           </div>
         </div>

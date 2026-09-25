@@ -11,14 +11,13 @@ import DriftWall, { DriftWallItem } from "@/components/DriftWall";
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
-const SANGGAR_DRIFT_ITEMS: DriftWallItem[] = [
-  { image: '/dinamis-sanggar-1.webp', title: 'Seni Tari Betawi' },
-  { image: '/dinamis-sanggar-2.webp', title: 'Pentas Kreasi Budaya' },
-  { image: '/dinamis-sanggar-3.webp', title: 'Harmoni Nusantara' },
-  { image: '/dinamis-sanggar-4.webp', title: 'Pusaka Tradisi Jakarta' },
-  { image: '/dinamis-sanggar-5.webp', title: 'Ekspresi Panggung Budaya' },
-  { image: '/dinamis-sanggar-6.webp', title: 'Koreografi Tari Kolosal' },
-];
+const col1Sanggar = ["/dinamis-sanggar-1.webp", "/dinamis-sanggar-2.webp", "/dinamis-sanggar-3.webp"];
+const col2Sanggar = ["/dinamis-sanggar-4.webp", "/dinamis-sanggar-5.webp", "/dinamis-sanggar-6.webp"];
+const col3Sanggar = ["/dinamis-sanggar-7.webp", "/dinamis-sanggar-8.webp", "/dinamis-sanggar-9.webp"];
+const col4Sanggar = ["/dinamis-sanggar-10.webp", "/dinamis-sanggar-11.webp", "/dinamis-sanggar-12.webp"];
+const col5Sanggar = ["/dinamis-sanggar-13.webp", "/dinamis-sanggar-14.webp", "/dinamis-sanggar-15.webp"];
+
+const SANGGAR_COLUMNS = [col1Sanggar, col2Sanggar, col3Sanggar, col4Sanggar, col5Sanggar];
 
 export interface Sanggar {
   id: string;
@@ -148,7 +147,7 @@ export default function SanggarCatalog({
       <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f] -mt-px">
         {/* Drift Wall Background Layer */}
         <div className="absolute top-0 -left-[10%] w-[120%] h-full pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
-          <DriftWall items={SANGGAR_DRIFT_ITEMS} columns={6} />
+          <DriftWall columnData={SANGGAR_COLUMNS} columns={5} />
         </div>
 
         {/* Dark Vignette Overlay */}

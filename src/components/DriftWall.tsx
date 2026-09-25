@@ -11,6 +11,7 @@ export interface DriftWallItem {
 
 export interface DriftWallProps {
   items?: DriftWallItem[];
+  columnData?: (string[] | DriftWallItem[])[];
   columns?: number;
   tileWidth?: number;
   tileHeight?: number;
@@ -54,6 +55,7 @@ const columnFactor = (index: number, variance: number): number => {
 
 const DriftWall = ({
   items = DEFAULT_ITEMS,
+  columnData,
   columns = 6,
   tileWidth = 210,
   tileHeight = 140,
@@ -105,20 +107,25 @@ const DriftWall = ({
   }, []);
 
   const columnItems = useMemo(() => {
+    if (columnData && columnData.length > 0) {
+      return columnData.map(col =>
+        col.map(item => (typeof item === 'string' ? { image: item } : item))
+      );
+    }
     const validItems = items && items.length > 0 ? items : DEFAULT_ITEMS;
     return Array.from({ length: columns }, (_, colIdx) => {
       // Assign image i to column i (modulo validItems.length), repeating the exact same image vertically within its respective column track
       const assignedItem = validItems[colIdx % validItems.length];
       return [assignedItem];
     });
-  }, [items, columns]);
+  }, [items, columns, columnData]);
 
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
     const effectiveHeight = Math.max(containerHeight, 400);
     return columnItems.map(col => {
       const copyHeight = Math.max(unit, col.length * unit);
-      const copies = Math.max(8, Math.ceil((effectiveHeight * 2.5) / copyHeight) + 2);
+      const copies = Math.max(4, Math.ceil((effectiveHeight * 2.5) / copyHeight) + 2);
       return { copyHeight, copies };
     });
   }, [columnItems, tileHeight, gap, containerHeight]);

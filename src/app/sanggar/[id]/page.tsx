@@ -34,19 +34,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         title: "Betawi Dance Classes",
         description: "Teaching traditional Betawi dances for all age groups.",
         titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups."
+        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
+        image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
       },
       {
         title: "Lenong Betawi Shows",
         description: "Presenting traditional Betawi theater for diverse audiences.",
         titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
+        image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp",
       },
       {
         title: "Traditional Music Performances (Gambang Kromong)",
         description: "Showcasing authentic Betawi music for cultural celebrations.",
         titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
+        image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp",
       }
     ],
     layanan: [
@@ -54,19 +57,22 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         title: "Kelas Tari Betawi",
         description: "Pelatihan tari tradisional Betawi untuk berbagai tingkatan usia dan kemahiran.",
         titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups."
+        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
+        image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
       },
       {
         title: "Pentas Lenong Betawi",
         description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
         titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences."
+        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
+        image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp",
       },
       {
         title: "Pentas Musik Gambang Kromong",
         description: "Penyajian musik tradisional khas Betawi untuk berbagai acara perayaan.",
         titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations."
+        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
+        image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp",
       }
     ],
     danceSpecialties: [
@@ -74,13 +80,15 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         name: "Tari Lenggok Dara",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music."
+        synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music.",
+        image: "/tari-lenggok-dara.webp",
       },
       {
         name: "Tari Nindak Si None",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage."
+        synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage.",
+        image: "/tari-nindak-si-none.webp",
       }
     ],
     tariUnggulan: [
@@ -88,13 +96,15 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         name: "Tari Lenggok Dara",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Lenggok bermakna lenggang atau gerak berirama, sedangkan Dara adalah gadis muda. Tarian ini menggambarkan keluwesan, keanggunan, dan keceriaan gadis Betawi melalui gerak tari indah berpadu alunan musik tradisional khas Betawi."
+        synopsis: "Lenggok bermakna lenggang atau gerak berirama, sedangkan Dara adalah gadis muda. Tarian ini menggambarkan keluwesan, keanggunan, dan keceriaan gadis Betawi melalui gerak tari indah berpadu alunan musik tradisional khas Betawi.",
+        image: "/tari-lenggok-dara.webp",
       },
       {
         name: "Tari Nindak Si None",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
-        synopsis: "Nindak bermakna melangkah maju, terinspirasi oleh sosok Si None Betawi sebagai representasi ikon budaya Abang None Jakarta. Tarian ini mencerminkan rasa percaya diri, keramahan, dan semangat gadis muda Betawi dalam melestarikan warisan budayanya."
+        synopsis: "Nindak bermakna melangkah maju, terinspirasi oleh sosok Si None Betawi sebagai representasi ikon budaya Abang None Jakarta. Tarian ini mencerminkan rasa percaya diri, keramahan, dan semangat gadis muda Betawi dalam melestarikan warisan budayanya.",
+        image: "/tari-nindak-si-none.webp",
       }
     ],
     achievements: [
