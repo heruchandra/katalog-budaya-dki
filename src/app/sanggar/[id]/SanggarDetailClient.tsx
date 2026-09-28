@@ -446,34 +446,43 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                       const title = isObj ? ((isEn && item.titleEn) ? item.titleEn : item.title) : item;
                       const desc = isObj ? ((isEn && item.descriptionEn) ? item.descriptionEn : item.description) : null;
 
+                      const service = serviceObj;
+
                       return (
                         <div 
                           key={idx}
-                          onClick={() => setSelectedService(serviceObj)}
-                          className="group relative bg-gradient-to-br from-zinc-50/80 to-orange-50/30 hover:to-orange-100/50 p-5 rounded-2xl border border-zinc-200/80 hover:border-orange-500 hover:shadow-md transition-all duration-300 flex flex-col justify-between cursor-pointer"
+                          onClick={() => setSelectedService(service)}
+                          className="group cursor-pointer bg-white border border-zinc-200/80 hover:border-orange-500/40 rounded-2xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
                         >
                           <div>
-                            <div className="w-10 h-10 rounded-xl bg-orange-100/90 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                              {idx % 3 === 0 ? (
-                                <Sparkles className="w-5 h-5" />
-                              ) : idx % 3 === 1 ? (
-                                <Building2 className="w-5 h-5" />
-                              ) : (
-                                <Music className="w-5 h-5" />
-                              )}
+                            {/* 16:9 Banner Image Header */}
+                            <div className="w-full aspect-video rounded-xl overflow-hidden bg-zinc-100 relative mb-4 border border-zinc-100">
+                              <img
+                                src={
+                                  service.image ||
+                                  (service.title.toLowerCase().includes("kelas")
+                                    ? "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
+                                    : service.title.toLowerCase().includes("lenong")
+                                    ? "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
+                                    : "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp")
+                                }
+                                alt={service.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
                             </div>
-                            <h4 className="text-base font-semibold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug">
+
+                            <h4 className="text-base sm:text-lg font-bold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug">
                               {title}
                             </h4>
                             {desc && (
-                              <p className="text-xs sm:text-sm text-zinc-600 mt-2 leading-relaxed font-light line-clamp-3">
+                              <p className="text-xs sm:text-sm text-zinc-500 line-clamp-2 mt-1 leading-relaxed">
                                 {desc}
                               </p>
                             )}
                           </div>
-                          <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-orange-600 font-semibold group-hover:text-orange-700 transition-colors">
-                            <span>{isEn ? "View Details" : "Lihat Detail"}</span>
-                            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+
+                          <div className="text-xs font-semibold text-orange-600 flex items-center gap-1 mt-3">
+                            <span>{isEn ? "View Details →" : "Lihat Detail →"}</span>
                           </div>
                         </div>
                       );
