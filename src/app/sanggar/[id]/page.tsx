@@ -1,7 +1,40 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import SanggarDetailClient, { SanggarDetailData, TariItem } from "./SanggarDetailClient";
+import SanggarDetailClient, { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
 
 export const dynamic = "force-dynamic";
+
+// 4 layanan inti Sinar Norray; kartu #4 menampung Karya Tari Unggulan di dalam modal
+const SINAR_NORRAY_SERVICES: ServiceItem[] = [
+  {
+    title: "Kelas Tari Betawi",
+    description: "Latihan dan pembinaan tari tradisional Betawi untuk berbagai tingkatan usia.",
+    titleEn: "Betawi Dance Classes",
+    descriptionEn: "Training and mentorship in traditional Betawi dance for all age groups.",
+    image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
+  },
+  {
+    title: "Pentas Lenong Betawi",
+    description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
+    titleEn: "Lenong Betawi Shows",
+    descriptionEn: "Traditional Betawi comedy theater and folk drama performances.",
+    image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp",
+  },
+  {
+    title: "Pentas Musik Gambang Kromong",
+    description: "Pertunjukan musik tradisional khas Betawi pengiring acara adat & festival.",
+    titleEn: "Gambang Kromong Music Performances",
+    descriptionEn: "Traditional Betawi music performances accompanying customary ceremonies & festivals.",
+    image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp",
+  },
+  {
+    title: "Pentas & Karya Tari Betawi",
+    description: "Pertunjukan tari kreasi khas Betawi (termasuk Tari Lenggok Dara & Tari Nindak Si None).",
+    titleEn: "Betawi Dance Performances & Works",
+    descriptionEn: "Signature Betawi creative dance performances (including Tari Lenggok Dara & Tari Nindak Si None).",
+    image: "/tari-lenggok-dara.webp",
+    featuresDanceWorks: true,
+  },
+];
 
 // Known rich profiles based on INFORMASI SANGGAR.docx and official survey data
 const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
@@ -29,52 +62,8 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     alamatLatihan: "Studio Sinar Norray, Jl. Daman 1 No.39 RT.008/002 Bambu Apus, Cipayung, Jakarta Timur (Rabu & Sabtu, 15.00 - 18.00 WIB)",
     address: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
     logo: "/profile-sanggar-2.webp",
-    services: [
-      {
-        title: "Betawi Dance Classes",
-        description: "Teaching traditional Betawi dances for all age groups.",
-        titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
-        image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
-      },
-      {
-        title: "Lenong Betawi Shows",
-        description: "Presenting traditional Betawi theater for diverse audiences.",
-        titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
-        image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp",
-      },
-      {
-        title: "Traditional Music Performances (Gambang Kromong)",
-        description: "Showcasing authentic Betawi music for cultural celebrations.",
-        titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
-        image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp",
-      }
-    ],
-    layanan: [
-      {
-        title: "Kelas Tari Betawi",
-        description: "Pelatihan tari tradisional Betawi untuk berbagai tingkatan usia dan kemahiran.",
-        titleEn: "Betawi Dance Classes",
-        descriptionEn: "Teaching traditional Betawi dances for all age groups.",
-        image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
-      },
-      {
-        title: "Pentas Lenong Betawi",
-        description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
-        titleEn: "Lenong Betawi Shows",
-        descriptionEn: "Presenting traditional Betawi theater for diverse audiences.",
-        image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp",
-      },
-      {
-        title: "Pentas Musik Gambang Kromong",
-        description: "Penyajian musik tradisional khas Betawi untuk berbagai acara perayaan.",
-        titleEn: "Traditional Music Performances (Gambang Kromong)",
-        descriptionEn: "Showcasing authentic Betawi music for cultural celebrations.",
-        image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp",
-      }
-    ],
+    services: SINAR_NORRAY_SERVICES,
+    layanan: SINAR_NORRAY_SERVICES,
     danceSpecialties: [
       {
         name: "Tari Lenggok Dara",

@@ -5,6 +5,8 @@ export interface ServiceItem {
   descriptionEn?: string;
   icon?: string;
   image?: string;
+  /** Tampilkan Karya Tari Unggulan sanggar di dalam modal layanan ini */
+  featuresDanceWorks?: boolean;
 }
 
 export interface DanceSpecialtyItem {
@@ -106,19 +108,33 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
   grade: "B",
   services: [
     {
-      title: "Betawi Dance Classes",
-      description: "Teaching traditional Betawi dances for all age groups.",
+      title: "Kelas Tari Betawi",
+      description: "Latihan dan pembinaan tari tradisional Betawi untuk berbagai tingkatan usia.",
+      titleEn: "Betawi Dance Classes",
+      descriptionEn: "Training and mentorship in traditional Betawi dance for all age groups.",
       image: "/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
     },
     {
-      title: "Lenong Betawi Shows",
-      description: "Presenting traditional Betawi theater for diverse audiences.",
+      title: "Pentas Lenong Betawi",
+      description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
+      titleEn: "Lenong Betawi Shows",
+      descriptionEn: "Traditional Betawi comedy theater and folk drama performances.",
       image: "/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
     },
     {
-      title: "Traditional Music Performances (Gambang Kromong)",
-      description: "Showcasing authentic Betawi music for cultural celebrations.",
+      title: "Pentas Musik Gambang Kromong",
+      description: "Pertunjukan musik tradisional khas Betawi pengiring acara adat & festival.",
+      titleEn: "Gambang Kromong Music Performances",
+      descriptionEn: "Traditional Betawi music performances accompanying customary ceremonies & festivals.",
       image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp"
+    },
+    {
+      title: "Pentas & Karya Tari Betawi",
+      description: "Pertunjukan tari kreasi khas Betawi (termasuk Tari Lenggok Dara & Tari Nindak Si None).",
+      titleEn: "Betawi Dance Performances & Works",
+      descriptionEn: "Signature Betawi creative dance performances (including Tari Lenggok Dara & Tari Nindak Si None).",
+      image: "/tari-lenggok-dara.webp",
+      featuresDanceWorks: true
     }
   ],
   danceSpecialties: [
