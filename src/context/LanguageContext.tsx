@@ -12,6 +12,12 @@ const translations: Record<string, Record<Language, string>> = {
   navDashboard: { id: "Dasbor", en: "Dashboard" },
   navDashboardAdmin: { id: "Dasbor Admin", en: "Admin Dashboard" },
   navLogout: { id: "Keluar", en: "Sign Out" },
+  navSignIn: { id: "Masuk", en: "Sign In" },
+  navArtCategories: { id: "Kategori Seni", en: "Art Categories" },
+  navMenuSection: { id: "Menu Navigasi", en: "Navigation" },
+  navSelectLanguage: { id: "Pilih Bahasa", en: "Select Language" },
+  navOpenMenu: { id: "Buka menu", en: "Open menu" },
+  navCloseMenu: { id: "Tutup menu", en: "Close menu" },
   login: { id: "Masuk", en: "Login" },
 
   // ── Login ──
