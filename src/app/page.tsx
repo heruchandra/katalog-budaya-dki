@@ -8,6 +8,7 @@ import {
   Music,
   Sparkles,
   ArrowRight,
+  ChevronRight,
   Star,
   Users,
   Award,
@@ -401,17 +402,61 @@ export default function HomePage() {
           </p>
         </div>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-transparent border-none shadow-none ring-0">
-          <AccordionGallery
-            items={culturalPillars}
-            defaultIndex={0}
-            height={560}
-            radius={20}
-            gap={14}
-            expandRatio={0.52}
-            accentColor="#ff7b00"
-            overlayColor="#060010"
-            trigger="hover"
-          />
+          {/* Desktop Hover Accordion Gallery (md+) */}
+          <div className="hidden md:block">
+            <AccordionGallery
+              items={culturalPillars}
+              defaultIndex={0}
+              height={560}
+              radius={20}
+              gap={14}
+              expandRatio={0.52}
+              accentColor="#ff7b00"
+              overlayColor="#060010"
+              trigger="hover"
+            />
+          </div>
+
+          {/* Mobile Touch Cards (< md) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 md:hidden">
+            {culturalPillars.map((pillar) => {
+              const isClickable = pillar.link && pillar.link !== '#';
+              const CardTag = isClickable ? Link : 'div';
+              return (
+                <CardTag
+                  key={pillar.id}
+                  href={isClickable ? pillar.link : undefined}
+                  className="group w-full h-28 sm:h-36 rounded-2xl overflow-hidden relative shadow-sm border border-zinc-200/80 active:scale-[0.98] transition-transform flex items-end p-4 block"
+                >
+                  {/* Full-color Background Image (no grayscale filter on mobile) */}
+                  <img
+                    src={pillar.image}
+                    alt={pillar.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+
+                  {/* Gradient Overlay for high text legibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none" />
+
+                  {/* Text & Action Row */}
+                  <div className="relative z-10 w-full flex items-end justify-between gap-3 pointer-events-none">
+                    <div className="flex flex-col text-left">
+                      <span className={`text-xl sm:text-2xl text-white font-bold tracking-tight drop-shadow-md leading-tight ${dancingScript.className}`}>
+                        {pillar.title}
+                      </span>
+                      <span className="text-xs text-zinc-300 font-medium drop-shadow-sm mt-0.5 line-clamp-1">
+                        {pillar.subtitle}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white shrink-0 shadow-sm group-active:scale-95 transition-transform">
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </CardTag>
+              );
+            })}
+          </div>
         </div>
       </section>
 
