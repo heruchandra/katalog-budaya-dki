@@ -7,6 +7,7 @@ import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import DriftWall, { DriftWallItem } from "@/components/DriftWall";
+import CatalogPagination from "@/components/CatalogPagination";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
@@ -132,20 +133,10 @@ export default function SanggarCatalog({
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('catalog-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
-  const getVisiblePages = (current: number, total: number) => {
-    const start = Math.max(1, current - 3);
-    const end = Math.min(total, current + 3);
-    const pages = [];
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    return pages;
-  };
-  const visiblePages = getVisiblePages(currentPage, totalPages);
 
   return (
     <div className="min-h-screen bg-white pb-16">
@@ -262,7 +253,7 @@ export default function SanggarCatalog({
         </aside>
 
         {/* Right Grid (Catalog) */}
-        <main className="w-full md:w-3/4">
+        <main id="catalog-results" className="w-full md:w-3/4 scroll-mt-24">
           {/* Error State / Empty State */}
           {(fetchError || filtered.length === 0) && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -399,59 +390,14 @@ export default function SanggarCatalog({
             </div>
           )}
 
-          {/* Premium 3D Pagination */}
+          {/* Pagination (6 items per page) */}
           {!fetchError && filtered.length > 0 && (
-            <div className="flex items-center justify-center gap-4 w-full select-none mt-14 mb-10">
-              <button 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-white shadow-md border border-slate-100 text-slate-600 hover:shadow-lg transition-all duration-300 ease-out transform outline-none focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed ${currentPage === 1 ? '' : 'hover:scale-105 active:scale-95 hover:text-orange-600'}`}
-                aria-label="Previous Page"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                </svg>
-              </button>
-              
-              <div className="flex items-center justify-center w-64 h-16 relative overflow-visible gap-2">
-                {visiblePages.map((page) => {
-                  const distance = Math.abs(page - currentPage);
-                  
-                  let baseClasses = "flex items-center justify-center transition-all duration-300 ease-out transform outline-none focus:outline-none ";
-                  
-                  if (distance === 0) {
-                    baseClasses += "w-14 h-14 rounded-full bg-brand text-white text-lg font-bold shadow-lg shadow-orange-600/30 scale-100 opacity-100 z-10 cursor-default";
-                  } else if (distance === 1) {
-                    baseClasses += "w-11 h-11 rounded-full bg-slate-200 text-slate-700 text-sm font-semibold scale-90 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-300";
-                  } else if (distance === 2) {
-                    baseClasses += "w-9 h-9 rounded-full bg-slate-100 text-slate-500 text-xs scale-75 opacity-50 hover:opacity-80 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-200";
-                  } else {
-                    baseClasses += "w-8 h-8 rounded-full bg-slate-50 text-slate-400 text-xs scale-60 opacity-25 hover:opacity-60 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-100";
-                  }
-                  
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => distance !== 0 && setCurrentPage(page)}
-                      className={baseClasses}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className={`flex shrink-0 items-center justify-center w-12 h-12 rounded-full bg-white shadow-md border border-slate-100 text-slate-600 hover:shadow-lg transition-all duration-300 ease-out transform outline-none focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed ${currentPage === totalPages ? '' : 'hover:scale-105 active:scale-95 hover:text-orange-600'}`}
-                aria-label="Next Page"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-              </button>
-            </div>
+            <CatalogPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="mt-14 mb-10"
+            />
           )}
         </main>
       </div>
