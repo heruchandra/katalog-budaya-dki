@@ -316,7 +316,7 @@ export default function Navbar() {
           role="dialog"
           aria-modal="true"
           aria-label={t('navMenuSection')}
-          className={`fixed top-0 right-0 w-[85%] max-w-xs h-full bg-white/98 backdrop-blur-xl z-[10001] p-6 flex flex-col justify-between gap-6 overflow-y-auto shadow-2xl rounded-l-3xl transition-transform duration-300 ease-in-out ${
+          className={`fixed top-0 right-0 w-[85%] max-w-xs h-full bg-white/98 backdrop-blur-xl z-[10001] p-6 flex flex-col justify-between gap-6 overflow-y-auto shadow-2xl rounded-l-xl transition-transform duration-300 ease-in-out ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           } ${jakarta.className}`}
         >
@@ -343,7 +343,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors"
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors"
                 aria-label={t('navCloseMenu')}
               >
                 <X className="h-5 w-5" />
@@ -363,8 +363,8 @@ export default function Navbar() {
                 aria-current={pathname === "/" ? "page" : undefined}
                 className={`text-sm tracking-wide uppercase ${
                   pathname === "/"
-                    ? "bg-orange-50 text-orange-600 font-bold px-4 py-3 rounded-xl flex items-center justify-between border-l-4 border-orange-500 transition-all"
-                    : "text-zinc-800 font-semibold px-4 py-3 hover:bg-zinc-50 rounded-xl transition-all flex items-center justify-between"
+                    ? "bg-orange-50 text-orange-600 border-l-4 border-orange-500 font-bold px-4 py-3 rounded-md transition-all flex items-center justify-between"
+                    : "rounded-md px-4 py-3 text-zinc-800 font-semibold hover:bg-zinc-100 transition-all flex items-center justify-between"
                 }`}
               >
                 <span>{t('navHome')}</span>
@@ -379,10 +379,10 @@ export default function Navbar() {
                       type="button"
                       onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                       aria-expanded={isCategoryOpen}
-                      className={`w-full text-sm tracking-wide uppercase px-4 py-3 rounded-xl flex items-center justify-between transition-all ${
+                      className={`w-full text-sm tracking-wide uppercase px-4 py-3 rounded-md flex items-center justify-between transition-all ${
                         isCategoryActive
                           ? "bg-orange-50 text-orange-600 font-bold border-l-4 border-orange-500"
-                          : "text-zinc-800 font-semibold hover:bg-zinc-50"
+                          : "text-zinc-800 font-semibold hover:bg-zinc-100"
                       }`}
                     >
                       <span>{t('navArtCategories')}</span>
@@ -411,7 +411,7 @@ export default function Navbar() {
                               href={sub.href}
                               onClick={() => setIsMobileMenuOpen(false)}
                               aria-current={isSubActive ? "page" : undefined}
-                              className={`block px-3 py-2 rounded-xl text-sm transition-colors ${
+                              className={`block px-3 py-2 rounded-md text-sm transition-colors ${
                                 isSubActive
                                   ? "bg-orange-50 text-orange-600 font-semibold"
                                   : "text-zinc-600 font-medium hover:text-orange-600 hover:bg-zinc-50"
@@ -433,7 +433,7 @@ export default function Navbar() {
               <span className="block text-xs font-semibold uppercase text-zinc-400 tracking-wider mb-3 px-1">
                 {t('navSelectLanguage')}
               </span>
-              <div className="grid grid-cols-2 gap-2 bg-zinc-100/80 p-1.5 rounded-2xl">
+              <div className="grid grid-cols-2 gap-1 bg-zinc-100 p-1 rounded-md border border-zinc-200/60">
                 {([
                   { code: 'id', label: 'Indonesia', flag: 'https://hatscripts.github.io/circle-flags/flags/id.svg' },
                   { code: 'en', label: 'English', flag: 'https://hatscripts.github.io/circle-flags/flags/gb.svg' },
@@ -445,10 +445,10 @@ export default function Navbar() {
                       type="button"
                       onClick={() => setLanguage(lang.code)}
                       aria-pressed={isActiveLang}
-                      className={`py-2 px-3 rounded-xl flex items-center justify-center gap-2 text-xs transition-all ${
+                      className={`py-2 px-3 flex items-center justify-center gap-2 text-xs border transition-all ${
                         isActiveLang
-                          ? "bg-white text-orange-600 font-bold shadow-sm"
-                          : "text-zinc-500 font-medium hover:text-zinc-800"
+                          ? "bg-white text-orange-600 font-bold shadow-xs rounded-sm border-zinc-200/80"
+                          : "text-zinc-600 hover:text-zinc-900 font-medium border-transparent"
                       }`}
                     >
                       <img
@@ -482,7 +482,7 @@ export default function Navbar() {
                   <Link
                     href="/admin"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center gap-2 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 py-3 rounded-2xl transition-all"
+                    className="w-full flex items-center justify-center gap-2 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 py-3 rounded-lg transition-all"
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     <span>{t('navDashboardAdmin')}</span>
@@ -495,7 +495,7 @@ export default function Navbar() {
                     handleLogout();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center justify-center gap-2 rounded-2xl bg-red-50 hover:bg-red-100 py-3 text-sm font-semibold text-red-600 transition-all"
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-red-50 hover:bg-red-100 py-3 text-sm font-semibold text-red-600 transition-all"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>{t('navLogout')}</span>
@@ -505,7 +505,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full bg-orange-600 hover:bg-orange-700 active:scale-[0.99] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 transition-all"
+                className="w-full bg-orange-600 hover:bg-orange-700 active:scale-[0.99] text-white font-bold py-3.5 rounded-lg shadow-md shadow-orange-500/15 flex items-center justify-center gap-2 transition-all"
               >
                 <LogIn className="h-4 w-4" />
                 <span>{t('navSignIn')}</span>
