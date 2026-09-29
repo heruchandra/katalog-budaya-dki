@@ -16,13 +16,16 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Maximize2
+  Maximize2,
+  Images
 } from "lucide-react";
-import { Poppins, Playfair_Display, Dancing_Script } from 'next/font/google';
+import { Poppins, Playfair_Display, Dancing_Script, Plus_Jakarta_Sans } from 'next/font/google';
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600'] });
+// Same typeface as the Navbar "Masuk" button, for primary buttons on this page
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 
@@ -652,10 +655,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 setIsGalleryOpen(true);
                 setActivePhotoIndex(null);
               }}
-              className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs sm:text-sm font-semibold border border-orange-200/80 transition-all hover:shadow-sm active:scale-[0.98]"
+              className={`${jakarta.className} bg-orange-600 hover:bg-orange-700 active:scale-[0.98] text-white py-3 px-5 sm:px-6 rounded-md sm:rounded-lg shadow-md shadow-orange-500/20 flex items-center justify-between gap-3 transition-all cursor-pointer border border-orange-500`}
             >
-              <span>{isEn ? "View All Photos" : "Lihat Semua Foto"}</span>
-              <span className="px-2 py-0.5 rounded-full bg-orange-600 text-white text-xs font-bold">
+              <span className="flex items-center gap-2 font-semibold sm:font-bold text-sm tracking-normal text-white">
+                <Images className="w-4 h-4 shrink-0" aria-hidden="true" />
+                {isEn ? "View All Photos" : "Lihat Semua Foto"}
+              </span>
+              <span className="font-semibold text-xs text-white tracking-wide bg-white/20 px-2.5 py-1 rounded border border-white/20">
                 {galleryList.length} {isEn ? "Photos" : "Foto"}
               </span>
             </button>

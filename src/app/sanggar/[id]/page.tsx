@@ -42,7 +42,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
   "sinar-norray": {
     id: "sinar-norray",
     name: "Sinar Norray",
-    leader: "Engkar Karmilasari (Engkar Nori)",
+    leader: "Engkar Karmilasari",
     tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
@@ -138,7 +138,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       youtube: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
     },
     kontak: {
-      ketua: "Engkar Karmilasari (Engkar Nori)",
+      ketua: "Engkar Karmilasari",
       pic: "Engkar Karmilasari",
       phone: "081310998647",
       email: "sinarnorray.art@gmail.com",
@@ -161,7 +161,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     // Replaced / Aliased to Sinar Norray
     id: "sinar-norray",
     name: "Sinar Norray",
-    leader: "Engkar Karmilasari (Engkar Nori)",
+    leader: "Engkar Karmilasari",
     tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
@@ -291,7 +291,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       youtube: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
     },
     kontak: {
-      ketua: "Engkar Karmilasari (Engkar Nori)",
+      ketua: "Engkar Karmilasari",
       pic: "Engkar Karmilasari",
       phone: "081310998647",
       email: "sinarnorray.art@gmail.com",

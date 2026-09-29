@@ -108,7 +108,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
         );
         if (norray) {
           norray.nama_sanggar = "Sinar Norray";
-          norray.nama_pimpinan = "Engkar Karmilasari (Engkar Nori)";
+          norray.nama_pimpinan = "Engkar Karmilasari";
           norray.grade = "B";
           norray.alamat = "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur";
           norray.thumbnail_url = "/card-7.webp";
@@ -120,7 +120,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
           sanggars.push({
             id: "sinar-norray",
             nama_sanggar: "Sinar Norray",
-            nama_pimpinan: "Engkar Karmilasari (Engkar Nori)",
+            nama_pimpinan: "Engkar Karmilasari",
             grade: "B",
             alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
             thumbnail_url: "/card-7.webp",
@@ -180,7 +180,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
       {
         id: "sinar-norray",
         nama_sanggar: "Sinar Norray",
-        nama_pimpinan: "Engkar Karmilasari (Engkar Nori)",
+        nama_pimpinan: "Engkar Karmilasari",
         grade: "B",
         alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
         jenis_tarian: "Tari Betawi, Lenong Betawi",
