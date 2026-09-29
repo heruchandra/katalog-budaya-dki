@@ -12,6 +12,8 @@ import {
   Award,
   Users,
   Loader2,
+  Building2,
+  User as UserIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Dancing_Script } from 'next/font/google';
@@ -22,6 +24,51 @@ import AccordionGallery from "@/components/AccordionGallery";
 import { motion, AnimatePresence } from "motion/react";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
+
+// Same images the sanggar catalog shows for these curated studios (keyed by lowercase name)
+const KNOWN_SANGGAR_THUMBS: Record<string, string> = {
+  "sinar norray": "/profile-sanggar-2.webp",
+  "art enthusiast production": "/card-1.webp",
+  "am dance studio": "/card-2.webp",
+  "arunika art production": "/card-3.webp",
+  "ayodya pala": "/card-4.webp",
+  "citra art studio": "/card-5.webp",
+  "daya presta": "/card-6.webp",
+};
+
+// First non-empty image-like field on a DB row (column names differ between tables)
+const pickImage = (row: Record<string, unknown>): string | null => {
+  for (const key of ["logo_url", "thumbnail_url", "foto_url", "image_url", "avatar_url", "image", "logo"]) {
+    const value = row[key];
+    if (typeof value === "string" && value.trim()) return value;
+  }
+  return null;
+};
+
+// Square search-result thumbnail: image when available, otherwise the name's initial (or a type icon)
+function SearchThumb({ src, name, type }: { src?: string | null; name: string; type: string }) {
+  const [failed, setFailed] = useState(false);
+  const initial = name.replace(/^Sanggar\s+/i, '').trim().charAt(0).toUpperCase();
+  const FallbackIcon = type === 'Sanggar' ? Building2 : UserIcon;
+
+  return (
+    <span className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 relative overflow-hidden rounded-sm border border-white/20 bg-white/10 flex items-center justify-center">
+      {src && !failed ? (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          onError={() => setFailed(true)}
+          className="object-cover w-full h-full"
+        />
+      ) : initial ? (
+        <span className="text-xs font-bold text-orange-400" aria-hidden="true">{initial}</span>
+      ) : (
+        <FallbackIcon className="w-4 h-4 text-orange-400" aria-hidden="true" />
+      )}
+    </span>
+  );
+}
 
 export default function HomePage() {  
   const { t, language } = useLanguage();
@@ -111,7 +158,7 @@ export default function HomePage() {
           try {
             const { data } = await supabase
               .from('sanggars')
-              .select('id, nama_sanggar')
+              .select('*')
               .ilike('nama_sanggar', `%${queryLower}%`)
               .limit(10);
             dbSanggars = data || [];
@@ -119,24 +166,29 @@ export default function HomePage() {
             console.error("Supabase search error:", err);
           }
 
-          const rawSanggar = dbSanggars.map((item) => ({
-            id: `s-${item.id}`,
-            name: item.nama_sanggar.replace(/^Sanggar\s+/i, ''),
-            fullName: item.nama_sanggar,
-            type: 'Sanggar',
-            href: `/sanggar/${item.id}`
-          }));
+          const rawSanggar = dbSanggars.map((item) => {
+            const name = item.nama_sanggar.replace(/^Sanggar\s+/i, '');
+            return {
+              id: `s-${item.id}`,
+              name,
+              fullName: item.nama_sanggar,
+              type: 'Sanggar',
+              href: `/sanggar/${item.id}`,
+              image: KNOWN_SANGGAR_THUMBS[name.toLowerCase()] || pickImage(item),
+              subtitle: item.kota_kab || item.wilayah || item.kecamatan || null,
+            };
+          });
 
           // Known curated studios ensuring Sinar Norray and others always match
           const knownSanggars = [
-            { id: "s-sinar-norray", name: "Sinar Norray", fullName: "Sanggar Seni Sinar Norray", type: "Sanggar", href: "/sanggar/sinar-norray" },
+            { id: "s-sinar-norray", name: "Sinar Norray", fullName: "Sanggar Seni Sinar Norray", type: "Sanggar", href: "/sanggar/sinar-norray", subtitle: "Jakarta Timur" },
             { id: "s-1", name: "Art Enthusiast Production", fullName: "Art Enthusiast Production", type: "Sanggar", href: "/sanggar/1" },
             { id: "s-2", name: "AM Dance Studio", fullName: "AM Dance Studio", type: "Sanggar", href: "/sanggar/2" },
             { id: "s-3", name: "Arunika Art Production", fullName: "Arunika Art Production", type: "Sanggar", href: "/sanggar/3" },
             { id: "s-4", name: "Ayodya Pala", fullName: "Ayodya Pala", type: "Sanggar", href: "/sanggar/4" },
             { id: "s-5", name: "Citra Art Studio", fullName: "Citra Art Studio", type: "Sanggar", href: "/sanggar/5" },
             { id: "s-6", name: "Daya Presta", fullName: "Daya Presta", type: "Sanggar", href: "/sanggar/6" },
-          ];
+          ].map((k) => ({ ...k, image: KNOWN_SANGGAR_THUMBS[k.name.toLowerCase()], subtitle: k.subtitle ?? null }));
 
           const combined = [...rawSanggar];
           for (const k of knownSanggars) {
@@ -158,7 +210,7 @@ export default function HomePage() {
           try {
             const { data } = await supabase
               .from('pemusiks')
-              .select('id, nama_seniman')
+              .select('*')
               .ilike('nama_seniman', `%${queryLower}%`)
               .limit(10);
             dbPemusiks = data || [];
@@ -170,7 +222,9 @@ export default function HomePage() {
             id: `p-${item.id}`,
             name: item.nama_seniman,
             type: 'Pemusik',
-            href: `/pemusik/${item.id}`
+            href: `/pemusik/${item.id}`,
+            image: pickImage(item),
+            subtitle: item.genre_musik || item.jenis_seniman || item.instrumen || null,
           }));
 
           formattedPemusik = rawPemusik
@@ -386,16 +440,24 @@ export default function HomePage() {
                         <li key={suggestion.id} className="border-b border-white/10 last:border-none">
                           <Link
                             href={suggestion.href || '#'}
-                            className="group/item px-4 py-3 flex items-center justify-between gap-3 transition-colors cursor-pointer min-h-[44px] text-sm hover:bg-white/10 hover:text-orange-400 active:bg-white/15"
+                            className="group/item flex items-center gap-3 py-2.5 px-4 min-h-[44px] hover:bg-white/10 active:bg-white/15 transition-colors cursor-pointer"
                             onClick={() => {
                               setIsFocused(false);
                               setIsCategoryOpen(false);
                             }}
                           >
-                            <span className="text-sm font-medium text-zinc-100 group-hover/item:text-orange-400 truncate transition-colors">{suggestion.name}</span>
+                            <SearchThumb src={suggestion.image} name={suggestion.name} type={suggestion.type} />
+                            <span className="min-w-0 flex flex-col">
+                              <span className="text-sm font-medium text-zinc-100 group-hover/item:text-orange-400 truncate transition-colors">{suggestion.name}</span>
+                              {suggestion.subtitle && (
+                                <span className="text-[11px] text-zinc-400 truncate">{suggestion.subtitle}</span>
+                              )}
+                            </span>
                             {selectedCategory === 'all' && (
-                              <span className="shrink-0 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-2 py-0.5 rounded-none tracking-wider uppercase">
-                                {suggestion.type}
+                              <span className="ml-auto shrink-0 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-2 py-0.5 rounded-none tracking-wider uppercase">
+                                {suggestion.type === 'Sanggar'
+                                  ? (isEnglish ? 'Studio' : 'Sanggar')
+                                  : (isEnglish ? 'Music Artist' : 'Seniman Musik')}
                               </span>
                             )}
                           </Link>
