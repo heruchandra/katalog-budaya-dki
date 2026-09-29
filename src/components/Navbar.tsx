@@ -66,21 +66,21 @@ export default function Navbar() {
     <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} ${
       isTransparent ? 'bg-transparent text-white' : 'bg-white shadow-sm border-b border-gray-100 text-orange-600'
     }`}>
-      <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-6 lg:px-12 text-sm gap-4 lg:gap-8">
+      <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm gap-2 sm:gap-4 lg:gap-8">
         {/* Group 1: Left - Logos & Title */}
-        <div className="flex items-center gap-3 shrink-0 z-10">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 z-10 min-w-0">
           <Link
             href="/"
-            className="group flex items-center gap-3 transition-transform duration-200 hover:scale-[1.02]"
+            className="group flex items-center gap-2 sm:gap-3 transition-transform duration-200 hover:scale-[1.02] min-w-0"
           >
-          <div className="flex items-center gap-4 border-r border-slate-200 pr-4">
-            <Image src="/logo-jayaraya.webp" alt="Logo Jaya Raya DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain translate-y-[2px]" priority />
-            <Image src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'} alt="Logo Jakarta 5 Abad" width={40} height={40} className="h-10 w-auto object-contain drop-shadow-sm" priority />
-            <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={40} height={40} className="h-10 w-auto object-contain" priority />
+          <div className="flex items-center gap-2 sm:gap-4 border-r border-slate-200 pr-2 sm:pr-4 shrink-0">
+            <Image src="/logo-jayaraya.webp" alt="Logo Jaya Raya DKI Jakarta" width={40} height={40} className="h-7 sm:h-9 lg:h-10 w-auto object-contain translate-y-[2px]" priority />
+            <Image src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'} alt="Logo Jakarta 5 Abad" width={40} height={40} className="hidden sm:block h-7 sm:h-9 lg:h-10 w-auto object-contain drop-shadow-sm" priority />
+            <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={40} height={40} className="h-7 sm:h-9 lg:h-10 w-auto object-contain" priority />
           </div>
-          <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap ${jakarta.className}`}>
-            <span className={`text-lg font-bold tracking-tight ${isTransparent ? 'text-white' : 'text-orange-600'}`}>{brandTitle}</span>
-            <span className={`text-[9px] font-bold tracking-[0.2em] mt-0.5 uppercase ml-[1px] ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
+          <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap min-w-0 ${jakarta.className}`}>
+            <span className={`text-sm sm:text-base lg:text-lg font-bold tracking-tight truncate ${isTransparent ? 'text-white' : 'text-orange-600'}`}>{brandTitle}</span>
+            <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] mt-0.5 uppercase ml-[1px] ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>DKI Jakarta</span>
           </div>
           </Link>
         </div>
@@ -211,16 +211,39 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className={`inline-flex items-center justify-center rounded-xl p-2.5 transition-colors lg:hidden ${isTransparent ? 'text-white hover:bg-white/10' : 'text-surface-600 hover:bg-surface-100'}`}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isOpen}
-        >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile Action Bar: Login + Language + Hamburger */}
+        <div className="flex items-center gap-2 lg:hidden shrink-0 z-10">
+          {/* Mobile Login Button (only when not logged in) */}
+          {!user && (
+            <Link
+              href="/login"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors shadow-sm ${jakarta.className} ${
+                isTransparent
+                  ? 'bg-white text-slate-900 hover:bg-gray-100'
+                  : 'bg-orange-600 text-white hover:bg-orange-700'
+              }`}
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              {language === 'en' ? 'Sign In' : 'Masuk'}
+            </Link>
+          )}
+          {/* Mobile User Avatar (when logged in) */}
+          {user && (
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold text-xs border border-primary-200 shadow-sm ${jakarta.className}`}>
+              {displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-3 w-3" />}
+            </div>
+          )}
+          {/* Hamburger Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className={`inline-flex items-center justify-center rounded-xl p-2 transition-colors ${isTransparent ? 'text-white hover:bg-white/10' : 'text-surface-600 hover:bg-surface-100'}`}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
