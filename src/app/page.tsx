@@ -234,7 +234,9 @@ export default function HomePage() {
         {/* Dark overlay for premium contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 -z-10 pointer-events-none"></div>
 
-        <div className="relative z-50 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-8">
+        {/* Mobile only: lift title + search ~10% of the viewport; md+ stays centered as before */}
+        <div className="relative z-50 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12 mt-8 -translate-y-[10vh] md:translate-y-0">
+
           <div className="flex flex-col items-center justify-center text-center px-4 space-y-2 mt-8 md:space-y-4">
             <div className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
               <motion.h1
