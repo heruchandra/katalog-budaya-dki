@@ -83,20 +83,20 @@ export default function Navbar() {
       <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} ${
         isTransparent ? 'bg-transparent text-white' : 'bg-white shadow-sm border-b border-gray-100 text-orange-600'
       }`}>
-        <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 text-sm">
+        <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm">
           {/* Group 1: Left - Logos & Title */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 z-10 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap shrink-0 z-10 min-w-0">
             <Link
               href="/"
-              className="group flex items-center gap-2.5 sm:gap-3 transition-transform duration-200 hover:scale-[1.02] min-w-0"
+              className="group flex items-center gap-1.5 sm:gap-3 flex-nowrap transition-transform duration-200 hover:scale-[1.02] min-w-0"
             >
-              <div className="flex items-center gap-2 sm:gap-3 border-r border-slate-200 pr-2.5 sm:pr-4 shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap shrink-0">
                 <Image
                   src="/logo-jayaraya.webp"
                   alt="Logo Jaya Raya DKI Jakarta"
                   width={40}
                   height={40}
-                  className="h-8 sm:h-10 w-auto object-contain translate-y-[1px]"
+                  className="h-6 sm:h-9 w-auto object-contain translate-y-[1px]"
                   priority
                 />
                 <Image
@@ -104,7 +104,7 @@ export default function Navbar() {
                   alt="Logo Jakarta 5 Abad"
                   width={40}
                   height={40}
-                  className="hidden md:block h-8 sm:h-10 w-auto object-contain drop-shadow-sm"
+                  className="h-6 sm:h-9 w-auto object-contain drop-shadow-sm"
                   priority
                 />
                 <Image
@@ -112,15 +112,19 @@ export default function Navbar() {
                   alt="Logo Dinas Kebudayaan DKI Jakarta"
                   width={40}
                   height={40}
-                  className="hidden md:block h-8 sm:h-10 w-auto object-contain"
+                  className="h-5 sm:h-8 w-auto object-contain"
                   priority
                 />
               </div>
+
+              {/* Vertical divider line */}
+              <div className={`h-5 sm:h-7 w-[1px] ${isTransparent ? 'bg-white/40' : 'bg-slate-300'} my-auto mx-0.5 shrink-0`} />
+
               <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap min-w-0 ${jakarta.className}`}>
-                <span className={`text-base sm:text-lg font-bold tracking-tight truncate ${isTransparent ? 'text-white' : 'text-orange-600'}`}>
+                <span className={`text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate ${isTransparent ? 'text-white' : 'text-orange-600'}`}>
                   {brandTitle}
                 </span>
-                <span className={`text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>
+                <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-none ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>
                   DKI Jakarta
                 </span>
               </div>
@@ -254,7 +258,7 @@ export default function Navbar() {
           </div>
 
           {/* Group 4: Mobile Hamburger Button - ONLY on mobile (< md) */}
-          <div className="flex items-center md:hidden shrink-0 z-10">
+          <div className="flex items-center md:hidden ml-auto shrink-0 z-10">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
