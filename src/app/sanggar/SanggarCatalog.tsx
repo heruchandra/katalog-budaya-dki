@@ -150,6 +150,7 @@ export default function SanggarCatalog({
               columnData={SANGGAR_COLUMNS}
               columns={5}
               dim={0.55}
+              className="drift-wall--rounded"
               style={{ '--dw-rest-brightness': 0.85, '--dw-hover-brightness': 1.1, '--dw-hover-scale': 1.05 } as React.CSSProperties}
             />
           </div>
@@ -175,7 +176,7 @@ export default function SanggarCatalog({
         
         {/* Mobile Search & Grade Filter Bar (visible only on mobile) */}
         <div className="w-full md:hidden flex flex-col gap-4 -mt-4 mb-2">
-          <div className="relative border border-slate-200 rounded-md px-3 py-2 bg-slate-50 focus-within:bg-white focus-within:border-orange-500 transition-colors">
+          <div className="relative border border-zinc-200 rounded-none px-3 py-2 bg-slate-50 focus-within:bg-white focus-within:border-orange-600 focus-within:ring-1 focus-within:ring-orange-600 transition-colors">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
@@ -197,7 +198,7 @@ export default function SanggarCatalog({
                   setActiveGrade(filter.value);
                   setCurrentPage(1);
                 }}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium uppercase tracking-wider whitespace-nowrap transition-colors ${
+                className={`px-3 py-1.5 rounded-none text-xs font-medium uppercase tracking-wider whitespace-nowrap transition-colors ${
                   activeGrade === filter.value
                     ? "bg-brand text-white shadow-md shadow-orange-600/20"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -213,7 +214,7 @@ export default function SanggarCatalog({
         <aside className="w-full md:w-1/4 hidden md:flex flex-col gap-8 sticky top-36 self-start max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar">
           <div className="border-t border-slate-200 pt-6">
             <h3 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('sanggarSearchTitle')}</h3>
-            <div className="relative border-b border-slate-200 focus-within:border-gray-300 focus-within:ring-0 transition-colors">
+            <div className="relative border-b border-zinc-200 focus-within:border-orange-600 transition-colors">
               <Search className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -257,7 +258,7 @@ export default function SanggarCatalog({
           {/* Error State / Empty State */}
           {(fetchError || filtered.length === 0) && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-50">
+              <div className="flex h-20 w-20 items-center justify-center rounded-none bg-slate-50">
                 {fetchError ? (
                   <AlertTriangle className="h-10 w-10 text-slate-400" />
                 ) : (
@@ -269,7 +270,7 @@ export default function SanggarCatalog({
               </h2>
               <div className="mx-auto mt-2 max-w-lg text-sm text-slate-500">
                 {fetchError ? (
-                  <div className="rounded bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
+                  <div className="rounded-none bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
                     {fetchError}
                   </div>
                 ) : searchQuery || activeGrade !== "all" ? (
@@ -298,11 +299,11 @@ export default function SanggarCatalog({
           {!fetchError && filtered.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-12">
               {paginated.map((sanggar) => (
-                <div key={sanggar.id} className="group relative flex flex-col rounded-lg overflow-hidden bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                <div key={sanggar.id} className="group relative flex flex-col rounded-none overflow-hidden bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-all">
                   {/* Poster Image Container wrapped in Next.js Link */}
                   <Link
                     href={`/sanggar/${sanggar.id}`}
-                    className="relative aspect-[3/4] w-full overflow-hidden rounded-t-[1.25rem] bg-slate-100 block cursor-pointer"
+                    className="relative aspect-[3/4] w-full overflow-hidden rounded-none bg-slate-100 block cursor-pointer"
                   >
                     {sanggar.thumbnail_url ? (
                       <img
@@ -332,7 +333,7 @@ export default function SanggarCatalog({
                             const targetUrl = sanggar.youtubeUrl || "https://www.youtube.com";
                             window.open(targetUrl, '_blank', 'noopener,noreferrer');
                           }}
-                          className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-md py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors cursor-pointer"
+                          className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-none py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors cursor-pointer"
                         >
                           <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -355,7 +356,7 @@ export default function SanggarCatalog({
                               window.open(`https://wa.me/${formatted}`, '_blank', 'noopener,noreferrer');
                             }
                           }}
-                          className="flex-1 bg-[#16a34a] hover:bg-[#15803d] text-white rounded-md py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors cursor-pointer"
+                          className="flex-1 bg-[#16a34a] hover:bg-[#15803d] text-white rounded-none py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors cursor-pointer"
                         >
                           <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                             <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.12.553 4.108 1.519 5.84L.16 23.479l5.774-1.513a11.97 11.97 0 006.097 1.665c6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm.016 21.986a9.92 9.92 0 01-5.06-1.385l-.363-.216-3.763.987.1004-3.669-.237-.377A9.924 9.924 0 012.05 12.03c0-5.503 4.478-9.981 9.981-9.981 5.503 0 9.981 4.478 9.981 9.981 0 5.503-4.478 9.981-9.981 9.981zm5.474-7.481c-.301-.15-1.782-.879-2.057-.979-.275-.1-.475-.15-.675.15-.2.3-.775.979-.95 1.179-.175.2-.35.225-.65.075-.3-.15-1.267-.467-2.414-1.489-.893-.796-1.495-1.78-1.67-2.08-.175-.3-.018-.462.13-.61.135-.133.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.582-.492-.503-.675-.512-.175-.008-.375-.01-.575-.01-.2 0-.525.075-.8.375s-1.05 1.025-1.05 2.5 1.075 2.898 1.225 3.1 2.113 3.227 5.118 4.524c.714.309 1.272.494 1.707.632.716.228 1.368.196 1.883.119.575-.086 1.782-.729 2.032-1.43.25-.701.25-1.301.175-1.43-.075-.129-.275-.204-.575-.354z"/>

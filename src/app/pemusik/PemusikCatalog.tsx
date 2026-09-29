@@ -97,6 +97,7 @@ export default function PemusikCatalog({
               items={PEMUSIK_DRIFT_ITEMS}
               columns={6}
               dim={0.55}
+              className="drift-wall--rounded"
               style={{ '--dw-rest-brightness': 0.85, '--dw-hover-brightness': 1.1, '--dw-hover-scale': 1.05 } as React.CSSProperties}
             />
           </div>
@@ -124,7 +125,7 @@ export default function PemusikCatalog({
         <aside className="w-full md:w-1/4 hidden md:flex flex-col gap-8 sticky top-36 self-start max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar">
           <div className="border-t border-slate-200 pt-6">
             <h3 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('pemusikSearchTitle')}</h3>
-            <div className="relative border-b border-slate-200 focus-within:border-gray-300 focus-within:ring-0 transition-colors">
+            <div className="relative border-b border-zinc-200 focus-within:border-orange-600 transition-colors">
               <Search className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -168,7 +169,7 @@ export default function PemusikCatalog({
           {/* Error State / Empty State */}
           {(fetchError || filtered.length === 0) && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-50">
+              <div className="flex h-20 w-20 items-center justify-center rounded-none bg-slate-50">
                 {fetchError ? (
                   <AlertTriangle className="h-10 w-10 text-slate-400" />
                 ) : (
@@ -180,7 +181,7 @@ export default function PemusikCatalog({
               </h2>
               <div className="mx-auto mt-2 max-w-lg text-sm text-slate-500">
                 {fetchError ? (
-                  <div className="rounded bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
+                  <div className="rounded-none bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
                     {fetchError}
                   </div>
                 ) : searchQuery || activeJenis !== "all" ? (
@@ -214,7 +215,7 @@ export default function PemusikCatalog({
                   
                   {/* Image Wrapper */}
                   {pemusik.foto_url ? (
-                    <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-sm">
+                    <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-none">
                       <img
                         src={pemusik.foto_url}
                         alt={pemusik.nama_seniman}
@@ -222,7 +223,7 @@ export default function PemusikCatalog({
                       />
                     </div>
                   ) : (
-                    <div className="w-full aspect-[3/4] bg-slate-50/80 flex items-center justify-center rounded-sm border border-slate-100 overflow-hidden">
+                    <div className="w-full aspect-[3/4] bg-slate-50/80 flex items-center justify-center rounded-none border border-slate-100 overflow-hidden">
                       <span className="text-slate-400 text-xs font-semibold tracking-widest uppercase">No Image</span>
                     </div>
                   )}

@@ -100,9 +100,9 @@ export default function AdminDashboard() {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.map((stat) => (
-          <div key={stat.name} className="overflow-hidden rounded-xl bg-white p-6 shadow-sm border border-gray-100">
+          <div key={stat.name} className="overflow-hidden rounded-none bg-white p-6 shadow-sm border border-gray-100">
             <div className="flex items-center">
-              <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${stat.bg}`}>
+              <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-none ${stat.bg}`}>
                 <stat.icon className={`h-6 w-6 ${stat.color}`} aria-hidden="true" />
               </div>
               <div className="ml-4 w-0 flex-1">
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Chart Section */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-8">
+      <div className="bg-white p-6 rounded-none shadow-sm border border-slate-100 mb-8">
         <h3 className="text-lg font-bold text-slate-800 mb-6">{t('adminChartTitle')}</h3>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
               <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false}/>
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} dy={10} />
               <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-              <Tooltip contentStyle={{ border: 'none', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              <Tooltip contentStyle={{ border: 'none', borderRadius: '0px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
               <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
               <Area type="monotone" dataKey="Sanggar" name={t('dashboardDance')} stroke="#f97316" fillOpacity={1} fill="url(#colorSanggar)" />
               <Area type="monotone" dataKey="Seniman Musik" name={t('dashboardMusic')} stroke="#8b5cf6" fillOpacity={1} fill="url(#colorPemusik)" />
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Activity Table */}
-      <div className="rounded-xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+      <div className="rounded-none bg-white shadow-sm border border-gray-100 overflow-hidden">
         <div className="border-b border-gray-200 px-6 py-5">
           <h3 className="text-base font-semibold leading-6 text-gray-900">{t('adminRecentActivityTitle')}</h3>
         </div>
@@ -189,7 +189,7 @@ export default function AdminDashboard() {
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium ${
+                    <span className={`inline-flex items-center rounded-none px-2.5 py-0.5 text-xs font-medium ${
                       activity.status === 'Aktif' || activity.status === 'Disetujui' ? 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' : 
                       activity.status === 'Menunggu' ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20' :
                       'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'

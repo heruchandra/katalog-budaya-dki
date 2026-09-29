@@ -65,7 +65,7 @@ export default function SettingsPage() {
       </div>
 
       {message && (
-        <div className={`mb-6 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium ${
+        <div className={`mb-6 flex items-center gap-3 rounded-none px-4 py-3 text-sm font-medium ${
           message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
         }`}>
           {message.type === "success" ? <CheckCircle2 className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
@@ -75,7 +75,7 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Profile Card */}
-        <div className="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden h-fit">
+        <div className="rounded-none border border-gray-100 bg-white shadow-sm overflow-hidden h-fit">
           <div className="border-b border-gray-100 bg-gray-50/50 px-6 py-5">
             <h3 className="text-base font-semibold leading-6 text-gray-900">{t('adminProfileTitle')}</h3>
             <p className="mt-1 text-sm text-gray-500">{t('adminProfileDesc')}</p>
@@ -94,7 +94,7 @@ export default function SettingsPage() {
                   id="email"
                   disabled
                   value={email}
-                  className="block w-full rounded-lg border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 bg-gray-50 sm:text-sm sm:leading-6 disabled:cursor-not-allowed disabled:opacity-75"
+                  className="block w-full rounded-none border-0 py-2.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 bg-gray-50 sm:text-sm sm:leading-6 disabled:cursor-not-allowed disabled:opacity-75"
                   placeholder="Memuat email..."
                 />
               </div>
@@ -104,7 +104,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Password Card */}
-        <div className="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden h-fit">
+        <div className="rounded-none border border-gray-100 bg-white shadow-sm overflow-hidden h-fit">
           <div className="border-b border-gray-100 bg-gray-50/50 px-6 py-5">
             <h3 className="text-base font-semibold leading-6 text-gray-900">{t('adminPassTitle')}</h3>
             <p className="mt-1 text-sm text-gray-500">{t('adminPassDesc')}</p>
@@ -114,7 +114,7 @@ export default function SettingsPage() {
               <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">
                 {t('adminPassNew')}
               </label>
-              <div className="relative mt-2 border border-gray-300 rounded-lg focus-within:border-gray-300 focus-within:ring-0">
+              <div className="relative mt-2 border border-zinc-200 rounded-none focus-within:border-orange-600 focus-within:ring-1 focus-within:ring-orange-600">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
@@ -134,7 +134,7 @@ export default function SettingsPage() {
               <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
                 {t('adminPassConfirm')}
               </label>
-              <div className="relative mt-2 border border-gray-300 rounded-lg focus-within:border-gray-300 focus-within:ring-0">
+              <div className="relative mt-2 border border-zinc-200 rounded-none focus-within:border-orange-600 focus-within:ring-1 focus-within:ring-orange-600">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
@@ -154,7 +154,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full justify-center items-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex w-full justify-center items-center gap-2 rounded-none bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Save className="h-4 w-4" />
                 {isLoading ? "Menyimpan..." : t('adminBtnSavePass')}

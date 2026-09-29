@@ -8,7 +8,7 @@
   --dw-tile-w: 210px;
   --dw-tile-h: 140px;
   --dw-gap: 18px;
-  --dw-radius: 12px;
+  --dw-radius: 0px;
   --dw-lift: 54px;
   --dw-dim: 1;
   --dw-gray: 0;
@@ -145,5 +145,15 @@
   .drift-wall__plane,
   .drift-wall__track {
     will-change: auto;
+  }
+}
+
+/* Soft rounded tiles: rounded-xl on phones, rounded-2xl from sm (640px) */
+.drift-wall--rounded {
+  --dw-radius: 12px !important;
+}
+@media (min-width: 640px) {
+  .drift-wall--rounded {
+    --dw-radius: 16px !important;
   }
 }

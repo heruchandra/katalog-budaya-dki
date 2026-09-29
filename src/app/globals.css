@@ -187,7 +187,7 @@ body {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(161, 161, 170, 0.45);
-  border-radius: 9999px;
+  border-radius: 0;
   border: 2px solid transparent;
   background-clip: content-box;
 }
@@ -204,7 +204,6 @@ html {
 *:not(.outline-none):focus-visible {
   outline: 2px solid #ea580c;
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 .font-cursive,

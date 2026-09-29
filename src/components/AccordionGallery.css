@@ -3,7 +3,7 @@
   --ag-overlay: #060010;
   --ag-text: #ffffff;
   --ag-gap: 10px;
-  --ag-radius: 16px;
+  --ag-radius: 0px;
   --ag-media-size: 320px;
 
   display: flex;
@@ -106,7 +106,7 @@
   flex: 0 0 auto;
   width: 3px;
   height: 38px;
-  border-radius: 3px;
+  border-radius: 0;
   background: var(--ag-accent);
   opacity: 0;
   box-shadow: 0 0 12px color-mix(in srgb, var(--ag-accent) 60%, transparent);

@@ -295,14 +295,14 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {error && (
-          <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700 border border-red-200 shadow-sm flex items-start gap-3">
+          <div className="rounded-none bg-red-50 p-4 text-sm text-red-700 border border-red-200 shadow-sm flex items-start gap-3">
             <div className="font-bold">Error:</div>
             <div>{error}</div>
           </div>
         )}
 
         {successMsg && (
-          <div className="rounded-xl bg-green-50 p-4 text-sm text-green-700 border border-green-200 shadow-sm font-semibold">
+          <div className="rounded-none bg-green-50 p-4 text-sm text-green-700 border border-green-200 shadow-sm font-semibold">
             {successMsg} Mengalihkan...
           </div>
         )}
@@ -312,7 +312,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
           <div className="lg:col-span-2 space-y-8">
 
             {/* 1. Informasi Dasar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Info className="h-5 w-5 text-primary-600" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminBasicInfo')}</h2>
@@ -329,7 +329,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                       required
                       value={formData.namaSanggar}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     />
                   </div>
                   <div>
@@ -341,7 +341,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                       required
                       value={formData.grade}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     >
                       <option value="">Pilih Grade</option>
                       <option value="Grade A">Grade A</option>
@@ -360,7 +360,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     name="taglineSanggar"
                     value={formData.taglineSanggar}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
 
@@ -373,14 +373,14 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     rows={4}
                     value={formData.deskripsiSanggar}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
               </div>
             </div>
 
             {/* 2. Layanan & Prestasi */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-amber-500" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminServicesSection')}</h2>
@@ -395,7 +395,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     rows={3}
                     value={formData.layananSanggar}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -407,14 +407,14 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     rows={3}
                     value={formData.prestasiPenghargaan}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
               </div>
             </div>
 
             {/* 3. Tari Unggulan (Dynamic) */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 text-primary-500" />
@@ -423,7 +423,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 <button
                   type="button"
                   onClick={addTari}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700 hover:bg-primary-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-none bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700 hover:bg-primary-100 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
                   {t('adminBtnAddDance')}
@@ -431,7 +431,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
               </div>
               <div className="p-6 space-y-4">
                 {tariUnggulan.map((tari, index) => (
-                  <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-xl border border-gray-200">
+                  <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-none border border-gray-200">
                     <div className="flex-1 space-y-4">
                       <div>
                         <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
@@ -441,7 +441,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                           type="text"
                           value={tari.namaTari}
                           onChange={(e) => handleTariChange(index, "namaTari", e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                          className="w-full rounded-none border border-zinc-200 px-3 py-2 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                         />
                       </div>
                       <div>
@@ -452,7 +452,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                           rows={2}
                           value={tari.deskripsiTari}
                           onChange={(e) => handleTariChange(index, "deskripsiTari", e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                          className="w-full rounded-none border border-zinc-200 px-3 py-2 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                         />
                       </div>
                     </div>
@@ -460,7 +460,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                       <button
                         type="button"
                         onClick={() => removeTari(index)}
-                        className="mt-6 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+                        className="mt-6 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-none transition-colors shrink-0"
                         title="Hapus Tari"
                       >
                         <Trash2 className="h-5 w-5" />
@@ -477,7 +477,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
           <div className="space-y-8">
 
             {/* Kontak & Alamat */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-gray-700" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminAddressContact')}</h2>
@@ -492,7 +492,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     rows={2}
                     value={formData.alamatSanggar}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -504,7 +504,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     rows={2}
                     value={formData.alamatTempatLatihan}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
                 <div className="border-t border-gray-100 my-4"></div>
@@ -517,7 +517,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     name="ketuaSanggar"
                     value={formData.ketuaSanggar}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -529,7 +529,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     name="namaPicKontak"
                     value={formData.namaPicKontak}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -543,7 +543,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                       name="nomorPicKontak"
                       value={formData.nomorPicKontak}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 pl-10 pr-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 pl-10 pr-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -551,7 +551,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
             </div>
 
             {/* Media & Galeri (File Uploads) */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <ImageIcon className="h-5 w-5 text-gray-700" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminMediaSection')}</h2>
@@ -563,18 +563,18 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">{t('adminStudioLogo')}</label>
-                    <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
+                    <div className="mt-2 flex justify-center rounded-none border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "logo")} />
                         {logoFile ? (
-                          <div className="relative group w-32 h-32 mx-auto rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-32 h-32 mx-auto rounded-none overflow-hidden shadow-sm">
                             <img src={URL.createObjectURL(logoFile)} alt="Preview Logo" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
                             </div>
                           </div>
                         ) : existingImages.logoSanggar ? (
-                          <div className="relative group w-32 h-32 mx-auto rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-32 h-32 mx-auto rounded-none overflow-hidden shadow-sm">
                             <img src={existingImages.logoSanggar} alt="Current Logo" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
@@ -595,18 +595,18 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">{t('adminPhotoLeader')}</label>
-                    <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
+                    <div className="mt-2 flex justify-center rounded-none border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "ketua")} />
                         {ketuaFile ? (
-                          <div className="relative group w-32 h-32 mx-auto rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-32 h-32 mx-auto rounded-none overflow-hidden shadow-sm">
                             <img src={URL.createObjectURL(ketuaFile)} alt="Preview Ketua" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
                             </div>
                           </div>
                         ) : existingImages.fotoKetuaSanggar ? (
-                          <div className="relative group w-32 h-32 mx-auto rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-32 h-32 mx-auto rounded-none overflow-hidden shadow-sm">
                             <img src={existingImages.fotoKetuaSanggar} alt="Current Ketua" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
@@ -629,18 +629,18 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                     <h4 className="text-orange-600 font-semibold mb-4 text-sm">{t('adminThumbnailSection')}</h4>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">{t('adminDancerCard')}</label>
-                      <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
+                      <div className="mt-2 flex justify-center rounded-none border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                         <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                           <input type="file" accept="image/*" className="sr-only" onChange={(e) => handleFileChange(e, "thumbnail")} />
                           {thumbnailFile ? (
-                            <div className="relative group w-28 mx-auto rounded-md overflow-hidden shadow-sm" style={{ aspectRatio: '3/4' }}>
+                            <div className="relative group w-28 mx-auto rounded-none overflow-hidden shadow-sm" style={{ aspectRatio: '3/4' }}>
                               <img src={URL.createObjectURL(thumbnailFile)} alt="Preview Thumbnail" className="w-full h-full object-cover" />
                               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                 <span className="text-white text-xs font-semibold">Ganti Gambar</span>
                               </div>
                             </div>
                           ) : existingImages.fotoUrl ? (
-                            <div className="relative group w-28 mx-auto rounded-md overflow-hidden shadow-sm" style={{ aspectRatio: '3/4' }}>
+                            <div className="relative group w-28 mx-auto rounded-none overflow-hidden shadow-sm" style={{ aspectRatio: '3/4' }}>
                               <img src={existingImages.fotoUrl} alt="Current Thumbnail" className="w-full h-full object-cover" />
                               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                 <span className="text-white text-xs font-semibold">Ganti Gambar</span>
@@ -666,18 +666,18 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">{t('adminGroupPhoto')}</label>
-                    <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
+                    <div className="mt-2 flex justify-center rounded-none border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "grup")} />
                         {grupFile ? (
-                          <div className="relative group w-full aspect-video rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-full aspect-video rounded-none overflow-hidden shadow-sm">
                             <img src={URL.createObjectURL(grupFile)} alt="Preview Grup" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
                             </div>
                           </div>
                         ) : existingImages.fotoGrupTari ? (
-                          <div className="relative group w-full aspect-video rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-full aspect-video rounded-none overflow-hidden shadow-sm">
                             <img src={existingImages.fotoGrupTari} alt="Current Grup" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
@@ -698,18 +698,18 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">{t('adminFeaturedPhoto')}</label>
-                    <div className="mt-2 flex justify-center rounded-xl border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
+                    <div className="mt-2 flex justify-center rounded-none border border-dashed border-slate-300 px-6 py-8 hover:bg-slate-50 transition-colors">
                       <label className="relative cursor-pointer w-full h-full flex flex-col items-center justify-center focus-within:outline-none">
                         <input type="file" accept="image/png, image/jpeg, image/webp" className="sr-only" onChange={(e) => handleFileChange(e, "unggulan")} />
                         {unggulanFile ? (
-                          <div className="relative group w-full aspect-video rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-full aspect-video rounded-none overflow-hidden shadow-sm">
                             <img src={URL.createObjectURL(unggulanFile)} alt="Preview Unggulan" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
                             </div>
                           </div>
                         ) : existingImages.fotoTariUnggulan ? (
-                          <div className="relative group w-full aspect-video rounded-md overflow-hidden shadow-sm">
+                          <div className="relative group w-full aspect-video rounded-none overflow-hidden shadow-sm">
                             <img src={existingImages.fotoTariUnggulan} alt="Current Unggulan" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                               <span className="text-white text-xs font-semibold">Ganti Gambar</span>
@@ -740,7 +740,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
           <div className="max-w-5xl mx-auto flex items-center justify-end gap-4">
             <Link
               href="/admin/sanggar"
-              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-none hover:bg-gray-50 transition-colors"
             >
               <X className="h-5 w-5" />
               {t('adminBtnCancel')}
@@ -748,7 +748,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center gap-2 px-8 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all disabled:opacity-70 disabled:shadow-none"
+              className="flex items-center gap-2 px-8 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-none hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all disabled:opacity-70 disabled:shadow-none"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -763,7 +763,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
       {/* Cropper Modal */}
       {isCropModalOpen && currentImageToCrop && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6">
-          <div className="bg-white rounded-2xl overflow-hidden w-full max-w-2xl flex flex-col shadow-2xl">
+          <div className="bg-white rounded-none overflow-hidden w-full max-w-2xl flex flex-col shadow-2xl">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-gray-800">Sesuaikan Gambar ({currentCropType})</h3>
               <button
@@ -800,7 +800,7 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                   onChange={(e) => {
                     setZoom(Number(e.target.value))
                   }}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+                  className="w-full h-2 bg-gray-200 rounded-none appearance-none cursor-pointer accent-primary-600"
                 />
               </div>
 
@@ -808,14 +808,14 @@ export default function EditSanggar({ params }: { params: Promise<{ id: string }
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-none hover:bg-gray-50 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="button"
                   onClick={showCroppedImage}
-                  className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-sm transition-all"
+                  className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-none hover:bg-primary-700 shadow-sm transition-all"
                 >
                   <Check className="w-4 h-4" />
                   Simpan Potongan

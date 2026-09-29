@@ -81,7 +81,7 @@ export default function AdminLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 gap-3 ${
+                  className={`group flex items-center px-4 py-3 text-sm font-medium rounded-none transition-all duration-300 gap-3 ${
                     active 
                       ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20" 
                       : "text-surface-300 hover:bg-surface-800/50 hover:text-white"
@@ -102,14 +102,14 @@ export default function AdminLayout({
         <div className="p-4 border-t border-surface-800 space-y-1">
           <Link
             href="/"
-            className="group flex w-full items-center px-3 py-2.5 text-sm font-medium rounded-lg text-surface-300 hover:bg-surface-800 hover:text-white transition-colors"
+            className="group flex w-full items-center px-3 py-2.5 text-sm font-medium rounded-none text-surface-300 hover:bg-surface-800 hover:text-white transition-colors"
           >
             <Globe className="mr-3 h-5 w-5 text-surface-400 group-hover:text-white" />
             {t('adminSidebarWeb')}
           </Link>
           <button
             onClick={handleLogout}
-            className="group flex w-full items-center px-3 py-2.5 text-sm font-medium rounded-lg text-surface-300 hover:bg-surface-800 hover:text-white transition-colors"
+            className="group flex w-full items-center px-3 py-2.5 text-sm font-medium rounded-none text-surface-300 hover:bg-surface-800 hover:text-white transition-colors"
           >
             <LogOut className="mr-3 h-5 w-5 text-surface-400 group-hover:text-white" />
             {t('adminSidebarLogout')}
@@ -131,7 +131,7 @@ export default function AdminLayout({
           </button>
           
           <div className="flex flex-1 justify-end items-center">
-            <div className="flex items-center gap-2 bg-slate-50/80 px-2 py-1 rounded-full border border-orange-300 shadow-sm mr-4">
+            <div className="flex items-center gap-2 bg-slate-50/80 px-2 py-1 rounded-none border border-orange-300 shadow-sm mr-4">
               <button 
                 onClick={() => setLanguage('id')}
                 className={`w-6 h-6 rounded-full overflow-hidden transition-all duration-300 ${language === 'id' ? 'ring-2 ring-white scale-110 shadow-sm' : 'grayscale opacity-60 hover:opacity-100 hover:grayscale-0'}`}
@@ -148,7 +148,7 @@ export default function AdminLayout({
                 <img src="https://flagcdn.com/gb.svg" alt="EN" className="w-full h-full object-cover" />
               </button>
             </div>
-            <div className="flex items-center gap-3 cursor-pointer p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+            <div className="flex items-center gap-3 cursor-pointer p-1.5 rounded-none hover:bg-gray-100 transition-colors">
               <span className="text-sm font-medium text-gray-700 hidden sm:block">Admin</span>
               <UserCircle className="h-8 w-8 text-gray-400" />
             </div>

@@ -91,14 +91,14 @@ export default function AddPemusik() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {error && (
-          <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700 border border-red-200 shadow-sm flex items-start gap-3">
+          <div className="rounded-none bg-red-50 p-4 text-sm text-red-700 border border-red-200 shadow-sm flex items-start gap-3">
             <div className="font-bold">Error:</div>
             <div>{error}</div>
           </div>
         )}
 
         {successMsg && (
-          <div className="rounded-xl bg-green-50 p-4 text-sm text-green-700 border border-green-200 shadow-sm font-semibold">
+          <div className="rounded-none bg-green-50 p-4 text-sm text-green-700 border border-green-200 shadow-sm font-semibold">
             {successMsg} Mengalihkan...
           </div>
         )}
@@ -108,7 +108,7 @@ export default function AddPemusik() {
           <div className="lg:col-span-2 space-y-8">
             
             {/* 1. Informasi Dasar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Info className="h-5 w-5 text-primary-600" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminBasicInfo')}</h2>
@@ -125,7 +125,7 @@ export default function AddPemusik() {
                       required
                       value={formData.nama_seniman}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                       placeholder="Contoh: Gambang Kromong Sinar Harapan"
                     />
                   </div>
@@ -138,7 +138,7 @@ export default function AddPemusik() {
                       required
                       value={formData.jenis_seniman}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     >
                       <option value="">Pilih Kategori</option>
                       <option value="Solo">Solo / Individu</option>
@@ -157,7 +157,7 @@ export default function AddPemusik() {
                       name="genre_musik"
                       value={formData.genre_musik}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                       placeholder="Contoh: Gambang Kromong"
                     />
                   </div>
@@ -170,7 +170,7 @@ export default function AddPemusik() {
                       name="instrumen"
                       value={formData.instrumen}
                       onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                      className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                       placeholder="Contoh: Tehyan, Kongahyan"
                     />
                   </div>
@@ -186,7 +186,7 @@ export default function AddPemusik() {
                     rows={4}
                     value={formData.deskripsi}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     placeholder="Ceritakan tentang profil, pengalaman, dll..."
                   />
                 </div>
@@ -194,7 +194,7 @@ export default function AddPemusik() {
             </div>
 
             {/* 2. Layanan & Prestasi */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Star className="h-5 w-5 text-primary-600" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminServicesSection')}</h2>
@@ -209,7 +209,7 @@ export default function AddPemusik() {
                     rows={3}
                     value={formData.layanan}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     placeholder="Contoh: Pernikahan, Festival, Acara Adat..."
                   />
                 </div>
@@ -222,7 +222,7 @@ export default function AddPemusik() {
                     rows={3}
                     value={formData.prestasi}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     placeholder="Prestasi atau penghargaan yang pernah diraih..."
                   />
                 </div>
@@ -230,7 +230,7 @@ export default function AddPemusik() {
             </div>
 
             {/* 3. Karya Unggulan */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <Star className="h-5 w-5 text-primary-600" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminFeaturedWork')}</h2>
@@ -246,7 +246,7 @@ export default function AddPemusik() {
           <div className="space-y-8">
             
             {/* 4. Alamat & Kontak */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-primary-600" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminAddressContact')}</h2>
@@ -261,7 +261,7 @@ export default function AddPemusik() {
                     rows={3}
                     value={formData.alamat}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     placeholder="Alamat basecamp atau domisili..."
                   />
                 </div>
@@ -274,7 +274,7 @@ export default function AddPemusik() {
                     name="nama_pic"
                     value={formData.nama_pic}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     placeholder="Nama kontak person"
                   />
                 </div>
@@ -287,7 +287,7 @@ export default function AddPemusik() {
                     name="no_hp"
                     value={formData.no_hp}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+                    className="w-full rounded-none border border-zinc-200 px-4 py-2.5 text-sm focus:border-orange-600 focus:ring-1 focus:ring-orange-600 outline-none transition-all"
                     placeholder="Contoh: 081234567890"
                   />
                 </div>
@@ -295,7 +295,7 @@ export default function AddPemusik() {
             </div>
 
             {/* 5. Media & Galeri */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-200 flex items-center gap-2">
                 <ImageIcon className="h-5 w-5 text-primary-600" />
                 <h2 className="text-lg font-bold text-gray-900">{t('adminMediaSection')}</h2>
@@ -335,7 +335,7 @@ export default function AddPemusik() {
           <div className="max-w-5xl mx-auto flex items-center justify-end gap-4">
             <Link
               href="/admin/pemusik"
-              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-none hover:bg-gray-50 transition-colors"
             >
               <X className="h-5 w-5" />
               {t('adminBtnCancel')}
@@ -343,7 +343,7 @@ export default function AddPemusik() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center gap-2 px-8 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all disabled:opacity-70 disabled:shadow-none"
+              className="flex items-center gap-2 px-8 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-none hover:bg-primary-700 shadow-lg shadow-primary-500/30 transition-all disabled:opacity-70 disabled:shadow-none"
             >
               {isLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />

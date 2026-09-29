@@ -86,7 +86,7 @@ function AdminPemusikContent() {
         </div>
         <Link
           href="/admin/pemusik/tambah"
-          className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700"
+          className="inline-flex items-center gap-2 rounded-none bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700"
         >
           <Plus className="h-4 w-4" />
           {t('adminBtnAddData')}
@@ -94,10 +94,10 @@ function AdminPemusikContent() {
       </div>
 
       {/* Table Section */}
-      <div className="rounded-xl bg-white shadow-sm border border-gray-200 overflow-hidden">
+      <div className="rounded-none bg-white shadow-sm border border-gray-200 overflow-hidden">
         {/* Toolbar */}
         <div className="border-b border-gray-200 p-4 sm:flex sm:items-center sm:justify-between">
-          <div className="relative max-w-sm w-full rounded-lg border border-gray-300 bg-gray-50 focus-within:border-gray-300 focus-within:ring-0">
+          <div className="relative max-w-sm w-full rounded-none border border-zinc-200 bg-gray-50 focus-within:border-orange-600 focus-within:ring-1 focus-within:ring-orange-600">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -170,7 +170,7 @@ function AdminPemusikContent() {
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <span className="inline-flex items-center rounded-md bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                    <span className="inline-flex items-center rounded-none bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                       {t('statusActive')}
                     </span>
                   </td>
@@ -195,7 +195,7 @@ function AdminPemusikContent() {
         </div>
       </div>
       {showToast && (
-        <div className="fixed bottom-10 right-10 flex items-center gap-3 bg-teal-600 text-white px-6 py-4 rounded-xl shadow-2xl transition-all animate-bounce z-50">
+        <div className="fixed bottom-10 right-10 flex items-center gap-3 bg-teal-600 text-white px-6 py-4 rounded-none shadow-2xl transition-all animate-bounce z-50">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
           <span className="font-semibold tracking-wide">Yeay! Data berhasil disimpan.</span>
         </div>

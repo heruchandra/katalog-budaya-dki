@@ -76,7 +76,7 @@ export default function ArtistCard({
         {/* Badge */}
         <div className="absolute top-3 right-3">
           <span
-            className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm ${
+            className={`inline-flex items-center gap-1 rounded-none px-2.5 py-1 text-xs font-bold shadow-sm ${
               badge.variant === "filled"
                 ? "bg-primary-600 text-white"
                 : "bg-white text-primary-700 ring-1 ring-primary-200"
@@ -105,13 +105,13 @@ export default function ArtistCard({
             {tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="rounded-md bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700"
+                className="rounded-none bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-700"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="rounded-md bg-surface-100 px-2 py-0.5 text-[11px] font-medium text-surface-500">
+              <span className="rounded-none bg-surface-100 px-2 py-0.5 text-[11px] font-medium text-surface-500">
                 +{tags.length - 3}
               </span>
             )}
@@ -133,7 +133,7 @@ export default function ArtistCard({
           href={getWaLink(phone || '[MASUKKAN_NOMOR_TES_DISINI]')} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="relative z-10 mt-auto w-full flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#1DA851] text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors"
+          className="relative z-10 mt-auto w-full flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#1DA851] text-white py-2 px-4 rounded-none text-sm font-medium transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

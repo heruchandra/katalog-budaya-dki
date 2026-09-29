@@ -30,12 +30,12 @@ export default function SuccessToast() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-md bg-green-600 px-4 py-3 text-white shadow-lg shadow-green-600/20 animate-fade-in transition-all duration-300">
+    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-none bg-green-600 px-4 py-3 text-white shadow-lg shadow-green-600/20 animate-fade-in transition-all duration-300">
       <CheckCircle2 className="h-5 w-5 shrink-0" />
       <p className="text-sm font-medium">{message}</p>
       <button
         onClick={() => setIsVisible(false)}
-        className="ml-2 rounded-lg p-1 transition-colors hover:bg-green-700 focus:outline-none"
+        className="ml-2 rounded-none p-1 transition-colors hover:bg-green-700 focus:outline-none"
       >
         <X className="h-4 w-4" />
       </button>

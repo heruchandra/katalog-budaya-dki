@@ -55,7 +55,7 @@ interface CatalogPaginationProps {
   className?: string;
 }
 
-const SQUARE = "w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-md sm:rounded-lg text-sm font-bold transition-all";
+const SQUARE = "w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-none text-sm font-bold transition-all";
 
 export default function CatalogPagination({ currentPage, totalPages, onPageChange, className = "" }: CatalogPaginationProps) {
   const { language } = useLanguage();
