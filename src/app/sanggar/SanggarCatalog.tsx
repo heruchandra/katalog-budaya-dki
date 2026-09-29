@@ -158,8 +158,8 @@ export default function SanggarCatalog({
             <DriftWall
               columnData={SANGGAR_COLUMNS}
               columns={5}
-              dim={0.35}
-              style={{ '--dw-rest-brightness': 0.75, '--dw-hover-brightness': 1.1, '--dw-hover-scale': 1.05 } as React.CSSProperties}
+              dim={0.55}
+              style={{ '--dw-rest-brightness': 0.85, '--dw-hover-brightness': 1.1, '--dw-hover-scale': 1.05 } as React.CSSProperties}
             />
           </div>
         </div>
@@ -169,10 +169,10 @@ export default function SanggarCatalog({
 
         {/* Centered Heading Content */}
         <div className="relative z-20 text-center px-4 pt-16 pointer-events-none">
-          <h1 className={`font-cursive text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-md font-normal ${dancingScript.className}`}>
+          <h1 className={`font-cursive text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] font-normal ${dancingScript.className}`}>
             {t('sanggarPageTitle')}
           </h1>
-          <p className="text-xs md:text-sm tracking-[0.25em] text-gray-200 uppercase mt-3 font-medium drop-shadow">
+          <p className="text-xs md:text-sm tracking-[0.25em] text-gray-100 uppercase mt-3 font-medium drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)]">
             {sanggars && sanggars.length > 0
               ? `${sanggars.length} ${t('sanggarRegistered')}`
               : t('sanggarCatalogFallback')}
