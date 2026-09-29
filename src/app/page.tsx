@@ -6,12 +6,11 @@ import Link from "next/link";
 import {
   Search,
   Music,
-  Sparkles,
   ArrowRight,
   ChevronRight,
   Star,
-  Users,
   Award,
+  Users,
   Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -487,7 +486,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-24 max-w-6xl mx-auto">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {[
               {
                 icon: Award,
@@ -507,15 +506,15 @@ export default function HomePage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-none border border-neutral-200 bg-white p-8 hover:border-orange-500 transition-colors duration-300 shadow-sm flex flex-col items-center text-center"
+                className="bg-white rounded-2xl border border-zinc-200/80 p-8 text-center shadow-sm flex flex-col items-center justify-center hover:border-orange-500/40 transition-colors duration-200"
               >
-                <div className="rounded-none w-14 h-14 flex items-center justify-center bg-orange-50 border border-orange-100 mb-6 mx-auto">
+                <div className="w-14 h-14 rounded-xl bg-orange-100/60 border border-orange-200/50 flex items-center justify-center mb-6 mx-auto">
                   <feature.icon className="h-7 w-7 stroke-[1.5] text-orange-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-neutral-900 mb-3">
+                <h3 className="text-lg font-bold text-zinc-900 mb-3 text-center">
                   {feature.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-neutral-600">
+                <p className="text-sm text-zinc-600 leading-relaxed text-center max-w-xs mx-auto">
                   {feature.description}
                 </p>
               </div>
