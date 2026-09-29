@@ -224,46 +224,45 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       {/* Top Container: Pengurus Sanggar Card */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-4">
         {/* Pengurus Sanggar Card (first element under the navbar) */}
-        <section className="bg-white rounded-none border border-zinc-200/80 p-6 sm:p-8 shadow-xs hover:border-zinc-300 transition-colors">
-          {/* Full-width header row: studio name in the orange script font (the page's main heading) */}
-          <div className="w-full text-center sm:text-left">
-            <h1 className={`${dancingScript.className} text-3xl sm:text-4xl md:text-5xl md:font-bold text-orange-600 tracking-wide leading-tight`}>
-              {studioName}
-            </h1>
-          </div>
+        <section className="bg-white rounded-none border border-zinc-200/80 pt-10 sm:pt-12 px-6 sm:px-8 pb-8 shadow-xs hover:border-zinc-300 transition-colors">
+          {/* 2-column layout. Left = studio name + Ketua Sanggar profile; right = contact block,
+              vertically centered (items-center) against the whole left side on desktop. */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+            {/* Left Column: studio name (the page's main heading) + Ketua Sanggar photo & info */}
+            <div className="lg:col-span-7">
+              <h1 className={`${dancingScript.className} text-3xl sm:text-4xl md:text-5xl md:font-bold text-orange-600 tracking-wide leading-tight text-center sm:text-left`}>
+                {studioName}
+              </h1>
 
-          {/* 2-column body; items-start so both columns share the same top line (items-center pushed the
-              shorter leader column down to the middle of the taller contact column) */}
-          <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-            {/* Left Column: Ketua Sanggar photo & info */}
-            <div className="lg:col-span-7 flex flex-col sm:flex-row items-center sm:items-start gap-5">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-orange-100 shadow-sm shrink-0 bg-zinc-50">
-                <img 
-                  src={sanggar.logo || sanggar.logoUrl || (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/profile-sanggar-2.webp")} 
-                  alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || (isEn ? "Studio Leader" : "Ketua Sanggar")} 
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/profile-sanggar-2.webp";
-                  }}
-                  className="w-full h-full object-cover object-center rounded-full"
-                />
-              </div>
-
-              <div className="text-center sm:text-left">
-                <span className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-1 block">
-                  {isEn ? "Studio Leader" : "Ketua Sanggar"}
-                </span>
-                <h4 className="text-lg font-bold text-zinc-900 tracking-tight mb-2">
-                  {sanggar.leader || sanggar.kontak?.ketua}
-                </h4>
-                <p className="text-sm text-zinc-600 leading-relaxed max-w-md mx-auto sm:mx-0">
-                  {isEn 
-                    ? "Responsible for dance curriculum quality development and studio policy direction."
-                    : "Bertanggung jawab atas pembinaan mutu kurikulum tari dan arah kebijakan sanggar seni."}
-                </p>
+              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-orange-100 shadow-sm shrink-0 bg-zinc-50">
+                  <img 
+                    src={sanggar.logo || sanggar.logoUrl || (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/profile-sanggar-2.webp")} 
+                    alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || (isEn ? "Studio Leader" : "Ketua Sanggar")} 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/profile-sanggar-2.webp";
+                    }}
+                    className="w-full h-full object-cover object-center rounded-full"
+                  />
+                </div>
+  
+                <div className="text-center sm:text-left">
+                  <span className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-1 block">
+                    {isEn ? "Studio Leader" : "Ketua Sanggar"}
+                  </span>
+                  <h4 className="text-lg font-bold text-zinc-900 tracking-tight mb-2">
+                    {sanggar.leader || sanggar.kontak?.ketua}
+                  </h4>
+                  <p className="text-sm text-zinc-600 leading-relaxed max-w-md mx-auto sm:mx-0">
+                    {isEn 
+                      ? "Responsible for dance curriculum quality development and studio policy direction."
+                      : "Bertanggung jawab atas pembinaan mutu kurikulum tari dan arah kebijakan sanggar seni."}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Right Column: PIC details & WhatsApp button */}
+            {/* Right Column: PIC details & WhatsApp button (inner content unchanged) */}
             <div className="lg:col-span-5 space-y-4">
               <dl className="space-y-3">
                 {[
