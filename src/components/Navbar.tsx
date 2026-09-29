@@ -22,6 +22,9 @@ export default function Navbar() {
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
+  const normalizedPath = pathname?.replace(/\/$/, '') || '/';
+  const hasHeroBanner = ['/', '/sanggar', '/pemusik', '/seniman', '/seniman-musik'].includes(normalizedPath);
+  const isTransparent = hasHeroBanner && !scrolled;
 
   const isEnglish = language === 'en';
   const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
@@ -79,9 +82,9 @@ export default function Navbar() {
   return (
     <>
       <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} border-none ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-none text-zinc-900'
-          : 'bg-transparent border-none shadow-none text-white'
+        isTransparent
+          ? 'bg-transparent border-none shadow-none text-white'
+          : 'bg-white/95 backdrop-blur-md shadow-sm border-none text-zinc-900'
       }`}>
         <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm">
           {/* Group 1: Left - Logos & Title */}
@@ -119,17 +122,15 @@ export default function Navbar() {
 
               {/* Vertical divider line */}
               <div className={`h-5 sm:h-7 w-[1px] my-auto mx-0.5 shrink-0 transition-colors duration-300 ${
-                scrolled ? 'bg-zinc-200' : 'bg-white/40'
+                isTransparent ? 'bg-white/40' : 'bg-slate-200'
               }`} />
 
               <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap min-w-0 ${jakarta.className}`}>
-                <span className={`text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate transition-colors duration-300 ${
-                  scrolled ? 'text-orange-600' : 'text-white'
-                }`}>
+                <span className="text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate text-orange-500">
                   {brandTitle}
                 </span>
                 <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-none transition-colors duration-300 ${
-                  scrolled ? 'text-zinc-500' : 'text-white/80'
+                  isTransparent ? 'text-white' : 'text-zinc-800'
                 }`}>
                   DKI Jakarta
                 </span>
@@ -147,11 +148,11 @@ export default function Navbar() {
                   href="/"
                   className={`relative px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
                     isActive 
-                      ? (scrolled ? "text-orange-600 font-bold" : "text-white font-semibold")
-                      : (scrolled ? "text-zinc-700 hover:text-orange-600 font-medium" : "text-white/80 hover:text-white font-medium")
+                      ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
+                      : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
                   } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${
                     isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 hover:after:w-[calc(100%-16px)]"
-                  } ${scrolled ? "after:bg-orange-600" : "after:bg-white"}`}
+                  } ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
                 >
                   {t('navHome')}
                 </Link>
@@ -166,11 +167,11 @@ export default function Navbar() {
                   <button
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
                       isActive 
-                        ? (scrolled ? "text-orange-600 font-bold" : "text-white font-semibold")
-                        : (scrolled ? "text-zinc-700 hover:text-orange-600 font-medium" : "text-white/80 hover:text-white font-medium")
+                        ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
+                        : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
                     } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${
                       isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)]"
-                    } ${scrolled ? "after:bg-orange-600" : "after:bg-white"}`}
+                    } ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
                   >
                     {language === 'en' ? 'Category' : 'Kategori'}
                     <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
@@ -213,9 +214,9 @@ export default function Navbar() {
                 {isAdmin && (
                   <Link 
                     className={`flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors whitespace-nowrap ${jakarta.className} ${
-                      scrolled 
-                        ? 'text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-100' 
-                        : 'text-white hover:bg-white/10 border border-white/30'
+                      isTransparent 
+                        ? 'text-white hover:bg-white/10 border border-white/30' 
+                        : 'text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-100'
                     }`} 
                     href="/admin"
                   >
@@ -228,7 +229,7 @@ export default function Navbar() {
                     {displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-3 w-3" />}
                   </div>
                   <span className={`text-xs font-medium hidden xl:block max-w-[120px] truncate whitespace-nowrap transition-colors duration-300 ${jakarta.className} ${
-                    scrolled ? 'text-zinc-800' : 'text-white'
+                    isTransparent ? 'text-white' : 'text-zinc-800'
                   }`}>
                     {displayName}
                   </span>
@@ -236,7 +237,7 @@ export default function Navbar() {
                 <button
                   onClick={handleLogout}
                   className={`inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${jakarta.className} ${
-                    scrolled ? 'text-red-600 hover:bg-red-50' : 'text-white/80 hover:text-white hover:bg-white/10'
+                    isTransparent ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-red-600 hover:bg-red-50'
                   }`}
                 >
                   <LogOut className="h-3.5 w-3.5" />
@@ -247,9 +248,9 @@ export default function Navbar() {
               <Link
                 href="/login"
                 className={`px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 transition-all shadow-sm ${jakarta.className} ${
-                  scrolled
-                    ? 'bg-orange-600 text-white hover:bg-orange-700'
-                    : 'bg-white text-slate-900 hover:bg-gray-100'
+                  isTransparent
+                    ? 'bg-white text-slate-900 hover:bg-gray-100'
+                    : 'bg-orange-600 text-white hover:bg-orange-700'
                 }`}
               >
                 <LogIn className="h-4 w-4" />
@@ -259,14 +260,14 @@ export default function Navbar() {
 
             {/* Standalone Language Switcher Pill */}
             <div className={`w-px h-5 mx-1 shrink-0 transition-colors duration-300 ${
-              scrolled ? 'bg-zinc-200' : 'bg-white/30'
+              isTransparent ? 'bg-white/30' : 'bg-slate-200'
             }`}></div>
             <button 
               onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
               className={`px-4 py-1.5 rounded-none flex items-center gap-2 transition-colors duration-300 ${jakarta.className} ${
-                scrolled
-                  ? 'text-zinc-800 border border-zinc-200 bg-zinc-50 hover:bg-zinc-100'
-                  : 'text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10'
+                isTransparent
+                  ? 'text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10'
+                  : 'text-zinc-800 border border-zinc-200 bg-zinc-50 hover:bg-zinc-100'
               }`}
             >
               <span className="text-[13px] font-medium">
@@ -286,7 +287,7 @@ export default function Navbar() {
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
               className={`inline-flex items-center justify-center rounded-xl p-2 transition-colors duration-300 ${
-                scrolled ? 'text-zinc-900 hover:bg-orange-50' : 'text-white hover:bg-white/10'
+                isTransparent ? 'text-white hover:bg-white/10' : 'text-zinc-900 hover:bg-orange-50'
               }`}
               aria-label="Open mobile menu"
             >

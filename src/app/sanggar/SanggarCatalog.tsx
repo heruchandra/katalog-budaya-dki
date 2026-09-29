@@ -142,19 +142,21 @@ export default function SanggarCatalog({
   const visiblePages = getVisiblePages(currentPage, totalPages);
 
   return (
-    <div className="min-h-screen bg-white pb-16 pt-16">
+    <div className="min-h-screen bg-white pb-16">
       {/* HERO BANNER */}
-      <div className="relative w-full h-[400px] overflow-hidden flex items-center justify-center bg-[#0d131f] -mt-px">
+      <div className="relative w-full h-[400px] sm:h-[440px] overflow-hidden flex items-center justify-center bg-[#0d131f]">
         {/* Drift Wall Background Layer */}
-        <div className="absolute top-0 -left-[10%] w-[120%] h-full pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
-          <DriftWall columnData={SANGGAR_COLUMNS} columns={5} />
+        <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
+          <div className="w-[125%] h-full flex justify-center items-center scale-105 shrink-0">
+            <DriftWall columnData={SANGGAR_COLUMNS} columns={5} />
+          </div>
         </div>
 
         {/* Dark Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none" />
 
         {/* Centered Heading Content */}
-        <div className="relative z-20 text-center px-4 pointer-events-none">
+        <div className="relative z-20 text-center px-4 pt-16 pointer-events-none">
           <h1 className={`font-cursive text-4xl sm:text-5xl md:text-6xl text-white drop-shadow-md font-normal ${dancingScript.className}`}>
             {t('sanggarPageTitle')}
           </h1>

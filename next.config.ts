@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         source: '/seniman-musik',
         destination: '/pemusik',
       },
+      {
+        source: '/seniman',
+        destination: '/pemusik',
+      },
     ];
   },
 };
