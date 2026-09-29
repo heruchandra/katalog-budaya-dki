@@ -45,6 +45,34 @@ const pickImage = (row: Record<string, unknown>): string | null => {
   return null;
 };
 
+/**
+ * Search relevance tier for a display name (lower = better), or null if it doesn't match.
+ *   0 = name starts with q ("Amarta")
+ *   1 = any word starts with q ("Sanggar Anggun", "Tari Angklung")
+ *   2 = q appears inside a word ("Gayatari")
+ *   3 = only the full/legal name matches (e.g. "Sanggar Seni …"), never shown for 1-char queries
+ * Single-character queries are strict: only tiers 0-1 are returned.
+ */
+const getMatchTier = (name: string, q: string, fullName?: string): number | null => {
+  const n = name.toLowerCase();
+  let tier: number | null = null;
+  if (n.startsWith(q)) tier = 0;
+  else if (n.split(/[^a-z0-9]+/).some((word) => word.startsWith(q))) tier = 1;
+  else if (n.includes(q)) tier = 2;
+  else if (fullName && fullName.toLowerCase().includes(q)) tier = 3;
+  if (tier === null || (q.length === 1 && tier > 1)) return null;
+  return tier;
+};
+
+type RankedSuggestion = { name: string; fullName?: string; _tier?: number };
+
+// Filter to matches and sort by tier, then alphabetically
+const rankByRelevance = <T extends RankedSuggestion>(items: T[], q: string): (T & { _tier: number })[] =>
+  items
+    .map((item) => ({ ...item, _tier: getMatchTier(item.name, q, item.fullName) }))
+    .filter((item): item is T & { _tier: number } => item._tier !== null)
+    .sort((a, b) => a._tier - b._tier || a.name.localeCompare(b.name));
+
 // Square search-result thumbnail: image when available, otherwise the name's initial (or a type icon)
 function SearchThumb({ src, name, type }: { src?: string | null; name: string; type: string }) {
   const [failed, setFailed] = useState(false);
@@ -153,15 +181,27 @@ export default function HomePage() {
         let formattedSanggar: any[] = [];
         let formattedPemusik: any[] = [];
 
+        // Ask the DB for prefix + word-start matches explicitly, so a plain `%q%` limit can't crowd out
+        // the best results (e.g. "a" returning only names with an inner "a"). Substring matches are only
+        // needed for 2+ characters, since single-character queries are word-start only.
+        const fetchCandidates = async (table: string, column: string) => {
+          const patterns = [`${queryLower}%`, `% ${queryLower}%`];
+          if (queryLower.length > 1) patterns.push(`%${queryLower}%`);
+          const results = await Promise.all(
+            patterns.map((pattern) => supabase.from(table).select('*').ilike(column, pattern).limit(10))
+          );
+          const byId = new Map<string, any>();
+          for (const { data, error } of results) {
+            if (error) console.error(`Supabase ${table} search error:`, error);
+            for (const row of data || []) byId.set(String(row.id), row);
+          }
+          return [...byId.values()];
+        };
+
         if (selectedCategory === 'all' || selectedCategory === 'dance') {
           let dbSanggars: any[] = [];
           try {
-            const { data } = await supabase
-              .from('sanggars')
-              .select('*')
-              .ilike('nama_sanggar', `%${queryLower}%`)
-              .limit(10);
-            dbSanggars = data || [];
+            dbSanggars = await fetchCandidates('sanggars', 'nama_sanggar');
           } catch (err) {
             console.error("Supabase search error:", err);
           }
@@ -197,23 +237,13 @@ export default function HomePage() {
             }
           }
 
-          formattedSanggar = combined
-            .filter(item => 
-              item.name.toLowerCase().includes(queryLower) || 
-              (item.fullName && item.fullName.toLowerCase().includes(queryLower))
-            )
-            .slice(0, 5);
+          formattedSanggar = rankByRelevance(combined, queryLower).slice(0, 5);
         }
 
         if (selectedCategory === 'all' || selectedCategory === 'music') {
           let dbPemusiks: any[] = [];
           try {
-            const { data } = await supabase
-              .from('pemusiks')
-              .select('*')
-              .ilike('nama_seniman', `%${queryLower}%`)
-              .limit(10);
-            dbPemusiks = data || [];
+            dbPemusiks = await fetchCandidates('pemusiks', 'nama_seniman');
           } catch (err) {
             console.error("Supabase music search error:", err);
           }
@@ -227,12 +257,16 @@ export default function HomePage() {
             subtitle: item.genre_musik || item.jenis_seniman || item.instrumen || null,
           }));
 
-          formattedPemusik = rawPemusik
-            .filter(item => item.name.toLowerCase().includes(queryLower))
-            .slice(0, 3);
+          formattedPemusik = rankByRelevance(rawPemusik, queryLower).slice(0, 3);
         }
 
-        setSuggestions([...formattedSanggar, ...formattedPemusik]);
+        // Keep the per-type caps (5 sanggar, 3 musicians), then interleave by relevance so a strong
+        // musician match isn't stuck below weak sanggar matches
+        setSuggestions(
+          [...formattedSanggar, ...formattedPemusik].sort(
+            (a, b) => a._tier - b._tier || a.name.localeCompare(b.name)
+          )
+        );
       } catch (error) {
         console.error("Error fetching suggestions:", error);
       } finally {
