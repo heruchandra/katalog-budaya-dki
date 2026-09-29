@@ -369,7 +369,7 @@ export default function HomePage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-semibold text-xs tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white hover:border-orange-600 border border-white transition-all duration-500 min-h-[44px]"
+                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-semibold text-xs tracking-[0.2em] uppercase hover:bg-brand hover:text-white hover:border-orange-600 hover:shadow-md hover:shadow-orange-600/20 border border-white transition-all duration-500 min-h-[44px]"
                 >
                   {t('searchBtn')}
                 </button>

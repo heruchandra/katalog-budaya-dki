@@ -276,7 +276,7 @@ export default function PemusikCatalog({
                   let baseClasses = "flex items-center justify-center transition-all duration-300 ease-out transform outline-none focus:outline-none ";
                   
                   if (distance === 0) {
-                    baseClasses += "w-14 h-14 rounded-full bg-orange-500 text-white text-lg font-bold shadow-[0_10px_20px_-5px_rgba(249,115,22,0.4)] scale-100 opacity-100 z-10 cursor-default";
+                    baseClasses += "w-14 h-14 rounded-full bg-brand text-white text-lg font-bold shadow-lg shadow-orange-600/30 scale-100 opacity-100 z-10 cursor-default";
                   } else if (distance === 1) {
                     baseClasses += "w-11 h-11 rounded-full bg-slate-200 text-slate-700 text-sm font-semibold scale-90 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95 cursor-pointer hover:bg-slate-300";
                   } else if (distance === 2) {

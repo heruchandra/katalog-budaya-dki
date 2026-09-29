@@ -363,7 +363,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
               </div>
 
-              <div className="border-l-4 border-orange-500 pl-4 py-2 my-6 bg-orange-50/50 rounded-r-xl">
+              <div className="border-l-4 border-orange-600 pl-4 py-2 my-6 bg-orange-50/50 rounded-r-xl">
                 <p className="text-lg md:text-xl font-serif italic text-zinc-800 leading-relaxed">
                   &ldquo;{sanggar.tagline || "Berbudaya, Berprestasi, Berkualitas, Santun dan Kreatif."}&rdquo;
                 </p>
@@ -397,7 +397,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
               {/* Philosophy Callout Quote */}
               {(sanggar.philosophy || sanggar.philosophyEn) && (
-                <blockquote className="border-l-2 border-orange-500 pl-6 my-8 py-3 text-zinc-800 bg-orange-50/50 rounded-r-xl">
+                <blockquote className="border-l-2 border-orange-600 pl-6 my-8 py-3 text-zinc-800 bg-orange-50/50 rounded-r-xl">
                   <p className={`font-serif italic text-lg sm:text-xl text-zinc-800 leading-relaxed ${playfair.className}`}>
                     &ldquo;{(isEn && sanggar.philosophyEn) ? sanggar.philosophyEn : sanggar.philosophy}&rdquo;
                   </p>
@@ -655,13 +655,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 setIsGalleryOpen(true);
                 setActivePhotoIndex(null);
               }}
-              className={`${jakarta.className} bg-orange-600 hover:bg-orange-700 active:scale-[0.98] text-white py-3 px-5 sm:px-6 rounded-md sm:rounded-lg shadow-md shadow-orange-500/20 flex items-center justify-between gap-3 transition-all cursor-pointer border border-orange-500`}
+              className={`${jakarta.className} bg-brand hover:bg-brand-deep active:scale-[0.98] text-white font-bold py-3 px-5 rounded-none shadow-md shadow-orange-600/20 flex items-center justify-between gap-3 transition-all cursor-pointer`}
             >
               <span className="flex items-center gap-2 font-semibold sm:font-bold text-sm tracking-normal text-white">
                 <Images className="w-4 h-4 shrink-0" aria-hidden="true" />
                 {isEn ? "View All Photos" : "Lihat Semua Foto"}
               </span>
-              <span className="font-semibold text-xs text-white tracking-wide bg-white/20 px-2.5 py-1 rounded border border-white/20">
+              <span className="font-semibold text-xs text-white tracking-wide bg-white/20 px-2.5 py-1 rounded-none border border-white/20">
                 {galleryList.length} {isEn ? "Photos" : "Foto"}
               </span>
             </button>
@@ -818,7 +818,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   e.stopPropagation();
                   showPrevPhoto();
                 }}
-                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-10 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-orange-600 text-white backdrop-blur-sm border border-white/20 transition-all hover:scale-110 active:scale-95"
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-10 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-brand text-white backdrop-blur-sm border border-white/20 transition-all hover:scale-110 active:scale-95"
                 aria-label={isEn ? "Previous photo" : "Foto sebelumnya"}
               >
                 <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
@@ -841,7 +841,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   e.stopPropagation();
                   showNextPhoto();
                 }}
-                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-10 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-orange-600 text-white backdrop-blur-sm border border-white/20 transition-all hover:scale-110 active:scale-95"
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-10 p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-brand text-white backdrop-blur-sm border border-white/20 transition-all hover:scale-110 active:scale-95"
                 aria-label={isEn ? "Next photo" : "Foto selanjutnya"}
               >
                 <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
@@ -980,7 +980,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                         </div>
                         <div className="p-4 flex flex-col gap-2">
                           <div className="flex items-center gap-2.5">
-                            <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                            <span className="w-6 h-6 rounded-full bg-brand text-white font-bold text-[10px] flex items-center justify-center shrink-0">
                               {String(idx + 1).padStart(2, "0")}
                             </span>
                             <h5 className="text-base font-bold text-zinc-900 leading-snug">

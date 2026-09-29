@@ -66,6 +66,18 @@
   --animate-float: float 6s ease-in-out infinite;
 }
 
+/* ===== Brand Primary Orange (single source for "Masuk" and every primary orange CTA) =====
+   Usage: bg-brand hover:bg-brand-deep text-white shadow-md shadow-orange-600/20 */
+@utility bg-brand {
+  background-color: #ea580c;
+  background-image: linear-gradient(to right, #ea580c, #c2410c);
+}
+
+@utility bg-brand-deep {
+  background-color: #c2410c;
+  background-image: linear-gradient(to right, #c2410c, #9a3412);
+}
+
 /* ===== Keyframes ===== */
 
 @keyframes fade-in {

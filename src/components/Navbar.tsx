@@ -250,7 +250,7 @@ export default function Navbar() {
                 className={`px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 transition-all shadow-sm ${jakarta.className} ${
                   isTransparent
                     ? 'bg-white text-slate-900 hover:bg-gray-100'
-                    : 'bg-orange-600 text-white hover:bg-orange-700'
+                    : 'bg-brand hover:bg-brand-deep text-white shadow-orange-600/20'
                 }`}
               >
                 <LogIn className="h-4 w-4" />
@@ -363,7 +363,7 @@ export default function Navbar() {
                 aria-current={pathname === "/" ? "page" : undefined}
                 className={`text-sm tracking-wide uppercase ${
                   pathname === "/"
-                    ? "bg-orange-50 text-orange-600 border-l-4 border-orange-500 font-bold px-4 py-3 rounded-md transition-all flex items-center justify-between"
+                    ? "bg-orange-50 text-orange-600 border-l-4 border-orange-600 font-bold px-4 py-3 rounded-md transition-all flex items-center justify-between"
                     : "rounded-md px-4 py-3 text-zinc-800 font-semibold hover:bg-zinc-100 transition-all flex items-center justify-between"
                 }`}
               >
@@ -381,7 +381,7 @@ export default function Navbar() {
                       aria-expanded={isCategoryOpen}
                       className={`w-full text-sm tracking-wide uppercase px-4 py-3 rounded-md flex items-center justify-between transition-all ${
                         isCategoryActive
-                          ? "bg-orange-50 text-orange-600 font-bold border-l-4 border-orange-500"
+                          ? "bg-orange-50 text-orange-600 font-bold border-l-4 border-orange-600"
                           : "text-zinc-800 font-semibold hover:bg-zinc-100"
                       }`}
                     >
@@ -505,7 +505,7 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full bg-orange-600 hover:bg-orange-700 active:scale-[0.99] text-white font-bold py-3.5 rounded-lg shadow-md shadow-orange-500/15 flex items-center justify-center gap-2 transition-all"
+                className="w-full bg-brand hover:bg-brand-deep active:scale-[0.99] text-white font-bold py-3.5 rounded-lg shadow-md shadow-orange-600/20 flex items-center justify-center gap-2 transition-all"
               >
                 <LogIn className="h-4 w-4" />
                 <span>{t('navSignIn')}</span>
