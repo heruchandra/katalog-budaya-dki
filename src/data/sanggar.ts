@@ -133,7 +133,7 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       description: "Pertunjukan tari kreasi khas Betawi (termasuk Tari Lenggok Dara & Tari Nindak Si None).",
       titleEn: "Betawi Dance Performances & Works",
       descriptionEn: "Signature Betawi creative dance performances (including Tari Lenggok Dara & Tari Nindak Si None).",
-      image: "/tari-lenggok-dara.webp",
+      image: "/layanan-sanggar-sinarnorray-Pentas & Karya Tari Betawi.webp",
       featuresDanceWorks: true
     }
   ],
