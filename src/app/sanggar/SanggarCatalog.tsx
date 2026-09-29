@@ -112,7 +112,13 @@ export default function SanggarCatalog({
     return matchGrade && matchesQuery;
   });
 
+  // Sinar Norray is always pinned as the first card; the rest keep their normal order
+  const isPinned = (s: typeof filtered[number]) =>
+    s.id === "sinar-norray" || (s.nama_sanggar || "").toLowerCase().includes("sinar norray");
+
   const sortedSanggars = [...filtered].sort((a, b) => {
+    const pinDiff = Number(isPinned(b)) - Number(isPinned(a));
+    if (pinDiff !== 0) return pinDiff;
     if (activeGrade === "all") {
       return (a.nama_sanggar || "").localeCompare(b.nama_sanggar || "");
     } else {
