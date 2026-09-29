@@ -22,8 +22,6 @@ export default function Navbar() {
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
-  const isTransparentPage = pathname === '/';
-  const isTransparent = isTransparentPage && !scrolled;
 
   const isEnglish = language === 'en';
   const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
@@ -80,8 +78,10 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} ${
-        isTransparent ? 'bg-transparent text-white' : 'bg-white shadow-sm border-b border-gray-100 text-orange-600'
+      <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} border-none ${
+        scrolled
+          ? 'bg-zinc-950/85 backdrop-blur-md shadow-lg text-white'
+          : 'bg-gradient-to-b from-black/60 via-black/20 to-transparent border-none shadow-none text-white'
       }`}>
         <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm">
           {/* Group 1: Left - Logos & Title */}
@@ -118,13 +118,13 @@ export default function Navbar() {
               </div>
 
               {/* Vertical divider line */}
-              <div className={`h-5 sm:h-7 w-[1px] ${isTransparent ? 'bg-white/40' : 'bg-slate-300'} my-auto mx-0.5 shrink-0`} />
+              <div className="h-5 sm:h-7 w-[1px] bg-white/40 my-auto mx-0.5 shrink-0" />
 
               <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap min-w-0 ${jakarta.className}`}>
-                <span className={`text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate ${isTransparent ? 'text-white' : 'text-orange-600'}`}>
+                <span className="text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate text-white">
                   {brandTitle}
                 </span>
-                <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-none ${isTransparent ? 'text-white/80' : 'text-orange-600'}`}>
+                <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-none text-white/80">
                   DKI Jakarta
                 </span>
               </div>
@@ -141,9 +141,9 @@ export default function Navbar() {
                   href="/"
                   className={`relative px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors ${jakarta.className} ${
                     isActive 
-                      ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
-                      : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-orange-600 hover:text-orange-700 font-medium")
-                  } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 hover:after:w-[calc(100%-16px)]"} ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
+                      ? "text-white font-semibold"
+                      : "text-white/80 hover:text-white font-medium"
+                  } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 hover:after:w-[calc(100%-16px)]"} after:bg-white`}
                 >
                   {t('navHome')}
                 </Link>
@@ -158,9 +158,9 @@ export default function Navbar() {
                   <button
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors ${jakarta.className} ${
                       isActive 
-                        ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
-                        : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-orange-600 hover:text-orange-700 font-medium")
-                    } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)]"} ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
+                        ? "text-white font-semibold"
+                        : "text-white/80 hover:text-white font-medium"
+                    } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)]"} after:bg-white`}
                   >
                     {language === 'en' ? 'Category' : 'Kategori'}
                     <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
@@ -201,7 +201,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center gap-3">
                 {isAdmin && (
-                  <Link className={`flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border whitespace-nowrap ${jakarta.className} ${isTransparent ? 'text-white hover:bg-white/10 border-white/30' : 'text-orange-600 bg-orange-50 hover:bg-orange-100 border-orange-100'}`} href="/admin">
+                  <Link className={`flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border whitespace-nowrap ${jakarta.className} text-white hover:bg-white/10 border-white/30`} href="/admin">
                     <LayoutDashboard size={14}/>
                     <span className="hidden xl:inline">{t('navDashboard')}</span>
                   </Link>
@@ -210,13 +210,13 @@ export default function Navbar() {
                   <div className={`flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold text-xs border border-primary-200 shadow-sm ${jakarta.className}`}>
                     {displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-3 w-3" />}
                   </div>
-                  <span className={`text-xs font-medium hidden xl:block max-w-[120px] truncate whitespace-nowrap ${jakarta.className} ${isTransparent ? 'text-white' : 'text-surface-700'}`}>
+                  <span className={`text-xs font-medium hidden xl:block max-w-[120px] truncate whitespace-nowrap ${jakarta.className} text-white`}>
                     {displayName}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className={`inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${jakarta.className} ${isTransparent ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-red-600 hover:bg-red-50'}`}
+                  className={`inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${jakarta.className} text-white/80 hover:text-white hover:bg-white/10`}
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   {t('navLogout')}
@@ -225,11 +225,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className={`px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm ${jakarta.className} ${
-                  isTransparent 
-                    ? 'bg-white text-slate-900 hover:bg-gray-100'
-                    : 'bg-orange-600 text-white hover:bg-orange-700'
-                }`}
+                className={`px-4 py-1.5 rounded-none text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm ${jakarta.className} bg-white text-slate-900 hover:bg-gray-100`}
               >
                 <LogIn className="h-4 w-4" />
                 {language === 'en' ? 'Sign In' : 'Masuk'}
@@ -237,14 +233,10 @@ export default function Navbar() {
             )}
 
             {/* Standalone Language Switcher Pill */}
-            <div className={`w-px h-5 mx-1 ${isTransparent ? 'bg-white/30' : 'bg-slate-300'} shrink-0`}></div>
+            <div className="w-px h-5 mx-1 bg-white/30 shrink-0"></div>
             <button 
               onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-              className={`px-4 py-1.5 rounded-none flex items-center gap-2 transition-colors ${jakarta.className} ${
-                isTransparent 
-                  ? 'text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10'
-                  : 'text-slate-900 border border-gray-200 hover:bg-gray-100' 
-              }`}
+              className={`px-4 py-1.5 rounded-none flex items-center gap-2 transition-colors ${jakarta.className} text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10`}
             >
               <span className="text-[13px] font-medium">
                 {language === 'id' ? 'Indonesia' : 'English'}
@@ -262,9 +254,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className={`inline-flex items-center justify-center rounded-xl p-2 transition-colors ${
-                isTransparent ? 'text-white hover:bg-white/10' : 'text-slate-800 hover:bg-orange-50'
-              }`}
+              className="inline-flex items-center justify-center rounded-xl p-2 transition-colors text-white hover:bg-white/10"
               aria-label="Open mobile menu"
             >
               <Menu className="h-6 w-6" />
