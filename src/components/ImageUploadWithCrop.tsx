@@ -89,7 +89,7 @@ export default function ImageUploadWithCrop({
       {!preview ? (
         <div 
           onClick={() => fileInputRef.current?.click()}
-          className="w-full h-40 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex flex-col items-center justify-center cursor-pointer hover:bg-primary-50 hover:border-primary-400 transition-colors group"
+          className="w-full h-40 border-2 border-dashed border-gray-300 rounded-md bg-gray-50 flex flex-col items-center justify-center cursor-pointer hover:bg-primary-50 hover:border-primary-400 transition-colors group"
         >
           <UploadCloud className="h-8 w-8 text-gray-400 group-hover:text-primary-500 mb-2 transition-colors" />
           <span className="text-sm font-medium text-gray-600 group-hover:text-primary-600">
@@ -100,7 +100,7 @@ export default function ImageUploadWithCrop({
           </span>
         </div>
       ) : (
-        <div className="relative w-full h-40 border border-gray-200 rounded-xl overflow-hidden bg-gray-100 group">
+        <div className="relative w-full h-40 border border-gray-200 rounded-md overflow-hidden bg-gray-100 group">
           <img 
             src={preview} 
             alt={`Preview ${label}`} 
@@ -136,7 +136,7 @@ export default function ImageUploadWithCrop({
       {/* Cropper Modal */}
       {isCropping && imageSrc && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6">
-          <div className="bg-white rounded-2xl overflow-hidden w-full max-w-2xl flex flex-col shadow-2xl">
+          <div className="bg-white rounded-lg overflow-hidden w-full max-w-2xl flex flex-col shadow-2xl">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-gray-800">Sesuaikan Gambar ({label})</h3>
               <button 
@@ -181,14 +181,14 @@ export default function ImageUploadWithCrop({
                 <button
                   type="button"
                   onClick={cancelCrop}
-                  className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="button"
                   onClick={showCroppedImage}
-                  className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-sm transition-all"
+                  className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary-600 rounded-md hover:bg-primary-700 shadow-sm transition-all"
                 >
                   <Check className="w-4 h-4" />
                   {t('adminBtnUpload')}

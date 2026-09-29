@@ -307,7 +307,7 @@ export default function HomePage() {
 
                   {/* Floating Category Menu */}
                   <div
-                    className={`absolute top-full left-0 right-0 md:right-auto md:w-56 mt-1 sm:mt-2 bg-white text-zinc-900 rounded-xl shadow-2xl border border-zinc-200/80 overflow-hidden transition-all duration-200 z-50 origin-top ${
+                    className={`absolute top-full left-0 right-0 md:right-auto md:w-56 mt-1 sm:mt-2 bg-white text-zinc-900 rounded-md shadow-2xl border border-zinc-200/80 overflow-hidden transition-all duration-200 z-50 origin-top ${
                       isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'
                     }`}
                   >
@@ -377,7 +377,7 @@ export default function HomePage() {
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white text-zinc-900 rounded-xl shadow-2xl border border-zinc-200/80 max-h-48 sm:max-h-60 overflow-y-auto touch-pan-y z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white text-zinc-900 rounded-md shadow-2xl border border-zinc-200/80 max-h-48 sm:max-h-60 overflow-y-auto touch-pan-y z-50">
                   {isLoading ? (
                     <div className="p-4 flex items-center justify-center text-sm text-zinc-500 min-h-[60px]">
                       <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-600" />
@@ -397,7 +397,7 @@ export default function HomePage() {
                           >
                             <span className="font-medium text-zinc-900 truncate pr-2">{suggestion.name}</span>
                             {selectedCategory === 'all' && (
-                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-semibold shrink-0 border ${
+                              <span className={`px-2.5 py-0.5 rounded-md text-[10px] uppercase tracking-wider font-semibold shrink-0 border ${
                                 suggestion.type === 'Sanggar'
                                   ? 'bg-orange-50 text-orange-700 border-orange-200/60'
                                   : 'bg-amber-50 text-amber-700 border-amber-200/60'
@@ -490,7 +490,7 @@ export default function HomePage() {
                 </>
               );
 
-              const cardClasses = "group w-full h-28 sm:h-36 rounded-2xl overflow-hidden relative shadow-sm border border-zinc-200/80 active:scale-[0.98] transition-transform flex items-end p-4 block";
+              const cardClasses = "group w-full h-28 sm:h-36 rounded-lg overflow-hidden relative shadow-sm border border-zinc-200/80 active:scale-[0.98] transition-transform flex items-end p-4 block";
 
               return isClickable ? (
                 <Link
@@ -546,9 +546,9 @@ export default function HomePage() {
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="bg-white rounded-2xl border border-zinc-200/80 p-8 text-center shadow-sm flex flex-col items-center justify-center hover:border-orange-500/40 transition-colors duration-200"
+                className="bg-white rounded-lg border border-zinc-200/80 p-8 text-center shadow-sm flex flex-col items-center justify-center hover:border-orange-500/40 transition-colors duration-200"
               >
-                <div className="w-14 h-14 rounded-xl bg-orange-100/60 border border-orange-200/50 flex items-center justify-center mb-6 mx-auto">
+                <div className="w-14 h-14 rounded-md bg-orange-100/60 border border-orange-200/50 flex items-center justify-center mb-6 mx-auto">
                   <feature.icon className="h-7 w-7 stroke-[1.5] text-orange-600" />
                 </div>
                 <h3 className="text-lg font-bold text-zinc-900 mb-3 text-center">

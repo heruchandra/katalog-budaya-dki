@@ -177,7 +177,7 @@ export default function PemusikCatalog({
           {/* Error State / Empty State */}
           {(fetchError || filtered.length === 0) && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-slate-50">
+              <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-50">
                 {fetchError ? (
                   <AlertTriangle className="h-10 w-10 text-slate-400" />
                 ) : (

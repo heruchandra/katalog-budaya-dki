@@ -213,7 +213,7 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 {isAdmin && (
                   <Link 
-                    className={`flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors whitespace-nowrap ${jakarta.className} ${
+                    className={`flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-md transition-colors whitespace-nowrap ${jakarta.className} ${
                       isTransparent 
                         ? 'text-white hover:bg-white/10 border border-white/30' 
                         : 'text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-100'
@@ -286,7 +286,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className={`inline-flex items-center justify-center rounded-xl p-2 transition-colors duration-300 ${
+              className={`inline-flex items-center justify-center rounded-md p-2 transition-colors duration-300 ${
                 isTransparent ? 'text-white hover:bg-white/10' : 'text-zinc-900 hover:bg-orange-50'
               }`}
               aria-label={t('navOpenMenu')}
@@ -316,7 +316,7 @@ export default function Navbar() {
           role="dialog"
           aria-modal="true"
           aria-label={t('navMenuSection')}
-          className={`fixed top-0 right-0 w-[85%] max-w-xs h-full bg-white/98 backdrop-blur-xl z-[10001] p-6 flex flex-col justify-between gap-6 overflow-y-auto shadow-2xl rounded-l-xl transition-transform duration-300 ease-in-out ${
+          className={`fixed top-0 right-0 w-[85%] max-w-xs h-full bg-white/98 backdrop-blur-xl z-[10001] p-6 flex flex-col justify-between gap-6 overflow-y-auto shadow-2xl rounded-l-md transition-transform duration-300 ease-in-out ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           } ${jakarta.className}`}
         >

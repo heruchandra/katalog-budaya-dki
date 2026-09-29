@@ -30,7 +30,7 @@ export default function SuccessToast() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-green-600 px-4 py-3 text-white shadow-lg shadow-green-600/20 animate-fade-in transition-all duration-300">
+    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-md bg-green-600 px-4 py-3 text-white shadow-lg shadow-green-600/20 animate-fade-in transition-all duration-300">
       <CheckCircle2 className="h-5 w-5 shrink-0" />
       <p className="text-sm font-medium">{message}</p>
       <button
