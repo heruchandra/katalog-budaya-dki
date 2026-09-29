@@ -353,7 +353,7 @@ export default function HomePage() {
                       {suggestions.map((suggestion) => (
                         <li key={suggestion.id}>
                           <Link
-                            href={suggestion.href}
+                            href={suggestion.href || '#'}
                             className="flex items-center justify-between px-6 py-4 hover:bg-white/10 transition-colors cursor-pointer border-b border-white/10 last:border-0"
                             onClick={() => setIsFocused(false)}
                           >
@@ -420,14 +420,9 @@ export default function HomePage() {
           {/* Mobile Touch Cards (< md) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 md:hidden">
             {culturalPillars.map((pillar) => {
-              const isClickable = pillar.link && pillar.link !== '#';
-              const CardTag = isClickable ? Link : 'div';
-              return (
-                <CardTag
-                  key={pillar.id}
-                  href={isClickable ? pillar.link : undefined}
-                  className="group w-full h-28 sm:h-36 rounded-2xl overflow-hidden relative shadow-sm border border-zinc-200/80 active:scale-[0.98] transition-transform flex items-end p-4 block"
-                >
+              const isClickable = Boolean(pillar.link && pillar.link !== '#');
+              const cardContent = (
+                <>
                   {/* Full-color Background Image (no grayscale filter on mobile) */}
                   <img
                     src={pillar.image}
@@ -453,7 +448,26 @@ export default function HomePage() {
                       <ChevronRight className="w-4 h-4" />
                     </div>
                   </div>
-                </CardTag>
+                </>
+              );
+
+              const cardClasses = "group w-full h-28 sm:h-36 rounded-2xl overflow-hidden relative shadow-sm border border-zinc-200/80 active:scale-[0.98] transition-transform flex items-end p-4 block";
+
+              return isClickable ? (
+                <Link
+                  key={pillar.id}
+                  href={pillar.link || '#'}
+                  className={cardClasses}
+                >
+                  {cardContent}
+                </Link>
+              ) : (
+                <div
+                  key={pillar.id}
+                  className={cardClasses}
+                >
+                  {cardContent}
+                </div>
               );
             })}
           </div>
