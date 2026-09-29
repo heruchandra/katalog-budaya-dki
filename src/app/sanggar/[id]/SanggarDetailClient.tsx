@@ -655,13 +655,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 setIsGalleryOpen(true);
                 setActivePhotoIndex(null);
               }}
-              className={`${jakarta.className} bg-brand hover:bg-brand-deep active:scale-[0.98] text-white font-bold py-3 px-5 rounded-none shadow-md shadow-orange-600/20 flex items-center justify-between gap-3 transition-all cursor-pointer`}
+              className={`${jakarta.className} bg-brand hover:bg-brand-deep active:scale-[0.98] text-white font-bold py-2 px-3.5 sm:py-2.5 sm:px-4 rounded-none shadow-md shadow-orange-600/20 flex items-center justify-between gap-2.5 transition-all cursor-pointer`}
             >
-              <span className="flex items-center gap-2 font-semibold sm:font-bold text-sm tracking-normal text-white">
-                <Images className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span className="flex items-center gap-1.5 text-xs sm:text-sm font-bold tracking-normal text-white">
+                <Images className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" aria-hidden="true" />
                 {isEn ? "View All Photos" : "Lihat Semua Foto"}
               </span>
-              <span className="font-semibold text-xs text-white tracking-wide bg-white/20 px-2.5 py-1 rounded-none border border-white/20">
+              <span className="text-[11px] font-semibold text-white bg-white/20 px-2 py-0.5 rounded-none border border-white/20">
                 {galleryList.length} {isEn ? "Photos" : "Foto"}
               </span>
             </button>
