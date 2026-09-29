@@ -99,9 +99,15 @@ export default function PemusikCatalog({
       {/* HERO BANNER */}
       <div className="relative w-full h-[400px] sm:h-[440px] overflow-hidden flex items-center justify-center bg-[#0d131f]">
         {/* Drift Wall Background Layer */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center pointer-events-auto opacity-55 md:opacity-60 hover:opacity-85 transition-opacity duration-300">
+        {/* Dimming lives on each tile (dim + rest brightness) so hover lights up only the tile under the cursor */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center pointer-events-auto">
           <div className="w-[125%] h-full flex justify-center items-center scale-105 shrink-0">
-            <DriftWall items={PEMUSIK_DRIFT_ITEMS} columns={6} />
+            <DriftWall
+              items={PEMUSIK_DRIFT_ITEMS}
+              columns={6}
+              dim={0.35}
+              style={{ '--dw-rest-brightness': 0.75, '--dw-hover-brightness': 1.1, '--dw-hover-scale': 1.05 } as React.CSSProperties}
+            />
           </div>
         </div>
 

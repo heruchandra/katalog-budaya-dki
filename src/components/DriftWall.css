@@ -94,7 +94,7 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translateZ(0);
-  filter: grayscale(var(--dw-gray, 0)) saturate(1.0) brightness(0.95);
+  filter: grayscale(var(--dw-gray, 0)) saturate(1.0) brightness(var(--dw-rest-brightness, 0.95));
   transition: filter 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   user-select: none;
   -webkit-user-drag: none;
@@ -116,7 +116,7 @@
 .drift-wall__tile.is-active .drift-wall__inner,
 .drift-wall__tile:focus-visible .drift-wall__inner {
   opacity: 1 !important;
-  transform: translateZ(var(--dw-lift, 60px)) scale(1.08);
+  transform: translateZ(var(--dw-lift, 60px)) scale(var(--dw-hover-scale, 1.08));
   box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.9);
   border: none !important;
   outline: none !important;
@@ -126,7 +126,7 @@
 .drift-wall__tile:hover img,
 .drift-wall__tile.is-active img,
 .drift-wall__tile:focus-visible img {
-  filter: grayscale(0) saturate(1.1) brightness(1.08) contrast(1.04) !important;
+  filter: grayscale(0) saturate(1.1) brightness(var(--dw-hover-brightness, 1.08)) contrast(1.04) !important;
 }
 
 .drift-wall__tile:hover .drift-wall__overlay,
