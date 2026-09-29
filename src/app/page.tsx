@@ -307,46 +307,38 @@ export default function HomePage() {
                   </button>
 
                   {/* Floating Category Menu */}
+                  {/* Flush with the search bar's OUTER left border: this wrapper sits inside the form's
+                      p-2 (0.5rem) + 1px border, so shift left by exactly that. On md+ also drop below
+                      the bar's bottom border; on mobile span the full bar width. */}
                   <div
-                    className={`absolute top-full left-0 right-0 md:right-auto md:w-56 mt-1 sm:mt-2 bg-white text-zinc-900 rounded-none shadow-2xl border border-zinc-200/80 overflow-hidden transition-all duration-200 z-50 origin-top ${
+                    role="listbox"
+                    className={`absolute top-full -left-[calc(0.5rem+1px)] mt-1 md:mt-[calc(0.5rem+1px+0.25rem)] w-[calc(100%+1rem+2px)] md:w-full min-w-[200px] z-50 bg-white border border-zinc-200 shadow-xl rounded-none py-1 overflow-hidden transition-all duration-200 origin-top ${
                       isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'
                     }`}
                   >
-                    <div className="p-1.5 flex flex-col gap-1">
-                      <button
-                        type="button"
-                        onClick={() => { setSelectedCategory('all'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 rounded-none text-sm transition-colors min-h-[44px] flex items-center ${
-                          selectedCategory === 'all'
-                            ? 'bg-orange-50 text-orange-600 font-semibold'
-                            : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 font-medium'
-                        }`}
-                      >
-                        {t('searchAllCat')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setSelectedCategory('dance'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 rounded-none text-sm transition-colors min-h-[44px] flex items-center ${
-                          selectedCategory === 'dance'
-                            ? 'bg-orange-50 text-orange-600 font-semibold'
-                            : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 font-medium'
-                        }`}
-                      >
-                        {t('searchDanceCat')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setSelectedCategory('music'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 rounded-none text-sm transition-colors min-h-[44px] flex items-center ${
-                          selectedCategory === 'music'
-                            ? 'bg-orange-50 text-orange-600 font-semibold'
-                            : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 font-medium'
-                        }`}
-                      >
-                        {t('searchMusicCat')}
-                      </button>
-                    </div>
+                    {([
+                      { value: 'all', label: t('searchAllCat') },
+                      { value: 'dance', label: t('searchDanceCat') },
+                      { value: 'music', label: t('searchMusicCat') },
+                    ] as const).map((option) => {
+                      const isSelected = selectedCategory === option.value;
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => { setSelectedCategory(option.value); setIsCategoryOpen(false); }}
+                          className={`w-full text-left px-4 py-2.5 min-h-[44px] flex items-center text-sm rounded-none border-l-2 transition-colors cursor-pointer ${
+                            isSelected
+                              ? 'bg-orange-50 text-orange-600 font-bold border-orange-600'
+                              : 'text-zinc-800 font-medium border-transparent hover:bg-zinc-50 hover:text-orange-600'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
