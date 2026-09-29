@@ -236,15 +236,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
         {/* Pengurus Sanggar Card immediately follows */}
         <section className="bg-white rounded-none border border-zinc-200/80 p-6 sm:p-8 shadow-xs hover:border-zinc-300 transition-colors">
-          <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 mb-6">
-            <span className="tracking-tight">{isEn ? "Studio Management" : "Pengurus Sanggar"}</span>
-            <span className={`${dancingScript.className} text-orange-600 text-3xl sm:text-4xl font-normal`}>
+          {/* Header: studio name in the orange script font, standalone (the page's main heading).
+              -mt-1 offsets the script font's tall line box so the gap above matches the card padding. */}
+          <div className="-mt-1 mb-5 sm:mb-6 text-center sm:text-left">
+            <h1 className={`${dancingScript.className} text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:font-bold text-orange-600 tracking-wide leading-tight md:leading-snug`}>
               {studioName}
-            </span>
-          </h2>
-
-          {/* Internal Divider */}
-          <div className="border-t border-zinc-100 my-6" />
+            </h1>
+          </div>
 
           <div className="md:grid md:grid-cols-2 gap-8 items-center">
             {/* Left Column: Ketua Sanggar photo & info */}
@@ -348,11 +346,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       </div>
 
       {/* 2-Column Grid: Main Content & Sticky Sidebar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-4 pb-0">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
           {/* LEFT COLUMN: Main Narrative & Content (Span 2) */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             
             {/* 1. Tagline Quote & Deskripsi / Merawat Jiwa Seni Tradisi */}
             <div className="bg-white p-6 sm:p-8 rounded-none border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
@@ -636,13 +634,10 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       </div>
 
       {/* Gallery Section */}
-      <section className="border-t border-zinc-200 bg-white py-16 lg:py-20 mt-12">
+      <section className="mt-6 sm:mt-8 pt-0 pb-12 sm:pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 border-b border-zinc-200 pb-6 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 border-b border-zinc-200 pb-4 sm:pb-6 gap-4">
             <div>
-              <span className="text-xs font-semibold tracking-[0.25em] text-orange-600 uppercase block mb-2">
-                {isEn ? "VISUAL DOCUMENTATION" : "DOKUMENTASI VISUAL"}
-              </span>
               <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
                 {isEn ? "Photo Gallery & Activities" : "Galeri Foto & Aktivitas"}
               </h2>
