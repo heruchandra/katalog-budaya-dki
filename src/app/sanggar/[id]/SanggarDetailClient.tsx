@@ -245,7 +245,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     className="w-full h-full object-cover object-center rounded-full"
                   />
                 </div>
-  
+
                 <div className="text-center sm:text-left">
                   <span className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-1 block">
                     {isEn ? "Studio Leader" : "Ketua Sanggar"}
