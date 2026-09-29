@@ -102,6 +102,17 @@
   }
 }
 
+/* Transform-only slide for containers holding backdrop-blur:
+   animating opacity on an ancestor turns it into a backdrop root and flattens the blur */
+@keyframes slide-up-solid {
+  from {
+    transform: translateY(30px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes float {
   0%,
   100% {

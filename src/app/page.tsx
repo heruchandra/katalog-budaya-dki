@@ -281,11 +281,12 @@ export default function HomePage() {
           </div>
 
           {/* ===== Search Bar ===== */}
-          <div className="w-full max-w-3xl animate-slide-up">
+          {/* Transform-only entrance (no opacity) so the frosted blur below is never flattened */}
+          <div className="w-full max-w-3xl animate-[slide-up-solid_0.5s_ease-out_both]">
             <div ref={searchContainerRef} className="group relative z-50">
               <form
                 onSubmit={handleSearch}
-                className="mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto bg-black/20 backdrop-blur-md border border-white/20 p-2 shadow-2xl"
+                className="mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-md sm:backdrop-blur-lg border border-white/20 p-2 shadow-2xl rounded-none transition-all duration-300"
               >
                 {/* Premium Category Dropdown */}
                 <div className="relative flex-shrink-0 w-full md:w-48 border-b md:border-b-0 md:border-r border-white/20">
@@ -295,7 +296,7 @@ export default function HomePage() {
                       setIsCategoryOpen(!isCategoryOpen);
                       setIsFocused(false);
                     }}
-                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 bg-transparent hover:bg-white/10 transition-colors w-full h-full text-white min-h-[44px]"
+                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 bg-transparent hover:bg-white/10 focus:outline-none focus:ring-0 border-none transition-colors w-full h-full text-white min-h-[44px]"
                   >
                     <span className="text-sm font-semibold truncate">
                       {selectedCategory === 'all' ? t('searchAllCat') : selectedCategory === 'dance' ? t('searchDanceCat') : t('searchMusicCat')}
@@ -363,13 +364,13 @@ export default function HomePage() {
                     }}
                     onBlur={() => setTimeout(() => setIsFocused(false), 250)}
                     placeholder={t('searchHeroPlaceholder')}
-                    className="w-full h-full bg-transparent text-white placeholder-white/70 px-6 py-4 outline-none text-sm tracking-wide min-h-[44px]"
+                    className="w-full h-full bg-transparent focus:bg-transparent text-white placeholder:text-zinc-300 border-none focus:outline-none focus:ring-0 px-6 py-4 outline-none text-sm tracking-wide min-h-[44px]"
                     aria-label={t('searchAriaLabel')}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-semibold text-xs tracking-[0.2em] uppercase hover:bg-brand hover:text-white hover:border-orange-600 hover:shadow-md hover:shadow-orange-600/20 border border-white transition-all duration-500 min-h-[44px]"
+                  className="w-full md:w-auto bg-brand hover:bg-brand-deep text-white font-bold px-6 py-3 rounded-none shadow-md shadow-orange-600/20 text-xs tracking-[0.2em] uppercase transition-all min-h-[44px]"
                 >
                   {t('searchBtn')}
                 </button>
