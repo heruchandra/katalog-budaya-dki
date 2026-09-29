@@ -630,6 +630,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
                 {isEn ? "Photo Gallery & Activities" : "Galeri Foto & Aktivitas"}
               </h2>
+              {/* Same accent bar as "Prestasi & Penghargaan"; its mb-8 is left off because this header row's
+                  own pb/border already provide the spacing below */}
+              <div className="w-16 h-0.5 bg-orange-600 mt-4" />
             </div>
             
             {/* Top-Right Action Button with Total Count Badge */}
