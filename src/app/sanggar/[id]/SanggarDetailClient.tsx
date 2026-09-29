@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { 
   Phone,
   Mail,
@@ -222,31 +221,22 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   return (
     <main className={`min-h-screen bg-zinc-50 text-zinc-900 pt-16 selection:bg-orange-100 selection:text-orange-900 ${poppins.className}`}>
       
-      {/* Top Container: Back Button & Pengurus Sanggar Card */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-4">
-        {/* Subtle, elegant back link */}
-        <div className="mb-4">
-          <Link 
-            href="/sanggar" 
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-zinc-500 hover:text-orange-600 uppercase transition-colors"
-          >
-            {isEn ? "← Back to Catalog" : "← Kembali ke Katalog"}
-          </Link>
-        </div>
-
-        {/* Pengurus Sanggar Card immediately follows */}
+      {/* Top Container: Pengurus Sanggar Card */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-4">
+        {/* Pengurus Sanggar Card (first element under the navbar) */}
         <section className="bg-white rounded-none border border-zinc-200/80 p-6 sm:p-8 shadow-xs hover:border-zinc-300 transition-colors">
-          {/* Header: studio name in the orange script font, standalone (the page's main heading).
-              -mt-1 offsets the script font's tall line box so the gap above matches the card padding. */}
-          <div className="-mt-1 mb-5 sm:mb-6 text-center sm:text-left">
-            <h1 className={`${dancingScript.className} text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:font-bold text-orange-600 tracking-wide leading-tight md:leading-snug`}>
+          {/* Full-width header row: studio name in the orange script font (the page's main heading) */}
+          <div className="w-full text-center sm:text-left">
+            <h1 className={`${dancingScript.className} text-3xl sm:text-4xl md:text-5xl md:font-bold text-orange-600 tracking-wide leading-tight`}>
               {studioName}
             </h1>
           </div>
 
-          <div className="md:grid md:grid-cols-2 gap-8 items-center">
+          {/* 2-column body; items-start so both columns share the same top line (items-center pushed the
+              shorter leader column down to the middle of the taller contact column) */}
+          <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Left Column: Ketua Sanggar photo & info */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+            <div className="lg:col-span-7 flex flex-col sm:flex-row items-center sm:items-start gap-5">
               <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-orange-100 shadow-sm shrink-0 bg-zinc-50">
                 <img 
                   src={sanggar.logo || sanggar.logoUrl || (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/profile-sanggar-2.webp")} 
@@ -274,8 +264,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             </div>
 
             {/* Right Column: PIC details & WhatsApp button */}
-            <div className="mt-6 md:mt-0 space-y-4">
-              <dl className="space-y-3 py-1">
+            <div className="lg:col-span-5 space-y-4">
+              <dl className="space-y-3">
                 {[
                   {
                     label: isEn ? "Contact Person (PIC)" : "Nama PIC Kontak",
@@ -287,7 +277,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   },
                   ...(sanggar.kontak?.email ? [{ label: "Email", value: sanggar.kontak.email }] : []),
                 ].map((row) => (
-                  <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-zinc-100 last:border-none gap-1 sm:gap-4">
+                  <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 first:pt-0 border-b border-zinc-100 last:border-none gap-1 sm:gap-4">
                     <dt className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">{row.label}</dt>
                     <dd className="text-sm font-semibold text-zinc-900 sm:text-right break-words">{row.value}</dd>
                   </div>
