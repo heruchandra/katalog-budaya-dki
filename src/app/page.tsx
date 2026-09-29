@@ -286,8 +286,12 @@ export default function HomePage() {
             <div ref={searchContainerRef} className="group relative z-50">
               <form
                 onSubmit={handleSearch}
-                className="mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-md sm:backdrop-blur-lg border border-white/20 p-2 shadow-2xl rounded-none transition-all duration-300"
+                className="relative isolate mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto border border-white/20 p-2 shadow-2xl rounded-none transition-all duration-300"
               >
+                {/* Frosted glass lives on this layer, not on the form: a backdrop-filter on the form would make it
+                    a backdrop root, and the category popup's own blur would then only see the form, not the video */}
+                <div aria-hidden="true" className="absolute inset-0 -z-10 bg-black/40 backdrop-blur-md sm:backdrop-blur-lg pointer-events-none" />
+
                 {/* Premium Category Dropdown */}
                 <div className="relative flex-shrink-0 w-full md:w-48 border-b md:border-b-0 md:border-r border-white/20">
                   <button
@@ -312,7 +316,7 @@ export default function HomePage() {
                       the bar's bottom border; on mobile span the full bar width. */}
                   <div
                     role="listbox"
-                    className={`absolute top-full -left-[calc(0.5rem+1px)] mt-1 md:mt-[calc(0.5rem+1px+0.25rem)] w-[calc(100%+1rem+2px)] md:w-full min-w-[200px] z-50 bg-white border border-zinc-200 shadow-xl rounded-none py-1 overflow-hidden transition-all duration-200 origin-top ${
+                    className={`absolute top-full -left-[calc(0.5rem+1px)] mt-1 md:mt-[calc(0.5rem+1px+0.25rem)] w-[calc(100%+1rem+2px)] md:w-full min-w-[200px] z-50 bg-black/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl rounded-none py-1 overflow-hidden transition-all duration-200 origin-top ${
                       isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'
                     }`}
                   >
@@ -331,8 +335,8 @@ export default function HomePage() {
                           onClick={() => { setSelectedCategory(option.value); setIsCategoryOpen(false); }}
                           className={`w-full text-left px-4 py-2.5 min-h-[44px] flex items-center text-sm rounded-none border-l-2 transition-colors cursor-pointer ${
                             isSelected
-                              ? 'bg-orange-50 text-orange-600 font-bold border-orange-600'
-                              : 'text-zinc-800 font-medium border-transparent hover:bg-zinc-50 hover:text-orange-600'
+                              ? 'bg-orange-600/30 text-orange-400 font-bold border-orange-500'
+                              : 'text-zinc-200 font-medium border-transparent hover:bg-white/10 hover:text-orange-400'
                           }`}
                         >
                           {option.label}
@@ -370,31 +374,27 @@ export default function HomePage() {
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white text-zinc-900 rounded-none shadow-2xl border border-zinc-200/80 max-h-48 sm:max-h-60 overflow-y-auto touch-pan-y z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl rounded-none py-1 max-h-48 sm:max-h-60 overflow-y-auto overscroll-contain touch-pan-y custom-scrollbar custom-scrollbar--dark z-50">
                   {isLoading ? (
-                    <div className="p-4 flex items-center justify-center text-sm text-zinc-500 min-h-[60px]">
-                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-600" />
+                    <div className="p-4 flex items-center justify-center text-sm text-zinc-300 min-h-[60px]">
+                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-400" />
                       {t('searchLoading')}
                     </div>
                   ) : suggestions.length > 0 ? (
-                    <ul className="divide-y divide-zinc-100">
+                    <ul>
                       {suggestions.map((suggestion) => (
-                        <li key={suggestion.id}>
+                        <li key={suggestion.id} className="border-b border-white/10 last:border-none">
                           <Link
                             href={suggestion.href || '#'}
-                            className="py-3 px-4 hover:bg-orange-50 active:bg-orange-100 transition-colors flex items-center justify-between text-zinc-900 text-sm cursor-pointer min-h-[44px]"
+                            className="group/item px-4 py-3 flex items-center justify-between gap-3 transition-colors cursor-pointer min-h-[44px] text-sm hover:bg-white/10 hover:text-orange-400 active:bg-white/15"
                             onClick={() => {
                               setIsFocused(false);
                               setIsCategoryOpen(false);
                             }}
                           >
-                            <span className="font-medium text-zinc-900 truncate pr-2">{suggestion.name}</span>
+                            <span className="text-sm font-medium text-zinc-100 group-hover/item:text-orange-400 truncate transition-colors">{suggestion.name}</span>
                             {selectedCategory === 'all' && (
-                              <span className={`px-2.5 py-0.5 rounded-none text-[10px] uppercase tracking-wider font-semibold shrink-0 border ${
-                                suggestion.type === 'Sanggar'
-                                  ? 'bg-orange-50 text-orange-700 border-orange-200/60'
-                                  : 'bg-amber-50 text-amber-700 border-amber-200/60'
-                              }`}>
+                              <span className="shrink-0 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-2 py-0.5 rounded-none tracking-wider uppercase">
                                 {suggestion.type}
                               </span>
                             )}
@@ -403,7 +403,7 @@ export default function HomePage() {
                       ))}
                     </ul>
                   ) : (
-                    <div className="p-4 text-center text-sm text-zinc-500 min-h-[60px] flex items-center justify-center">
+                    <div className="p-4 text-center text-sm text-zinc-300 min-h-[60px] flex items-center justify-center">
                       {t('searchNoResults')}
                     </div>
                   )}
