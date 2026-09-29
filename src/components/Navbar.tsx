@@ -83,9 +83,17 @@ export default function Navbar() {
     <>
       <header className={`flex items-center justify-center transition-all duration-300 ease-in-out fixed w-full top-0 z-[9999] h-16 ${jakarta.className} border-none ${
         isTransparent
-          ? 'bg-transparent border-none shadow-none text-white'
-          : 'bg-white/95 backdrop-blur-md shadow-sm border-none text-zinc-900'
+          ? 'shadow-none text-white'
+          : 'shadow-sm text-zinc-900'
       }`}>
+        {/* Header glass lives on this layer, not on <header>: a backdrop-filter on the header would make it a
+            backdrop root, and the Kategori dropdown's own blur would then only see the header, not the page */}
+        <div
+          aria-hidden="true"
+          className={`absolute inset-0 -z-10 pointer-events-none transition-colors duration-300 ${
+            isTransparent ? 'bg-transparent' : 'bg-white/95 backdrop-blur-md'
+          }`}
+        />
         <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm">
           {/* Group 1: Left - Logos & Title */}
           <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap shrink-0 z-10 min-w-0">
@@ -150,9 +158,9 @@ export default function Navbar() {
                     isActive 
                       ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
                       : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
-                  } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${
+                  } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
                     isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 hover:after:w-[calc(100%-16px)]"
-                  } ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
+                  }`}
                 >
                   {t('navHome')}
                 </Link>
@@ -163,43 +171,47 @@ export default function Navbar() {
             {(() => {
               const isActive = pathname.startsWith("/sanggar") || pathname.startsWith("/pemusik");
               return (
-                <div className="relative group">
+                <div className="relative group flex items-center h-full">
                   <button
+                    type="button"
+                    aria-haspopup="true"
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
-                      isActive 
+                      isActive
                         ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
                         : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
-                    } after:content-[''] after:absolute after:bottom-0 after:left-2 after:h-[2px] after:transition-all after:duration-300 ${
-                      isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)]"
-                    } ${isTransparent ? "after:bg-white" : "after:bg-orange-600"}`}
+                    } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
+                      isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
+                    }`}
                   >
                     {language === 'en' ? 'Category' : 'Kategori'}
-                    <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
+                    <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
                   </button>
-                  {/* Dropdown Panel */}
-                  <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div className="bg-neutral-950/70 backdrop-blur-md border border-neutral-800/80 rounded-none shadow-lg w-max">
-                      <Link
-                        href="/sanggar"
-                        className={`block px-4 py-2.5 text-[13px] tracking-wide transition-all duration-300 ${jakarta.className} ${
-                          pathname.startsWith("/sanggar")
-                            ? "text-orange-400 font-semibold bg-neutral-900/60"
-                            : "text-gray-300 hover:text-orange-400 hover:bg-neutral-900/60"
-                        }`}
-                      >
-                        {t('navSanggar')}
-                      </Link>
-                      <div className="border-t border-neutral-800/60"></div>
-                      <Link
-                        href="/pemusik"
-                        className={`block px-4 py-2.5 text-[13px] tracking-wide transition-all duration-300 ${jakarta.className} ${
-                          pathname.startsWith("/pemusik")
-                            ? "text-orange-400 font-semibold bg-neutral-900/60"
-                            : "text-gray-300 hover:text-orange-400 hover:bg-neutral-900/60"
-                        }`}
-                      >
-                        {t('navPemusik')}
-                      </Link>
+                  {/* Dropdown Panel: left edge flush with the "Kategori" text/underline (the trigger has px-2, so left-2).
+                      pt-2 (not mt-2) is an invisible hover bridge,
+                      so moving the cursor down from "Kategori" doesn't cross a gap and close the menu.
+                      Opens on hover, and on click/keyboard via focus-within. */}
+                  <div className="absolute left-2 top-full pt-2 w-48 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
+                    <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none py-1.5 overflow-hidden">
+                      {[
+                        { href: "/sanggar", label: t('navSanggar') },
+                        { href: "/pemusik", label: t('navPemusik') },
+                      ].map((item) => {
+                        const isItemActive = pathname.startsWith(item.href);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            aria-current={isItemActive ? "page" : undefined}
+                            className={`px-4 py-2.5 text-sm flex items-center justify-between border-l-2 rounded-none cursor-pointer transition-all ${jakarta.className} ${
+                              isItemActive
+                                ? "text-orange-400 bg-orange-600/20 font-bold border-orange-500"
+                                : "font-medium text-zinc-200 border-transparent hover:text-orange-400 hover:bg-white/10 hover:border-orange-500"
+                            }`}
+                          >
+                            {item.label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

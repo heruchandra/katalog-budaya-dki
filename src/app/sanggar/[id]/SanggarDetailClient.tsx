@@ -585,20 +585,20 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
                 {isEn ? "Practice Information" : "Informasi Latihan"}
               </h3>
-              <div className="space-y-3 text-sm text-zinc-700">
-                <div className="flex justify-between border-b border-zinc-100 pb-2.5">
-                  <span className="text-zinc-500">{isEn ? "Routine Schedule:" : "Jadwal Rutin:"}</span>
-                  <span className="font-semibold text-right text-zinc-800">{isEn ? "Saturday & Sunday" : "Sabtu & Minggu"}</span>
-                </div>
-                <div className="flex justify-between border-b border-zinc-100 pb-2.5">
-                  <span className="text-zinc-500">{isEn ? "Operating Hours:" : "Jam Operasional:"}</span>
-                  <span className="font-semibold text-right text-zinc-800">09:00 - 16:00 WIB</span>
-                </div>
-                <div className="flex justify-between pt-1">
-                  <span className="text-zinc-500">{isEn ? "Studio Status:" : "Status Sanggar:"}</span>
-                  <span className="font-semibold text-emerald-600">{isEn ? "Active & Verified" : "Aktif & Terverifikasi"}</span>
-                </div>
-              </div>
+              {/* Every row uses the same fixed label column + colon column, so the colons line up vertically */}
+              <dl className="text-sm text-zinc-700 divide-y divide-zinc-100">
+                {[
+                  { label: isEn ? "Routine Schedule" : "Jadwal Rutin", value: isEn ? "Saturday & Sunday" : "Sabtu & Minggu", valueClass: "text-zinc-900" },
+                  { label: isEn ? "Operating Hours" : "Jam Operasional", value: "09:00 - 16:00 WIB", valueClass: "text-zinc-900" },
+                  { label: isEn ? "Studio Status" : "Status Sanggar", value: isEn ? "Active & Verified" : "Aktif & Terverifikasi", valueClass: "text-emerald-600" },
+                ].map((row) => (
+                  <div key={row.label} className="grid grid-cols-[140px_auto_1fr] gap-x-3 items-center py-2.5 first:pt-0 last:pb-0">
+                    <dt className="text-zinc-500 text-left">{row.label}</dt>
+                    <span className="text-zinc-400 font-medium" aria-hidden="true">:</span>
+                    <dd className={`font-bold text-right ${row.valueClass}`}>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
             {/* Card 2: Lokasi & Alamat */}
