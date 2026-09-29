@@ -25,16 +25,17 @@ export default function HeroAudio() {
     <div className="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-50">
       <button
         onClick={toggleAudio}
-        className="flex items-center justify-center w-10 h-10 bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-none border border-white/20 transition-all duration-300 shadow-lg group"
+        type="button"
+        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-lg hover:bg-black/70 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group"
         aria-label={isMuted ? "Unmute audio" : "Mute audio"}
       >
         {isMuted ? (
           <div className="relative flex items-center justify-center">
-            <Music className="w-4 h-4 text-white opacity-70" />
-            <div className="absolute top-1/2 left-1/2 w-5 h-[1.5px] bg-white -translate-x-1/2 -translate-y-1/2 -rotate-45" />
+            <Music className="w-4 h-4 sm:w-5 sm:h-5 text-white opacity-70" />
+            <div className="absolute top-1/2 left-1/2 w-5 sm:w-6 h-[1.5px] bg-white -translate-x-1/2 -translate-y-1/2 -rotate-45" />
           </div>
         ) : (
-          <Music className="w-4 h-4 text-white group-hover:scale-110 transition-transform duration-300" />
+          <Music className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:scale-110 transition-transform duration-300" />
         )}
       </button>
 
