@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -33,6 +33,24 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [heroWordIndex, setHeroWordIndex] = useState(0);
   const router = useRouter();
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsCategoryOpen(false);
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   const isEnglish = language === 'en';
   const heroWords = language === 'id'
@@ -262,7 +280,7 @@ export default function HomePage() {
 
           {/* ===== Search Bar ===== */}
           <div className="w-full max-w-3xl animate-slide-up">
-            <div className="group relative z-50">
+            <div ref={searchContainerRef} className="group relative z-50">
               <form
                 onSubmit={handleSearch}
                 className="mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto bg-black/20 backdrop-blur-md border border-white/20 p-2 shadow-2xl"
@@ -275,7 +293,7 @@ export default function HomePage() {
                       setIsCategoryOpen(!isCategoryOpen);
                       setIsFocused(false);
                     }}
-                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 bg-transparent hover:bg-white/10 transition-colors w-full h-full text-white"
+                    className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 bg-transparent hover:bg-white/10 transition-colors w-full h-full text-white min-h-[44px]"
                   >
                     <span className="text-sm font-semibold truncate">
                       {selectedCategory === 'all' ? t('searchAllCat') : selectedCategory === 'dance' ? t('searchDanceCat') : t('searchMusicCat')}
@@ -285,27 +303,43 @@ export default function HomePage() {
                     </svg>
                   </button>
 
-                  {/* Floating Animated Menu */}
-                  <div className={`absolute top-full -left-[9px] mt-[10px] w-[calc(100%+10px)] bg-neutral-900/80 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden transition-all duration-300 z-[999] origin-top-left ${isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`}>
-                    <div className="p-2 flex flex-col gap-1">
+                  {/* Floating Category Menu */}
+                  <div
+                    className={`absolute top-full left-0 right-0 md:right-auto md:w-56 mt-1 sm:mt-2 bg-white text-zinc-900 rounded-xl shadow-2xl border border-zinc-200/80 overflow-hidden transition-all duration-200 z-50 origin-top ${
+                      isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'
+                    }`}
+                  >
+                    <div className="p-1.5 flex flex-col gap-1">
                       <button
                         type="button"
                         onClick={() => { setSelectedCategory('all'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'all' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
+                        className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors min-h-[44px] flex items-center ${
+                          selectedCategory === 'all'
+                            ? 'bg-orange-50 text-orange-600 font-semibold'
+                            : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 font-medium'
+                        }`}
                       >
                         {t('searchAllCat')}
                       </button>
                       <button
                         type="button"
                         onClick={() => { setSelectedCategory('dance'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'dance' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
+                        className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors min-h-[44px] flex items-center ${
+                          selectedCategory === 'dance'
+                            ? 'bg-orange-50 text-orange-600 font-semibold'
+                            : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 font-medium'
+                        }`}
                       >
                         {t('searchDanceCat')}
                       </button>
                       <button
                         type="button"
                         onClick={() => { setSelectedCategory('music'); setIsCategoryOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm transition-colors ${selectedCategory === 'music' ? 'bg-white/20 text-white font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white font-medium'}`}
+                        className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors min-h-[44px] flex items-center ${
+                          selectedCategory === 'music'
+                            ? 'bg-orange-50 text-orange-600 font-semibold'
+                            : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 font-medium'
+                        }`}
                       >
                         {t('searchMusicCat')}
                       </button>
@@ -325,15 +359,15 @@ export default function HomePage() {
                       setIsFocused(true);
                       setIsCategoryOpen(false);
                     }}
-                    onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                    onBlur={() => setTimeout(() => setIsFocused(false), 250)}
                     placeholder={t('searchHeroPlaceholder')}
-                    className="w-full h-full bg-transparent text-white placeholder-white/70 px-6 py-4 outline-none text-sm tracking-wide"
+                    className="w-full h-full bg-transparent text-white placeholder-white/70 px-6 py-4 outline-none text-sm tracking-wide min-h-[44px]"
                     aria-label={t('searchAriaLabel')}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-semibold text-xs tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white hover:border-orange-600 border border-white transition-all duration-500"
+                  className="w-full md:w-auto px-10 py-4 bg-white text-black font-semibold text-xs tracking-[0.2em] uppercase hover:bg-orange-600 hover:text-white hover:border-orange-600 border border-white transition-all duration-500 min-h-[44px]"
                 >
                   {t('searchBtn')}
                 </button>
@@ -341,27 +375,31 @@ export default function HomePage() {
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-neutral-900/80 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-none z-50 overflow-hidden">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white text-zinc-900 rounded-xl shadow-2xl border border-zinc-200/80 max-h-48 sm:max-h-60 overflow-y-auto touch-pan-y z-50">
                   {isLoading ? (
-                    <div className="p-4 flex items-center justify-center text-sm text-white/70">
-                      <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                    <div className="p-4 flex items-center justify-center text-sm text-zinc-500 min-h-[60px]">
+                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-600" />
                       {t('searchLoading')}
                     </div>
                   ) : suggestions.length > 0 ? (
-                    <ul>
+                    <ul className="divide-y divide-zinc-100">
                       {suggestions.map((suggestion) => (
                         <li key={suggestion.id}>
                           <Link
                             href={suggestion.href || '#'}
-                            className="flex items-center justify-between px-6 py-4 hover:bg-white/10 transition-colors cursor-pointer border-b border-white/10 last:border-0"
-                            onClick={() => setIsFocused(false)}
+                            className="py-3 px-4 hover:bg-orange-50 active:bg-orange-100 transition-colors flex items-center justify-between text-zinc-900 text-sm cursor-pointer min-h-[44px]"
+                            onClick={() => {
+                              setIsFocused(false);
+                              setIsCategoryOpen(false);
+                            }}
                           >
-                            <span className="text-white font-medium">{suggestion.name}</span>
+                            <span className="font-medium text-zinc-900 truncate pr-2">{suggestion.name}</span>
                             {selectedCategory === 'all' && (
-                              <span className={`px-3 py-1 rounded-none text-[10px] uppercase tracking-widest font-medium border backdrop-blur-sm transition-colors ${suggestion.type === 'Sanggar'
-                                  ? 'bg-white/5 border-white/20 text-white/80'
-                                  : 'bg-[#D4C8B8]/10 border-[#D4C8B8]/30 text-[#D4C8B8]'
-                                }`}>
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-semibold shrink-0 border ${
+                                suggestion.type === 'Sanggar'
+                                  ? 'bg-orange-50 text-orange-700 border-orange-200/60'
+                                  : 'bg-amber-50 text-amber-700 border-amber-200/60'
+                              }`}>
                                 {suggestion.type}
                               </span>
                             )}
@@ -370,7 +408,7 @@ export default function HomePage() {
                       ))}
                     </ul>
                   ) : (
-                    <div className="p-4 text-center text-sm text-white/70">
+                    <div className="p-4 text-center text-sm text-zinc-500 min-h-[60px] flex items-center justify-center">
                       {t('searchNoResults')}
                     </div>
                   )}
