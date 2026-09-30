@@ -8,6 +8,7 @@ import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import DriftWall, { DriftWallItem } from "@/components/DriftWall";
 import CatalogPagination from "@/components/CatalogPagination";
+import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
@@ -29,6 +30,8 @@ export interface Sanggar {
   kelurahan?: string;
   kecamatan?: string;
   kota_kab?: string;
+  wilayah?: string;
+  alamat_tempat_latihan?: string;
   no_hp?: string;
   kontak_pic?: string;
   whatsapp?: string;
@@ -55,6 +58,7 @@ export default function SanggarCatalog({
 }: SanggarCatalogProps) {
   const router = useRouter();
   const [activeGrade, setActiveGrade] = useState("all");
+  const [activeWilayah, setActiveWilayah] = useState("all");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -67,10 +71,25 @@ export default function SanggarCatalog({
     }
   }, [initialQuery]);
 
+  // "none" (Belum Tergrade) is only offered when some sanggar actually have no grade
+  const hasUngraded = (sanggars || []).some((s) => !s.grade);
   const gradeFilters = [
     { value: "all", label: t('sanggarGradeAll') },
     { value: "A", label: "GRADE A" },
     { value: "B", label: "GRADE B" },
+    { value: "C", label: "GRADE C" },
+    ...(hasUngraded ? [{ value: "none", label: t('sanggarUngraded') }] : []),
+  ];
+
+  // Wilayah options with how many sanggar are known to be in each (region data comes from real fields only)
+  const wilayahCounts = (sanggars || []).reduce<Record<string, number>>((acc, s) => {
+    const w = resolveWilayah(s);
+    if (w) acc[w] = (acc[w] || 0) + 1;
+    return acc;
+  }, {});
+  const wilayahFilters = [
+    { value: "all", label: t('sanggarWilayahAll'), count: (sanggars || []).length },
+    ...JAKARTA_WILAYAH.map((w) => ({ value: w as string, label: w as string, count: wilayahCounts[w] || 0 })),
   ];
 
   const filtered = (sanggars || []).filter((s: any) => {
@@ -108,10 +127,30 @@ export default function SanggarCatalog({
     const matchGrade =
       activeGrade === "all" ||
       isDirectStudioMatch ||
-      (s.grade && (s.grade.toUpperCase() === activeGrade.toUpperCase() || s.grade.toUpperCase() === `GRADE ${activeGrade.toUpperCase()}`));
+      (activeGrade === "none"
+        ? !s.grade
+        : (s.grade && (s.grade.toUpperCase() === activeGrade.toUpperCase() || s.grade.toUpperCase() === `GRADE ${activeGrade.toUpperCase()}`)));
 
-    return matchGrade && matchesQuery;
+    const matchWilayah = activeWilayah === "all" || resolveWilayah(s) === activeWilayah;
+
+    // Search, grade and wilayah all apply together
+    return matchGrade && matchWilayah && matchesQuery;
   });
+
+  const hasActiveFilter = Boolean(searchQuery) || activeGrade !== "all" || activeWilayah !== "all";
+  const resetFilters = () => {
+    setSearchQuery("");
+    setActiveGrade("all");
+    setActiveWilayah("all");
+    setCurrentPage(1);
+  };
+
+  const sidebarOptionClass = (isActive: boolean) =>
+    `flex w-full items-center justify-between gap-2 text-left px-2 py-1.5 text-xs font-medium uppercase tracking-wider border-l-2 transition-colors outline-none ${
+      isActive
+        ? "text-orange-600 font-bold bg-orange-50 border-orange-500 pl-2.5"
+        : "text-zinc-600 border-transparent hover:text-zinc-900"
+    }`;
 
   // Sinar Norray is always pinned as the first card; the rest keep their normal order
   const isPinned = (s: typeof filtered[number]) =>
@@ -208,6 +247,27 @@ export default function SanggarCatalog({
               </button>
             ))}
           </div>
+          {/* Wilayah chips (mobile) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {wilayahFilters.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => {
+                  setActiveWilayah(filter.value);
+                  setCurrentPage(1);
+                }}
+                aria-pressed={activeWilayah === filter.value}
+                className={`px-3 py-1.5 rounded-none text-xs font-medium uppercase tracking-wider whitespace-nowrap transition-colors ${
+                  activeWilayah === filter.value
+                    ? "bg-zinc-900 text-white shadow-md"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Left Sidebar (Filters) */}
@@ -231,7 +291,7 @@ export default function SanggarCatalog({
 
           <div className="border-t border-slate-200 pt-6">
             <h3 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('sanggarFilterGrade')}</h3>
-            <div className="flex flex-col gap-3">
+            <div className="space-y-1.5">
               {gradeFilters.map((filter) => (
                 <button
                   key={filter.value}
@@ -240,13 +300,32 @@ export default function SanggarCatalog({
                     setActiveGrade(filter.value);
                     setCurrentPage(1);
                   }}
-                  className={`text-left text-sm transition-colors uppercase tracking-widest outline-none focus:outline-none ${
-                    activeGrade === filter.value
-                      ? "text-slate-900 font-semibold"
-                      : "text-slate-400 hover:text-slate-600"
-                  }`}
+                  aria-pressed={activeGrade === filter.value}
+                  className={sidebarOptionClass(activeGrade === filter.value)}
                 >
                   {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* FILTER WILAYAH */}
+          <div className="border-t border-slate-200 pt-6">
+            <h3 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('sanggarFilterWilayah')}</h3>
+            <div className="space-y-1.5">
+              {wilayahFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => {
+                    setActiveWilayah(filter.value);
+                    setCurrentPage(1);
+                  }}
+                  aria-pressed={activeWilayah === filter.value}
+                  className={sidebarOptionClass(activeWilayah === filter.value)}
+                >
+                  <span>{filter.label}</span>
+                  <span className="text-[10px] font-medium text-zinc-400 tabular-nums">{filter.count}</span>
                 </button>
               ))}
             </div>
@@ -273,20 +352,16 @@ export default function SanggarCatalog({
                   <div className="rounded-none bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
                     {fetchError}
                   </div>
-                ) : searchQuery || activeGrade !== "all" ? (
+                ) : hasActiveFilter ? (
                   <p>{t('sanggarEmptyFilter')}</p>
                 ) : (
                   <p>{t('sanggarEmptyDefault')}</p>
                 )}
               </div>
-              {!fetchError && (searchQuery || activeGrade !== "all") && (
+              {!fetchError && hasActiveFilter && (
                 <button
                   type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setActiveGrade("all");
-                    setCurrentPage(1);
-                  }}
+                  onClick={resetFilters}
                   className="mt-5 border-b border-slate-900 pb-1 text-sm font-medium text-slate-900 transition-all hover:text-slate-600 tracking-widest uppercase"
                 >
                   {t('sanggarResetFilter')}
@@ -374,11 +449,13 @@ export default function SanggarCatalog({
                         {sanggar.nama_sanggar.replace(/^Sanggar\s+/i, '')}
                       </h3>
                     </Link>
-                    <p className="text-xs text-slate-500 uppercase tracking-widest mt-1.5">
-                      {activeGrade === "all" && sanggar.grade 
-                        ? `GRADE ${sanggar.grade.replace(/grade/i, '').trim()} • ` 
-                        : ""}
-                      {sanggar.kecamatan || "JAKARTA"}
+                    {/* Grade • specific administrative city; "DKI Jakarta" when the city isn't on record (never guessed) */}
+                    <p className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase mt-1">
+                      {sanggar.grade
+                        ? `GRADE ${sanggar.grade.replace(/grade/i, '').trim()}`
+                        : t('sanggarUngraded')}
+                      {" • "}
+                      {resolveWilayah(sanggar) ?? "DKI Jakarta"}
                     </p>
                     {sanggar.jenis_tarian && (
                       <p className="text-xs text-slate-400 truncate mt-1">
