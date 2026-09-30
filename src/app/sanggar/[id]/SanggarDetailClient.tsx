@@ -30,8 +30,8 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'
 
 export interface TariItem {
   name: string;
-  title?: string;
-  description?: string;
+    title?: string;
+    description?: string;
   image?: string;
   choreographer?: string;
   composer?: string;
@@ -667,17 +667,20 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     setActivePhotoIndex(idx);
                   }}
                   aria-label={isEn ? `View photo: ${label}` : `Lihat foto: ${label}`}
-                  className="block w-full rounded-none overflow-hidden border border-zinc-200/80 bg-zinc-50 shadow-sm hover:shadow-md transition-all duration-300 relative group cursor-pointer aspect-[4/3] outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                  className="block w-full rounded-xl overflow-hidden border border-zinc-200/80 bg-zinc-50 shadow-sm hover:shadow-md transition-all duration-300 relative group cursor-pointer aspect-[4/3] outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
                   <img
                     src={img.url}
                     alt={label}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="bg-white/90 backdrop-blur-md text-zinc-900 rounded-none p-3 shadow-lg scale-90 group-hover:scale-100 group-focus-visible:scale-100 transition-transform duration-300">
-                      <Maximize2 className="w-5 h-5" />
+                  {/* Light dim on hover (no heavy full-card overlay) */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 group-focus-visible:bg-black/20 transition-colors duration-300 pointer-events-none" />
+                  {/* Expand badge in the top-right corner, clear of the photo's subject */}
+                  <div className="absolute top-3 right-3 z-10 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:translate-y-0 transition-all duration-200 ease-out pointer-events-none">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/60 group-hover:bg-orange-600 text-white backdrop-blur-md border border-white/20 shadow-md transition-colors">
+                      <Maximize2 className="w-4 h-4" />
                     </span>
                   </div>
                 </button>
@@ -731,17 +734,20 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     key={idx}
                     onClick={() => setActivePhotoIndex(idx)}
                     aria-label={isEn ? `View photo: ${label}` : `Lihat foto: ${label}`}
-                    className="text-left bg-zinc-900/90 border border-zinc-800 rounded-none p-2.5 hover:border-orange-500/50 transition-all cursor-pointer group"
+                    className="text-left bg-zinc-900/90 border border-zinc-800 rounded-2xl p-2.5 hover:border-orange-500/50 transition-all cursor-pointer group"
                   >
-                    <div className="relative aspect-[4/3] rounded-none overflow-hidden bg-zinc-800">
+                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-800">
                       <img
                         src={img.url}
                         alt={label}
                         loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <span className="w-10 h-10 rounded-none bg-white/15 backdrop-blur-sm border border-white/30 text-white flex items-center justify-center">
+                      {/* Light dim on hover (no heavy full-card overlay) */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 group-focus-visible:bg-black/20 transition-colors duration-300 pointer-events-none" />
+                      {/* Expand badge in the top-right corner, clear of the photo's subject */}
+                      <div className="absolute top-3 right-3 z-10 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:translate-y-0 transition-all duration-200 ease-out pointer-events-none">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/60 group-hover:bg-orange-600 text-white backdrop-blur-md border border-white/20 shadow-md transition-colors">
                           <Maximize2 className="w-4 h-4" />
                         </span>
                       </div>
