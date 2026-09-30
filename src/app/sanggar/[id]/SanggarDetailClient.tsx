@@ -740,7 +740,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
           {/* 4-photo preview row on a soft gradient panel: sharp white-framed image cards (captions live in the
               lightbox); clicking a card opens the viewer at that photo */}
-          <div className="p-5 sm:p-7 bg-gradient-to-r from-[#ea580c] via-[#d97706] to-[#c2410c] rounded-none border border-orange-600/40 shadow-md">
+          <div className="p-4 sm:p-6 bg-zinc-50/60 border border-zinc-200/80 rounded-none">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {previewPhotos.map((img, idx) => {
               const label = getPhotoLabel(img);
@@ -753,7 +753,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     setActivePhotoIndex(idx);
                   }}
                   aria-label={isEn ? `View photo: ${label}` : `Lihat foto: ${label}`}
-                  className="block w-full rounded-none overflow-hidden bg-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 relative group cursor-pointer aspect-[4/3] outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-orange-600"
+                  className="block w-full rounded-none overflow-hidden bg-white border border-zinc-200 shadow-xs hover:border-orange-500 transition-all duration-200 relative group cursor-pointer aspect-[4/3] outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
                   <img
                     src={img.url}
