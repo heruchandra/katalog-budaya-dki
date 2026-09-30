@@ -19,9 +19,9 @@ export default function Footer() {
   ];
 
   const infoLinks = [
-    { href: "#", label: t('footerAbout') },
-    { href: "#", label: t('footerPrivacy') },
-    { href: "#", label: t('footerTerms') },
+    { href: "/tentang-kami", label: t('footerAbout') },
+    { href: "/kebijakan-privasi", label: t('footerPrivacy') },
+    { href: "/syarat-ketentuan", label: t('footerTerms') },
   ];
 
   if (pathname?.startsWith("/admin") || pathname === "/login" || pathname === "/register") {
