@@ -29,14 +29,9 @@ export default function Footer() {
   }
 
   return (
-    <footer 
-      className="relative mt-auto text-white border-t border-white/10 pt-14 pb-8 overflow-hidden"
-      style={{
-        background: 'radial-gradient(120% 120% at 10% 0%, #1e293b 0%, #111827 40%, #080b11 100%)'
-      }}
-    >
-      {/* Subtle warm orange top border line accent */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-orange-500/40 via-white/10 to-transparent pointer-events-none" />
+    <footer className="relative mt-auto bg-[#18191C] text-zinc-300 shadow-2xl pt-14 pb-8 overflow-hidden">
+      {/* Logo flame accent: Dinas Kebudayaan orange -> magenta -> royal blue */}
+      <div aria-hidden="true" className="absolute top-0 inset-x-0 z-20 h-[3px] w-full bg-gradient-to-r from-[#F7941E] via-[#E01A67] to-[#2B3990]" />
 
       {/* Batik pattern overlay */}
       <div className="batik-pattern pointer-events-none absolute inset-0 opacity-10" />
@@ -59,19 +54,19 @@ export default function Footer() {
                 <span className="text-base font-bold leading-tight text-white">
                   {brandTitle}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-orange-500/90">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-[#F7941E]">
                   DKI Jakarta
                 </span>
               </div>
             </div>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-gray-400 text-justify">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-zinc-400 text-justify">
               {t('footerDescription')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold tracking-wider text-gray-200 uppercase">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerCatalog')}
             </h3>
             <ul className="space-y-3">
@@ -79,7 +74,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+                    className="text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -90,7 +85,7 @@ export default function Footer() {
     
           {/* Info Links */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold tracking-wider text-gray-200 uppercase">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerInfo')}
             </h3>
             <ul className="space-y-3">
@@ -98,7 +93,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+                    className="text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -109,12 +104,12 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="lg:col-span-2">
-            <h3 className="mb-4 text-xs font-semibold tracking-wider text-gray-200 uppercase">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerContact')}
             </h3>
             <ul className="space-y-3">
-              <li className="flex items-start gap-3 text-gray-400">
-                <MapPin className="w-5 h-5 shrink-0 mt-1 text-orange-500/80" />
+              <li className="flex items-start gap-3 text-sm text-zinc-400">
+                <MapPin className="text-[#F7941E] w-4 h-4 shrink-0 mt-0.5" />
                 <span className="text-sm leading-relaxed text-justify">
                   Jl. Gatot Subroto Kav. 40-41 Lt 11, 12, 14 dan 15, Kuningan, Kuningan Timur, Setiabudi, Jakarta Selatan, DKI Jakarta 12950
                 </span>
@@ -122,18 +117,18 @@ export default function Footer() {
               <li>
                 <a
                   href="tel:+62211234567" 
-                  className="flex items-center gap-3 text-sm text-gray-400 hover:text-orange-400 transition-colors"
+                  className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                 >
-                  <Phone className="w-5 h-5 shrink-0 text-orange-500/80" />
+                  <Phone className="text-[#F7941E] w-4 h-4 shrink-0" />
                   (021) 123-4567
                 </a>
               </li>
               <li>
                 <a
                   href="mailto:info@disbud.jakarta.go.id"
-                  className="flex items-center gap-3 text-sm text-gray-400 hover:text-orange-400 transition-colors"
+                  className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                 >
-                  <Mail className="w-5 h-5 shrink-0 text-orange-500/80" />
+                  <Mail className="text-[#F7941E] w-4 h-4 shrink-0" />
                   info@disbud.jakarta.go.id
                 </a>
               </li>
@@ -142,11 +137,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
-          <p className="text-xs text-gray-500">
+        <div className="border-t border-white/10 pt-6 mt-10 text-xs text-zinc-500 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p>
             &copy; {currentYear} Dinas Kebudayaan Provinsi DKI Jakarta. {t('footerCopyright')}
           </p>
-          <p className="text-xs text-gray-500">
+          <p>
             {t('footerBuiltWith')}
           </p>
         </div>
