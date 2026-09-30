@@ -73,10 +73,25 @@ function AdminSanggarContent() {
   const hasStatusColumn = rows.length > 0 && "status" in rows[0];
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    // Case-insensitive; every word typed must appear somewhere in the row's searchable text
+    const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
     return rows.filter((row) => {
       const g = gradeOf(row);
-      const matchQuery = !q || row.nama_sanggar?.toLowerCase().includes(q) || (row.nama_pic || "").toLowerCase().includes(q);
+      const haystack = [
+        row.nama_sanggar,
+        row.ketua_sanggar,
+        row.nama_pic,
+        row.kontak_pic,
+        row.email,
+        row.kategori,
+        row.jenis_tarian,
+        resolveWilayah(row),
+        row.alamat,
+      ]
+        .filter(Boolean)
+        .join(" \n ")
+        .toLowerCase();
+      const matchQuery = words.every((word) => haystack.includes(word));
       const matchGrade = grade === "all" || g === grade;
       const matchWilayah = wilayah === "all" || resolveWilayah(row) === wilayah;
       const matchStatus = status === "all" || (status === "draft" ? isDraft(row) : !isDraft(row));
@@ -128,7 +143,7 @@ function AdminSanggarContent() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={tr("Cari nama sanggar atau PIC…", "Search sanggar name or PIC…")}
+              placeholder={tr("Cari nama, PIC, kategori, wilayah, alamat…", "Search name, PIC, category, region, address…")}
               aria-label={tr("Cari sanggar", "Search sanggar")}
               className="w-full bg-transparent py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none"
             />
@@ -201,7 +216,10 @@ function AdminSanggarContent() {
                         </div>
                         <div className="min-w-0">
                           <p className="truncate text-sm font-semibold text-zinc-900">{row.nama_sanggar}</p>
-                          <p className="text-xs text-zinc-400">ID {row.id}</p>
+                          <p className="text-xs text-zinc-400">
+                            ID {row.id}
+                            {region && <> • {region}</>}
+                          </p>
                         </div>
                       </div>
                     </td>
