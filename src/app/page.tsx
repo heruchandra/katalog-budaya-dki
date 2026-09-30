@@ -49,22 +49,24 @@ const pickImage = (row: Record<string, unknown>): string | null => {
 
 /**
  * Search relevance tier for a display name (lower = better), or null if it doesn't match.
- *   0 = name starts with q ("Amarta")
- *   1 = any word starts with q ("Sanggar Anggun", "Tari Angklung")
- *   2 = q appears inside a word ("Gayatari")
- *   3 = only secondary text matches: the full/legal name, PIC / leader name, or region
- * Single-character queries are strict: only tiers 0-1 are returned.
+ * Strict prefix matching: nothing matches in the middle of a word.
+ *   0 = the name itself starts with q            ("Sinar Norray" for "s" / "sin")
+ *   1 = a later word of the name starts with q   ("Sinar Norray" for "norray"); needs 2+ characters
+ *   2 = a secondary field (full/legal name, leader, PIC, region) or one of its words starts with q;
+ *       needs 3+ characters
+ * So a single character only ever returns names that begin with that letter.
  * Matching is case-insensitive; `q` must already be lower-cased and trimmed.
  */
 const getMatchTier = (name: string, q: string, fullName?: string, extra: (string | null | undefined)[] = []): number | null => {
-  const n = name.toLowerCase();
-  let tier: number | null = null;
-  if (n.startsWith(q)) tier = 0;
-  else if (n.split(/[^a-z0-9]+/).some((word) => word.startsWith(q))) tier = 1;
-  else if (n.includes(q)) tier = 2;
-  else if ([fullName, ...extra].some((text) => text && text.toLowerCase().includes(q))) tier = 3;
-  if (tier === null || (q.length === 1 && tier > 1)) return null;
-  return tier;
+  const startsWithWord = (text: string) => text.split(/[^a-z0-9]+/).some((word) => word.startsWith(q));
+  const n = name.trim().toLowerCase();
+  if (n.startsWith(q)) return 0;
+  if (q.length >= 2 && startsWithWord(n)) return 1;
+  if (q.length >= 3) {
+    const secondary = [fullName, ...extra].filter((text): text is string => Boolean(text)).map((text) => text.trim().toLowerCase());
+    if (secondary.some((text) => text.startsWith(q) || startsWithWord(text))) return 2;
+  }
+  return null;
 };
 
 /** Most results the dropdown shows (it scrolls) */
