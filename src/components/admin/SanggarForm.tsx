@@ -67,6 +67,8 @@ export default function SanggarForm({ id }: { id?: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState(false);
+  const [gradeError, setGradeError] = useState(false);
+  const hasValidGrade = (GRADE_OPTIONS as readonly string[]).includes(values.grade);
   const [isGalleryBusy, setIsGalleryBusy] = useState(false);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,8 +131,10 @@ export default function SanggarForm({ id }: { id?: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!values.nama_sanggar.trim()) {
-      setNameError(true);
+    const missingName = !values.nama_sanggar.trim();
+    if (missingName || !hasValidGrade) {
+      setNameError(missingName);
+      setGradeError(!hasValidGrade);
       setActiveTab("umum");
       return;
     }
@@ -263,13 +267,21 @@ export default function SanggarForm({ id }: { id?: string }) {
               </label>
 
               <label>
-                <FieldLabel>Grade</FieldLabel>
-                <select value={values.grade} onChange={(e) => set("grade", e.target.value)} className={inputClass}>
-                  <option value="">{tr("Belum Tergrade", "Ungraded")}</option>
+                <FieldLabel required>Grade</FieldLabel>
+                {/* Only Grade A / B can be chosen. The placeholder is not selectable: it just shows that nothing
+                    valid is set yet (new sanggar, or an old record holding another value). */}
+                <select
+                  value={hasValidGrade ? values.grade : ""}
+                  onChange={(e) => { set("grade", e.target.value); setGradeError(false); }}
+                  aria-invalid={gradeError}
+                  className={`${inputClass} ${gradeError ? "border-red-400 focus:border-red-500 focus:ring-red-500" : ""}`}
+                >
+                  <option value="" disabled hidden>{tr("Pilih grade", "Choose a grade")}</option>
                   {GRADE_OPTIONS.map((g) => (
                     <option key={g} value={g}>Grade {g}</option>
                   ))}
                 </select>
+                {gradeError && <span className="mt-1 block text-xs text-red-600">{tr("Pilih Grade A atau Grade B.", "Choose Grade A or Grade B.")}</span>}
               </label>
 
               <label>

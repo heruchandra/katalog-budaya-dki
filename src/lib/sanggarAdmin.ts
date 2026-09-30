@@ -9,7 +9,8 @@ export const MEDIA_BUCKET = "katalog-media";
 /** Same rule the public Navbar uses to show the admin link. Real enforcement must be Supabase RLS. */
 export const ADMIN_EMAIL = "admindisbud@gmail.com";
 
-export const GRADE_OPTIONS = ["A", "B", "C"] as const;
+/** The only grades offered in the admin filter and form */
+export const GRADE_OPTIONS = ["A", "B"] as const;
 export const KATEGORI_OPTIONS = ["Seni Tari", "Seni Musik", "Seni Teater", "Seni Rupa", "Kerajinan", "Lainnya"] as const;
 export const STATUS_OPTIONS = ["terverifikasi", "draft"] as const;
 export type SanggarStatus = (typeof STATUS_OPTIONS)[number];

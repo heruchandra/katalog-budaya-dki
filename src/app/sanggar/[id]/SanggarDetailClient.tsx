@@ -297,7 +297,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 ))}
               </dl>
 
-              {/* Icon-only contact tiles, one full-width row in this order: WhatsApp, Gmail, Instagram,
+              {/* Icon-only contact tiles, one full-width row in this order: WhatsApp, Instagram, Gmail,
                   YouTube, Google Maps. Gmail / YouTube / Maps only appear when the data exists, and the
                   row always has as many columns as tiles shown. */}
               <div className={`grid ${
@@ -331,25 +331,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   );
                 })()}
 
-                {/* Gmail Button */}
-                {sanggar.kontak?.email && (
-                  <a
-                    href={`mailto:${sanggar.kontak.email}`}
-                    title="Email"
-                    aria-label="Email"
-                    className="bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200 h-11 w-full flex items-center justify-center rounded shadow-xs transition-colors"
-                  >
-                    {/* Official multi-colour Gmail logo (2020) */}
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
-                      <path fill="#34A853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
-                      <path fill="#FBBC04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
-                      <path fill="#EA4335" d="M72 74V48l24 18 24-18v26L96 92" />
-                      <path fill="#C5221F" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
-                    </svg>
-                  </a>
-                )}
-
                 {/* Instagram Button */}
                 {(() => {
                   const igRaw = sanggar.instagramUrl || sanggar.contacts?.instagram || sanggar.instagram || (sanggar.kontak && sanggar.kontak.instagram) || "https://instagram.com/sinar_norray";
@@ -369,6 +350,25 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     </a>
                   );
                 })()}
+
+                {/* Gmail Button */}
+                {sanggar.kontak?.email && (
+                  <a
+                    href={`mailto:${sanggar.kontak.email}`}
+                    title="Email"
+                    aria-label="Email"
+                    className="bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200 h-11 w-full flex items-center justify-center rounded shadow-xs transition-colors"
+                  >
+                    {/* Official multi-colour Gmail logo (2020) */}
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
+                      <path fill="#34A853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
+                      <path fill="#FBBC04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
+                      <path fill="#EA4335" d="M72 74V48l24 18 24-18v26L96 92" />
+                      <path fill="#C5221F" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
+                    </svg>
+                  </a>
+                )}
 
                 {/* YouTube Button (inline SVG: lucide-react v1 has no brand icons) */}
                 {sanggar.youtubeUrl && (

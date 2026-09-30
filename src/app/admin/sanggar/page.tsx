@@ -77,7 +77,7 @@ function AdminSanggarContent() {
     return rows.filter((row) => {
       const g = gradeOf(row);
       const matchQuery = !q || row.nama_sanggar?.toLowerCase().includes(q) || (row.nama_pic || "").toLowerCase().includes(q);
-      const matchGrade = grade === "all" || (grade === "none" ? !g : g === grade);
+      const matchGrade = grade === "all" || g === grade;
       const matchWilayah = wilayah === "all" || resolveWilayah(row) === wilayah;
       const matchStatus = status === "all" || (status === "draft" ? isDraft(row) : !isDraft(row));
       return matchQuery && matchGrade && matchWilayah && matchStatus;
@@ -139,7 +139,6 @@ function AdminSanggarContent() {
               {GRADE_OPTIONS.map((g) => (
                 <option key={g} value={g}>Grade {g}</option>
               ))}
-              <option value="none">{tr("Belum Tergrade", "Ungraded")}</option>
             </select>
             <select value={wilayah} onChange={(e) => setWilayah(e.target.value)} aria-label={tr("Filter wilayah", "Filter region")} className={selectClass}>
               <option value="all">{tr("Semua Wilayah", "All Regions")}</option>
