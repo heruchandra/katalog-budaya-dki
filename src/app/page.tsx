@@ -14,7 +14,9 @@ import {
   Loader2,
   Building2,
   User as UserIcon,
+  MapPin,
 } from "lucide-react";
+import { resolveWilayah } from "@/lib/wilayah";
 import { supabase } from "@/lib/supabase";
 import { Dancing_Script } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
@@ -50,26 +52,32 @@ const pickImage = (row: Record<string, unknown>): string | null => {
  *   0 = name starts with q ("Amarta")
  *   1 = any word starts with q ("Sanggar Anggun", "Tari Angklung")
  *   2 = q appears inside a word ("Gayatari")
- *   3 = only the full/legal name matches (e.g. "Sanggar Seni …"), never shown for 1-char queries
+ *   3 = only secondary text matches: the full/legal name, PIC / leader name, or region
  * Single-character queries are strict: only tiers 0-1 are returned.
+ * Matching is case-insensitive; `q` must already be lower-cased and trimmed.
  */
-const getMatchTier = (name: string, q: string, fullName?: string): number | null => {
+const getMatchTier = (name: string, q: string, fullName?: string, extra: (string | null | undefined)[] = []): number | null => {
   const n = name.toLowerCase();
   let tier: number | null = null;
   if (n.startsWith(q)) tier = 0;
   else if (n.split(/[^a-z0-9]+/).some((word) => word.startsWith(q))) tier = 1;
   else if (n.includes(q)) tier = 2;
-  else if (fullName && fullName.toLowerCase().includes(q)) tier = 3;
+  else if ([fullName, ...extra].some((text) => text && text.toLowerCase().includes(q))) tier = 3;
   if (tier === null || (q.length === 1 && tier > 1)) return null;
   return tier;
 };
 
-type RankedSuggestion = { name: string; fullName?: string; _tier?: number };
+/** Most results the dropdown shows (it scrolls) */
+const MAX_SUGGESTIONS = 20;
+/** How long the loaded catalog is reused before asking the database again */
+const CATALOG_TTL_MS = 60_000;
+
+type RankedSuggestion = { name: string; fullName?: string; extra?: (string | null | undefined)[]; _tier?: number };
 
 // Filter to matches and sort by tier, then alphabetically
 const rankByRelevance = <T extends RankedSuggestion>(items: T[], q: string): (T & { _tier: number })[] =>
   items
-    .map((item) => ({ ...item, _tier: getMatchTier(item.name, q, item.fullName) }))
+    .map((item) => ({ ...item, _tier: getMatchTier(item.name, q, item.fullName, item.extra) }))
     .filter((item): item is T & { _tier: number } => item._tier !== null)
     .sort((a, b) => a._tier - b._tier || a.name.localeCompare(b.name));
 
@@ -109,6 +117,8 @@ export default function HomePage() {
   const [heroWordIndex, setHeroWordIndex] = useState(0);
   const router = useRouter();
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  // Sanggar + musician rows loaded for the live search, reused between keystrokes
+  const catalogCache = useRef<{ sanggars: any[]; pemusiks: any[]; at: number } | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -181,30 +191,27 @@ export default function HomePage() {
         let formattedSanggar: any[] = [];
         let formattedPemusik: any[] = [];
 
-        // Ask the DB for prefix + word-start matches explicitly, so a plain `%q%` limit can't crowd out
-        // the best results (e.g. "a" returning only names with an inner "a"). Substring matches are only
-        // needed for 2+ characters, since single-character queries are word-start only.
-        const fetchCandidates = async (table: string, column: string) => {
-          const patterns = [`${queryLower}%`, `% ${queryLower}%`];
-          if (queryLower.length > 1) patterns.push(`%${queryLower}%`);
-          const results = await Promise.all(
-            patterns.map((pattern) => supabase.from(table).select('*').ilike(column, pattern).limit(10))
-          );
-          const byId = new Map<string, any>();
-          for (const { data, error } of results) {
-            if (error) console.error(`Supabase ${table} search error:`, error);
-            for (const row of data || []) byId.set(String(row.id), row);
-          }
-          return [...byId.values()];
+        // The whole catalog is small, so load it once (reused for CATALOG_TTL_MS) and rank in the browser.
+        // Per-keystroke `ilike ... limit 10` queries dropped good matches: for "s" the database returned an
+        // arbitrary 10 of the many names starting with S, and "Sinar Norray" was often not among them.
+        const loadCatalog = async () => {
+          const cached = catalogCache.current;
+          if (cached && Date.now() - cached.at < CATALOG_TTL_MS) return cached;
+          const [s, p] = await Promise.all([
+            supabase.from('sanggars').select('*').limit(1000),
+            supabase.from('pemusiks').select('*').limit(1000),
+          ]);
+          if (s.error) console.error("Supabase search error:", s.error);
+          if (p.error) console.error("Supabase music search error:", p.error);
+          const loaded = { sanggars: (s.data as any[]) || [], pemusiks: (p.data as any[]) || [], at: Date.now() };
+          // Only cache complete loads, so a failed request is retried on the next keystroke
+          if (!s.error && !p.error) catalogCache.current = loaded;
+          return loaded;
         };
+        const catalog = await loadCatalog();
 
         if (selectedCategory === 'all' || selectedCategory === 'dance') {
-          let dbSanggars: any[] = [];
-          try {
-            dbSanggars = await fetchCandidates('sanggars', 'nama_sanggar');
-          } catch (err) {
-            console.error("Supabase search error:", err);
-          }
+          const dbSanggars: any[] = catalog.sanggars;
 
           const rawSanggar = dbSanggars.filter((item) => item.status !== "draft").map((item) => {
             const name = item.nama_sanggar.replace(/^Sanggar\s+/i, '');
@@ -215,20 +222,30 @@ export default function HomePage() {
               type: 'Sanggar',
               href: `/sanggar/${item.id}`,
               image: KNOWN_SANGGAR_THUMBS[name.toLowerCase()] || pickImage(item),
-              subtitle: item.kota_kab || item.wilayah || item.kecamatan || null,
+              // Administrative city (same resolver as the catalog); null when it isn't on record
+              wilayah: resolveWilayah(item),
+              subtitle: null as string | null,
+              // Secondary search text (lowest relevance tier): leader, PIC and region
+              extra: [item.ketua_sanggar, item.nama_pic, resolveWilayah(item)] as (string | null | undefined)[],
             };
           });
 
           // Known curated studios ensuring Sinar Norray and others always match (hrefs use the real database ids)
           const knownSanggars = [
-            { id: "s-sinar-norray", name: "Sinar Norray", fullName: "Sanggar Seni Sinar Norray", type: "Sanggar", href: "/sanggar/sinar-norray", subtitle: "Jakarta Timur" },
+            { id: "s-sinar-norray", name: "Sinar Norray", fullName: "Sanggar Seni Sinar Norray", type: "Sanggar", href: "/sanggar/sinar-norray" },
             { id: "s-40", name: "Art Enthusiast Production", fullName: "Art Enthusiast Production", type: "Sanggar", href: "/sanggar/40" },
             { id: "s-30", name: "AM Dance Studio", fullName: "AM Dance Studio", type: "Sanggar", href: "/sanggar/30" },
             { id: "s-21", name: "Arunika Art Production", fullName: "Arunika Art Production", type: "Sanggar", href: "/sanggar/21" },
             { id: "s-17", name: "Ayodya Pala", fullName: "Ayodya Pala", type: "Sanggar", href: "/sanggar/17" },
             { id: "s-6", name: "Citra Art Studio", fullName: "Citra Art Studio", type: "Sanggar", href: "/sanggar/6" },
             { id: "s-7", name: "Daya Presta", fullName: "Daya Presta", type: "Sanggar", href: "/sanggar/7" },
-          ].map((k) => ({ ...k, image: KNOWN_SANGGAR_THUMBS[k.name.toLowerCase()], subtitle: k.subtitle ?? null }));
+          ].map((k) => ({
+            ...k,
+            image: KNOWN_SANGGAR_THUMBS[k.name.toLowerCase()],
+            wilayah: resolveWilayah({ id: k.href.split("/").pop() }),
+            subtitle: null as string | null,
+            extra: [resolveWilayah({ id: k.href.split("/").pop() })] as (string | null | undefined)[],
+          }));
 
           const combined = [...rawSanggar];
           for (const k of knownSanggars) {
@@ -237,16 +254,11 @@ export default function HomePage() {
             }
           }
 
-          formattedSanggar = rankByRelevance(combined, queryLower).slice(0, 5);
+          formattedSanggar = rankByRelevance(combined, queryLower);
         }
 
         if (selectedCategory === 'all' || selectedCategory === 'music') {
-          let dbPemusiks: any[] = [];
-          try {
-            dbPemusiks = await fetchCandidates('pemusiks', 'nama_seniman');
-          } catch (err) {
-            console.error("Supabase music search error:", err);
-          }
+          const dbPemusiks: any[] = catalog.pemusiks;
 
           const rawPemusik = dbPemusiks.map((item) => ({
             id: `p-${item.id}`,
@@ -254,18 +266,20 @@ export default function HomePage() {
             type: 'Pemusik',
             href: `/pemusik/${item.id}`,
             image: pickImage(item),
-            subtitle: item.genre_musik || item.jenis_seniman || item.instrumen || null,
+            // The pemusiks table has no region/address column yet; this picks one up automatically if added.
+            // The id is left out on purpose: the curated id -> wilayah map is for sanggar ids only.
+            wilayah: resolveWilayah({ ...item, id: undefined }),
+            subtitle: (item.genre_musik || item.jenis_seniman || item.instrumen || null) as string | null,
           }));
 
-          formattedPemusik = rankByRelevance(rawPemusik, queryLower).slice(0, 3);
+          formattedPemusik = rankByRelevance(rawPemusik, queryLower);
         }
 
-        // Keep the per-type caps (5 sanggar, 3 musicians), then interleave by relevance so a strong
-        // musician match isn't stuck below weak sanggar matches
+        // Sanggar and musicians ranked together by relevance, then alphabetically; the list scrolls
         setSuggestions(
-          [...formattedSanggar, ...formattedPemusik].sort(
-            (a, b) => a._tier - b._tier || a.name.localeCompare(b.name)
-          )
+          [...formattedSanggar, ...formattedPemusik]
+            .sort((a, b) => a._tier - b._tier || a.name.localeCompare(b.name))
+            .slice(0, MAX_SUGGESTIONS)
         );
       } catch (error) {
         console.error("Error fetching suggestions:", error);
@@ -462,7 +476,7 @@ export default function HomePage() {
 
               {/* Autocomplete Dropdown */}
               {isFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl rounded-none py-1 max-h-48 sm:max-h-60 overflow-y-auto overscroll-contain touch-pan-y custom-scrollbar custom-scrollbar--dark z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl rounded-none py-1 max-h-80 overflow-y-auto overscroll-contain touch-pan-y custom-scrollbar custom-scrollbar--dark z-50">
                   {isLoading ? (
                     <div className="p-4 flex items-center justify-center text-sm text-zinc-300 min-h-[60px]">
                       <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-400" />
@@ -481,11 +495,17 @@ export default function HomePage() {
                             }}
                           >
                             <SearchThumb src={suggestion.image} name={suggestion.name} type={suggestion.type} />
-                            <span className="min-w-0 flex flex-col">
+                            <span className="min-w-0 flex flex-col gap-0.5">
                               <span className="text-sm font-medium text-zinc-100 group-hover/item:text-orange-400 truncate transition-colors">{suggestion.name}</span>
-                              {suggestion.subtitle && (
-                                <span className="text-[11px] text-zinc-400 truncate">{suggestion.subtitle}</span>
-                              )}
+                              {/* Region with a pin when known; otherwise the secondary info (e.g. genre); nothing if neither */}
+                              {suggestion.wilayah ? (
+                                <span className="flex items-center gap-1 text-xs text-zinc-400 min-w-0">
+                                  <MapPin className="w-3 h-3 shrink-0 text-orange-400/80" aria-hidden="true" />
+                                  <span className="truncate">{suggestion.wilayah}</span>
+                                </span>
+                              ) : suggestion.subtitle ? (
+                                <span className="text-xs text-zinc-400 truncate">{suggestion.subtitle}</span>
+                              ) : null}
                             </span>
                             {selectedCategory === 'all' && (
                               <span className="ml-auto shrink-0 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-2 py-0.5 rounded-none tracking-wider uppercase">

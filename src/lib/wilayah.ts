@@ -41,6 +41,7 @@ const KECAMATAN_TO_WILAYAH: Record<string, Wilayah> = {
  */
 const CURATED_WILAYAH_BY_ID: Record<string, Wilayah> = {
   "sinar-norray": "Jakarta Timur",
+  "37": "Jakarta Timur", // Sinar Norray (database row)
   "7": "Jakarta Pusat", // Daya Presta
   "17": "Jakarta Selatan", // Ayodya Pala
   "21": "Jakarta Selatan", // Arunika Art Production
