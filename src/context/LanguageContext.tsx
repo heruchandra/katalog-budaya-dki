@@ -14,6 +14,7 @@ const translations: Record<string, Record<Language, string>> = {
   navLogout: { id: "Keluar", en: "Sign Out" },
   navSignIn: { id: "Masuk", en: "Sign In" },
   navArtCategories: { id: "Kategori Seni", en: "Art Categories" },
+  navInfo: { id: "Informasi", en: "Information" },
   navMenuSection: { id: "Menu Navigasi", en: "Navigation" },
   navSelectLanguage: { id: "Pilih Bahasa", en: "Select Language" },
   navOpenMenu: { id: "Buka menu", en: "Open menu" },

@@ -26,6 +26,14 @@ export default function Navbar() {
   const hasHeroBanner = ['/', '/sanggar', '/pemusik', '/seniman', '/seniman-musik'].includes(normalizedPath);
   const isTransparent = hasHeroBanner && !scrolled;
 
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  // "Informasi" menu (desktop dropdown + mobile accordion); labels shared with the footer
+  const infoLinks = [
+    { href: "/tentang-kami", label: t('footerAbout') },
+    { href: "/kebijakan-privasi", label: t('footerPrivacy') },
+    { href: "/syarat-ketentuan", label: t('footerTerms') },
+  ];
+
   const isEnglish = language === 'en';
   const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
 
@@ -197,6 +205,50 @@ export default function Navbar() {
                         { href: "/pemusik", label: t('navPemusik') },
                       ].map((item) => {
                         const isItemActive = pathname.startsWith(item.href);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            aria-current={isItemActive ? "page" : undefined}
+                            className={`px-4 py-2.5 text-sm flex items-center justify-between border-l-2 rounded-none cursor-pointer transition-all ${jakarta.className} ${
+                              isItemActive
+                                ? "text-orange-400 bg-orange-600/20 font-bold border-orange-500"
+                                : "font-medium text-zinc-200 border-transparent hover:text-orange-400 hover:bg-white/10 hover:border-orange-500"
+                            }`}
+                          >
+                            {item.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Informasi Dropdown (same trigger + panel styling as Kategori) */}
+            {(() => {
+              const isActive = infoLinks.some((item) => pathname === item.href);
+              return (
+                <div className="relative group flex items-center h-full">
+                  <button
+                    type="button"
+                    aria-haspopup="true"
+                    className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
+                      isActive
+                        ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
+                        : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
+                    } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
+                      isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
+                    }`}
+                  >
+                    {t('navInfo')}
+                    <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
+                  </button>
+                  <div className="absolute left-2 top-full pt-2 w-52 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
+                    <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none py-1.5 overflow-hidden">
+                      {infoLinks.map((item) => {
+                        const isItemActive = pathname === item.href;
                         return (
                           <Link
                             key={item.href}
@@ -417,6 +469,59 @@ export default function Navbar() {
                           { href: "/pemusik", label: t('navPemusik') },
                         ].map((sub) => {
                           const isSubActive = pathname.startsWith(sub.href);
+                          return (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              aria-current={isSubActive ? "page" : undefined}
+                              className={`block px-3 py-2 rounded-none text-sm transition-colors ${
+                                isSubActive
+                                  ? "bg-orange-50 text-orange-600 font-semibold"
+                                  : "text-zinc-600 font-medium hover:text-orange-600 hover:bg-zinc-50"
+                              }`}
+                            >
+                              {sub.label}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Informasi (accordion, same styling as Art Categories) */}
+              {(() => {
+                const isInfoActive = infoLinks.some((item) => pathname === item.href);
+                return (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setIsInfoOpen(!isInfoOpen)}
+                      aria-expanded={isInfoOpen}
+                      className={`w-full text-sm tracking-wide uppercase px-4 py-3 rounded-none flex items-center justify-between transition-all ${
+                        isInfoActive
+                          ? "bg-orange-50 text-orange-600 font-bold border-l-4 border-orange-600"
+                          : "text-zinc-800 font-semibold hover:bg-zinc-100"
+                      }`}
+                    >
+                      <span>{t('navInfo')}</span>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isInfoOpen ? "rotate-180 text-orange-600" : "text-zinc-400"
+                        }`}
+                      />
+                    </button>
+
+                    <div
+                      className={`overflow-hidden transition-all duration-200 ${
+                        isInfoOpen ? "max-h-56 opacity-100 mt-1" : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <div className="border-l-2 border-orange-200 ml-6 pl-4 py-1 space-y-2">
+                        {infoLinks.map((sub) => {
+                          const isSubActive = pathname === sub.href;
                           return (
                             <Link
                               key={sub.href}
