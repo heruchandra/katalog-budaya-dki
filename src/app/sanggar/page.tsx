@@ -30,6 +30,11 @@ export interface Sanggar {
   youtube?: string;
   jenis_tarian?: string;
   thumbnail_url: string | null;
+  // Admin-managed columns (some only exist after the 20260930 migration)
+  logo_url?: string | null;
+  wilayah?: string | null;
+  status?: string | null;
+  youtube_url?: string | null;
 }
 
 interface SanggarPageProps {
@@ -77,7 +82,23 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
         });
         fetchError = error.message || "Gagal mengambil data sanggar.";
       } else {
-        sanggars = (data as Sanggar[]) ?? [];
+        // Drafts are hidden from the public catalog
+        sanggars = ((data as Sanggar[]) ?? []).filter((s) => s.status !== "draft");
+
+        // What the admin panel has saved for each sanggar. The demo defaults below (stock card images,
+        // placeholder contacts) must never override real data, so these are re-applied at the end.
+        const adminSaved = new Map(
+          sanggars.map((s) => [
+            s.id,
+            {
+              thumbnail: s.thumbnail_url || s.logo_url || null,
+              whatsapp: s.kontak_pic || null,
+              youtube: s.youtube_url || null,
+              instagram: s.instagram || null,
+              alamat: s.alamat || null,
+            },
+          ])
+        );
 
         const cardImages = [
           "/card-1.webp",
@@ -165,6 +186,20 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
           daya.thumbnail_url = "/card-6.webp";
           daya.whatsapp = "6281289214320";
           daya.youtubeUrl = "https://www.youtube.com";
+        }
+
+        // Admin-saved data wins over every default above
+        for (const s of sanggars) {
+          const saved = adminSaved.get(s.id);
+          if (!saved) continue;
+          if (saved.thumbnail) s.thumbnail_url = saved.thumbnail;
+          if (saved.whatsapp) {
+            s.whatsapp = saved.whatsapp;
+            s.whatsappUrl = undefined;
+          }
+          if (saved.youtube) s.youtubeUrl = saved.youtube;
+          if (saved.instagram) s.instagramUrl = saved.instagram.startsWith("http") ? saved.instagram : `https://instagram.com/${saved.instagram.replace("@", "")}`;
+          if (saved.alamat) s.alamat = saved.alamat;
         }
       }
     }

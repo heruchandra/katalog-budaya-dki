@@ -34,16 +34,17 @@ const KECAMATAN_TO_WILAYAH: Record<string, Wilayah> = {
 };
 
 /**
- * Wilayah of sanggar whose curated detail profile (src/app/sanggar/[id]/page.tsx) states it.
- * Keep in sync with SPECIFIC_PROFILES there until the database has its own wilayah column.
+ * Wilayah of sanggar whose curated detail profile (src/app/sanggar/[id]/page.tsx) states it, keyed by the
+ * real database id. Used only until the sanggar has its own `wilayah` value in the database.
+ * (The curated profile keyed "1" there is Art Enthusiast Production, whose database id is 40;
+ *  database id 1 is a different sanggar, so "1" is deliberately not listed here.)
  */
 const CURATED_WILAYAH_BY_ID: Record<string, Wilayah> = {
   "sinar-norray": "Jakarta Timur",
-  "1": "Jakarta Timur",
-  "7": "Jakarta Pusat",
-  "17": "Jakarta Selatan",
-  "21": "Jakarta Selatan",
-  "40": "Jakarta Timur",
+  "7": "Jakarta Pusat", // Daya Presta
+  "17": "Jakarta Selatan", // Ayodya Pala
+  "21": "Jakarta Selatan", // Arunika Art Production
+  "40": "Jakarta Timur", // AE / Art Enthusiast Production
 };
 
 const matchCity = (text: string): Wilayah | null => {

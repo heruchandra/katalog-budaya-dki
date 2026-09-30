@@ -30,8 +30,8 @@ export interface Sanggar {
   kelurahan?: string;
   kecamatan?: string;
   kota_kab?: string;
-  wilayah?: string;
-  alamat_tempat_latihan?: string;
+  wilayah?: string | null;
+  alamat_tempat_latihan?: string | null;
   no_hp?: string;
   kontak_pic?: string;
   whatsapp?: string;
@@ -71,14 +71,10 @@ export default function SanggarCatalog({
     }
   }, [initialQuery]);
 
-  // "none" (Belum Tergrade) is only offered when some sanggar actually have no grade
-  const hasUngraded = (sanggars || []).some((s) => !s.grade);
   const gradeFilters = [
     { value: "all", label: t('sanggarGradeAll') },
     { value: "A", label: "GRADE A" },
     { value: "B", label: "GRADE B" },
-    { value: "C", label: "GRADE C" },
-    ...(hasUngraded ? [{ value: "none", label: t('sanggarUngraded') }] : []),
   ];
 
   // Wilayah options with how many sanggar are known to be in each (region data comes from real fields only)
@@ -127,9 +123,7 @@ export default function SanggarCatalog({
     const matchGrade =
       activeGrade === "all" ||
       isDirectStudioMatch ||
-      (activeGrade === "none"
-        ? !s.grade
-        : (s.grade && (s.grade.toUpperCase() === activeGrade.toUpperCase() || s.grade.toUpperCase() === `GRADE ${activeGrade.toUpperCase()}`)));
+      (s.grade && (s.grade.toUpperCase() === activeGrade.toUpperCase() || s.grade.toUpperCase() === `GRADE ${activeGrade.toUpperCase()}`));
 
     const matchWilayah = activeWilayah === "all" || resolveWilayah(s) === activeWilayah;
 

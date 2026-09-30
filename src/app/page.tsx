@@ -206,7 +206,7 @@ export default function HomePage() {
             console.error("Supabase search error:", err);
           }
 
-          const rawSanggar = dbSanggars.map((item) => {
+          const rawSanggar = dbSanggars.filter((item) => item.status !== "draft").map((item) => {
             const name = item.nama_sanggar.replace(/^Sanggar\s+/i, '');
             return {
               id: `s-${item.id}`,
@@ -219,15 +219,15 @@ export default function HomePage() {
             };
           });
 
-          // Known curated studios ensuring Sinar Norray and others always match
+          // Known curated studios ensuring Sinar Norray and others always match (hrefs use the real database ids)
           const knownSanggars = [
             { id: "s-sinar-norray", name: "Sinar Norray", fullName: "Sanggar Seni Sinar Norray", type: "Sanggar", href: "/sanggar/sinar-norray", subtitle: "Jakarta Timur" },
-            { id: "s-1", name: "Art Enthusiast Production", fullName: "Art Enthusiast Production", type: "Sanggar", href: "/sanggar/1" },
-            { id: "s-2", name: "AM Dance Studio", fullName: "AM Dance Studio", type: "Sanggar", href: "/sanggar/2" },
-            { id: "s-3", name: "Arunika Art Production", fullName: "Arunika Art Production", type: "Sanggar", href: "/sanggar/3" },
-            { id: "s-4", name: "Ayodya Pala", fullName: "Ayodya Pala", type: "Sanggar", href: "/sanggar/4" },
-            { id: "s-5", name: "Citra Art Studio", fullName: "Citra Art Studio", type: "Sanggar", href: "/sanggar/5" },
-            { id: "s-6", name: "Daya Presta", fullName: "Daya Presta", type: "Sanggar", href: "/sanggar/6" },
+            { id: "s-40", name: "Art Enthusiast Production", fullName: "Art Enthusiast Production", type: "Sanggar", href: "/sanggar/40" },
+            { id: "s-30", name: "AM Dance Studio", fullName: "AM Dance Studio", type: "Sanggar", href: "/sanggar/30" },
+            { id: "s-21", name: "Arunika Art Production", fullName: "Arunika Art Production", type: "Sanggar", href: "/sanggar/21" },
+            { id: "s-17", name: "Ayodya Pala", fullName: "Ayodya Pala", type: "Sanggar", href: "/sanggar/17" },
+            { id: "s-6", name: "Citra Art Studio", fullName: "Citra Art Studio", type: "Sanggar", href: "/sanggar/6" },
+            { id: "s-7", name: "Daya Presta", fullName: "Daya Presta", type: "Sanggar", href: "/sanggar/7" },
           ].map((k) => ({ ...k, image: KNOWN_SANGGAR_THUMBS[k.name.toLowerCase()], subtitle: k.subtitle ?? null }));
 
           const combined = [...rawSanggar];

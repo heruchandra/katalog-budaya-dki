@@ -1,207 +1,292 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { CheckCircle2, Eye, ImageOff, Info, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
+import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
+import { GRADE_OPTIONS, MIGRATION_COLUMNS, SANGGAR_TABLE, SanggarRow, deleteSanggar, isDraft } from "@/lib/sanggarAdmin";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
-interface Sanggar {
-  id: string;
-  nama_sanggar: string;
-  grade: string;
-  jenis_tarian: string;
-}
+const selectClass =
+  "rounded-sm border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 outline-none transition-colors focus:border-orange-600 focus:ring-1 focus:ring-orange-600";
+
+const gradeOf = (row: SanggarRow) => (row.grade || "").replace(/grade/i, "").trim().toUpperCase();
 
 function AdminSanggarContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { t } = useLanguage();
-  const [showToast, setShowToast] = useState(false);
+  const { language } = useLanguage();
+  const tr = (idText: string, enText: string) => (language === "en" ? enText : idText);
 
-  useEffect(() => {
-    if (searchParams.get('success')) {
-      setShowToast(true);
-      router.replace('/admin/sanggar', { scroll: false });
-      setTimeout(() => setShowToast(false), 3000);
-    }
-  }, [searchParams, router]);
-
-  const [sanggars, setSanggars] = useState<Sanggar[]>([]);
+  const [rows, setRows] = useState<SanggarRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState("");
+  const [grade, setGrade] = useState("all");
+  const [wilayah, setWilayah] = useState("all");
+  const [status, setStatus] = useState(searchParams.get("status") === "draft" ? "draft" : "all");
+  const [pendingDelete, setPendingDelete] = useState<SanggarRow | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  // Success / skipped-columns message when arriving back from the form (?success=1&skipped=a,b)
+  const [toast, setToast] = useState<{ kind: "success" | "info" | "error"; text: string } | null>(() => {
+    if (!searchParams.get("success")) return null;
+    const skippedLabels = (searchParams.get("skipped") || "").split(",").filter(Boolean).map((c) => MIGRATION_COLUMNS[c] || c);
+    return skippedLabels.length > 0
+      ? {
+          kind: "info",
+          text: tr(
+            `Data tersimpan, kecuali: ${skippedLabels.join(", ")} (kolom belum ada di database, jalankan migrasi).`,
+            `Saved, except: ${skippedLabels.join(", ")} (columns missing in the database, run the migration).`
+          ),
+        }
+      : { kind: "success", text: tr("Data sanggar berhasil disimpan.", "Sanggar saved.") };
+  });
 
-  const fetchSanggars = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("sanggars")
-        .select("id, nama_sanggar, grade, jenis_tarian")
-        .order("nama_sanggar", { ascending: true });
-
-      if (error) throw error;
-      setSanggars(data || []);
-    } catch (err: any) {
-      setError(err.message || "Gagal memuat data sanggar");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Clean the one-time query params out of the URL
+  useEffect(() => {
+    if (searchParams.get("success")) router.replace("/admin/sanggar", { scroll: false });
+  }, [searchParams, router]);
 
   useEffect(() => {
-    fetchSanggars();
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), toast.kind === "success" ? 3500 : 9000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error: fetchError } = await supabase.from(SANGGAR_TABLE).select("*").order("nama_sanggar", { ascending: true });
+      if (cancelled) return;
+      if (fetchError) setError(fetchError.message);
+      else setRows((data as SanggarRow[]) || []);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const handleDelete = async (id: string, nama: string) => {
-    if (!window.confirm(`Apakah Anda yakin ingin menghapus sanggar "${nama}"? Data yang sudah dihapus tidak dapat dikembalikan.`)) {
-      return;
-    }
+  const hasStatusColumn = rows.length > 0 && "status" in rows[0];
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter((row) => {
+      const g = gradeOf(row);
+      const matchQuery = !q || row.nama_sanggar?.toLowerCase().includes(q) || (row.nama_pic || "").toLowerCase().includes(q);
+      const matchGrade = grade === "all" || (grade === "none" ? !g : g === grade);
+      const matchWilayah = wilayah === "all" || resolveWilayah(row) === wilayah;
+      const matchStatus = status === "all" || (status === "draft" ? isDraft(row) : !isDraft(row));
+      return matchQuery && matchGrade && matchWilayah && matchStatus;
+    });
+  }, [rows, query, grade, wilayah, status]);
+
+  const hasFilter = Boolean(query) || grade !== "all" || wilayah !== "all" || status !== "all";
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from("sanggars")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-      
-      // Update local state to remove the deleted item
-      setSanggars((prev) => prev.filter((item) => item.id !== id));
-      alert("Data berhasil dihapus.");
-    } catch (err: any) {
-      alert(`Gagal menghapus data: ${err.message}`);
+      await deleteSanggar(pendingDelete.id);
+      setRows((prev) => prev.filter((r) => r.id !== pendingDelete.id));
+      setToast({ kind: "success", text: tr(`"${pendingDelete.nama_sanggar}" dihapus.`, `"${pendingDelete.nama_sanggar}" deleted.`) });
+      router.refresh();
+    } catch (err) {
+      setToast({ kind: "error", text: tr("Gagal menghapus: ", "Delete failed: ") + (err instanceof Error ? err.message : "") });
+    } finally {
+      setIsDeleting(false);
+      setPendingDelete(null);
     }
   };
 
-  const filteredSanggars = sanggars.filter(s => 
-    s.nama_sanggar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    s.jenis_tarian?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const th = "px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-500";
 
   return (
-    <div className="p-6 sm:p-8">
-      {/* Header */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="p-5 sm:p-8">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('adminDataSanggarTitle')}</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {t('adminDataSanggarDesc')}
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">{tr("Data Sanggar", "Sanggar Data")}</h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            {tr("Kelola profil, kontak, media, dan galeri setiap sanggar.", "Manage each sanggar's profile, contacts, media and gallery.")}
           </p>
         </div>
-        <Link
-          href="/admin/sanggar/tambah"
-          className="inline-flex items-center gap-2 rounded-none bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700"
-        >
+        <Link href="/admin/sanggar/tambah" className="inline-flex items-center justify-center gap-2 rounded-sm bg-brand px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-orange-600/20 hover:bg-brand-deep transition-all">
           <Plus className="h-4 w-4" />
-          {t('adminBtnAddData')}
+          {tr("Tambah Sanggar", "Add Sanggar")}
         </Link>
       </div>
 
-      {/* Table Section */}
-      <div className="rounded-none bg-white shadow-sm border border-gray-200 overflow-hidden">
-        {/* Toolbar */}
-        <div className="border-b border-gray-200 p-4 sm:flex sm:items-center sm:justify-between">
-          <div className="relative max-w-sm w-full rounded-none border border-zinc-200 bg-gray-50 focus-within:border-orange-600 focus-within:ring-1 focus-within:ring-orange-600">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+      <div className="overflow-hidden rounded-sm border border-zinc-200 bg-white shadow-xs">
+        {/* Filter & search bar */}
+        <div className="flex flex-col gap-3 border-b border-zinc-200 p-4 lg:flex-row lg:items-center">
+          <div className="relative flex-1 rounded-sm border border-zinc-200 bg-zinc-50 focus-within:border-orange-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-orange-600">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" aria-hidden="true" />
             <input
-              type="text"
-              placeholder={t('adminSearchSanggar')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full py-2 pl-9 pr-4 text-sm !outline-none !ring-0 !border-none !shadow-none focus:!ring-0 focus:!outline-none focus:!border-transparent focus:!shadow-none ring-offset-0 bg-transparent"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={tr("Cari nama sanggar atau PIC…", "Search sanggar name or PIC…")}
+              aria-label={tr("Cari sanggar", "Search sanggar")}
+              className="w-full bg-transparent py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none"
             />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <select value={grade} onChange={(e) => setGrade(e.target.value)} aria-label="Filter grade" className={selectClass}>
+              <option value="all">{tr("Semua Grade", "All Grades")}</option>
+              {GRADE_OPTIONS.map((g) => (
+                <option key={g} value={g}>Grade {g}</option>
+              ))}
+              <option value="none">{tr("Belum Tergrade", "Ungraded")}</option>
+            </select>
+            <select value={wilayah} onChange={(e) => setWilayah(e.target.value)} aria-label={tr("Filter wilayah", "Filter region")} className={selectClass}>
+              <option value="all">{tr("Semua Wilayah", "All Regions")}</option>
+              {JAKARTA_WILAYAH.map((w) => (
+                <option key={w} value={w}>{w}</option>
+              ))}
+            </select>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter status" className={selectClass} disabled={!hasStatusColumn} title={hasStatusColumn ? undefined : tr("Perlu migrasi database", "Needs the database migration")}>
+              <option value="all">{tr("Semua Status", "All Statuses")}</option>
+              <option value="terverifikasi">{tr("Terverifikasi", "Verified")}</option>
+              <option value="draft">Draft</option>
+            </select>
+            {hasFilter && (
+              <button type="button" onClick={() => { setQuery(""); setGrade("all"); setWilayah("all"); setStatus("all"); }} className="inline-flex items-center gap-1 px-2 py-2 text-xs font-semibold text-zinc-500 hover:text-orange-600">
+                <X className="h-3.5 w-3.5" /> {tr("Reset", "Reset")}
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-zinc-200">
+            <thead className="bg-zinc-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colName')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colCategory')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colDanceType')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colStatus')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colAction')}
-                </th>
+                <th scope="col" className={th}>{tr("Sanggar", "Sanggar")}</th>
+                <th scope="col" className={th}>{tr("Kategori", "Category")}</th>
+                <th scope="col" className={th}>Grade</th>
+                <th scope="col" className={th}>{tr("Wilayah", "Region")}</th>
+                <th scope="col" className={th}>{tr("Kontak PIC", "PIC Contact")}</th>
+                <th scope="col" className={th}>Status</th>
+                <th scope="col" className={`${th} text-right`}>{tr("Aksi", "Actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-zinc-100">
               {loading && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-gray-500">
-                    Memuat data...
-                  </td>
-                </tr>
+                <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-zinc-500">{tr("Memuat data…", "Loading…")}</td></tr>
               )}
-
               {!loading && error && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-red-500">
-                    Gagal memuat data: {error}
-                  </td>
-                </tr>
+                <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-red-600">{tr("Gagal memuat data: ", "Failed to load: ")}{error}</td></tr>
               )}
-              
-              {!loading && !error && filteredSanggars.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-sm text-gray-500">
-                    Belum ada data sanggar.
-                  </td>
-                </tr>
+              {!loading && !error && filtered.length === 0 && (
+                <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-zinc-500">
+                  {hasFilter ? tr("Tidak ada sanggar yang cocok dengan filter.", "No sanggar match these filters.") : tr("Belum ada data sanggar.", "No sanggar yet.")}
+                </td></tr>
               )}
-
-              {!loading && !error && filteredSanggars.map((sanggar) => (
-                <tr key={sanggar.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{sanggar.nama_sanggar}</div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-500">{sanggar.grade || "-"}</div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-500 truncate max-w-xs">{sanggar.jenis_tarian || "-"}</div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <span className="inline-flex items-center rounded-none bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                      {t('statusActive')}
-                    </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                    <div className="flex justify-end gap-3">
-                      <Link href={`/admin/sanggar/edit/${sanggar.id}`} className="text-blue-600 hover:text-blue-900" title="Edit">
-                        <Edit className="h-4 w-4" />
-                      </Link>
-                      <button 
-                        onClick={() => handleDelete(sanggar.id, sanggar.nama_sanggar)}
-                        className="text-red-600 hover:text-red-900" 
-                        title="Hapus"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {!loading && !error && filtered.map((row) => {
+                const g = gradeOf(row);
+                const region = resolveWilayah(row);
+                const draft = isDraft(row);
+                return (
+                  <tr key={row.id} className="hover:bg-zinc-50/70">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-zinc-200 bg-zinc-100 text-zinc-300">
+                          {row.thumbnail_url || row.logo_url ? (
+                            <img src={(row.thumbnail_url || row.logo_url) as string} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <ImageOff className="h-4 w-4" aria-hidden="true" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-zinc-900">{row.nama_sanggar}</p>
+                          <p className="text-xs text-zinc-400">ID {row.id}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-zinc-600">{row.kategori || <span className="text-zinc-300">—</span>}</td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      {g ? (
+                        <span className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-bold ${
+                          g === "A" ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+                            : g === "B" ? "bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-600/20"
+                            : "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20"
+                        }`}>Grade {g}</span>
+                      ) : (
+                        <span className="text-xs text-zinc-400">{tr("Belum tergrade", "Ungraded")}</span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-zinc-600">{region || <span className="text-zinc-300">—</span>}</td>
+                    <td className="px-4 py-3 text-sm text-zinc-600">
+                      {row.nama_pic || row.kontak_pic ? (
+                        <div className="min-w-0">
+                          <p className="truncate font-medium text-zinc-800">{row.nama_pic || "—"}</p>
+                          {row.kontak_pic && <p className="text-xs text-zinc-500">{row.kontak_pic}</p>}
+                        </div>
+                      ) : (
+                        <span className="text-zinc-300">—</span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      <span className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-semibold ${
+                        draft ? "bg-zinc-100 text-zinc-600 ring-1 ring-inset ring-zinc-300" : "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+                      }`}>
+                        {draft ? "Draft" : tr("Terverifikasi", "Verified")}
+                      </span>
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      <div className="flex justify-end gap-1">
+                        <a href={`/sanggar/${row.id}`} target="_blank" rel="noopener noreferrer" className="flex h-8 w-8 items-center justify-center rounded-sm text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900" title={tr("Lihat halaman publik", "View public page")} aria-label={tr(`Lihat ${row.nama_sanggar}`, `View ${row.nama_sanggar}`)}>
+                          <Eye className="h-4 w-4" />
+                        </a>
+                        <Link href={`/admin/sanggar/edit/${row.id}`} className="flex h-8 w-8 items-center justify-center rounded-sm text-zinc-500 hover:bg-orange-50 hover:text-orange-600" title="Edit" aria-label={`Edit ${row.nama_sanggar}`}>
+                          <Pencil className="h-4 w-4" />
+                        </Link>
+                        <button type="button" onClick={() => setPendingDelete(row)} className="flex h-8 w-8 items-center justify-center rounded-sm text-zinc-500 hover:bg-red-50 hover:text-red-600" title={tr("Hapus", "Delete")} aria-label={tr(`Hapus ${row.nama_sanggar}`, `Delete ${row.nama_sanggar}`)}>
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
+
+        {!loading && !error && (
+          <div className="border-t border-zinc-200 px-4 py-3 text-xs text-zinc-500">
+            {tr(`Menampilkan ${filtered.length} dari ${rows.length} sanggar`, `Showing ${filtered.length} of ${rows.length} sanggar`)}
+          </div>
+        )}
       </div>
-      {showToast && (
-        <div className="fixed bottom-10 right-10 flex items-center gap-3 bg-teal-600 text-white px-6 py-4 rounded-none shadow-2xl transition-all animate-bounce z-50">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-          <span className="font-semibold tracking-wide">Yeay! Data berhasil disimpan.</span>
+
+      {pendingDelete && (
+        <ConfirmDialog
+          title={tr("Hapus sanggar ini?", "Delete this sanggar?")}
+          message={tr(
+            `"${pendingDelete.nama_sanggar}" akan dihapus permanen dari katalog dan situs publik. Tindakan ini tidak dapat dibatalkan.`,
+            `"${pendingDelete.nama_sanggar}" will be permanently removed from the catalog and the public site. This cannot be undone.`
+          )}
+          confirmLabel={isDeleting ? tr("Menghapus…", "Deleting…") : tr("Ya, hapus", "Yes, delete")}
+          cancelLabel={tr("Batal", "Cancel")}
+          isBusy={isDeleting}
+          onConfirm={confirmDelete}
+          onCancel={() => setPendingDelete(null)}
+        />
+      )}
+
+      {toast && (
+        <div role="status" className={`fixed bottom-6 right-6 z-[120] flex max-w-md items-start gap-3 rounded-sm px-4 py-3 text-sm font-medium text-white shadow-2xl ${
+          toast.kind === "success" ? "bg-emerald-600" : toast.kind === "info" ? "bg-amber-600" : "bg-red-600"
+        }`}>
+          {toast.kind === "success" ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" /> : <Info className="mt-0.5 h-4 w-4 shrink-0" />}
+          <span>{toast.text}</span>
+          <button type="button" onClick={() => setToast(null)} className="ml-1 shrink-0 opacity-80 hover:opacity-100" aria-label={tr("Tutup", "Close")}>
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
     </div>
@@ -210,7 +295,7 @@ function AdminSanggarContent() {
 
 export default function AdminSanggarList() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-slate-500">Memuat data...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-sm text-zinc-500">Memuat data…</div>}>
       <AdminSanggarContent />
     </Suspense>
   );

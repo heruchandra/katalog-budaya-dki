@@ -1,210 +1,316 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Users, Music, AlertCircle, CheckCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Clock3, Music, Users } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/lib/supabase";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useLanguage } from "@/context/LanguageContext";
+import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
+import { SANGGAR_TABLE, SanggarRow, isDraft } from "@/lib/sanggarAdmin";
+import { PemusikRow, countBy, tallyValues } from "@/lib/pemusikStats";
+
+const GRADE_COLORS: Record<string, string> = { A: "#F7941E", B: "#E01A67" };
+const SERIES_COLORS = ["#F7941E", "#E01A67", "#2B3990", "#059669", "#d97706", "#71717a"];
+
+type AnalyticsTab = "sanggar" | "musik";
+
+/** Horizontal bar list: label, proportional bar, count */
+function BarList({ rows, emptyText }: { rows: { name: string; total: number }[]; emptyText: string }) {
+  if (rows.length === 0) return <p className="mt-4 text-xs text-zinc-500">{emptyText}</p>;
+  const max = Math.max(1, ...rows.map((r) => r.total));
+  return (
+    <ul className="mt-4 space-y-2.5">
+      {rows.map((row) => (
+        <li key={row.name} className="grid grid-cols-[120px_1fr_28px] items-center gap-2 text-xs">
+          <span className="truncate text-zinc-600" title={row.name}>{row.name}</span>
+          <span className="h-2 overflow-hidden rounded-sm bg-zinc-100">
+            <span className="block h-full bg-gradient-to-r from-[#F7941E] to-[#E01A67]" style={{ width: `${(row.total / max) * 100}%` }} />
+          </span>
+          <span className="text-right font-semibold tabular-nums text-zinc-900">{row.total}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Progress rows: how many records have a field filled in */
+function Completeness({ rows, total }: { rows: { label: string; n: number }[]; total: number }) {
+  return (
+    <ul className="mt-4 space-y-3">
+      {rows.map((row) => {
+        const pct = total > 0 ? Math.round((row.n / total) * 100) : 0;
+        return (
+          <li key={row.label}>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-zinc-600">{row.label}</span>
+              <span className="font-semibold tabular-nums text-zinc-900">{row.n}/{total}</span>
+            </div>
+            <div className="mt-1 h-1.5 overflow-hidden rounded-sm bg-zinc-100" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={row.label}>
+              <div className={`h-full ${pct >= 80 ? "bg-emerald-500" : pct >= 40 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 export default function AdminDashboard() {
-  const [totalSanggar, setTotalSanggar] = useState<number>(0);
-  const [totalPemusik, setTotalPemusik] = useState<number>(0);
-  const [recentActivities, setRecentActivities] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
+  const tr = (idText: string, enText: string) => (language === "en" ? enText : idText);
+
+  const [sanggars, setSanggars] = useState<SanggarRow[]>([]);
+  const [pemusiks, setPemusiks] = useState<PemusikRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [tab, setTab] = useState<AnalyticsTab>("sanggar");
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const { count: countSanggar } = await supabase.from('sanggar').select('*', { count: 'exact', head: true });
-        const { count: countPemusik } = await supabase.from('pemusik').select('*', { count: 'exact', head: true });
-        
-        setTotalSanggar(countSanggar || 0);
-        setTotalPemusik(countPemusik || 0);
-
-        const { data: recentSanggar } = await supabase
-          .from('sanggar')
-          .select('id, namaSanggar, created_at')
-          .order('created_at', { ascending: false })
-          .limit(5);
-          
-        const { data: recentPemusik } = await supabase
-          .from('pemusik')
-          .select('id, nama, created_at')
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        const formattedSanggar = (recentSanggar || []).map(item => ({
-          id: `s-${item.id}`,
-          name: item.namaSanggar,
-          type: 'Sanggar',
-          action: t('newRegistration'),
-          status: 'Aktif',
-          date: new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-          rawDate: item.created_at
-        }));
-
-        const formattedPemusik = (recentPemusik || []).map(item => ({
-          id: `p-${item.id}`,
-          name: item.nama,
-          type: 'Seniman Musik',
-          action: t('newRegistration'),
-          status: 'Aktif',
-          date: new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-          rawDate: item.created_at
-        }));
-
-        const combined = [...formattedSanggar, ...formattedPemusik]
-          .sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime())
-          .slice(0, 5);
-
-        setRecentActivities(combined);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    let cancelled = false;
+    (async () => {
+      const [s, p] = await Promise.all([supabase.from(SANGGAR_TABLE).select("*"), supabase.from("pemusiks").select("*")]);
+      if (cancelled) return;
+      if (s.error || p.error) setError((s.error || p.error)!.message);
+      setSanggars((s.data as SanggarRow[]) || []);
+      setPemusiks((p.data as PemusikRow[]) || []);
+      setIsLoading(false);
+    })();
+    return () => {
+      cancelled = true;
     };
-
-    fetchDashboardData();
   }, []);
 
-  const stats = [
-    { name: t('adminStatTotalSanggar'), value: isLoading ? "..." : totalSanggar.toString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-    { name: t('adminStatTotalMusik'), value: isLoading ? "..." : totalPemusik.toString(), icon: Music, color: "text-purple-600", bg: "bg-purple-100" },
-    { name: t('adminStatPending'), value: "0", icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-100" },
-    { name: t('adminStatVerified'), value: "0", icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-100" },
+  const stats = useMemo(() => {
+    const drafts = sanggars.filter(isDraft).length;
+    return { total: sanggars.length, seniman: pemusiks.length, pending: drafts, verified: sanggars.length - drafts };
+  }, [sanggars, pemusiks]);
+
+  // ---- Sanggar analytics ----
+  const gradeData = useMemo(() => {
+    const gradeOf = (s: SanggarRow) => (s.grade || "").replace(/grade/i, "").trim().toUpperCase();
+    return (["A", "B"] as const).map((g) => ({ key: g, name: `Grade ${g}`, total: sanggars.filter((s) => gradeOf(s) === g).length }));
+  }, [sanggars]);
+
+  const wilayahData = useMemo(() => {
+    const counts = new Map<string, number>(JAKARTA_WILAYAH.map((w) => [w, 0]));
+    let unknown = 0;
+    sanggars.forEach((s) => {
+      const w = resolveWilayah(s);
+      if (w) counts.set(w, (counts.get(w) || 0) + 1);
+      else unknown += 1;
+    });
+    return { rows: JAKARTA_WILAYAH.map((w) => ({ name: w as string, total: counts.get(w) || 0 })), unknown };
+  }, [sanggars]);
+
+  const sanggarCompleteness = useMemo(() => {
+    const count = (fn: (s: SanggarRow) => unknown) => sanggars.filter((s) => Boolean(fn(s))).length;
+    return [
+      { label: tr("Foto thumbnail / logo", "Thumbnail / logo photo"), n: count((s) => s.thumbnail_url || s.logo_url) },
+      { label: tr("Kontak PIC (WhatsApp)", "PIC contact (WhatsApp)"), n: count((s) => s.kontak_pic) },
+      { label: tr("Alamat", "Address"), n: count((s) => s.alamat) },
+      { label: tr("Wilayah diketahui", "Region known"), n: count((s) => resolveWilayah(s)) },
+      { label: tr("Deskripsi profil", "Profile description"), n: count((s) => s.deskripsi) },
+    ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sanggars, language]);
+
+  // ---- Seniman Musik analytics (the pemusiks table has no region column, so there is no per-wilayah view) ----
+  const jenisData = useMemo(() => countBy(pemusiks, (p) => p.jenis_seniman), [pemusiks]);
+  const genreData = useMemo(() => tallyValues(pemusiks, (p) => p.genre_musik), [pemusiks]);
+  const instrumenData = useMemo(() => tallyValues(pemusiks, (p) => p.instrumen), [pemusiks]);
+
+  const musikCompleteness = useMemo(() => {
+    const count = (fn: (p: PemusikRow) => unknown) => pemusiks.filter((p) => Boolean(fn(p))).length;
+    return [
+      { label: tr("Jenis seniman", "Artist type"), n: count((p) => p.jenis_seniman) },
+      { label: tr("Genre musik", "Music genre"), n: count((p) => p.genre_musik) },
+      { label: tr("Instrumen / alat musik", "Instrument"), n: count((p) => p.instrumen) },
+      { label: tr("Pengalaman", "Experience"), n: count((p) => p.pengalaman) },
+      { label: tr("Deskripsi profil", "Profile description"), n: count((p) => p.deskripsi) },
+    ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pemusiks, language]);
+
+  const recent = useMemo(() => {
+    const items = [
+      ...sanggars.map((s) => ({ key: `s-${s.id}`, name: s.nama_sanggar, type: "sanggar" as const, date: s.created_at, href: `/admin/sanggar/edit/${s.id}`, draft: isDraft(s) })),
+      ...pemusiks.map((p) => ({ key: `p-${p.id}`, name: p.nama_seniman, type: "musik" as const, date: p.created_at, href: `/admin/pemusik/edit/${p.id}`, draft: false })),
+    ];
+    return items
+      .filter((i) => i.date)
+      .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
+      .slice(0, 6);
+  }, [sanggars, pemusiks]);
+
+  const cards = [
+    { label: tr("Total Sanggar", "Total Sanggar"), value: stats.total, icon: Users, accent: "#F7941E", href: "/admin/sanggar" },
+    { label: tr("Total Seniman Musik", "Total Music Artists"), value: stats.seniman, icon: Music, accent: "#E01A67", href: "/admin/pemusik" },
+    { label: tr("Menunggu Verifikasi", "Awaiting Verification"), value: stats.pending, icon: Clock3, accent: "#d97706", href: "/admin/sanggar?status=draft" },
+    { label: tr("Terverifikasi", "Verified"), value: stats.verified, icon: CheckCircle2, accent: "#059669", href: "/admin/sanggar" },
   ];
 
-  const chartData = [
-    { name: 'Jan', Sanggar: 4, 'Seniman Musik': 2 },
-    { name: 'Feb', Sanggar: 7, 'Seniman Musik': 5 },
-    { name: 'Mar', Sanggar: 5, 'Seniman Musik': 8 },
-    { name: 'Apr', Sanggar: 10, 'Seniman Musik': 6 },
-    { name: 'Mei', Sanggar: 15, 'Seniman Musik': 12 },
-    { name: 'Jun', Sanggar: 12, 'Seniman Musik': 18 },
-  ].map(d => ({
-    ...d,
-    name: language === 'en' && d.name === 'Mei' ? 'May' : d.name
-  }));
+  const panel = "rounded-sm border border-zinc-200 bg-white shadow-xs";
+  const notFilled = tr("Belum ada data yang diisi.", "No data filled in yet.");
 
   return (
-    <div className="p-6 sm:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">{t('adminTitleOverview')}</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {t('adminDescOverview')}
-        </p>
+    <div className="p-5 sm:p-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">{tr("Ringkasan", "Overview")}</h1>
+        <p className="mt-1 text-sm text-zinc-500">{tr("Kondisi data katalog saat ini.", "The current state of the catalog data.")}</p>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        {stats.map((stat) => (
-          <div key={stat.name} className="overflow-hidden rounded-none bg-white p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center">
-              <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-none ${stat.bg}`}>
-                <stat.icon className={`h-6 w-6 ${stat.color}`} aria-hidden="true" />
-              </div>
-              <div className="ml-4 w-0 flex-1">
-                <dl>
-                  <dt className="truncate text-sm font-medium text-gray-500">{stat.name}</dt>
-                  <dd className="text-2xl font-semibold text-gray-900">{stat.value}</dd>
-                </dl>
-              </div>
+      {error && (
+        <div role="alert" className="mb-5 rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {tr("Gagal memuat data: ", "Failed to load data: ")}{error}
+        </div>
+      )}
+
+      {/* Stat cards: fixed-height title row + flex column, so numbers and "Lihat" links share one baseline */}
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map((card) => (
+          <Link key={card.label} href={card.href} className={`${panel} group relative flex h-full flex-col justify-between overflow-hidden p-5 transition-colors hover:border-zinc-300`}>
+            <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1" style={{ backgroundColor: card.accent }} />
+            <div className="flex h-10 items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase leading-tight tracking-wider text-zinc-500">{card.label}</p>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm" style={{ backgroundColor: `${card.accent}1A`, color: card.accent }}>
+                <card.icon className="h-5 w-5" aria-hidden="true" />
+              </span>
             </div>
-          </div>
+            <p className="mt-3 text-3xl font-bold leading-none tabular-nums text-zinc-900">{isLoading ? "–" : card.value}</p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-zinc-400 group-hover:text-orange-600">
+              {tr("Lihat", "View")} <ArrowRight className="h-3 w-3" />
+            </span>
+          </Link>
         ))}
       </div>
 
-      {/* Chart Section */}
-      <div className="bg-white p-6 rounded-none shadow-sm border border-slate-100 mb-8">
-        <h3 className="text-lg font-bold text-slate-800 mb-6">{t('adminChartTitle')}</h3>
-        <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorSanggar" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorPemusik" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" vertical={false}/>
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-              <Tooltip contentStyle={{ border: 'none', borderRadius: '0px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-              <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-              <Area type="monotone" dataKey="Sanggar" name={t('dashboardDance')} stroke="#f97316" fillOpacity={1} fill="url(#colorSanggar)" />
-              <Area type="monotone" dataKey="Seniman Musik" name={t('dashboardMusic')} stroke="#8b5cf6" fillOpacity={1} fill="url(#colorPemusik)" />
-            </AreaChart>
-          </ResponsiveContainer>
+      {/* Analytics tab switcher */}
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-500">{tr("Analitik", "Analytics")}</h2>
+        <div role="tablist" aria-label={tr("Jenis data analitik", "Analytics data type")} className="flex items-center rounded-sm border border-zinc-200 bg-white p-0.5 text-sm font-semibold">
+          {([
+            { key: "sanggar", label: "Sanggar", count: stats.total },
+            { key: "musik", label: tr("Seniman Musik", "Music Artists"), count: stats.seniman },
+          ] as const).map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              role="tab"
+              aria-selected={tab === item.key}
+              onClick={() => setTab(item.key)}
+              className={`inline-flex items-center gap-2 rounded-sm px-3.5 py-1.5 transition-colors outline-none ${
+                tab === item.key ? "bg-[#18191C] text-white" : "text-zinc-600 hover:text-zinc-900"
+              }`}
+            >
+              {item.label}
+              <span className={`rounded-sm px-1.5 py-0.5 text-[10px] font-bold tabular-nums ${tab === item.key ? "bg-white/15 text-white" : "bg-zinc-100 text-zinc-500"}`}>
+                {item.count}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Recent Activity Table */}
-      <div className="rounded-none bg-white shadow-sm border border-gray-100 overflow-hidden">
-        <div className="border-b border-gray-200 px-6 py-5">
-          <h3 className="text-base font-semibold leading-6 text-gray-900">{t('adminRecentActivityTitle')}</h3>
+      {tab === "sanggar" ? (
+        <div role="tabpanel" className="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <div className={`${panel} p-5`}>
+            <h3 className="text-sm font-bold text-zinc-900">{tr("Sanggar per Grade", "Sanggar by Grade")}</h3>
+            <div className="mt-4 h-52">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={gradeData} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
+                  <CartesianGrid stroke="#e4e4e7" strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
+                  <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
+                  <Tooltip cursor={{ fill: "#f4f4f5" }} contentStyle={{ border: "1px solid #e4e4e7", borderRadius: 2, fontSize: 12 }} />
+                  <Bar dataKey="total" name={tr("Jumlah", "Count")} radius={[2, 2, 0, 0]} maxBarSize={72}>
+                    {gradeData.map((entry) => (
+                      <Cell key={entry.key} fill={GRADE_COLORS[entry.key]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className={`${panel} p-5`}>
+            <h3 className="text-sm font-bold text-zinc-900">{tr("Sanggar per Wilayah", "Sanggar by Region")}</h3>
+            <BarList rows={wilayahData.rows} emptyText={notFilled} />
+            {wilayahData.unknown > 0 && (
+              <p className="mt-4 border-t border-zinc-100 pt-3 text-xs text-amber-700">
+                {tr(`${wilayahData.unknown} sanggar belum memiliki wilayah.`, `${wilayahData.unknown} sanggar have no region yet.`)}
+              </p>
+            )}
+          </div>
+
+          <div className={`${panel} p-5`}>
+            <h3 className="text-sm font-bold text-zinc-900">{tr("Kelengkapan Profil Sanggar", "Sanggar Profile Completeness")}</h3>
+            <Completeness rows={sanggarCompleteness} total={sanggars.length} />
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colEntityName')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colType')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colActivity')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colStatus')}
-                </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {t('colTime')}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {recentActivities.map((activity) => (
-                <tr key={activity.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{activity.name}</div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-500">
-                      {activity.type === 'Seniman Musik' ? t('dashboardMusic') : t('dashboardDance')}
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-500">
-                      {activity.action.includes('Pendaftaran Baru') || activity.action.includes('New Registration') 
-                        ? t('dashboardActNew') 
-                        : activity.action}
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <span className={`inline-flex items-center rounded-none px-2.5 py-0.5 text-xs font-medium ${
-                      activity.status === 'Aktif' || activity.status === 'Disetujui' ? 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' : 
-                      activity.status === 'Menunggu' ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20' :
-                      'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'
-                    }`}>
-                      {activity.status === 'Aktif' || activity.status === 'Active' ? t('dashboardStatusActive') : activity.status}
-                    </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
-                    {new Date(activity.rawDate).toLocaleDateString(language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      ) : (
+        <div role="tabpanel" className="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <div className={`${panel} p-5`}>
+            <h3 className="text-sm font-bold text-zinc-900">{tr("Seniman per Jenis", "Artists by Type")}</h3>
+            <div className="mt-4 h-52">
+              {jenisData.length === 0 ? (
+                <p className="text-xs text-zinc-500">{notFilled}</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={jenisData} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
+                    <CartesianGrid stroke="#e4e4e7" strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
+                    <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
+                    <Tooltip cursor={{ fill: "#f4f4f5" }} contentStyle={{ border: "1px solid #e4e4e7", borderRadius: 2, fontSize: 12 }} />
+                    <Bar dataKey="total" name={tr("Jumlah", "Count")} radius={[2, 2, 0, 0]} maxBarSize={72}>
+                      {jenisData.map((entry, i) => (
+                        <Cell key={entry.name} fill={SERIES_COLORS[i % SERIES_COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </div>
+
+          <div className={`${panel} p-5`}>
+            <h3 className="text-sm font-bold text-zinc-900">{tr("Genre Musik", "Music Genres")}</h3>
+            <BarList rows={genreData.slice(0, 5)} emptyText={notFilled} />
+            <h3 className="mt-6 border-t border-zinc-100 pt-4 text-sm font-bold text-zinc-900">{tr("Instrumen / Alat Musik", "Instruments")}</h3>
+            <BarList rows={instrumenData.slice(0, 5)} emptyText={notFilled} />
+          </div>
+
+          <div className={`${panel} p-5`}>
+            <h3 className="text-sm font-bold text-zinc-900">{tr("Kelengkapan Profil Seniman", "Artist Profile Completeness")}</h3>
+            <Completeness rows={musikCompleteness} total={pemusiks.length} />
+          </div>
         </div>
+      )}
+
+      {/* Recently added */}
+      <div className={`${panel} overflow-hidden`}>
+        <div className="border-b border-zinc-200 px-5 py-4">
+          <h2 className="text-sm font-bold text-zinc-900">{tr("Terbaru Ditambahkan", "Recently Added")}</h2>
+        </div>
+        <ul className="divide-y divide-zinc-100">
+          {!isLoading && recent.length === 0 && <li className="px-5 py-8 text-center text-sm text-zinc-500">{tr("Belum ada data.", "No data yet.")}</li>}
+          {recent.map((item) => (
+            <li key={item.key}>
+              <Link href={item.href} className="flex items-center justify-between gap-4 px-5 py-3 hover:bg-zinc-50">
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-zinc-900">{item.name}</span>
+                  <span className="text-xs text-zinc-500">{item.type === "sanggar" ? "Sanggar" : tr("Seniman Musik", "Music Artist")}</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-3">
+                  {item.draft && <span className="rounded-sm bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-600 ring-1 ring-inset ring-zinc-300">Draft</span>}
+                  <span className="text-xs text-zinc-500">
+                    {new Date(item.date!).toLocaleDateString(language === "en" ? "en-US" : "id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

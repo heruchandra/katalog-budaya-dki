@@ -25,6 +25,42 @@ export function rotateSize(width: number, height: number, rotation: number) {
   };
 }
 
+const canvasToJpeg = (canvas: HTMLCanvasElement, quality: number): Promise<Blob | null> =>
+  new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/jpeg", quality));
+
+/**
+ * Crop `pixelCrop` out of the image and downscale so the longest side is at most `maxSize` px.
+ * Keeps uploads small (a phone photo cropped at full resolution can be several MB).
+ */
+export async function cropAndResize(
+  imageSrc: string,
+  pixelCrop: { x: number; y: number; width: number; height: number },
+  maxSize = 1600,
+  quality = 0.86
+): Promise<Blob | null> {
+  const image = await createImage(imageSrc);
+  const scale = Math.min(1, maxSize / Math.max(pixelCrop.width, pixelCrop.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(pixelCrop.width * scale));
+  canvas.height = Math.max(1, Math.round(pixelCrop.height * scale));
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, canvas.width, canvas.height);
+  return canvasToJpeg(canvas, quality);
+}
+
+/** Downscale a whole image file (no crop) so its longest side is at most `maxSize` px. */
+export async function resizeImageFile(file: File, maxSize = 1600, quality = 0.86): Promise<Blob | null> {
+  const src = URL.createObjectURL(file);
+  try {
+    const image = await createImage(src);
+    return await cropAndResize(src, { x: 0, y: 0, width: image.naturalWidth, height: image.naturalHeight }, maxSize, quality);
+  } finally {
+    URL.revokeObjectURL(src);
+  }
+}
+
 /**
  * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
  */

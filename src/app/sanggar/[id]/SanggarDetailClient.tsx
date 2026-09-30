@@ -52,6 +52,8 @@ export interface ServiceItem {
   image?: string;
   /** Tampilkan Karya Tari Unggulan sanggar di dalam modal layanan ini */
   featuresDanceWorks?: boolean;
+  /** Price / rate text entered in the admin panel, e.g. "Mulai Rp 2.500.000" */
+  price?: string;
 }
 
 export interface SanggarDetailData {
@@ -99,6 +101,10 @@ export interface SanggarDetailData {
   fotoKetuaUrl?: string | null;
   youtubeUrl?: string | null;
   gallery?: { type: string; url: string; typeEn?: string }[];
+  /** True when `gallery` holds photos uploaded through the admin panel (always shown, whatever the count) */
+  galleryIsUploaded?: boolean;
+  /** Google Maps link saved in the admin panel; falls back to a search for the address */
+  mapsUrl?: string | null;
 }
 
 const DEFAULT_GALLERY_IMAGES = [
@@ -127,7 +133,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
 
-  const galleryList = (sanggar.gallery && sanggar.gallery.length >= 15)
+  // Uploaded galleries are always used; otherwise only a full (15+) curated set replaces the default photos
+  const galleryList = (sanggar.gallery && sanggar.gallery.length > 0 && (sanggar.galleryIsUploaded || sanggar.gallery.length >= 15))
     ? sanggar.gallery
     : DEFAULT_GALLERY_IMAGES;
 
@@ -200,9 +207,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
   // Google Maps search link from the studio address (there is no dedicated maps URL field in the data)
   const studioAddress = sanggar.address || sanggar.alamatSanggar;
-  const mapsSearchUrl = studioAddress
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(studioAddress)}`
-    : null;
+  const mapsSearchUrl = sanggar.mapsUrl
+    ? sanggar.mapsUrl
+    : studioAddress
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(studioAddress)}`
+      : null;
   const waMessage = encodeURIComponent(
     isEn 
       ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog. I would like to inquire about dance class programs and performances.`
@@ -575,6 +584,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                               <p className="text-xs sm:text-sm text-zinc-500 line-clamp-2 mt-1 leading-relaxed">
                                 {desc}
                               </p>
+                            )}
+                            {service.price && (
+                              <p className="text-xs sm:text-sm font-semibold text-zinc-900 mt-2">{service.price}</p>
                             )}
                           </div>
 
@@ -1036,6 +1048,12 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <p className="text-sm text-zinc-700 leading-relaxed">
                 {modalDesc}
               </p>
+              {selectedService.price && (
+                <p className="mt-3 pt-3 border-t border-zinc-200 text-sm text-zinc-700">
+                  <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mr-2">{isEn ? "Rate" : "Tarif"}</span>
+                  <span className="font-semibold text-zinc-900">{selectedService.price}</span>
+                </p>
+              )}
             </div>
 
             {/* Karya Tari Unggulan (khusus layanan Pentas & Karya Tari) */}
