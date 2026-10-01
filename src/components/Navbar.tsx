@@ -141,11 +141,13 @@ export default function Navbar() {
                 isTransparent ? 'bg-white/40' : 'bg-slate-200'
               }`} />
 
-              <div className={`flex flex-col justify-center items-start text-left whitespace-nowrap min-w-0 ${jakarta.className}`}>
+              {/* gap + leading-snug keep "DKI JAKARTA" from sitting tight under the title; the column stays
+                  vertically centred against the logos because the parent link is items-center */}
+              <div className={`flex flex-col justify-center items-start gap-0.5 sm:gap-1 text-left whitespace-nowrap min-w-0 ${jakarta.className}`}>
                 <span className="text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate text-orange-500">
                   {brandTitle}
                 </span>
-                <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-none transition-colors duration-300 ${
+                <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-snug transition-colors duration-300 ${
                   isTransparent ? 'text-white' : 'text-zinc-800'
                 }`}>
                   DKI Jakarta
