@@ -200,8 +200,8 @@ export default function Navbar() {
                       pt-2 (not mt-2) is an invisible hover bridge,
                       so moving the cursor down from "Kategori" doesn't cross a gap and close the menu.
                       Opens on hover, and on click/keyboard via focus-within. */}
-                  <div className="absolute left-2 top-full pt-2 w-48 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
-                    <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none py-1.5 overflow-hidden">
+                  <div className="absolute left-2 top-full pt-2 w-max min-w-[170px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
+                    <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {[
                         { href: "/sanggar", label: t('navSanggar') },
                         { href: "/pemusik", label: t('navPemusik') },
@@ -212,10 +212,10 @@ export default function Navbar() {
                             key={item.href}
                             href={item.href}
                             aria-current={isItemActive ? "page" : undefined}
-                            className={`px-4 py-2.5 text-sm flex items-center justify-between border-l-2 rounded-none cursor-pointer transition-all ${jakarta.className} ${
+                            className={`block px-3.5 py-2 text-sm whitespace-nowrap rounded-md cursor-pointer transition-colors ${jakarta.className} ${
                               isItemActive
-                                ? "text-orange-400 bg-orange-600/20 font-bold border-orange-500"
-                                : "font-medium text-zinc-200 border-transparent hover:text-orange-400 hover:bg-white/10 hover:border-orange-500"
+                                ? "text-orange-400 bg-orange-600/20 font-bold"
+                                : "font-medium text-zinc-200 hover:text-orange-400 hover:bg-zinc-800/80"
                             }`}
                           >
                             {item.label}
@@ -247,8 +247,8 @@ export default function Navbar() {
                     {t('navInfo')}
                     <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
                   </button>
-                  <div className="absolute left-2 top-full pt-2 w-52 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
-                    <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none py-1.5 overflow-hidden">
+                  <div className="absolute left-2 top-full pt-2 w-max min-w-[170px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
+                    <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {infoLinks.map((item) => {
                         const isItemActive = pathname === item.href;
                         return (
@@ -256,10 +256,10 @@ export default function Navbar() {
                             key={item.href}
                             href={item.href}
                             aria-current={isItemActive ? "page" : undefined}
-                            className={`px-4 py-2.5 text-sm flex items-center justify-between border-l-2 rounded-none cursor-pointer transition-all ${jakarta.className} ${
+                            className={`block px-3.5 py-2 text-sm whitespace-nowrap rounded-md cursor-pointer transition-colors ${jakarta.className} ${
                               isItemActive
-                                ? "text-orange-400 bg-orange-600/20 font-bold border-orange-500"
-                                : "font-medium text-zinc-200 border-transparent hover:text-orange-400 hover:bg-white/10 hover:border-orange-500"
+                                ? "text-orange-400 bg-orange-600/20 font-bold"
+                                : "font-medium text-zinc-200 hover:text-orange-400 hover:bg-zinc-800/80"
                             }`}
                           >
                             {item.label}
