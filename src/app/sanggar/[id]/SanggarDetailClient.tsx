@@ -278,7 +278,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* Right Column: PIC details & WhatsApp button (inner content unchanged) */}
             <div className="lg:col-span-5 space-y-4">
-              <dl className="space-y-3">
+              {/* Phones: label stacked above the value, no colon. From sm: the same fixed label + colon columns as
+                  "Informasi Latihan", so the three colons line up vertically */}
+              <dl className="divide-y divide-zinc-100">
                 {[
                   {
                     label: isEn ? "Contact Person (PIC)" : "Nama PIC Kontak",
@@ -290,9 +292,10 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   },
                   ...(sanggar.kontak?.email ? [{ label: "Email", value: sanggar.kontak.email }] : []),
                 ].map((row) => (
-                  <div key={row.label} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 first:pt-0 border-b border-zinc-100 last:border-none gap-1 sm:gap-4">
-                    <dt className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">{row.label}</dt>
-                    <dd className="text-sm font-semibold text-zinc-900 sm:text-right break-words">{row.value}</dd>
+                  <div key={row.label} className="flex flex-col sm:grid sm:grid-cols-[150px_auto_1fr] sm:gap-x-3 sm:items-center py-2.5 first:pt-0 last:pb-0">
+                    <dt className="text-[10px] sm:text-[11px] font-bold sm:font-semibold text-zinc-500 uppercase tracking-wider">{row.label}</dt>
+                    <span className="hidden sm:inline-block text-zinc-400 font-medium" aria-hidden="true">:</span>
+                    <dd className="mt-0.5 sm:mt-0 text-sm font-semibold sm:font-bold text-zinc-900 sm:text-right [overflow-wrap:anywhere]">{row.value}</dd>
                   </div>
                 ))}
               </dl>
@@ -670,17 +673,18 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
                 {isEn ? "Practice Information" : "Informasi Latihan"}
               </h3>
-              {/* Every row uses the same fixed label column + colon column, so the colons line up vertically */}
+              {/* Phones: label stacked above a left-aligned value, no colon. From sm: every row uses the same fixed
+                  label column + colon column, so the colons line up vertically (same pattern as the contact block) */}
               <dl className="text-sm text-zinc-700 divide-y divide-zinc-100">
                 {[
                   { label: isEn ? "Routine Schedule" : "Jadwal Rutin", value: isEn ? "Saturday & Sunday" : "Sabtu & Minggu", valueClass: "text-zinc-900" },
                   { label: isEn ? "Operating Hours" : "Jam Operasional", value: "09:00 - 16:00 WIB", valueClass: "text-zinc-900" },
                   { label: isEn ? "Studio Status" : "Status Sanggar", value: isEn ? "Active & Verified" : "Aktif & Terverifikasi", valueClass: "text-emerald-600" },
                 ].map((row) => (
-                  <div key={row.label} className="grid grid-cols-[140px_auto_1fr] gap-x-3 items-center py-2.5 first:pt-0 last:pb-0">
-                    <dt className="text-zinc-500 text-left">{row.label}</dt>
-                    <span className="text-zinc-400 font-medium" aria-hidden="true">:</span>
-                    <dd className={`font-bold text-right ${row.valueClass}`}>{row.value}</dd>
+                  <div key={row.label} className="flex flex-col sm:grid sm:grid-cols-[140px_auto_1fr] sm:gap-x-3 sm:items-center py-2.5 first:pt-0 last:pb-0">
+                    <dt className="text-xs sm:text-sm font-medium sm:font-normal text-zinc-500 text-left">{row.label}</dt>
+                    <span className="hidden sm:inline-block text-zinc-400 font-medium" aria-hidden="true">:</span>
+                    <dd className={`mt-0.5 sm:mt-0 font-bold text-left sm:text-right ${row.valueClass}`}>{row.value}</dd>
                   </div>
                 ))}
               </dl>
