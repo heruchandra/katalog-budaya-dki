@@ -391,8 +391,8 @@ export default function Navbar() {
             <div className="flex items-center justify-between gap-3 border-b border-zinc-100 pb-4">
               <div className="flex items-center gap-3 min-w-0">
                 <Image
-                  src="/logo-jayaraya.webp"
-                  alt="Logo Jaya Raya DKI Jakarta"
+                  src="/logo-disbud.webp"
+                  alt="Logo Dinas Kebudayaan DKI Jakarta"
                   width={36}
                   height={36}
                   className="h-9 w-auto object-contain shrink-0"
