@@ -1031,21 +1031,24 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               </button>
             </div>
 
-            {/* Featured Service Image Banner */}
-            <div className="relative w-full aspect-video rounded-none overflow-hidden my-4 border border-zinc-200/80 shadow-sm bg-zinc-100">
-              <img
-                src={modalImage}
-                alt={modalTitle}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {/* Featured Service Image Banner: not shown for the Karya Tari service, whose dance-work cards below
+                already carry the photos */}
+            {!showDanceWorks && (
+              <div className="relative w-full aspect-video rounded-none overflow-hidden my-4 border border-zinc-200/80 shadow-sm bg-zinc-100">
+                <img
+                  src={modalImage}
+                  alt={modalTitle}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
 
             {/* Service Summary */}
-            <div className="bg-zinc-50 border border-zinc-100 rounded-none p-4 my-4">
-              <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mb-1">
+            <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-100 my-4">
+              <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mb-1.5">
                 {isEn ? "Service Summary" : "Ringkasan Layanan"}
               </p>
-              <p className="text-sm text-zinc-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-zinc-700 leading-relaxed">
                 {modalDesc}
               </p>
               {selectedService.price && (
@@ -1056,13 +1059,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               )}
             </div>
 
-            {/* Karya Tari Unggulan (khusus layanan Pentas & Karya Tari) */}
+            {/* Karya Tari Unggulan cards (the modal title already reads "Karya Tari Unggulan Sanggar") */}
             {showDanceWorks && (
               <div className="mb-6">
-                <h4 className={`text-2xl sm:text-3xl text-zinc-900 leading-tight ${dancingScript.className}`}>
-                  {isEn ? "Studio's Featured Dance Works" : "Karya Tari Unggulan Sanggar"}
-                </h4>
-                <div className="w-12 h-0.5 bg-orange-600 mt-2 mb-4" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {danceHighlights.map((dance, idx) => {
                     const danceName = dance.name || dance.title || '';

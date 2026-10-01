@@ -129,9 +129,9 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       image: "/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp"
     },
     {
-      title: "Pentas & Karya Tari Betawi",
+      title: "Karya Tari Unggulan Sanggar",
       description: "Pertunjukan tari kreasi khas Betawi (termasuk Tari Lenggok Dara & Tari Nindak Si None).",
-      titleEn: "Betawi Dance Performances & Works",
+      titleEn: "Studio's Featured Dance Works",
       descriptionEn: "Signature Betawi creative dance performances (including Tari Lenggok Dara & Tari Nindak Si None).",
       image: "/layanan-sanggar-sinarnorray-Pentas & Karya Tari Betawi.webp",
       featuresDanceWorks: true
