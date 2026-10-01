@@ -922,16 +922,26 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
               </button>
 
-              <motion.img
-                key={activePhotoIndex}
-                src={photo.url}
-                alt={label}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                onClick={(e) => e.stopPropagation()}
-                className="max-w-full max-h-full object-contain rounded-none shadow-2xl select-none"
-              />
+              {/* Image + caption move together as one centred block. The image may shrink (min-h-0) so the
+                  caption always fits below it inside the stage. */}
+              <div className="flex h-full w-full min-h-0 flex-col items-center justify-center">
+                <motion.img
+                  key={activePhotoIndex}
+                  src={photo.url}
+                  alt={label}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="min-h-0 max-w-full max-h-full object-contain rounded-none shadow-2xl select-none"
+                />
+                <div
+                  className="mt-3 shrink-0 px-4 py-2 bg-zinc-900/90 backdrop-blur-md border border-zinc-800/80 rounded-xl max-w-[85%] sm:max-w-md mx-auto text-center shadow-xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p className="text-xs sm:text-sm font-semibold text-zinc-100 tracking-wide line-clamp-2">{label}</p>
+                </div>
+              </div>
 
               <button
                 type="button"
@@ -946,14 +956,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               </button>
             </div>
 
-            {/* Caption */}
+            {/* Bottom area: keyboard hint on desktop; on phones just safe-area spacing (the caption sits under the image) */}
             <div
               className="shrink-0 px-4 sm:px-8 pt-3 pb-5 text-center"
               style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
               onClick={(e) => e.stopPropagation()}
             >
-              <p className="text-sm sm:text-base font-medium text-white">{label}</p>
-              <p className="mt-1 text-[11px] text-zinc-500 hidden sm:block">
+              <p className="text-[11px] text-zinc-500 hidden sm:block">
                 {isEn ? "Use ← → keys to navigate, Esc to go back" : "Gunakan tombol ← → untuk navigasi, Esc untuk kembali"}
               </p>
             </div>
