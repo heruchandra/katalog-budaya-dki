@@ -110,14 +110,17 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
             </nav>
           </aside>
 
-          {/* Right main content */}
-          <article className="lg:col-span-8 relative overflow-hidden bg-white border border-zinc-200 p-6 sm:p-10 rounded-sm shadow-xs">
+          {/* Right main content. Long-form paragraphs are justified from sm up; on phones they stay left-aligned, because
+              browsers have no Indonesian hyphenation dictionary and justified narrow lines open wide gaps between words.
+              lang follows the language shown (the <html> lang stays "id"), so hyphens-auto uses the right rules where a
+              dictionary exists */}
+          <article lang={isEn ? "en" : "id"} className="lg:col-span-8 relative overflow-hidden bg-white border border-zinc-200 p-6 sm:p-10 rounded-sm shadow-xs">
             {/* Dinas Kebudayaan logo-flame accent */}
             <div aria-hidden="true" className="h-1.5 w-full bg-gradient-to-r from-[#F7941E] via-[#E01A67] to-[#2B3990] absolute top-0 left-0" />
 
             <header className="mb-8">
               <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">{c.title}</h1>
-              <p className="mt-3 text-sm sm:text-base text-zinc-600 leading-relaxed">{c.subtitle}</p>
+              <p className="mt-3 text-sm sm:text-base text-zinc-600 leading-relaxed text-left sm:text-justify hyphens-auto break-words">{c.subtitle}</p>
             </header>
 
             <div className="space-y-8">
@@ -126,7 +129,7 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
                   <h2 className="text-xl font-bold text-zinc-900 border-l-4 border-[#F7941E] pl-3 my-4">{section.heading}</h2>
                   <div className="space-y-3 text-sm sm:text-base text-zinc-700 leading-relaxed">
                     {section.paragraphs.map((p, j) => (
-                      <p key={j} className="text-justify">{p}</p>
+                      <p key={j} className="text-left sm:text-justify hyphens-auto break-words">{p}</p>
                     ))}
                     {section.bullets && (
                       <ul className="list-disc pl-5 space-y-1.5 marker:text-[#F7941E]">
@@ -141,7 +144,7 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
             </div>
 
             {c.closing && (
-              <p className="mt-4 pt-4 border-t border-zinc-100 text-sm sm:text-base text-zinc-600 leading-relaxed text-justify">{c.closing}</p>
+              <p className="mt-4 pt-4 border-t border-zinc-100 text-sm sm:text-base text-zinc-600 leading-relaxed text-left sm:text-justify hyphens-auto break-words">{c.closing}</p>
             )}
           </article>
         </div>

@@ -408,15 +408,17 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
               {/* Storytelling Paragraphs with Drop-Cap on first paragraph */}
               {(() => {
-                const descList = (isEn && sanggar.descriptionEn && sanggar.descriptionEn.length > 0)
-                  ? sanggar.descriptionEn
-                  : (sanggar.description || []);
+                const showsEnglish = !!(isEn && sanggar.descriptionEn && sanggar.descriptionEn.length > 0);
+                const descList = showsEnglish ? sanggar.descriptionEn! : (sanggar.description || []);
 
                 if (!descList || descList.length === 0) return null;
 
                 return (
-                  <div className="text-zinc-700 text-base sm:text-lg leading-relaxed space-y-5 font-light">
-                    <p className="text-justify">
+                  // Justified from sm up, left-aligned on phones (no Indonesian hyphenation in browsers, so narrow justified
+                  // lines open wide gaps). lang = the language of the text actually shown (studios without an English
+                  // text show Indonesian), so hyphens-auto uses the right rules where a dictionary exists
+                  <div lang={showsEnglish ? "en" : "id"} className="text-zinc-700 text-base sm:text-lg leading-relaxed space-y-5 font-light">
+                    <p className="text-left sm:text-justify hyphens-auto break-words">
                       <span className={`float-left text-5xl md:text-6xl text-zinc-900 leading-none pr-3 pt-1 font-normal select-none ${playfair.className}`}>
                         {descList[0].charAt(0)}
                       </span>
@@ -424,7 +426,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     </p>
 
                     {descList.slice(1).map((paragraph, idx) => (
-                      <p key={idx} className="text-justify">
+                      <p key={idx} className="text-left sm:text-justify hyphens-auto break-words">
                         {paragraph}
                       </p>
                     ))}
