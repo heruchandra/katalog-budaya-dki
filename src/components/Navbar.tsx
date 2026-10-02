@@ -27,6 +27,8 @@ export default function Navbar() {
   const isTransparent = hasHeroBanner && !scrolled;
 
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  // Desktop dropdown opened by click/tap (hover and keyboard focus open it too, via CSS)
+  const [openMenu, setOpenMenu] = useState<null | "kategori" | "info">(null);
   // "Informasi" menu (desktop dropdown + mobile accordion); labels shared with the footer
   const infoLinks = [
     { href: "/tentang-kami", label: t('footerAbout') },
@@ -59,6 +61,23 @@ export default function Navbar() {
     router.push("/login");
     router.refresh();
   };
+
+  // Close a click-opened dropdown on an outside click/tap or Escape
+  useEffect(() => {
+    if (!openMenu) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!(e.target as Element | null)?.closest?.(`[data-nav-menu="${openMenu}"]`)) setOpenMenu(null);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenMenu(null);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [openMenu]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -181,26 +200,30 @@ export default function Navbar() {
             {(() => {
               const isActive = pathname.startsWith("/sanggar") || pathname.startsWith("/pemusik");
               return (
-                <div className="relative group flex items-center h-full">
+                <div data-nav-menu="kategori" className="relative group flex items-center h-full">
                   <button
                     type="button"
                     aria-haspopup="true"
+                    aria-expanded={openMenu === "kategori"}
+                    onClick={() => setOpenMenu((m) => (m === "kategori" ? null : "kategori"))}
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
                       isActive
                         ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
                         : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
                     } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
-                      isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
+                      isActive || openMenu === "kategori" ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
                     }`}
                   >
                     {language === 'en' ? 'Category' : 'Kategori'}
-                    <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180 ${openMenu === "kategori" ? "rotate-180" : ""}`} />
                   </button>
                   {/* Dropdown Panel: left edge flush with the "Kategori" text/underline (the trigger has px-2, so left-2).
                       pt-2 (not mt-2) is an invisible hover bridge,
                       so moving the cursor down from "Kategori" doesn't cross a gap and close the menu.
-                      Opens on hover, and on click/keyboard via focus-within. */}
-                  <div className="absolute left-2 top-full pt-2 w-max min-w-[170px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
+                      Opens on hover, and on click/keyboard via focus-within.
+                      Closed = display:none (not opacity-0/invisible): Safari can keep painting a hidden element's
+                      backdrop-blur and shadow, which showed up as a dark bar under the navbar. */}
+                  <div className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "kategori" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
                     <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {[
                         { href: "/sanggar", label: t('navSanggar') },
@@ -211,6 +234,7 @@ export default function Navbar() {
                           <Link
                             key={item.href}
                             href={item.href}
+                            onClick={() => setOpenMenu(null)}
                             aria-current={isItemActive ? "page" : undefined}
                             className={`block px-3.5 py-2 text-sm whitespace-nowrap rounded-md cursor-pointer transition-colors ${jakarta.className} ${
                               isItemActive
@@ -232,22 +256,24 @@ export default function Navbar() {
             {(() => {
               const isActive = infoLinks.some((item) => pathname === item.href);
               return (
-                <div className="relative group flex items-center h-full">
+                <div data-nav-menu="info" className="relative group flex items-center h-full">
                   <button
                     type="button"
                     aria-haspopup="true"
+                    aria-expanded={openMenu === "info"}
+                    onClick={() => setOpenMenu((m) => (m === "info" ? null : "info"))}
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
                       isActive
                         ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
                         : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
                     } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
-                      isActive ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
+                      isActive || openMenu === "info" ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
                     }`}
                   >
                     {t('navInfo')}
-                    <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180 ${openMenu === "info" ? "rotate-180" : ""}`} />
                   </button>
-                  <div className="absolute left-2 top-full pt-2 w-max min-w-[170px] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
+                  <div className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "info" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
                     <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {infoLinks.map((item) => {
                         const isItemActive = pathname === item.href;
@@ -255,6 +281,7 @@ export default function Navbar() {
                           <Link
                             key={item.href}
                             href={item.href}
+                            onClick={() => setOpenMenu(null)}
                             aria-current={isItemActive ? "page" : undefined}
                             className={`block px-3.5 py-2 text-sm whitespace-nowrap rounded-md cursor-pointer transition-colors ${jakarta.className} ${
                               isItemActive
