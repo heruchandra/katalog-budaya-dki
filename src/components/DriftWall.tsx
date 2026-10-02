@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, CSSProperties } from 'react';
+import { getImageProps } from 'next/image';
 import './DriftWall.css';
 
 export interface DriftWallItem {
@@ -11,6 +12,8 @@ export interface DriftWallItem {
 
 export interface DriftWallProps {
   items?: DriftWallItem[];
+  /** `sizes` for the tile photos: a 210px tile is drawn up to ~290px wide (plane scale 1.25 + hover scale) */
+  imageSizes?: string;
   columnData?: (string[] | DriftWallItem[])[];
   columns?: number;
   tileWidth?: number;
@@ -55,6 +58,7 @@ const columnFactor = (index: number, variance: number): number => {
 
 const DriftWall = ({
   items = DEFAULT_ITEMS,
+  imageSizes = '300px',
   columnData,
   columns = 6,
   tileWidth = 210,
@@ -119,6 +123,24 @@ const DriftWall = ({
       return [assignedItem];
     });
   }, [items, columns, columnData]);
+
+  // Right-sized variants from the Next image optimizer, computed once per photo (each one is repeated in many
+  // tiles). The originals are 1920×1080 and up to ~1 MB; a tile needs ~300px. Remote URLs are used as given.
+  const imagePropsBySrc = useMemo(() => {
+    const map = new Map<string, { src: string; srcSet?: string; sizes?: string }>();
+    for (const col of columnItems) {
+      for (const item of col) {
+        if (map.has(item.image)) continue;
+        if (item.image.startsWith('/')) {
+          const { props } = getImageProps({ src: item.image, alt: '', fill: true, sizes: imageSizes });
+          map.set(item.image, { src: props.src, srcSet: props.srcSet, sizes: props.sizes });
+        } else {
+          map.set(item.image, { src: item.image });
+        }
+      }
+    }
+    return map;
+  }, [columnItems, imageSizes]);
 
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
@@ -296,12 +318,17 @@ const DriftWall = ({
   );
 
   const renderTile = (item: DriftWallItem, id: string, colIndex: number) => {
+    const imageProps = imagePropsBySrc.get(item.image) ?? { src: item.image };
     const inner = (
       <span className="drift-wall__inner border-none outline-none ring-0 focus:ring-0">
         <img
-          src={item.image}
+          src={imageProps.src}
+          srcSet={imageProps.srcSet}
+          sizes={imageProps.sizes}
           alt={item.title ?? ''}
           loading="eager"
+          // decorative background: don't compete with the page's content images
+          fetchPriority="low"
           decoding="async"
           draggable={false}
           className="w-full h-full object-cover object-center border-none outline-none ring-0"
