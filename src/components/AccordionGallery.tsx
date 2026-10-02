@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
+import { getImageProps } from 'next/image';
 
 import './AccordionGallery.css';
 
@@ -37,6 +38,8 @@ export interface AccordionGalleryProps {
   className?: string;
   /** Accessible name of the gallery */
   ariaLabel?: string;
+  /** `sizes` for the panel photos (an expanded panel's photo is ~52% of the gallery width × 1.22) */
+  imageSizes?: string;
 }
 
 const DEFAULT_ITEMS: AccordionGalleryItem[] = [
@@ -67,7 +70,8 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
   showLabels = true,
   grayscale = true,
   className = '',
-  ariaLabel = 'Image accordion gallery'
+  ariaLabel = 'Image accordion gallery',
+  imageSizes = '(min-width: 1280px) 760px, 60vw'
 }) => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const panelRefs = useRef<(HTMLElement | null)[]>([]);
@@ -236,6 +240,8 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
         const isClickableLink = !!item.link && item.link !== '#';
         const Tag = isClickableLink ? 'a' : 'div';
         const displayLabel = item.label || item.title || '';
+        // Optimised, responsive variants from the Next image optimizer (the originals are 150–750 KB each)
+        const { props: imageProps } = getImageProps({ src: item.image, alt: '', fill: true, sizes: imageSizes, quality: 75 });
         return (
           <Tag
             key={item.id ?? i}
@@ -258,7 +264,15 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
               <span className="ag-panel__media" ref={el => { mediaRefs.current[i] = el; }}>
                 {/* lazy: the accordion is desktop-only (hidden on phones) and below the hero, so these large
                     photos shouldn't download during the initial load, or at all on phones */}
-                <img src={item.image} alt={showLabels ? '' : item.alt || displayLabel} draggable="false" loading="lazy" decoding="async" />
+                <img
+                  src={imageProps.src}
+                  srcSet={imageProps.srcSet}
+                  sizes={imageProps.sizes}
+                  alt={showLabels ? '' : item.alt || displayLabel}
+                  draggable="false"
+                  loading="lazy"
+                  decoding="async"
+                />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
             </span>

@@ -171,10 +171,13 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   // false on the server and during hydration, then the real value: phones never request the accordion chunk
   const isDesktop = useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP_QUERY).matches, () => false);
-  // Hero video is attached only after the page has loaded (and fades in once playing), so its 20 MB
-  // doesn't compete with the page's own CSS/JS/images. Skipped for reduced-motion, Save-Data and slow connections.
+  // Hero video (1.6 MB, 720p) is attached only after the page has loaded (and fades in once playing), so it doesn't
+  // compete with the page's own CSS/JS/images. Skipped for reduced-motion, Save-Data and slow connections.
   const [showHeroVideo, setShowHeroVideo] = useState(false);
   const [heroVideoReady, setHeroVideoReady] = useState(false);
+  // The video's poster reuses the frame next/image already downloaded (its currentSrc), so it costs no extra request
+  const heroImageRef = useRef<HTMLImageElement>(null);
+  const [heroPoster, setHeroPoster] = useState<string>();
   // The animated headline (and motion with it) is loaded after the page has loaded; StaticHeroHeadline until then
   const [AnimatedHeroHeadline, setAnimatedHeroHeadline] = useState<ComponentType<HeroHeadlineProps> | null>(null);
 
@@ -182,7 +185,10 @@ export default function HomePage() {
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion || connection?.saveData || /(^|-)(2g|3g)$/.test(connection?.effectiveType || "")) return;
-    return whenPageIdle(() => setShowHeroVideo(true));
+    return whenPageIdle(() => {
+      setHeroPoster(heroImageRef.current?.currentSrc || undefined);
+      setShowHeroVideo(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -409,9 +415,10 @@ export default function HomePage() {
       <section
         className="relative w-full h-screen flex flex-col justify-center items-center"
       >
-        {/* LCP element: a still frame of the hero video, served responsive (next/image) and fetched first.
-            It shows instantly while the 20 MB video is deliberately not downloaded until the page has loaded. */}
+        {/* Still frame of the hero video, served responsive (next/image) and fetched first. It shows instantly;
+            the video is deliberately not requested until the page has loaded. */}
         <Image
+          ref={heroImageRef}
           src="/hero-poster.webp"
           alt=""
           fill
@@ -427,14 +434,17 @@ export default function HomePage() {
             loop
             muted
             playsInline
-            preload="auto"
-            poster="/hero-poster.webp"
+            preload="metadata"
+            poster={heroPoster}
             onPlaying={() => setHeroVideoReady(true)}
             className={`absolute inset-0 w-full h-full object-cover -z-20 transition-opacity duration-700 ${
               heroVideoReady ? "opacity-100" : "opacity-0"
             }`}
           >
-            <source src="/videoberanda.webm" type="video/webm" />
+            {/* 1280x720 30 fps, ~1.3 Mbps (re-encoded from the 20 MB 1080p60 original, videoberanda.webm).
+                WebM/VP9 first; H.264 MP4 for browsers without WebM (older Safari/iOS) */}
+            <source src="/videoberanda-720.webm" type="video/webm" />
+            <source src="/videoberanda-720.mp4" type="video/mp4" />
           </video>
         )}
         {/* Dark overlay for premium contrast */}
