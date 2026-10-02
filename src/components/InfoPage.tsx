@@ -46,9 +46,9 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
               <Image
                 src="/logo-disbud.webp"
                 alt="Logo Dinas Kebudayaan DKI Jakarta"
-                width={44}
+                width={67}
                 height={44}
-                className="h-11 w-auto object-contain shrink-0"
+                className="h-11 w-[67px] object-contain shrink-0"
               />
               <div className="min-w-0">
                 <p className="text-sm font-bold text-zinc-900 leading-snug">

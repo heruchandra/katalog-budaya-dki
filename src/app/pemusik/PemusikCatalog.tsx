@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
-import { Dancing_Script, Poppins } from 'next/font/google';
+import { Poppins } from 'next/font/google';
+import { dancingScript } from '@/lib/fonts';
 import { useLanguage } from "@/context/LanguageContext";
 import DriftWall, { DriftWallItem } from "@/components/DriftWall";
 import CatalogPagination from "@/components/CatalogPagination";
 
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = [
@@ -210,9 +209,10 @@ export default function PemusikCatalog({
           {/* Cards Grid */}
           {!fetchError && filtered.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-12">
-              {paginated.map((pemusik) => (
-                <div key={pemusik.id} className="group relative flex flex-col cursor-pointer">
-                  <Link href={`/pemusik/${pemusik.id}`} className="absolute inset-0 z-10" aria-label={pemusik.nama_seniman}></Link>
+              {paginated.map((pemusik, index) => (
+                <div key={pemusik.id} className="group relative flex flex-col">
+                  {/* No link yet: there is no /pemusik/[id] detail page, so linking the card led to a 404.
+                      Restore the card link once the musician detail page exists. */}
                   
                   {/* Image Wrapper */}
                   {pemusik.foto_url ? (
@@ -222,6 +222,8 @@ export default function PemusikCatalog({
                         alt={pemusik.nama_seniman}
                         fill
                         sizes="(min-width: 1280px) 22vw, (min-width: 768px) 34vw, 90vw"
+                        // first row is above the fold (often the LCP image), so don't lazy-load it
+                        loading={index < 3 ? "eager" : undefined}
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>

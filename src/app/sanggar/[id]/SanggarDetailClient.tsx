@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Clock, Building2, Maximize2, Images } from "lucide-react";
-import { Poppins, Playfair_Display, Dancing_Script, Plus_Jakarta_Sans } from 'next/font/google';
+import { Poppins, Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
+import { dancingScript } from '@/lib/fonts';
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
@@ -15,7 +16,6 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600
 // Same typeface as the Navbar "Masuk" button, for primary buttons on this page
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 
 export interface TariItem {
   name: string;

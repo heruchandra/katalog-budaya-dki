@@ -173,9 +173,9 @@ export default function Navbar() {
                 <Image
                   src="/logo-disbud.webp"
                   alt="Logo Dinas Kebudayaan DKI Jakarta"
-                  width={40}
-                  height={40}
-                  className="h-5 sm:h-8 w-auto object-contain"
+                  width={49}
+                  height={32}
+                  className="h-5 w-[30px] sm:h-8 sm:w-[49px] object-contain"
                   loading="eager"
                 />
               </div>
@@ -452,9 +452,9 @@ export default function Navbar() {
                 <Image
                   src="/logo-disbud.webp"
                   alt="Logo Dinas Kebudayaan DKI Jakarta"
-                  width={36}
+                  width={55}
                   height={36}
-                  className="h-9 w-auto object-contain shrink-0"
+                  className="h-9 w-[55px] object-contain shrink-0"
                 />
                 <div className="flex flex-col justify-center text-left min-w-0">
                   <span className="text-base font-bold text-zinc-900 tracking-tight leading-tight truncate">

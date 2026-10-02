@@ -46,8 +46,8 @@ export default function Footer() {
                 src="/logo-disbud.webp"
                 alt="Logo Dinas Kebudayaan DKI Jakarta"
                 width={40}
-                height={40}
-                className="object-contain"
+                height={26}
+                className="h-[26px] w-10 object-contain"
               />
               <div className="flex flex-col"> 
                 <span className="text-base font-bold leading-tight text-white">

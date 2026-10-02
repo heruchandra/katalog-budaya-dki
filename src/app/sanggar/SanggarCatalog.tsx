@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
-import { Dancing_Script, Poppins } from 'next/font/google';
+import { Poppins } from 'next/font/google';
+import { dancingScript } from '@/lib/fonts';
 import { useLanguage } from "@/context/LanguageContext";
 import DriftWall from "@/components/DriftWall";
 import CatalogPagination from "@/components/CatalogPagination";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const col1Sanggar = ["/dinamis-sanggar-1.webp", "/dinamis-sanggar-2.webp", "/dinamis-sanggar-3.webp"];
@@ -366,7 +366,7 @@ export default function SanggarCatalog({
           {/* Cards Grid */}
           {!fetchError && filtered.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-12">
-              {paginated.map((sanggar) => (
+              {paginated.map((sanggar, index) => (
                 <div key={sanggar.id} className="group relative flex flex-col rounded-none overflow-hidden bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-all">
                   {/* Poster Image Container wrapped in Next.js Link */}
                   <Link
@@ -379,6 +379,8 @@ export default function SanggarCatalog({
                         alt={sanggar.nama_sanggar}
                         fill
                         sizes="(min-width: 1280px) 22vw, (min-width: 768px) 34vw, 90vw"
+                        // first row is above the fold (often the LCP image), so don't lazy-load it
+                        loading={index < 3 ? "eager" : undefined}
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     ) : (

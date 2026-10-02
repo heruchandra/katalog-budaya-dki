@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { preconnect } from "react-dom";
-import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans, Dancing_Script } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans } from "next/font/google";
+import { dancingScript } from "@/lib/fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -38,13 +39,6 @@ const poppins = Poppins({
   preload: false,
 });
 
-const dancingScript = Dancing_Script({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-script",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "Katalog Seni DKI Jakarta — Direktori Pelaku Seni Budaya Tradisional",
   description:
@@ -78,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
+      data-scroll-behavior="smooth"
       className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${dancingScript.variable} h-full antialiased`}
     >
       <head>

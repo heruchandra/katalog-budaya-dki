@@ -85,12 +85,12 @@ export default function LoginPage() {
           <div className="text-center mb-5">
             <div className="flex justify-center mb-3">
               <Image 
-                src="/logo-disbud.webp" 
-                alt="Dinas Kebudayaan DKI Jakarta" 
-                width={140} 
-                height={56} 
-                className="h-12 w-auto object-contain" 
-                priority 
+                src="/logo-disbud.webp"
+                alt="Dinas Kebudayaan DKI Jakarta"
+                width={73}
+                height={48}
+                className="h-12 w-[73px] object-contain"
+                preload
               />
             </div>
             <h1 className="mt-2 text-lg font-bold text-surface-900">

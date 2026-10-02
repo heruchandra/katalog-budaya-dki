@@ -16,11 +16,9 @@ import {
   MapPin,
 } from "lucide-react";
 import { resolveWilayah } from "@/lib/wilayah";
-import { Dancing_Script } from 'next/font/google';
+import { dancingScript } from "@/lib/fonts";
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
-// Styles for the static headline below (same markup RotatingText renders)
-import "@/components/RotatingText.css";
 import type { HeroHeadlineProps } from "@/components/HeroHeadline";
 // Desktop-only (it is hidden below md), so it and gsap are split out and only fetched on md+ screens
 const AccordionGallery = dynamic(() => import("@/components/AccordionGallery"), {
@@ -80,7 +78,6 @@ function StaticHeroHeadline({ lead, words, scriptClassName }: HeroHeadlineProps)
   );
 }
 
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'], display: 'swap' });
 
 // Same images the sanggar catalog shows for these curated studios (keyed by lowercase name)
 const KNOWN_SANGGAR_THUMBS: Record<string, string> = {
