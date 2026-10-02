@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
-import DriftWall, { DriftWallItem } from "@/components/DriftWall";
+import DriftWall from "@/components/DriftWall";
 import CatalogPagination from "@/components/CatalogPagination";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 
@@ -56,7 +56,6 @@ export default function SanggarCatalog({
   fetchError,
   initialQuery = "",
 }: SanggarCatalogProps) {
-  const router = useRouter();
   const [activeGrade, setActiveGrade] = useState("all");
   const [activeWilayah, setActiveWilayah] = useState("all");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
@@ -375,10 +374,12 @@ export default function SanggarCatalog({
                     className="relative aspect-[3/4] w-full overflow-hidden rounded-none bg-slate-100 block cursor-pointer"
                   >
                     {sanggar.thumbnail_url ? (
-                      <img
+                      <Image
                         src={sanggar.thumbnail_url}
                         alt={sanggar.nama_sanggar}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        fill
+                        sizes="(min-width: 1280px) 22vw, (min-width: 768px) 34vw, 90vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">

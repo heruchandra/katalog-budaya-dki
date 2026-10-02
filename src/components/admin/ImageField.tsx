@@ -2,7 +2,10 @@
 
 import { useRef, useState } from "react";
 import { RefreshCw, Trash2, UploadCloud } from "lucide-react";
-import ImageCropModal from "@/components/admin/ImageCropModal";
+import dynamic from "next/dynamic";
+
+// The cropper (react-easy-crop) is only needed after an image is picked, so load it on demand
+const ImageCropModal = dynamic(() => import("@/components/admin/ImageCropModal"), { ssr: false });
 import { useLanguage } from "@/context/LanguageContext";
 import type { ImageValue } from "@/lib/sanggarAdmin";
 

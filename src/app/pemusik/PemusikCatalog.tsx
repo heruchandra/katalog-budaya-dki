@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, Inbox, AlertTriangle } from "lucide-react";
 import { Dancing_Script, Poppins } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
@@ -216,10 +217,12 @@ export default function PemusikCatalog({
                   {/* Image Wrapper */}
                   {pemusik.foto_url ? (
                     <div className="relative w-full aspect-[3/4] bg-slate-100 overflow-hidden rounded-none">
-                      <img
+                      <Image
                         src={pemusik.foto_url}
                         alt={pemusik.nama_seniman}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        fill
+                        sizes="(min-width: 1280px) 22vw, (min-width: 768px) 34vw, 90vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
                   ) : (

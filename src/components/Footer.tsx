@@ -48,7 +48,6 @@ export default function Footer() {
                 width={40}
                 height={40}
                 className="object-contain"
-                priority
               />
               <div className="flex flex-col"> 
                 <span className="text-base font-bold leading-tight text-white">

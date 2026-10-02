@@ -3,12 +3,18 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock3, Music, Users } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import dynamic from "next/dynamic";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 import { SANGGAR_TABLE, SanggarRow, isDraft } from "@/lib/sanggarAdmin";
 import { PemusikRow, countBy, tallyValues } from "@/lib/pemusikStats";
+
+// recharts is heavy: load the chart after the stat cards render (grey placeholder meanwhile)
+const SimpleBarChart = dynamic(() => import("@/components/admin/SimpleBarChart"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse rounded-sm bg-zinc-100" />,
+});
 
 const GRADE_COLORS: Record<string, string> = { A: "#F7941E", B: "#E01A67" };
 const SERIES_COLORS = ["#F7941E", "#E01A67", "#2B3990", "#059669", "#d97706", "#71717a"];
@@ -217,19 +223,7 @@ export default function AdminDashboard() {
           <div className={`${panel} p-5`}>
             <h3 className="text-sm font-bold text-zinc-900">{tr("Sanggar per Grade", "Sanggar by Grade")}</h3>
             <div className="mt-4 h-52">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={gradeData} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
-                  <CartesianGrid stroke="#e4e4e7" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
-                  <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
-                  <Tooltip cursor={{ fill: "#f4f4f5" }} contentStyle={{ border: "1px solid #e4e4e7", borderRadius: 2, fontSize: 12 }} />
-                  <Bar dataKey="total" name={tr("Jumlah", "Count")} radius={[2, 2, 0, 0]} maxBarSize={72}>
-                    {gradeData.map((entry) => (
-                      <Cell key={entry.key} fill={GRADE_COLORS[entry.key]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <SimpleBarChart data={gradeData.map((d) => ({ name: d.name, total: d.total, fill: GRADE_COLORS[d.key] }))} countLabel={tr("Jumlah", "Count")} />
             </div>
           </div>
 
@@ -256,19 +250,7 @@ export default function AdminDashboard() {
               {jenisData.length === 0 ? (
                 <p className="text-xs text-zinc-500">{notFilled}</p>
               ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={jenisData} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
-                    <CartesianGrid stroke="#e4e4e7" strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
-                    <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: "#71717a", fontSize: 12 }} />
-                    <Tooltip cursor={{ fill: "#f4f4f5" }} contentStyle={{ border: "1px solid #e4e4e7", borderRadius: 2, fontSize: 12 }} />
-                    <Bar dataKey="total" name={tr("Jumlah", "Count")} radius={[2, 2, 0, 0]} maxBarSize={72}>
-                      {jenisData.map((entry, i) => (
-                        <Cell key={entry.name} fill={SERIES_COLORS[i % SERIES_COLORS.length]} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                <SimpleBarChart data={jenisData.map((d, i) => ({ name: d.name, total: d.total, fill: SERIES_COLORS[i % SERIES_COLORS.length] }))} countLabel={tr("Jumlah", "Count")} />
               )}
             </div>
           </div>

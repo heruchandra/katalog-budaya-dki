@@ -3,12 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Search,
-  Music,
-  ArrowRight,
   ChevronRight,
-  Star,
   Award,
   Users,
   Loader2,
@@ -17,7 +15,6 @@ import {
   MapPin,
 } from "lucide-react";
 import { resolveWilayah } from "@/lib/wilayah";
-import { supabase } from "@/lib/supabase";
 import { Dancing_Script } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
@@ -92,12 +89,13 @@ function SearchThumb({ src, name, type }: { src?: string | null; name: string; t
   return (
     <span className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 relative overflow-hidden rounded-sm border border-white/20 bg-white/10 flex items-center justify-center">
       {src && !failed ? (
-        <img
+        <Image
           src={src}
           alt=""
-          loading="lazy"
+          fill
+          sizes="36px"
           onError={() => setFailed(true)}
-          className="object-cover w-full h-full"
+          className="object-cover"
         />
       ) : initial ? (
         <span className="text-xs font-bold text-orange-400" aria-hidden="true">{initial}</span>
@@ -200,8 +198,9 @@ export default function HomePage() {
           const cached = catalogCache.current;
           if (cached && Date.now() - cached.at < CATALOG_TTL_MS) return cached;
           const [s, p] = await Promise.all([
-            supabase.from('sanggars').select('*').limit(1000),
-            supabase.from('pemusiks').select('*').limit(1000),
+            // supabase-js is only fetched once someone starts typing in the search bar
+            import("@/lib/supabase").then(({ supabase }) => supabase.from('sanggars').select('*').limit(1000)),
+            import("@/lib/supabase").then(({ supabase }) => supabase.from('pemusiks').select('*').limit(1000)),
           ]);
           if (s.error) console.error("Supabase search error:", s.error);
           if (p.error) console.error("Supabase music search error:", p.error);
@@ -369,9 +368,11 @@ export default function HomePage() {
                       transition={{ duration: 0.3, delay: 0.4, ease: "easeInOut" }}
                       className={`absolute z-10 ${heroWords[heroWordIndex] === 'Seniman Musik' || heroWords[heroWordIndex] === 'Music Artists' ? '-top-12 md:-top-16 -right-6 md:-right-8' : '-top-8 md:-top-12 -right-8 md:-right-10'}`}
                     >
-                      <img
+                      <Image
                         src="/ondel-ondel.webp"
                         alt="Aksen Ondel-ondel"
+                        width={80}
+                        height={80}
                         className="w-12 h-12 md:w-20 md:h-20 object-contain rotate-12 scale-75 md:scale-100 drop-shadow-md hover:scale-110 pointer-events-none transition-transform duration-300"
                       />
                     </motion.div>
@@ -574,10 +575,12 @@ export default function HomePage() {
               const cardContent = (
                 <>
                   {/* Full-color Background Image (no grayscale filter on mobile) */}
-                  <img
+                  <Image
                     src={pillar.image}
                     alt={pillar.title}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
                   />
 
                   {/* Gradient Overlay for high text legibility */}

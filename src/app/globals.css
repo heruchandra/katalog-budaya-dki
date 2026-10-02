@@ -113,6 +113,18 @@
   }
 }
 
+/* Gallery viewer photo entrance (replaces a framer-motion fade so the library isn't loaded on the detail page) */
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes float {
   0%,
   100% {

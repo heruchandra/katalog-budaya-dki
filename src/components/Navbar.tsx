@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { Plus_Jakarta_Sans } from 'next/font/google';
 
@@ -42,21 +41,33 @@ export default function Navbar() {
   const isAdmin = user?.email === 'admindisbud@gmail.com';
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
 
+  // The Supabase client is loaded lazily: the navbar is on every page but only needs it for the login state,
+  // so supabase-js stays out of the initial JavaScript of public pages.
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
+    let cancelled = false;
+    let unsubscribe: (() => void) | undefined;
+
+    import("@/lib/supabase").then(({ supabase }) => {
+      if (cancelled) return;
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!cancelled) setUser(session?.user || null);
+      });
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user || null);
+      });
+      unsubscribe = () => subscription.unsubscribe();
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, []);
 
   const handleLogout = async () => {
+    const { supabase } = await import("@/lib/supabase");
     await supabase.auth.signOut();
     router.push("/login");
     router.refresh();

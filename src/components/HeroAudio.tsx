@@ -17,7 +17,8 @@ export default function HeroAudio() {
     setIsMuted(!isMuted);
     if (audioRef.current && isMuted) {
       // Attempt to play if unmuting (browsers might block autoplay until interaction)
-      audioRef.current.play().catch(e => console.log("Autoplay blocked:", e));
+      // Browsers commonly block autoplay until the user interacts; that's expected, not an error
+      audioRef.current.play().catch(() => {});
     }
   };
 
