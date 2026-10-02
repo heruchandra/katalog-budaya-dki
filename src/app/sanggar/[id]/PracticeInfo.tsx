@@ -1,8 +1,8 @@
 import { Clock, MapPin } from "lucide-react";
 
 /**
- * Practice schedule + venue of the studio's dance class. Shown only on the "Kelas Tari" service (its card and
- * its modal), the single place the practice details appear on the detail page.
+ * Practice schedule + venue of the studio's dance class. Shown in the "Kelas Tari" service's detail modal (or once
+ * under the service cards for studios without a dance-class service), the single place they appear on the page.
  */
 export default function PracticeInfo({
   info,

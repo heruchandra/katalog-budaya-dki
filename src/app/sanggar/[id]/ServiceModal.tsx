@@ -62,7 +62,7 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
     .some((s) => typeof s === "object" && s !== null && s.featuresDanceWorks);
   const showDanceChips = !hasDanceWorksService && danceHighlights.length > 0;
 
-  // The dance class carries the studio's practice schedule + venue (shown on its card too)
+  // The dance class carries the studio's practice schedule + venue; this modal is the only place they appear
   const practiceInfo = isDanceClassService(service.title, service.titleEn)
     ? splitPracticeInfo(sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar)
     : null;

@@ -279,7 +279,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
               {/* Icon-only contact tiles, one full-width row in this order: WhatsApp, Instagram, Gmail,
                   YouTube, Google Maps. Gmail / YouTube / Maps only appear when the data exists, and the
-                  row always has as many columns as tiles shown. */}
+                  row always has as many columns as tiles shown. Every tile is a solid brand colour with a white
+                  mark, with the same size, corners and hover. */}
               <div className={`grid ${
                 ({ 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4", 5: "grid-cols-5" } as Record<number, string>)[
                   2 + (sanggar.kontak?.email ? 1 : 0) + (sanggar.youtubeUrl ? 1 : 0) + (mapsSearchUrl ? 1 : 0)
@@ -302,7 +303,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                       rel="noopener noreferrer"
                       title="WhatsApp"
                       aria-label="WhatsApp"
-                      className="bg-[#059669] hover:bg-[#047857] text-white h-11 w-full flex items-center justify-center rounded shadow-xs transition-colors"
+                      className="bg-[#059669] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
                     >
                       <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
@@ -322,7 +323,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                       rel="noopener noreferrer"
                       title="Instagram"
                       aria-label="Instagram"
-                      className="bg-gradient-to-tr from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white h-11 w-full flex items-center justify-center rounded shadow-xs transition-opacity hover:opacity-90"
+                      className="bg-gradient-to-tr from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
                     >
                       <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -337,15 +338,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     href={`mailto:${sanggar.kontak.email}`}
                     title="Email"
                     aria-label="Email"
-                    className="bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200 h-11 w-full flex items-center justify-center rounded shadow-xs transition-colors"
+                    className="bg-[#EA4335] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
                   >
-                    {/* Official multi-colour Gmail logo (2020) */}
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
-                      <path fill="#34A853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
-                      <path fill="#FBBC04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
-                      <path fill="#EA4335" d="M72 74V48l24 18 24-18v26L96 92" />
-                      <path fill="#C5221F" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
+                    {/* White envelope on Google red */}
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
                     </svg>
                   </a>
                 )}
@@ -358,7 +355,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     rel="noopener noreferrer"
                     title="YouTube"
                     aria-label="YouTube"
-                    className="bg-[#dc2626] hover:bg-[#b91c1c] text-white h-11 w-full flex items-center justify-center rounded shadow-xs transition-colors"
+                    className="bg-[#dc2626] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
                   >
                     <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -366,7 +363,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </a>
                 )}
 
-                {/* Google Maps Button (new rainbow-ring pin: blurred colour wedges clipped to a pin with a hole) */}
+                {/* Google Maps Button (white location pin on Google Maps blue) */}
                 {mapsSearchUrl && (
                   <a
                     href={mapsSearchUrl}
@@ -374,32 +371,10 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     rel="noopener noreferrer"
                     title="Google Maps"
                     aria-label="Google Maps"
-                    className="bg-white hover:bg-zinc-50 border border-zinc-200 h-11 w-full flex items-center justify-center rounded shadow-xs transition-colors"
+                    className="bg-[#1A73E8] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
                   >
-                    {/* One step larger than the other icons: the pin only fills ~60% of its 24px box, so at the
-                        same size it reads visibly smaller than the solid WhatsApp/YouTube marks */}
-                    <svg className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <defs>
-                        <clipPath id="gmaps-pin-clip">
-                          <path
-                            clipRule="evenodd"
-                            d="M12 2.5a7 7 0 0 0-7 7c0 3.2 2.6 6 4.5 8.4 1 1.3 1.7 2.6 2 3.6a.55.55 0 0 0 1 0c.3-1 1-2.3 2-3.6 1.9-2.4 4.5-5.2 4.5-8.4a7 7 0 0 0-7-7ZM12 6.8a2.7 2.7 0 1 1 0 5.4 2.7 2.7 0 1 1 0-5.4Z"
-                          />
-                        </clipPath>
-                        <filter id="gmaps-pin-blur" x="-50%" y="-50%" width="200%" height="200%">
-                          <feGaussianBlur stdDeviation="1.3" />
-                        </filter>
-                      </defs>
-                      <g clipPath="url(#gmaps-pin-clip)">
-                        <g filter="url(#gmaps-pin-blur)">
-                          <path fill="#A56CE8" d="M12 9.5L1.72 -2.76A16 16 0 0 1 12.00 -6.50Z" />
-                          <path fill="#4285F4" d="M12 9.5L12.00 -6.50A16 16 0 0 1 23.31 -1.81Z" />
-                          <path fill="#12A4B6" d="M12 9.5L23.31 -1.81A16 16 0 0 1 27.76 6.72Z" />
-                          <path fill="#14B35A" d="M12 9.5L27.76 6.72A16 16 0 0 1 2.82 22.61Z" />
-                          <path fill="#F6C21B" d="M12 9.5L2.82 22.61A16 16 0 0 1 -2.50 16.26Z" />
-                          <path fill="#EA4335" d="M12 9.5L-2.50 16.26A16 16 0 0 1 1.72 -2.76Z" />
-                        </g>
-                      </g>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
                     </svg>
                   </a>
                 )}
@@ -475,8 +450,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               const serviceList = isEn 
                 ? ((sanggar.services && sanggar.services.length > 0) ? sanggar.services : (sanggar.layanan || []))
                 : ((sanggar.layanan && sanggar.layanan.length > 0) ? sanggar.layanan : (sanggar.services || []));
-              // Practice schedule + venue appear only on the dance-class card (and its modal), so the page has one
-              // address section ("Lokasi Sanggar") and no second, possibly conflicting schedule
+              // Practice schedule + venue are shown only in the dance-class service's "Lihat Detail" modal (the card stays
+              // minimal), so the page has one address section ("Lokasi Sanggar") and no second, conflicting schedule.
+              // Studios without a dance-class service get them once, under the service cards.
               const practiceInfo = splitPracticeInfo(sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar);
               const classIndex = serviceList.findIndex((item) =>
                 typeof item === 'object' && item !== null ? isDanceClassService(item.title, item.titleEn) : isDanceClassService(item)
@@ -553,9 +529,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                             {service.price && (
                               <p className="text-xs sm:text-sm font-semibold text-zinc-900 mt-2">{service.price}</p>
                             )}
-                            {idx === classIndex && practiceInfo && (
-                              <PracticeInfo info={practiceInfo} isEn={isEn} className="mt-3 pt-3 border-t border-zinc-100" />
-                            )}
                           </div>
 
                           <div className="text-xs font-semibold text-orange-600 flex items-center gap-1 mt-3">
@@ -613,8 +586,10 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                               <p className="text-base sm:text-lg font-medium text-zinc-800 leading-snug">
                                 {title}
                               </p>
+                              {/* Year badge: solid brand orange. orange-700 (the deep end of bg-brand) keeps white 12px text
+                                  above WCAG AA 4.5:1, which orange-600 (3.6:1) does not */}
                               {year && (
-                                <span className="shrink-0 text-xs font-semibold px-2.5 py-0.5 rounded-none bg-orange-50 text-orange-600 border border-orange-200/60">
+                                <span className="shrink-0 text-xs font-semibold tabular-nums px-3 py-1 rounded-lg bg-orange-700 text-white shadow-sm">
                                   {year}
                                 </span>
                               )}
