@@ -34,7 +34,7 @@ export default function Footer() {
       <div aria-hidden="true" className="absolute top-0 inset-x-0 z-20 h-[3px] w-full bg-gradient-to-r from-[#F7941E] via-[#E01A67] to-[#2B3990]" />
 
       {/* Batik pattern overlay */}
-      <div className="batik-pattern pointer-events-none absolute inset-0 opacity-10" />
+      <div aria-hidden="true" className="batik-pattern pointer-events-none absolute inset-0 opacity-10" />
 
       {/* Main content wrapper */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,8 +64,8 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
+          <nav aria-labelledby="footer-catalog-heading">
+            <h3 id="footer-catalog-heading" className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerCatalog')}
             </h3>
             <ul className="space-y-3">
@@ -80,11 +80,11 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
-    
+          </nav>
+
           {/* Info Links */}
-          <div>
-            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
+          <nav aria-labelledby="footer-info-heading">
+            <h3 id="footer-info-heading" className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerInfo')}
             </h3>
             <ul className="space-y-3">
@@ -99,16 +99,17 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Contact */}
           <div className="lg:col-span-2">
             <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerContact')}
             </h3>
+            <address className="not-italic">
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm text-zinc-400">
-                <MapPin className="text-[#F7941E] w-4 h-4 shrink-0 mt-0.5" />
+                <MapPin className="text-[#F7941E] w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
                 <span className="text-sm leading-relaxed text-justify">
                   Jl. Gatot Subroto Kav. 40-41 Lt 11, 12, 14 dan 15, Kuningan, Kuningan Timur, Setiabudi, Jakarta Selatan, DKI Jakarta 12950
                 </span>
@@ -118,7 +119,7 @@ export default function Footer() {
                   href="tel:+62211234567" 
                   className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                 >
-                  <Phone className="text-[#F7941E] w-4 h-4 shrink-0" />
+                  <Phone className="text-[#F7941E] w-4 h-4 shrink-0" aria-hidden="true" />
                   (021) 123-4567
                 </a>
               </li>
@@ -127,11 +128,12 @@ export default function Footer() {
                   href="mailto:info@disbud.jakarta.go.id"
                   className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                 >
-                  <Mail className="text-[#F7941E] w-4 h-4 shrink-0" />
+                  <Mail className="text-[#F7941E] w-4 h-4 shrink-0" aria-hidden="true" />
                   info@disbud.jakarta.go.id
                 </a>
               </li>
             </ul>
+            </address>
           </div>
         </div>
 

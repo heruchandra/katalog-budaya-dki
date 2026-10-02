@@ -208,7 +208,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
       : null;
 
   return (
-    <main className={`min-h-screen bg-zinc-50 text-zinc-900 pt-16 selection:bg-orange-100 selection:text-orange-900 ${poppins.className}`}>
+    <div className={`min-h-screen bg-zinc-50 text-zinc-900 pt-16 selection:bg-orange-100 selection:text-orange-900 ${poppins.className}`}>
       
       {/* Top Container: Pengurus Sanggar Card */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-4">
@@ -800,6 +800,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
         />
       )}
 
-    </main>
+    </div>
   );
 }

@@ -166,7 +166,7 @@ export default function PemusikCatalog({
         </aside>
 
         {/* Right Grid (Catalog) */}
-        <main id="catalog-results" className="w-full md:w-3/4 scroll-mt-24">
+        <section id="catalog-results" className="w-full md:w-3/4 scroll-mt-24">
           {/* Error State / Empty State */}
           {(fetchError || filtered.length === 0) && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -259,7 +259,7 @@ export default function PemusikCatalog({
               className="mt-14 mb-10"
             />
           )}
-        </main>
+        </section>
       </div>
     </div>
   );

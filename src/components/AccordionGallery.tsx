@@ -35,6 +35,8 @@ export interface AccordionGalleryProps {
   showLabels?: boolean;
   grayscale?: boolean;
   className?: string;
+  /** Accessible name of the gallery */
+  ariaLabel?: string;
 }
 
 const DEFAULT_ITEMS: AccordionGalleryItem[] = [
@@ -64,7 +66,8 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
   trigger = 'hover',
   showLabels = true,
   grayscale = true,
-  className = ''
+  className = '',
+  ariaLabel = 'Image accordion gallery'
 }) => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const panelRefs = useRef<(HTMLElement | null)[]>([]);
@@ -225,8 +228,8 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
         '--ag-radius': `${radius}px`,
         height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
       }}
-      role="list"
-      aria-label="Image accordion gallery"
+      role="group"
+      aria-label={ariaLabel}
     >
       {items.map((item, i) => {
         const isActive = i === active;
@@ -244,26 +247,30 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
             onMouseEnter={() => handleEnter(i)}
             onFocus={() => setActive(i)}
             onKeyDown={e => handleKeyDown(i, e)}
-            role="listitem"
+            // Link panels keep their native link role and take their name from the visible label + subtitle;
+            // the others are labelled groups
+            role={isClickableLink ? undefined : 'group'}
             tabIndex={0}
             aria-current={isActive ? 'true' : undefined}
-            aria-label={displayLabel}
+            aria-label={isClickableLink && showLabels ? undefined : displayLabel}
           >
             <span className="ag-panel__frame">
               <span className="ag-panel__media" ref={el => { mediaRefs.current[i] = el; }}>
                 {/* lazy: the accordion is desktop-only (hidden on phones) and below the hero, so these large
                     photos shouldn't download during the initial load, or at all on phones */}
-                <img src={item.image} alt={item.alt || displayLabel} draggable="false" loading="lazy" decoding="async" />
+                <img src={item.image} alt={showLabels ? '' : item.alt || displayLabel} draggable="false" loading="lazy" decoding="async" />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
             </span>
             {showLabels && (
-              <span className="ag-panel__label" aria-hidden="true">
-                <span className="ag-panel__bar" ref={el => { barRefs.current[i] = el; }} />
+              <span className="ag-panel__label">
+                <span className="ag-panel__bar" aria-hidden="true" ref={el => { barRefs.current[i] = el; }} />
                 <span className="ag-panel__text-wrap" ref={el => { textRefs.current[i] = el; }}>
                   <span className="ag-panel__text font-cursive font-script text-2xl md:text-3xl lg:text-4xl font-bold">
                     {displayLabel}
                   </span>
+                  {/* not rendered (flex column); keeps a space between title and subtitle in the accessible name */}
+                  {" "}
                   {item.subtitle && (
                     <span className="ag-panel__subtext font-sans">
                       {item.subtitle}

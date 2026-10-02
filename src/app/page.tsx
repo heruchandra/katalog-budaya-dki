@@ -223,6 +223,8 @@ export default function HomePage() {
   }, []);
 
   const isEnglish = language === 'en';
+  const selectedCategoryLabel =
+    selectedCategory === 'all' ? t('searchAllCat') : selectedCategory === 'dance' ? t('searchDanceCat') : t('searchMusicCat');
   const heroWords = language === 'id'
     ? ['Pelaku Seni', 'Sanggar Tari', 'Seniman Musik']
     : ['Traditional Artists', 'Dance Studios', 'Music Artists'];
@@ -462,6 +464,8 @@ export default function HomePage() {
           <div className="w-full max-w-3xl animate-[slide-up-solid_0.5s_ease-out_both]">
             <div ref={searchContainerRef} className="group relative z-50">
               <form
+                role="search"
+                aria-label={t('searchFormLabel')}
                 onSubmit={handleSearch}
                 className="relative isolate mt-12 flex flex-col md:flex-row items-stretch w-full max-w-4xl mx-auto border border-white/20 p-2 shadow-2xl rounded-none transition-all duration-300"
               >
@@ -477,12 +481,16 @@ export default function HomePage() {
                       setIsCategoryOpen(!isCategoryOpen);
                       setIsFocused(false);
                     }}
+                    aria-haspopup="listbox"
+                    aria-expanded={isCategoryOpen}
+                    aria-controls="hero-search-category"
+                    aria-label={`${t('searchCategoryLabel')}: ${selectedCategoryLabel}`}
                     className="flex items-center justify-between gap-2 pl-6 pr-5 py-4 bg-transparent hover:bg-white/10 focus:outline-none focus:ring-0 border-none transition-colors w-full h-full text-white min-h-[44px]"
                   >
                     <span className="text-sm font-semibold truncate">
-                      {selectedCategory === 'all' ? t('searchAllCat') : selectedCategory === 'dance' ? t('searchDanceCat') : t('searchMusicCat')}
+                      {selectedCategoryLabel}
                     </span>
-                    <svg className={`w-4 h-4 text-white/70 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg aria-hidden="true" className={`w-4 h-4 text-white/70 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
@@ -492,7 +500,9 @@ export default function HomePage() {
                       p-2 (0.5rem) + 1px border, so shift left by exactly that. On md+ also drop below
                       the bar's bottom border; on mobile span the full bar width. */}
                   <div
+                    id="hero-search-category"
                     role="listbox"
+                    aria-label={t('searchCategoryOptions')}
                     className={`absolute top-full -left-[calc(0.5rem+1px)] mt-1 md:mt-[calc(0.5rem+1px+0.25rem)] w-[calc(100%+1rem+2px)] md:w-full min-w-[200px] z-50 bg-black/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl rounded-none py-1 overflow-hidden transition-all duration-200 origin-top ${
                       isCategoryOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'
                     }`}
@@ -526,6 +536,9 @@ export default function HomePage() {
                 <div className="flex-grow relative">
                   <input
                     type="text"
+                    name="q"
+                    autoComplete="off"
+                    enterKeyHint="search"
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
@@ -543,6 +556,7 @@ export default function HomePage() {
                 </div>
                 <button
                   type="submit"
+                  aria-label={t('searchFormLabel')}
                   className="w-full md:w-auto bg-brand hover:bg-brand-deep text-white font-bold px-6 py-3 rounded-none shadow-md shadow-orange-600/20 text-xs tracking-[0.2em] uppercase transition-all min-h-[44px]"
                 >
                   {t('searchBtn')}
@@ -553,12 +567,12 @@ export default function HomePage() {
               {isFocused && searchQuery.trim().length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-xl border border-white/20 text-white shadow-2xl rounded-none py-1 max-h-80 overflow-y-auto overscroll-contain touch-pan-y custom-scrollbar custom-scrollbar--dark z-50">
                   {isLoading ? (
-                    <div className="p-4 flex items-center justify-center text-sm text-zinc-300 min-h-[60px]">
-                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-400" />
+                    <div role="status" className="p-4 flex items-center justify-center text-sm text-zinc-300 min-h-[60px]">
+                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-orange-400" aria-hidden="true" />
                       {t('searchLoading')}
                     </div>
                   ) : suggestions.length > 0 ? (
-                    <ul>
+                    <ul aria-label={t('searchSuggestions')}>
                       {suggestions.map((suggestion) => (
                         <li key={suggestion.id} className="border-b border-white/10 last:border-none">
                           <Link
@@ -594,7 +608,7 @@ export default function HomePage() {
                       ))}
                     </ul>
                   ) : (
-                    <div className="p-4 text-center text-sm text-zinc-300 min-h-[60px] flex items-center justify-center">
+                    <div role="status" className="p-4 text-center text-sm text-zinc-300 min-h-[60px] flex items-center justify-center">
                       {t('searchNoResults')}
                     </div>
                   )}
@@ -615,9 +629,9 @@ export default function HomePage() {
           <span className="inline-block text-xs font-semibold tracking-[0.2em] text-[#ff7b00] uppercase mb-2">
             {isEnglish ? "Cultural Exploration" : "Eksplorasi Budaya"}
           </span>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
             {isEnglish ? "The Living Arts of Jakarta" : "Ragam Pesona Kesenian Jakarta"}
-          </h1>
+          </h2>
           <p className="text-sm md:text-base text-gray-500 max-w-2xl mx-auto mt-2">
             {isEnglish 
               ? "Explore the rhythmic heritage, melodic harmonies, and living folklore rooted in Jakarta's cultural tapestry."
@@ -628,6 +642,7 @@ export default function HomePage() {
           {/* Desktop Hover Accordion Gallery (md+) */}
           <div className="hidden md:block min-h-[560px]">
             {isDesktop && <AccordionGallery
+              ariaLabel={isEnglish ? "Art category gallery" : "Galeri kategori seni"}
               items={culturalPillars}
               defaultIndex={0}
               height={560}

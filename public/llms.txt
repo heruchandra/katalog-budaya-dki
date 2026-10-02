@@ -1,0 +1,24 @@
+# Katalog Seni DKI
+
+> Platform katalog pelaku seni dan kebudayaan tradisional di DKI Jakarta.
+
+Katalog Seni DKI Jakarta adalah platform digital Dinas Kebudayaan Provinsi DKI Jakarta untuk menemukan sanggar tari dan seniman musik tradisional (termasuk seni budaya Betawi) di seluruh wilayah DKI Jakarta. Situs tersedia dalam Bahasa Indonesia dan Bahasa Inggris (pengalih bahasa ada di header).
+
+English summary: Katalog Seni DKI Jakarta (Jakarta Art Catalog) is the Jakarta Provincial Culture Office's directory of traditional dance studios (sanggar) and music artists in Jakarta, available in Indonesian and English.
+
+Catatan untuk agen:
+- Kontak dan pemesanan dilakukan langsung lewat WhatsApp masing-masing sanggar atau seniman; situs ini tidak punya sistem chat atau pemesanan internal.
+- Pencarian sanggar bisa langsung lewat URL: `/sanggar?q=<kata kunci>`.
+- Wilayah yang dipakai: Jakarta Pusat, Jakarta Utara, Jakarta Barat, Jakarta Selatan, Jakarta Timur, Kepulauan Seribu.
+
+## Halaman Utama
+- [Beranda](https://katalog-budaya-dki.vercel.app/): Katalog pelaku seni tradisional Jakarta, dengan pencarian sanggar tari dan seniman musik.
+
+## Katalog
+- [Sanggar Tari](https://katalog-budaya-dki.vercel.app/sanggar): Daftar sanggar tari tradisional, bisa dicari berdasarkan nama dan difilter berdasarkan grade serta wilayah. Setiap sanggar punya halaman profil di `/sanggar/<id>` berisi profil, karya tari unggulan, galeri foto dan video, prestasi, alamat, serta kontak WhatsApp.
+- [Seniman Musik](https://katalog-budaya-dki.vercel.app/pemusik): Daftar seniman musik tradisional Jakarta.
+
+## Informasi
+- [Tentang Kami](https://katalog-budaya-dki.vercel.app/tentang-kami): Visi, misi, dan latar belakang platform.
+- [Kebijakan Privasi](https://katalog-budaya-dki.vercel.app/kebijakan-privasi): Cara data pengguna dan pelaku seni dikelola.
+- [Syarat & Ketentuan](https://katalog-budaya-dki.vercel.app/syarat-ketentuan): Ketentuan penggunaan platform.

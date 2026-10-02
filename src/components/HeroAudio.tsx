@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Music } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function HeroAudio() {
+  const { t } = useLanguage();
   const [isMuted, setIsMuted] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -28,7 +30,7 @@ export default function HeroAudio() {
         onClick={toggleAudio}
         type="button"
         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-black/50 backdrop-blur-md border border-white/20 text-white shadow-lg hover:bg-black/70 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group"
-        aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+        aria-label={isMuted ? t('audioUnmute') : t('audioMute')}
       >
         {isMuted ? (
           <div className="relative flex items-center justify-center">

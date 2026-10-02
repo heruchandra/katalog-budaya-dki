@@ -145,11 +145,12 @@ export default function Navbar() {
             isTransparent ? 'bg-transparent' : 'bg-white/95 backdrop-blur-md'
           }`}
         />
-        <nav className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm">
+        <nav aria-label={t('navMainLabel')} className="relative flex items-center justify-between w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-12 text-sm">
           {/* Group 1: Left - Logos & Title */}
           <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap shrink-0 z-10 min-w-0">
             <Link
               href="/"
+              aria-label={t('navHomeLinkLabel')}
               className="group flex items-center gap-1.5 sm:gap-3 flex-nowrap transition-transform duration-200 hover:scale-[1.02] min-w-0"
             >
               <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap shrink-0">
@@ -190,6 +191,8 @@ export default function Navbar() {
                 <span className="text-xs sm:text-base font-bold leading-tight whitespace-nowrap truncate text-orange-500">
                   {brandTitle}
                 </span>
+                {/* not rendered (flex column); keeps "Katalog Seni DKI Jakarta" as words for the link's accessible name */}
+                {" "}
                 <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase ml-[1px] leading-snug transition-colors duration-300 ${
                   isTransparent ? 'text-white' : 'text-zinc-800'
                 }`}>
@@ -227,8 +230,8 @@ export default function Navbar() {
                 <div data-nav-menu="kategori" className="relative group flex items-center h-full">
                   <button
                     type="button"
-                    aria-haspopup="true"
                     aria-expanded={openMenu === "kategori"}
+                    aria-controls="nav-menu-kategori"
                     onClick={() => setOpenMenu((m) => (m === "kategori" ? null : "kategori"))}
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
                       isActive
@@ -247,7 +250,7 @@ export default function Navbar() {
                       Opens on hover, and on click/keyboard via focus-within.
                       Closed = display:none (not opacity-0/invisible): Safari can keep painting a hidden element's
                       backdrop-blur and shadow, which showed up as a dark bar under the navbar. */}
-                  <div className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "kategori" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
+                  <div id="nav-menu-kategori" className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "kategori" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
                     <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {[
                         { href: "/sanggar", label: t('navSanggar') },
@@ -283,8 +286,8 @@ export default function Navbar() {
                 <div data-nav-menu="info" className="relative group flex items-center h-full">
                   <button
                     type="button"
-                    aria-haspopup="true"
                     aria-expanded={openMenu === "info"}
+                    aria-controls="nav-menu-info"
                     onClick={() => setOpenMenu((m) => (m === "info" ? null : "info"))}
                     className={`relative flex items-center gap-1 px-2 py-1 whitespace-nowrap text-[13px] tracking-wide transition-colors duration-300 ${jakarta.className} ${
                       isActive
@@ -297,7 +300,7 @@ export default function Navbar() {
                     {t('navInfo')}
                     <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180 ${openMenu === "info" ? "rotate-180" : ""}`} />
                   </button>
-                  <div className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "info" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
+                  <div id="nav-menu-info" className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "info" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
                     <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {infoLinks.map((item) => {
                         const isItemActive = pathname === item.href;
@@ -336,8 +339,9 @@ export default function Navbar() {
                         : 'text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-100'
                     }`} 
                     href="/admin"
+                    aria-label={t('navDashboard')}
                   >
-                    <LayoutDashboard size={14}/>
+                    <LayoutDashboard size={14} aria-hidden="true" />
                     <span className="hidden xl:inline">{t('navDashboard')}</span>
                   </Link>
                 )}
@@ -352,6 +356,7 @@ export default function Navbar() {
                   </span>
                 </div>
                 <button
+                  type="button"
                   onClick={handleLogout}
                   className={`inline-flex shrink-0 items-center gap-1 rounded-none px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${jakarta.className} ${
                     isTransparent ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-red-600 hover:bg-red-50'
@@ -379,8 +384,10 @@ export default function Navbar() {
             <div className={`w-px h-5 mx-1 shrink-0 transition-colors duration-300 ${
               isTransparent ? 'bg-white/30' : 'bg-slate-200'
             }`}></div>
-            <button 
+            <button
+              type="button"
               onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
+              aria-label={t('navSwitchLanguage')}
               className={`px-4 py-1.5 rounded-none flex items-center gap-2 transition-colors duration-300 ${jakarta.className} ${
                 isTransparent
                   ? 'text-white border border-white/20 bg-white/5 backdrop-blur-md hover:bg-white/10'
@@ -391,8 +398,8 @@ export default function Navbar() {
                 {language === 'id' ? 'Indonesia' : 'English'}
               </span>
               <img 
-                src={language === 'id' ? '/flags/id.svg' : '/flags/gb.svg'} 
-                alt={language === 'id' ? 'ID' : 'EN'} 
+                src={language === 'id' ? '/flags/id.svg' : '/flags/gb.svg'}
+                alt=""
                 className="w-6 h-4 rounded-none object-cover shadow-sm"
               />
             </button>
@@ -417,6 +424,7 @@ export default function Navbar() {
 
       {/* Slide-Over Mobile Drawer (Side Sheet - Guess.id style) */}
       <div
+        inert={!isMobileMenuOpen}
         className={`fixed inset-0 z-[10000] md:hidden transition-all duration-300 ${
           isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
@@ -468,7 +476,7 @@ export default function Navbar() {
             </div>
 
             {/* Navigation */}
-            <nav className="pt-6 flex flex-col gap-1.5 text-left">
+            <nav aria-label={t('navMobileLabel')} className="pt-6 flex flex-col gap-1.5 text-left">
               <span className="text-xs font-semibold uppercase text-zinc-400 tracking-wider mb-3 px-1">
                 {t('navMenuSection')}
               </span>
@@ -496,6 +504,7 @@ export default function Navbar() {
                       type="button"
                       onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                       aria-expanded={isCategoryOpen}
+                      aria-controls="mobile-menu-kategori"
                       className={`w-full text-sm tracking-wide uppercase px-4 py-3 rounded-none flex items-center justify-between transition-all ${
                         isCategoryActive
                           ? "bg-orange-50 text-orange-600 font-bold border-l-4 border-orange-600"
@@ -512,6 +521,8 @@ export default function Navbar() {
 
                     {/* Sub-items */}
                     <div
+                      id="mobile-menu-kategori"
+                      inert={!isCategoryOpen}
                       className={`overflow-hidden transition-all duration-200 ${
                         isCategoryOpen ? "max-h-48 opacity-100 mt-1" : "max-h-0 opacity-0"
                       }`}
@@ -553,6 +564,7 @@ export default function Navbar() {
                       type="button"
                       onClick={() => setIsInfoOpen(!isInfoOpen)}
                       aria-expanded={isInfoOpen}
+                      aria-controls="mobile-menu-info"
                       className={`w-full text-sm tracking-wide uppercase px-4 py-3 rounded-none flex items-center justify-between transition-all ${
                         isInfoActive
                           ? "bg-orange-50 text-orange-600 font-bold border-l-4 border-orange-600"
@@ -568,6 +580,8 @@ export default function Navbar() {
                     </button>
 
                     <div
+                      id="mobile-menu-info"
+                      inert={!isInfoOpen}
                       className={`overflow-hidden transition-all duration-200 ${
                         isInfoOpen ? "max-h-56 opacity-100 mt-1" : "max-h-0 opacity-0"
                       }`}

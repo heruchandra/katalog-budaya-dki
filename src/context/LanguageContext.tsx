@@ -19,6 +19,10 @@ const translations: Record<string, Record<Language, string>> = {
   navSelectLanguage: { id: "Pilih Bahasa", en: "Select Language" },
   navOpenMenu: { id: "Buka menu", en: "Open menu" },
   navCloseMenu: { id: "Tutup menu", en: "Close menu" },
+  navMainLabel: { id: "Navigasi Utama", en: "Main navigation" },
+  navMobileLabel: { id: "Navigasi Seluler", en: "Mobile navigation" },
+  navHomeLinkLabel: { id: "Katalog Seni DKI Jakarta – Beranda", en: "Art Catalog DKI Jakarta – Home" },
+  navSwitchLanguage: { id: "Indonesia – ganti bahasa ke English", en: "English – switch language to Indonesian" },
   login: { id: "Masuk", en: "Login" },
 
   // ── Login ──
@@ -91,6 +95,12 @@ const translations: Record<string, Record<Language, string>> = {
   searchLoading: { id: "Mencari...", en: "Searching..." },
   searchNoResults: { id: "Tidak ada hasil ditemukan.", en: "No results found." },
   searchAriaLabel: { id: "Cari pelaku seni", en: "Search artists" },
+  searchFormLabel: { id: "Cari katalog seni", en: "Search the arts catalog" },
+  searchCategoryLabel: { id: "Kategori pencarian", en: "Search category" },
+  searchCategoryOptions: { id: "Pilihan kategori pencarian", en: "Search category options" },
+  searchSuggestions: { id: "Saran pencarian", en: "Search suggestions" },
+  audioUnmute: { id: "Nyalakan musik latar", en: "Turn on background music" },
+  audioMute: { id: "Matikan musik latar", en: "Turn off background music" },
 
   // ── Editorial Banner ──
   bannerSoul: { id: "Jiwa", en: "Soul" },
