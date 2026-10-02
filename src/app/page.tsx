@@ -441,10 +441,7 @@ export default function HomePage() {
               heroVideoReady ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* 1280x720 30 fps, ~1.3 Mbps (re-encoded from the 20 MB 1080p60 original, videoberanda.webm).
-                WebM/VP9 first; H.264 MP4 for browsers without WebM (older Safari/iOS) */}
-            <source src="/videoberanda-720.webm" type="video/webm" />
-            <source src="/videoberanda-720.mp4" type="video/mp4" />
+            <source src="/videoberanda-hd.mp4" type="video/mp4" />
           </video>
         )}
         {/* Dark overlay for premium contrast */}
