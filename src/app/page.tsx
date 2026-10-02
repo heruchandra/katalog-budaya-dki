@@ -417,7 +417,7 @@ export default function HomePage() {
           alt=""
           fill
           sizes="100vw"
-          quality={50}
+          quality={75}
           loading="eager"
           fetchPriority="high"
           className="object-cover -z-30"

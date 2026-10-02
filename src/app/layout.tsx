@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { preconnect } from "react-dom";
 import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans, Dancing_Script } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -59,12 +60,31 @@ export const metadata: Metadata = {
   ],
 };
 
+// The only third-party origin the browser talks to: Supabase (the hero search suggestions and the login state).
+// Fonts need no hint: next/font self-hosts them, so there are no requests to Google Fonts at runtime.
+const SUPABASE_ORIGIN = (() => {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").origin;
+  } catch {
+    return null;
+  }
+})();
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Next.js inserts resource hints through ReactDOM methods (rendered as a <link> in <head>).
+  // crossOrigin matches supabase-js's CORS fetches, so the warmed-up connection is the one they reuse.
+  if (SUPABASE_ORIGIN) preconnect(SUPABASE_ORIGIN, { crossOrigin: "anonymous" });
+
   return (
     <html
       lang="id"
       className={`${jakarta.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${dancingScript.variable} h-full antialiased`}
     >
+      <head>
+        {/* dns-prefetch: fallback for browsers without preconnect. Written as a tag because ReactDOM.prefetchDNS()
+            skips an origin that is already preconnected */}
+        {SUPABASE_ORIGIN && <link rel="dns-prefetch" href={SUPABASE_ORIGIN} />}
+      </head>
       <body className={`${jakarta.className} flex min-h-full flex-col bg-surface-50 overflow-x-hidden`}>
         <LanguageProvider>
           <Navbar />
