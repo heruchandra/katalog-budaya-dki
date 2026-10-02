@@ -3,8 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Phone, MapPin } from "lucide-react";
+import { Phone } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import GoogleMapsIcon from "@/components/icons/GoogleMapsIcon";
 
 export default function Footer() {
   const { t, language } = useLanguage();
@@ -109,9 +110,14 @@ export default function Footer() {
             <address className="not-italic">
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm text-zinc-400">
-                {/* Contact icons in their platform colours: Google Maps red, call green, Gmail logo */}
-                <MapPin className="text-[#EA4335] w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
-                <span className="text-sm leading-relaxed text-justify">
+                {/* Contact icons in their platform colours (Google Maps pin, call green, Gmail logo). The Maps pin sits
+                    in a soft blue box like the sanggar Maps tile; the other two icons get a slot of the same 36px
+                    width, so the three text lines start at the same x */}
+                <span className="w-9 h-9 shrink-0 flex items-center justify-center bg-blue-50 border border-blue-200/80 rounded-xl">
+                  <GoogleMapsIcon className="w-6 h-6" />
+                </span>
+                {/* pt centres the first address line on the 36px box */}
+                <span className="pt-[7px] text-sm leading-relaxed text-justify">
                   Jl. Gatot Subroto Kav. 40-41 Lt 11, 12, 14 dan 15, Kuningan, Kuningan Timur, Setiabudi, Jakarta Selatan, DKI Jakarta 12950
                 </span>
               </li>
@@ -120,7 +126,9 @@ export default function Footer() {
                   href="tel:+62211234567" 
                   className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                 >
-                  <Phone className="text-[#34A853] w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span className="w-9 shrink-0 flex justify-center">
+                    <Phone className="text-[#34A853] w-5 h-5" aria-hidden="true" />
+                  </span>
                   (021) 123-4567
                 </a>
               </li>
@@ -130,13 +138,15 @@ export default function Footer() {
                   className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
                 >
                   {/* Official multi-colour Gmail logo (same mark as the sanggar contact tiles) */}
-                  <svg className="w-4 h-4 shrink-0" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <span className="w-9 shrink-0 flex justify-center">
+                  <svg className="w-5 h-5" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
                     <path fill="#34A853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
                     <path fill="#FBBC04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
                     <path fill="#EA4335" d="M72 74V48l24 18 24-18v26L96 92" />
                     <path fill="#C5221F" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
                   </svg>
+                  </span>
                   info@disbud.jakarta.go.id
                 </a>
               </li>

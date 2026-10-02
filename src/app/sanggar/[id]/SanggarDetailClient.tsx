@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
+import GoogleMapsIcon from "@/components/icons/GoogleMapsIcon";
 
 // Modals are split out of the initial page bundle and fetched the first time they open
 const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
@@ -368,7 +369,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </a>
                 )}
 
-                {/* Google Maps Button (rainbow-ring pin: blurred colour wedges clipped to a pin with a hole) */}
+                {/* Google Maps Button (shared rainbow-ring pin, same mark as the footer) */}
                 {mapsSearchUrl && (
                   <a
                     href={mapsSearchUrl}
@@ -378,31 +379,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     aria-label="Google Maps"
                     className="bg-blue-50 border border-blue-200/80 hover:bg-blue-100 h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-colors"
                   >
-                    {/* One step larger than the other icons: the pin only fills ~60% of its 24px box, so at the
-                        same size it reads visibly smaller than the solid WhatsApp/YouTube marks */}
-                    <svg className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <defs>
-                        <clipPath id="gmaps-pin-clip">
-                          <path
-                            clipRule="evenodd"
-                            d="M12 2.5a7 7 0 0 0-7 7c0 3.2 2.6 6 4.5 8.4 1 1.3 1.7 2.6 2 3.6a.55.55 0 0 0 1 0c.3-1 1-2.3 2-3.6 1.9-2.4 4.5-5.2 4.5-8.4a7 7 0 0 0-7-7ZM12 6.8a2.7 2.7 0 1 1 0 5.4 2.7 2.7 0 1 1 0-5.4Z"
-                          />
-                        </clipPath>
-                        <filter id="gmaps-pin-blur" x="-50%" y="-50%" width="200%" height="200%">
-                          <feGaussianBlur stdDeviation="1.3" />
-                        </filter>
-                      </defs>
-                      <g clipPath="url(#gmaps-pin-clip)">
-                        <g filter="url(#gmaps-pin-blur)">
-                          <path fill="#A56CE8" d="M12 9.5L1.72 -2.76A16 16 0 0 1 12.00 -6.50Z" />
-                          <path fill="#4285F4" d="M12 9.5L12.00 -6.50A16 16 0 0 1 23.31 -1.81Z" />
-                          <path fill="#12A4B6" d="M12 9.5L23.31 -1.81A16 16 0 0 1 27.76 6.72Z" />
-                          <path fill="#14B35A" d="M12 9.5L27.76 6.72A16 16 0 0 1 2.82 22.61Z" />
-                          <path fill="#F6C21B" d="M12 9.5L2.82 22.61A16 16 0 0 1 -2.50 16.26Z" />
-                          <path fill="#EA4335" d="M12 9.5L-2.50 16.26A16 16 0 0 1 1.72 -2.76Z" />
-                        </g>
-                      </g>
-                    </svg>
+                    {/* one size step larger than the other tile icons: the pin only fills ~60% of its box */}
+                    <GoogleMapsIcon className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
                   </a>
                 )}
               </div>
