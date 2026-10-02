@@ -4,7 +4,7 @@ import InfoPage from "@/components/InfoPage";
 export const metadata: Metadata = {
   title: "Tentang Kami — Katalog Seni DKI Jakarta",
   description:
-    "Katalog Seni & Budaya DKI Jakarta: platform resmi Dinas Kebudayaan Provinsi DKI Jakarta untuk melestarikan seni tradisi dan memberdayakan sanggar lokal.",
+    "Temukan sanggar tari dan seniman musik tradisional pilihan Jakarta. Setiap sanggar terkurasi oleh Dinas Kebudayaan Provinsi DKI Jakarta dan bisa dihubungi langsung lewat WhatsApp.",
 };
 
 export default function TentangKamiPage() {
@@ -14,76 +14,92 @@ export default function TentangKamiPage() {
         id: {
           title: "Tentang Katalog Seni & Budaya",
           subtitle:
-            "Katalog Seni DKI Jakarta adalah platform digital Dinas Kebudayaan Provinsi DKI Jakarta untuk melestarikan seni tradisi dan memberdayakan sanggar serta pelaku seni lokal, agar karya mereka mudah ditemukan oleh masyarakat, penyelenggara acara, dan mitra dari dalam maupun luar negeri.",
+            "Sedang mencari penari, sanggar, atau pemusik tradisional untuk acara Anda? Katalog Seni DKI Jakarta mempertemukan Anda dengan sanggar dan seniman terbaik ibu kota, dari tari Betawi yang memukau hingga alunan musik tradisional yang menghidupkan suasana, dalam satu platform resmi Dinas Kebudayaan Provinsi DKI Jakarta.",
           sections: [
             {
-              heading: "Visi & Misi",
+              heading: "Sanggar Pilihan, Kualitas Terjamin",
               paragraphs: [
-                "Visi kami adalah menjadikan seni tradisi Jakarta tetap hidup, dikenal, dan dihargai lintas generasi melalui katalog digital yang terpercaya.",
-              ],
-              bullets: [
-                "Mendokumentasikan sanggar tari, pemusik, dan pelaku seni pertunjukan tradisional di seluruh wilayah DKI Jakarta secara digital.",
-                "Menampilkan profil, karya unggulan, galeri, dan prestasi setiap sanggar secara rapi dan mudah diakses.",
-                "Membuka peluang pentas, kolaborasi, dan pembinaan bagi sanggar dan seniman lokal.",
+                "Dinas Kebudayaan Provinsi DKI Jakarta menjamin bahwa setiap sanggar yang terdaftar dalam katalog ini merupakan sanggar pilihan yang telah terkurasi dengan kualitas penampilan terbaik.",
+                "Setiap sanggar ditinjau langsung oleh Dinas Kebudayaan dan dinilai melalui evaluasi grade. Profilnya tampil lengkap dengan karya unggulan, galeri foto dan video, serta prestasi, sehingga Anda bisa memilih dengan yakin sebelum menghubungi.",
               ],
             },
             {
-              heading: "Fungsi Platform",
+              heading: "Hadir di Setiap Momen Istimewa",
               paragraphs: [
-                "Katalog ini dirancang sebagai direktori resmi yang memudahkan masyarakat menemukan dan menghubungi pelaku seni secara langsung.",
+                "Berikan sentuhan budaya Jakarta yang berkesan bagi tamu dan keluarga Anda:",
               ],
               bullets: [
-                "Pencarian sanggar dan seniman musik berdasarkan nama, kategori, dan grade.",
-                "Informasi layanan sanggar, seperti kelas tari, pementasan, dan pertunjukan musik tradisional.",
-                "Direktori kontak resmi: setiap tombol hubungi langsung terhubung ke WhatsApp, email, atau media sosial sanggar yang bersangkutan.",
+                "Penyambutan tamu kehormatan, acara kantor, peresmian, dan perayaan hari besar.",
+                "Pernikahan dan acara keluarga dengan nuansa adat Betawi.",
+                "Festival, pentas seni sekolah, hingga kegiatan komunitas.",
+                "Kelas tari tradisional untuk anak, remaja, hingga dewasa.",
               ],
             },
             {
-              heading: "Dukungan Dinas Kebudayaan DKI Jakarta",
+              heading: "Mudah, Cepat, dan Langsung",
               paragraphs: [
-                "Platform ini dikelola oleh Dinas Kebudayaan Provinsi DKI Jakarta sebagai bagian dari upaya pembinaan dan pelestarian kebudayaan daerah. Data sanggar dikurasi dan diverifikasi oleh dinas, termasuk hasil evaluasi grade sanggar.",
+                "Menemukan penampil yang tepat kini hanya butuh beberapa langkah:",
+              ],
+              bullets: [
+                "Cari sanggar dan seniman musik berdasarkan nama, kategori, grade, dan wilayah.",
+                "Lihat profil, galeri, dan video penampilan sebelum memutuskan.",
+                "Hubungi sanggar langsung lewat WhatsApp, tanpa perantara.",
+              ],
+            },
+            {
+              heading: "Dukung Seni Budaya Jakarta",
+              paragraphs: [
+                "Platform ini dikelola langsung oleh Dinas Kebudayaan Provinsi DKI Jakarta sebagai bagian dari pembinaan dan pelestarian seni budaya daerah. Setiap kali Anda mengundang sanggar lokal, Anda ikut menjaga warisan seni Betawi dan Nusantara tetap hidup.",
               ],
             },
           ],
           closing:
-            "Kami mengajak seluruh masyarakat untuk mengenal, mengapresiasi, dan mendukung sanggar serta seniman Jakarta. Bersama, kita jaga seni budaya Betawi dan Nusantara agar terus berkembang.",
+            "Jadikan acara Anda lebih berkesan bersama sanggar dan seniman terbaik Jakarta. Jelajahi katalog sekarang dan temukan penampil yang tepat untuk Anda.",
         },
         en: {
           title: "About the Art & Culture Catalog",
           subtitle:
-            "The Jakarta Art Catalog is a digital platform of the DKI Jakarta Provincial Department of Culture, created to preserve traditional arts and empower local studios and artists, making their work easy to discover for the public, event organizers, and partners in Indonesia and abroad.",
+            "Looking for traditional dancers, a dance studio, or musicians for your event? The Jakarta Art Catalog connects you with the capital's finest studios and artists, from captivating Betawi dance to traditional music that brings any occasion to life, all on one official platform of the DKI Jakarta Provincial Department of Culture.",
           sections: [
             {
-              heading: "Vision & Mission",
+              heading: "Hand-Picked Studios, Guaranteed Quality",
               paragraphs: [
-                "Our vision is to keep Jakarta's traditional arts alive, recognized, and valued across generations through a trusted digital catalog.",
-              ],
-              bullets: [
-                "Digitally document traditional dance studios, musicians, and performing artists across DKI Jakarta.",
-                "Present each studio's profile, featured works, gallery, and achievements in a clear, accessible way.",
-                "Open up performance, collaboration, and development opportunities for local studios and artists.",
+                "The DKI Jakarta Provincial Department of Culture guarantees that every studio listed in this catalog is a hand-picked, curated studio with the finest performance quality.",
+                "Every studio is reviewed directly by the Department of Culture and assessed through a grade evaluation. Its profile comes complete with featured works, a photo and video gallery, and achievements, so you can choose with confidence before getting in touch.",
               ],
             },
             {
-              heading: "What the Platform Does",
+              heading: "Made for Every Special Moment",
               paragraphs: [
-                "The catalog is designed as an official directory that makes it easy to find and contact artists directly.",
+                "Give your guests and family a memorable touch of Jakarta culture:",
               ],
               bullets: [
-                "Search for studios and music artists by name, category, and grade.",
-                "Information on studio services such as dance classes, stage performances, and traditional music shows.",
-                "Official contact directory: every contact button links straight to the studio's own WhatsApp, email, or social media.",
+                "Welcoming honored guests, corporate events, inaugurations, and holiday celebrations.",
+                "Weddings and family celebrations with a traditional Betawi touch.",
+                "Festivals, school art shows, and community events.",
+                "Traditional dance classes for children, teenagers, and adults.",
               ],
             },
             {
-              heading: "Supported by the DKI Jakarta Department of Culture",
+              heading: "Easy, Fast, and Direct",
               paragraphs: [
-                "This platform is managed by the DKI Jakarta Provincial Department of Culture as part of its work to develop and preserve regional culture. Studio data is curated and verified by the department, including studio grade evaluations.",
+                "Finding the right performers takes just a few steps:",
+              ],
+              bullets: [
+                "Search for studios and music artists by name, category, grade, and region.",
+                "View profiles, galleries, and performance videos before you decide.",
+                "Contact the studio directly on WhatsApp, with no middleman.",
+              ],
+            },
+            {
+              heading: "Support Jakarta's Arts & Culture",
+              paragraphs: [
+                "This platform is managed directly by the DKI Jakarta Provincial Department of Culture as part of its work to develop and preserve regional arts and culture. Every time you invite a local studio, you help keep Betawi and Indonesian artistic heritage alive.",
               ],
             },
           ],
           closing:
-            "We invite everyone to discover, appreciate, and support Jakarta's studios and artists. Together, let us keep Betawi and Indonesian arts and culture thriving.",
+            "Make your event more memorable with Jakarta's finest studios and artists. Explore the catalog now and find the right performers for you.",
         },
       }}
     />

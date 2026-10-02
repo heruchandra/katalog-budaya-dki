@@ -73,3 +73,18 @@ export function parsePrestasi(row: { prestasi_items?: unknown }): PrestasiItem[]
 
 /** Drafts are hidden from every public page. Rows without a status (before the migration) are public. */
 export const isDraft = (row: { status?: string | null }) => row.status === "draft";
+
+/** The studio's dance-class service ("Kelas Tari Betawi", "Pelatihan Tari …", "Betawi Dance Classes") */
+export const isDanceClassService = (title?: string | null, titleEn?: string | null) =>
+  /kelas tari|pelatihan tari|latihan tari|dance class/i.test(`${title || ""} ${titleEn || ""}`);
+
+/**
+ * Splits a practice-venue text into venue and schedule. The data writes the schedule in trailing
+ * parentheses: "Studio Sinar Norray, Jl. Daman 1 … (Rabu & Sabtu, 15.00 - 18.00 WIB)".
+ */
+export function splitPracticeInfo(text?: string | null): { venue: string; schedule: string | null } | null {
+  const value = (text || "").trim();
+  if (!value) return null;
+  const match = value.match(/^(.*?)\s*\(([^()]+)\)\s*$/);
+  return match && match[1] ? { venue: match[1].trim(), schedule: match[2].trim() } : { venue: value, schedule: null };
+}

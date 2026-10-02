@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import type { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
+import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
+import PracticeInfo from "./PracticeInfo";
 
 interface ServiceModalProps {
   service: ServiceItem;
@@ -60,6 +62,11 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
     .some((s) => typeof s === "object" && s !== null && s.featuresDanceWorks);
   const showDanceChips = !hasDanceWorksService && danceHighlights.length > 0;
 
+  // The dance class carries the studio's practice schedule + venue (shown on its card too)
+  const practiceInfo = isDanceClassService(service.title, service.titleEn)
+    ? splitPracticeInfo(sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar)
+    : null;
+
   return (
     <div
       className="fixed inset-0 z-[99999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
@@ -108,6 +115,15 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
             </p>
           )}
         </div>
+
+        {practiceInfo && (
+          <div className="bg-orange-50/60 p-4 rounded-xl border border-orange-100 my-4">
+            <p className="text-xs font-semibold tracking-wider text-orange-700 uppercase mb-3">
+              {isEn ? "Practice Venue & Schedule" : "Tempat & Jadwal Latihan"}
+            </p>
+            <PracticeInfo info={practiceInfo} isEn={isEn} />
+          </div>
+        )}
 
         {/* Karya Tari Unggulan cards (the modal title already reads "Karya Tari Unggulan Sanggar") */}
         {showDanceWorks && (

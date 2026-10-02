@@ -11,7 +11,8 @@ export const ADMIN_EMAIL = "admindisbud@gmail.com";
 
 /** The only grades offered in the admin filter and form */
 export const GRADE_OPTIONS = ["A", "B"] as const;
-export const KATEGORI_OPTIONS = ["Seni Tari", "Seni Musik", "Seni Teater", "Seni Rupa", "Kerajinan", "Lainnya"] as const;
+// The catalog only lists dance studios and music artists
+export const KATEGORI_OPTIONS = ["Seni Tari", "Seni Musik"] as const;
 export const STATUS_OPTIONS = ["terverifikasi", "draft"] as const;
 export type SanggarStatus = (typeof STATUS_OPTIONS)[number];
 

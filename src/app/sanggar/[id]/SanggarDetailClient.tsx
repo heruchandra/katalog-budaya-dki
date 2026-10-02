@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Clock, Building2, Maximize2, Images } from "lucide-react";
+import { Maximize2, Images } from "lucide-react";
 import { Poppins, Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
 import { dancingScript } from '@/lib/fonts';
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
+import PracticeInfo from "./PracticeInfo";
 
 // Modals are split out of the initial page bundle and fetched the first time they open
 const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
@@ -253,8 +255,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* Right Column: PIC details & WhatsApp button (inner content unchanged) */}
             <div className="lg:col-span-5 space-y-4">
-              {/* Phones: label stacked above the value, no colon. From sm: the same fixed label + colon columns as
-                  "Informasi Latihan", so the three colons line up vertically */}
+              {/* Phones: label stacked above the value, no colon. From sm: a fixed label column + colon column,
+                  so the three colons line up vertically */}
               <dl className="divide-y divide-zinc-100">
                 {[
                   {
@@ -466,29 +468,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </footer>
                 </blockquote>
               )}
-
-              {/* Architectural Dual Location Blocks */}
-              <div className="border-t border-zinc-200 pt-8 mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
-                    <Building2 className="w-4 h-4" />
-                    <span>{isEn ? "Studio / Secretariat Address" : "Alamat Sanggar / Sekretariat"}</span>
-                  </div>
-                  <p className="text-sm text-zinc-700 leading-relaxed font-sans">
-                    {sanggar.address || sanggar.alamatSanggar}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-orange-600 font-semibold">
-                    <Clock className="w-4 h-4" />
-                    <span>{isEn ? "Practice Venue & Schedule" : "Tempat & Jadwal Latihan"}</span>
-                  </div>
-                  <p className="text-sm text-zinc-700 leading-relaxed font-sans">
-                    {sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar}
-                  </p>
-                </div>
-              </div>
             </div>
 
             {/* 2. Layanan Sanggar Section (Structured Service Cards) */}
@@ -496,6 +475,12 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               const serviceList = isEn 
                 ? ((sanggar.services && sanggar.services.length > 0) ? sanggar.services : (sanggar.layanan || []))
                 : ((sanggar.layanan && sanggar.layanan.length > 0) ? sanggar.layanan : (sanggar.services || []));
+              // Practice schedule + venue appear only on the dance-class card (and its modal), so the page has one
+              // address section ("Lokasi Sanggar") and no second, possibly conflicting schedule
+              const practiceInfo = splitPracticeInfo(sanggar.alamatLatihan || sanggar.address || sanggar.alamatSanggar);
+              const classIndex = serviceList.findIndex((item) =>
+                typeof item === 'object' && item !== null ? isDanceClassService(item.title, item.titleEn) : isDanceClassService(item)
+              );
 
               return (
                 <div className="bg-white p-6 sm:p-8 rounded-none border border-zinc-200/80 shadow-sm space-y-6 transition-all duration-300">
@@ -568,6 +553,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                             {service.price && (
                               <p className="text-xs sm:text-sm font-semibold text-zinc-900 mt-2">{service.price}</p>
                             )}
+                            {idx === classIndex && practiceInfo && (
+                              <PracticeInfo info={practiceInfo} isEn={isEn} className="mt-3 pt-3 border-t border-zinc-100" />
+                            )}
                           </div>
 
                           <div className="text-xs font-semibold text-orange-600 flex items-center gap-1 mt-3">
@@ -577,6 +565,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                       );
                     })}
                   </div>
+
+                  {classIndex === -1 && practiceInfo && (
+                    <div className="border-t border-zinc-200 pt-5">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-3">
+                        {isEn ? "Practice Venue & Schedule" : "Tempat & Jadwal Latihan"}
+                      </h4>
+                      <PracticeInfo info={practiceInfo} isEn={isEn} />
+                    </div>
+                  )}
                 </div>
               );
             })()}
@@ -645,29 +642,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
           {/* RIGHT COLUMN: Sticky Sidebar / Info Cards (Span 1) */}
           <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-24">
             
-            {/* Card 1: Informasi Operasional & Jadwal */}
-            <div className="bg-white p-6 rounded-none border border-zinc-200/80 shadow-sm transition-all duration-300">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
-                {isEn ? "Practice Information" : "Informasi Latihan"}
-              </h3>
-              {/* Phones: label stacked above a left-aligned value, no colon. From sm: every row uses the same fixed
-                  label column + colon column, so the colons line up vertically (same pattern as the contact block) */}
-              <dl className="text-sm text-zinc-700 divide-y divide-zinc-100">
-                {[
-                  { label: isEn ? "Routine Schedule" : "Jadwal Rutin", value: isEn ? "Saturday & Sunday" : "Sabtu & Minggu", valueClass: "text-zinc-900" },
-                  { label: isEn ? "Operating Hours" : "Jam Operasional", value: "09:00 - 16:00 WIB", valueClass: "text-zinc-900" },
-                  { label: isEn ? "Studio Status" : "Status Sanggar", value: isEn ? "Active & Verified" : "Aktif & Terverifikasi", valueClass: "text-emerald-600" },
-                ].map((row) => (
-                  <div key={row.label} className="flex flex-col sm:grid sm:grid-cols-[140px_auto_1fr] sm:gap-x-3 sm:items-center py-2.5 first:pt-0 last:pb-0">
-                    <dt className="text-xs sm:text-sm font-medium sm:font-normal text-zinc-500 text-left">{row.label}</dt>
-                    <span className="hidden sm:inline-block text-zinc-400 font-medium" aria-hidden="true">:</span>
-                    <dd className={`mt-0.5 sm:mt-0 font-bold text-left sm:text-right ${row.valueClass}`}>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-            {/* Card 2: Lokasi & Alamat */}
+            {/* Lokasi & Alamat: the page's only address section */}
             <div className="bg-white p-6 rounded-none border border-zinc-200/80 shadow-sm transition-all duration-300">
               <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
                 {isEn ? "Studio Location" : "Lokasi Sanggar"}

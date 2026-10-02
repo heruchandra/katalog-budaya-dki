@@ -19,6 +19,6 @@ Catatan untuk agen:
 - [Seniman Musik](https://katalog-budaya-dki.vercel.app/pemusik): Daftar seniman musik tradisional Jakarta.
 
 ## Informasi
-- [Tentang Kami](https://katalog-budaya-dki.vercel.app/tentang-kami): Visi, misi, dan latar belakang platform.
+- [Tentang Kami](https://katalog-budaya-dki.vercel.app/tentang-kami): Profil platform dan jaminan kurasi sanggar oleh Dinas Kebudayaan Provinsi DKI Jakarta.
 - [Kebijakan Privasi](https://katalog-budaya-dki.vercel.app/kebijakan-privasi): Cara data pengguna dan pelaku seni dikelola.
 - [Syarat & Ketentuan](https://katalog-budaya-dki.vercel.app/syarat-ketentuan): Ketentuan penggunaan platform.
