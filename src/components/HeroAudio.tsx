@@ -40,11 +40,12 @@ export default function HeroAudio() {
         )}
       </button>
 
-      {/* Hidden Audio Element */}
+      {/* Hidden Audio Element: preload="none" so the 2 MB track is only downloaded once the visitor turns it on */}
       <audio
         ref={audioRef}
         loop
         muted
+        preload="none"
         controls={false}
         className="hidden"
       >

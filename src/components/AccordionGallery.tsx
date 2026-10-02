@@ -251,7 +251,9 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
           >
             <span className="ag-panel__frame">
               <span className="ag-panel__media" ref={el => { mediaRefs.current[i] = el; }}>
-                <img src={item.image} alt={item.alt || displayLabel} draggable="false" />
+                {/* lazy: the accordion is desktop-only (hidden on phones) and below the hero, so these large
+                    photos shouldn't download during the initial load, or at all on phones */}
+                <img src={item.image} alt={item.alt || displayLabel} draggable="false" loading="lazy" decoding="async" />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
             </span>

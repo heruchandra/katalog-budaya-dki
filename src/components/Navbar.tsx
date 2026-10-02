@@ -42,12 +42,15 @@ export default function Navbar() {
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
 
   // The Supabase client is loaded lazily: the navbar is on every page but only needs it for the login state,
-  // so supabase-js stays out of the initial JavaScript of public pages.
+  // so supabase-js stays out of the initial JavaScript of public pages. It is also only fetched once the page
+  // has loaded and the browser is idle, so it doesn't compete with the hero for bandwidth and CPU.
   useEffect(() => {
     let cancelled = false;
     let unsubscribe: (() => void) | undefined;
+    let idleId: number | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-    import("@/lib/supabase").then(({ supabase }) => {
+    const connect = () => import("@/lib/supabase").then(({ supabase }) => {
       if (cancelled) return;
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (!cancelled) setUser(session?.user || null);
@@ -60,8 +63,18 @@ export default function Navbar() {
       unsubscribe = () => subscription.unsubscribe();
     });
 
+    const schedule = () => {
+      if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(connect, { timeout: 1500 });
+      else timeoutId = setTimeout(connect, 200);
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
+
     return () => {
       cancelled = true;
+      window.removeEventListener("load", schedule);
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
       unsubscribe?.();
     };
   }, []);
@@ -146,7 +159,7 @@ export default function Navbar() {
                   width={40}
                   height={40}
                   className="h-6 sm:h-9 w-auto object-contain translate-y-[1px]"
-                  priority
+                  loading="eager"
                 />
                 <Image
                   src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'}
@@ -154,7 +167,7 @@ export default function Navbar() {
                   width={40}
                   height={40}
                   className="h-6 sm:h-9 w-auto object-contain drop-shadow-sm"
-                  priority
+                  loading="eager"
                 />
                 <Image
                   src="/logo-disbud.webp"
@@ -162,7 +175,7 @@ export default function Navbar() {
                   width={40}
                   height={40}
                   className="h-5 sm:h-8 w-auto object-contain"
-                  priority
+                  loading="eager"
                 />
               </div>
 
@@ -378,7 +391,7 @@ export default function Navbar() {
                 {language === 'id' ? 'Indonesia' : 'English'}
               </span>
               <img 
-                src={language === 'id' ? 'https://flagcdn.com/id.svg' : 'https://flagcdn.com/gb.svg'} 
+                src={language === 'id' ? '/flags/id.svg' : '/flags/gb.svg'} 
                 alt={language === 'id' ? 'ID' : 'EN'} 
                 className="w-6 h-4 rounded-none object-cover shadow-sm"
               />
@@ -592,8 +605,8 @@ export default function Navbar() {
               </span>
               <div className="grid grid-cols-2 gap-1 bg-zinc-100 p-1 rounded-none border border-zinc-200/60">
                 {([
-                  { code: 'id', label: 'Indonesia', flag: 'https://hatscripts.github.io/circle-flags/flags/id.svg' },
-                  { code: 'en', label: 'English', flag: 'https://hatscripts.github.io/circle-flags/flags/gb.svg' },
+                  { code: 'id', label: 'Indonesia', flag: '/flags/id-circle.svg' },
+                  { code: 'en', label: 'English', flag: '/flags/gb-circle.svg' },
                 ] as const).map((lang) => {
                   const isActiveLang = language === lang.code;
                   return (
@@ -611,6 +624,7 @@ export default function Navbar() {
                       <img
                         src={lang.flag}
                         alt=""
+                        loading="lazy"
                         className="w-4 h-4 rounded-full object-cover"
                       />
                       <span>{lang.label}</span>

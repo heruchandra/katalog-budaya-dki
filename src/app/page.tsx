@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore, type ComponentType } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   Search,
   ChevronRight,
@@ -18,11 +19,68 @@ import { resolveWilayah } from "@/lib/wilayah";
 import { Dancing_Script } from 'next/font/google';
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
-import RotatingText from "@/components/RotatingText";
-import AccordionGallery from "@/components/AccordionGallery";
-import { motion, AnimatePresence } from "motion/react";
+// Styles for the static headline below (same markup RotatingText renders)
+import "@/components/RotatingText.css";
+import type { HeroHeadlineProps } from "@/components/HeroHeadline";
+// Desktop-only (it is hidden below md), so it and gsap are split out and only fetched on md+ screens
+const AccordionGallery = dynamic(() => import("@/components/AccordionGallery"), {
+  ssr: false,
+  loading: () => <div style={{ height: 560 }} aria-hidden="true" />,
+});
 
-const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'] });
+const DESKTOP_QUERY = "(min-width: 768px)";
+const subscribeDesktop = (onChange: () => void) => {
+  const mq = window.matchMedia(DESKTOP_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+
+/** Runs `callback` once the page has loaded and the browser is idle; returns a cleanup that cancels it */
+const whenPageIdle = (callback: () => void) => {
+  let idleId: number | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const start = () => {
+    if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(callback, { timeout: 2000 });
+    else timeoutId = setTimeout(callback, 300);
+  };
+  if (document.readyState === "complete") start();
+  else window.addEventListener("load", start, { once: true });
+  return () => {
+    window.removeEventListener("load", start);
+    if (idleId !== undefined) window.cancelIdleCallback(idleId);
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
+  };
+};
+
+/**
+ * First-paint copy of the hero headline: the same markup HeroHeadline/RotatingText render for the first word,
+ * without motion. Swapped for the animated HeroHeadline once the page has loaded, with no visible change.
+ */
+function StaticHeroHeadline({ lead, words, scriptClassName }: HeroHeadlineProps) {
+  const parts = words[0].split(" ");
+  return (
+    <h1 className="text-white text-3xl md:text-5xl font-light tracking-wide drop-shadow-md flex flex-wrap items-center justify-center gap-x-3">
+      <span>{lead}</span>
+      <span className={`relative inline-flex items-center ${scriptClassName} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
+        <span className={`text-rotate inline-flex ${scriptClassName} text-orange-500`}>
+          <span className="text-rotate-sr-only">{words[0]}</span>
+          <span className="text-rotate" aria-hidden="true">
+            {parts.map((part, i) => (
+              <span key={i} className={`text-rotate-word ${scriptClassName}`}>
+                {Array.from(part).map((char, j) => (
+                  <span key={j} className={`text-rotate-element ${scriptClassName}`}>{char}</span>
+                ))}
+                {i !== parts.length - 1 && <span className="text-rotate-space"> </span>}
+              </span>
+            ))}
+          </span>
+        </span>
+      </span>
+    </h1>
+  );
+}
+
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400', '700'], display: 'swap' });
 
 // Same images the sanggar catalog shows for these curated studios (keyed by lowercase name)
 const KNOWN_SANGGAR_THUMBS: Record<string, string> = {
@@ -114,7 +172,34 @@ export default function HomePage() {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [heroWordIndex, setHeroWordIndex] = useState(0);
+  // false on the server and during hydration, then the real value: phones never request the accordion chunk
+  const isDesktop = useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP_QUERY).matches, () => false);
+  // Hero video is attached only after the page has loaded (and fades in once playing), so its 20 MB
+  // doesn't compete with the page's own CSS/JS/images. Skipped for reduced-motion, Save-Data and slow connections.
+  const [showHeroVideo, setShowHeroVideo] = useState(false);
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
+  // The animated headline (and motion with it) is loaded after the page has loaded; StaticHeroHeadline until then
+  const [AnimatedHeroHeadline, setAnimatedHeroHeadline] = useState<ComponentType<HeroHeadlineProps> | null>(null);
+
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion || connection?.saveData || /(^|-)(2g|3g)$/.test(connection?.effectiveType || "")) return;
+    return whenPageIdle(() => setShowHeroVideo(true));
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const cancelIdle = whenPageIdle(() => {
+      import("@/components/HeroHeadline").then((mod) => {
+        if (!cancelled) setAnimatedHeroHeadline(() => mod.default);
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelIdle();
+    };
+  }, []);
   const router = useRouter();
   const searchContainerRef = useRef<HTMLDivElement>(null);
   // Sanggar + musician rows loaded for the live search, reused between keystrokes
@@ -325,15 +410,34 @@ export default function HomePage() {
       <section
         className="relative w-full h-screen flex flex-col justify-center items-center"
       >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover -z-20"
-        >
-          <source src="/videoberanda.webm" type="video/webm" />
-        </video>
+        {/* LCP element: a still frame of the hero video, served responsive (next/image) and fetched first.
+            It shows instantly while the 20 MB video is deliberately not downloaded until the page has loaded. */}
+        <Image
+          src="/hero-poster.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          quality={50}
+          loading="eager"
+          fetchPriority="high"
+          className="object-cover -z-30"
+        />
+        {showHeroVideo && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/hero-poster.webp"
+            onPlaying={() => setHeroVideoReady(true)}
+            className={`absolute inset-0 w-full h-full object-cover -z-20 transition-opacity duration-700 ${
+              heroVideoReady ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <source src="/videoberanda.webm" type="video/webm" />
+          </video>
+        )}
         {/* Dark overlay for premium contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 -z-10 pointer-events-none"></div>
 
@@ -342,43 +446,11 @@ export default function HomePage() {
 
           <div className="flex flex-col items-center justify-center text-center px-4 space-y-2 mt-8 md:space-y-4">
             <div className="flex items-center justify-center gap-3 md:gap-4 flex-wrap">
-              <motion.h1
-                layout
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="text-white text-3xl md:text-5xl font-light tracking-wide drop-shadow-md flex flex-wrap items-center justify-center gap-x-3"
-              >
-                <span>{t('heroDiscover')}</span>
-                <span className={`relative inline-flex items-center ${dancingScript.className} text-5xl md:text-7xl font-medium text-orange-500 pr-2`}>
-                  <RotatingText
-                    texts={heroWords}
-                    mainClassName={`inline-flex ${dancingScript.className} text-orange-500`}
-                    splitLevelClassName={dancingScript.className}
-                    elementLevelClassName={dancingScript.className}
-                    staggerDuration={0.03}
-                    staggerFrom="first"
-                    rotationInterval={3000}
-                    onNext={(index) => setHeroWordIndex(index)}
-                  />
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={heroWords[heroWordIndex]}
-                      initial={{ opacity: 0, scale: 0.8, y: -5 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.8, y: 5 }}
-                      transition={{ duration: 0.3, delay: 0.4, ease: "easeInOut" }}
-                      className={`absolute z-10 ${heroWords[heroWordIndex] === 'Seniman Musik' || heroWords[heroWordIndex] === 'Music Artists' ? '-top-12 md:-top-16 -right-6 md:-right-8' : '-top-8 md:-top-12 -right-8 md:-right-10'}`}
-                    >
-                      <Image
-                        src="/ondel-ondel.webp"
-                        alt="Aksen Ondel-ondel"
-                        width={80}
-                        height={80}
-                        className="w-12 h-12 md:w-20 md:h-20 object-contain rotate-12 scale-75 md:scale-100 drop-shadow-md hover:scale-110 pointer-events-none transition-transform duration-300"
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                </span>
-              </motion.h1>
+              {AnimatedHeroHeadline ? (
+                <AnimatedHeroHeadline lead={t('heroDiscover')} words={heroWords} scriptClassName={dancingScript.className} />
+              ) : (
+                <StaticHeroHeadline lead={t('heroDiscover')} words={heroWords} scriptClassName={dancingScript.className} />
+              )}
             </div>
             <h2 className="text-white text-3xl md:text-5xl font-light tracking-wide leading-tight drop-shadow-md max-w-3xl">
               {t('heroBestIn')}
@@ -554,8 +626,8 @@ export default function HomePage() {
         </div>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-transparent border-none shadow-none ring-0">
           {/* Desktop Hover Accordion Gallery (md+) */}
-          <div className="hidden md:block">
-            <AccordionGallery
+          <div className="hidden md:block min-h-[560px]">
+            {isDesktop && <AccordionGallery
               items={culturalPillars}
               defaultIndex={0}
               height={560}
@@ -565,7 +637,7 @@ export default function HomePage() {
               accentColor="#ff7b00"
               overlayColor="#060010"
               trigger="hover"
-            />
+            />}
           </div>
 
           {/* Mobile Touch Cards (< md) */}
