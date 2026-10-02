@@ -279,8 +279,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
               {/* Icon-only contact tiles, one full-width row in this order: WhatsApp, Instagram, Gmail,
                   YouTube, Google Maps. Gmail / YouTube / Maps only appear when the data exists, and the
-                  row always has as many columns as tiles shown. Every tile is a solid brand colour with a white
-                  mark, with the same size, corners and hover. */}
+                  row always has as many columns as tiles shown. All tiles share size and corners; WhatsApp,
+                  Instagram and YouTube are solid brand colours with a white mark, while Gmail and Maps keep their
+                  multi-colour logos on a soft tint of their brand colour. */}
               <div className={`grid ${
                 ({ 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4", 5: "grid-cols-5" } as Record<number, string>)[
                   2 + (sanggar.kontak?.email ? 1 : 0) + (sanggar.youtubeUrl ? 1 : 0) + (mapsSearchUrl ? 1 : 0)
@@ -338,11 +339,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     href={`mailto:${sanggar.kontak.email}`}
                     title="Email"
                     aria-label="Email"
-                    className="bg-[#EA4335] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
+                    className="bg-rose-50 border border-rose-200/80 hover:bg-rose-100 h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-colors"
                   >
-                    {/* White envelope on Google red */}
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                    {/* Official multi-colour Gmail logo (2020) */}
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
+                      <path fill="#34A853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
+                      <path fill="#FBBC04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
+                      <path fill="#EA4335" d="M72 74V48l24 18 24-18v26L96 92" />
+                      <path fill="#C5221F" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
                     </svg>
                   </a>
                 )}
@@ -363,7 +368,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </a>
                 )}
 
-                {/* Google Maps Button (white location pin on Google Maps blue) */}
+                {/* Google Maps Button (rainbow-ring pin: blurred colour wedges clipped to a pin with a hole) */}
                 {mapsSearchUrl && (
                   <a
                     href={mapsSearchUrl}
@@ -371,10 +376,32 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     rel="noopener noreferrer"
                     title="Google Maps"
                     aria-label="Google Maps"
-                    className="bg-[#1A73E8] text-white h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-opacity hover:opacity-90"
+                    className="bg-blue-50 border border-blue-200/80 hover:bg-blue-100 h-11 w-full flex items-center justify-center rounded-lg shadow-xs transition-colors"
                   >
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+                    {/* One step larger than the other icons: the pin only fills ~60% of its 24px box, so at the
+                        same size it reads visibly smaller than the solid WhatsApp/YouTube marks */}
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <defs>
+                        <clipPath id="gmaps-pin-clip">
+                          <path
+                            clipRule="evenodd"
+                            d="M12 2.5a7 7 0 0 0-7 7c0 3.2 2.6 6 4.5 8.4 1 1.3 1.7 2.6 2 3.6a.55.55 0 0 0 1 0c.3-1 1-2.3 2-3.6 1.9-2.4 4.5-5.2 4.5-8.4a7 7 0 0 0-7-7ZM12 6.8a2.7 2.7 0 1 1 0 5.4 2.7 2.7 0 1 1 0-5.4Z"
+                          />
+                        </clipPath>
+                        <filter id="gmaps-pin-blur" x="-50%" y="-50%" width="200%" height="200%">
+                          <feGaussianBlur stdDeviation="1.3" />
+                        </filter>
+                      </defs>
+                      <g clipPath="url(#gmaps-pin-clip)">
+                        <g filter="url(#gmaps-pin-blur)">
+                          <path fill="#A56CE8" d="M12 9.5L1.72 -2.76A16 16 0 0 1 12.00 -6.50Z" />
+                          <path fill="#4285F4" d="M12 9.5L12.00 -6.50A16 16 0 0 1 23.31 -1.81Z" />
+                          <path fill="#12A4B6" d="M12 9.5L23.31 -1.81A16 16 0 0 1 27.76 6.72Z" />
+                          <path fill="#14B35A" d="M12 9.5L27.76 6.72A16 16 0 0 1 2.82 22.61Z" />
+                          <path fill="#F6C21B" d="M12 9.5L2.82 22.61A16 16 0 0 1 -2.50 16.26Z" />
+                          <path fill="#EA4335" d="M12 9.5L-2.50 16.26A16 16 0 0 1 1.72 -2.76Z" />
+                        </g>
+                      </g>
                     </svg>
                   </a>
                 )}
