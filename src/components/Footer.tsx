@@ -3,9 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Phone } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import GoogleMapsIcon from "@/components/icons/GoogleMapsIcon";
 
 export default function Footer() {
   const { t, language } = useLanguage();
@@ -107,44 +105,23 @@ export default function Footer() {
             <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
               {t('footerContact')}
             </h3>
+            {/* Text only, aligned flush left like the KATALOG / INFORMASI columns (same link styling) */}
             <address className="not-italic">
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3 text-sm text-zinc-400">
-                {/* Contact icons in their platform colours (Google Maps pin, call green, Gmail logo), all in the same
-                    20px slot so the three text lines start at the same x. The pin only fills ~60% of its box, so it is
-                    drawn one step larger (24px); the negative margin keeps its slot at 20px and translate-y centres it
-                    on the first address line */}
-                <GoogleMapsIcon className="w-6 h-6 -m-0.5 translate-y-0.5 shrink-0" />
-                <span className="text-sm leading-relaxed text-justify">
+              <ul className="space-y-3">
+                <li className="text-sm leading-relaxed text-zinc-400">
                   Jl. Gatot Subroto Kav. 40-41 Lt 11, 12, 14 dan 15, Kuningan, Kuningan Timur, Setiabudi, Jakarta Selatan, DKI Jakarta 12950
-                </span>
-              </li>
-              <li>
-                <a
-                  href="tel:+62211234567" 
-                  className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
-                >
-                  <Phone className="text-[#34A853] w-5 h-5 shrink-0" aria-hidden="true" />
-                  (021) 123-4567
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:info@disbud.jakarta.go.id"
-                  className="flex items-center gap-3 text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200"
-                >
-                  {/* Official multi-colour Gmail logo (same mark as the sanggar contact tiles) */}
-                  <svg className="w-5 h-5 shrink-0" viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
-                    <path fill="#34A853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
-                    <path fill="#FBBC04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
-                    <path fill="#EA4335" d="M72 74V48l24 18 24-18v26L96 92" />
-                    <path fill="#C5221F" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
-                  </svg>
-                  info@disbud.jakarta.go.id
-                </a>
-              </li>
-            </ul>
+                </li>
+                <li>
+                  <a href="tel:+62211234567" className="text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200">
+                    (021) 123-4567
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:info@disbud.jakarta.go.id" className="text-sm text-zinc-400 hover:text-[#F7941E] transition-colors duration-200">
+                    info@disbud.jakarta.go.id
+                  </a>
+                </li>
+              </ul>
             </address>
           </div>
         </div>
