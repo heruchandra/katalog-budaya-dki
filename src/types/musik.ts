@@ -56,6 +56,8 @@ export interface MusikEntity {
   jenisMusik: string[];
   /** Instruments played by the community (instrumen dimainkan) / mastered by the musician (instrumen dikuasai) */
   instrumen: string[];
+  /** The registration lists more instruments than named ("dll."): shown as "and others" */
+  instrumenLainnya?: boolean;
   /** Number of members (komunitas) */
   jumlahAnggota?: number;
   karyaUnggulan: KaryaUnggulan[];

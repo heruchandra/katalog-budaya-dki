@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowLeft, CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, MapPin } from "lucide-react";
+import { ArrowLeft, CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, MapPin, CheckCircle2, Trophy } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
 import { toWaNumber } from "@/data/musikData";
@@ -92,6 +92,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
       label: isKomunitas ? (isEn ? "Instruments Played" : "Instrumen yang Dimainkan") : isEn ? "Instruments Mastered" : "Alat Musik yang Dikuasai",
       items: profile.instrumen,
       tone: "bg-white border-zinc-200 text-zinc-700",
+      more: profile.instrumenLainnya,
     },
   ].filter((g) => g.items.length > 0);
 
@@ -262,6 +263,9 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                         {g.items.map((item) => (
                           <li key={item} className={`${BADGE} ${g.tone}`}>{item}</li>
                         ))}
+                        {"more" in g && g.more && (
+                          <li className={`${BADGE} border-dashed border-zinc-300 bg-zinc-50 text-zinc-500`}>{isEn ? "and more" : "dll."}</li>
+                        )}
                       </ul>
                     </div>
                   ))}
@@ -273,15 +277,18 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Featured Works" : "Karya Unggulan"}</h2>
                 {accent}
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <ul className={`grid grid-cols-1 gap-4 ${profile.karyaUnggulan.length > 1 ? "sm:grid-cols-2" : ""}`}>
                   {profile.karyaUnggulan.map((k) => (
-                    <li key={k.judul} className="border border-zinc-200/80 bg-zinc-50/60 p-4 sm:p-5 flex flex-col gap-2">
-                      <div className="flex items-start gap-3">
-                        <Music2 className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" aria-hidden="true" />
-                        <h3 className="text-base sm:text-lg font-bold text-zinc-900 leading-snug">&ldquo;{k.judul}&rdquo;</h3>
+                    // Highlight card
+                    <li key={k.judul} className="border border-orange-200/70 border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50/80 to-white p-5 sm:p-6 flex flex-col gap-2.5">
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-700">
+                          <Music2 className="w-5 h-5" aria-hidden="true" />
+                        </span>
+                        <h3 className="text-lg sm:text-xl font-bold text-zinc-900 leading-snug">&ldquo;{k.judul}&rdquo;</h3>
                       </div>
                       {(k.tahun || k.durasi) && (
-                        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-zinc-500 pl-8">
+                        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-zinc-500 pl-12">
                           {k.tahun && (
                             <span className="inline-flex items-center gap-1">
                               <CalendarDays className="w-3.5 h-3.5" aria-hidden="true" />
@@ -296,13 +303,15 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                           )}
                         </p>
                       )}
-                      {k.deskripsi && <p lang="id" className="text-sm text-zinc-600 leading-relaxed pl-8">{k.deskripsi}</p>}
+                      {k.deskripsi && (
+                        <p lang="id" className="text-sm sm:text-base text-zinc-700 leading-relaxed pl-12 text-left sm:text-justify hyphens-auto">{k.deskripsi}</p>
+                      )}
                       {k.link && (
                         <a
                           href={k.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-1 ml-8 inline-flex items-center gap-1 self-start text-xs font-semibold text-orange-700 hover:text-orange-800"
+                          className="mt-1 ml-12 inline-flex items-center gap-1 self-start text-xs font-semibold text-orange-700 hover:text-orange-800"
                         >
                           {isEn ? "View documentation" : "Lihat dokumentasi"}
                           <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
@@ -328,8 +337,13 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Services" : "Layanan"}</h2>
                 {accent}
-                <ul className="flex flex-wrap gap-2">
-                  {profile.layanan.map((l) => <li key={l} className={`${BADGE} bg-white border-zinc-200 text-zinc-700`}>{l}</li>)}
+                <ul lang="id" className="space-y-2.5">
+                  {profile.layanan.map((l) => (
+                    <li key={l} className="flex items-start gap-3 text-sm sm:text-base text-zinc-700 leading-relaxed">
+                      <CheckCircle2 className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" aria-hidden="true" />
+                      <span>{l}</span>
+                    </li>
+                  ))}
                 </ul>
               </section>
             )}
@@ -338,13 +352,14 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Achievements & Awards" : "Prestasi & Penghargaan"}</h2>
                 {accent}
-                <ol className="divide-y divide-zinc-100 border-y border-zinc-100">
-                  {profile.prestasi.map((p, i) => (
-                    <li key={p} className="py-4 flex items-start gap-4">
-                      <span className={`text-2xl font-normal text-zinc-300 leading-none shrink-0 ${playfair.className}`} aria-hidden="true">
-                        {String(i + 1).padStart(2, "0")}
+                <ol className="space-y-3">
+                  {profile.prestasi.map((p) => (
+                    // Highlight card
+                    <li key={p} className="flex items-center gap-4 border border-amber-200/80 bg-gradient-to-r from-amber-50 to-white p-4 sm:p-5">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                        <Trophy className="w-5 h-5" aria-hidden="true" />
                       </span>
-                      <span className="text-base sm:text-lg font-medium text-zinc-800 leading-snug">{p}</span>
+                      <span className="text-base sm:text-lg font-semibold text-zinc-900 leading-snug">{p}</span>
                     </li>
                   ))}
                 </ol>

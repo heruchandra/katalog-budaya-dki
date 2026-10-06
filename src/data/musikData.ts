@@ -6,9 +6,9 @@ import { resolveWilayah } from "@/lib/wilayah";
  * Seniman Musik master data from the registration documents (formulir pendaftaran) of each entry.
  * An entry whose `id` matches a `pemusiks` row is merged with that row; the others are listed from here only.
  *
- * TODO: the two descriptions below are cut short in the source brief ("…"); replace them with the full text
- * from the registration documents. Pengalaman berkesenian and layanan were not included and are left empty
- * (their sections stay hidden until filled).
+ * Komunitas Betawi Section: complete, from the community's registration document.
+ * TODO (Sumitra Adi Kusuma): the description is cut short in the source brief ("…"); replace it with the full text.
+ * Pengalaman berkesenian and layanan were not included for him and are left empty (sections stay hidden).
  */
 export const MUSIK_MASTER_DATA: MusikEntity[] = [
   {
@@ -19,7 +19,7 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     tahunBerdiri: 2015,
     jumlahAnggota: 150,
     deskripsi: [
-      "Komunitas Betawi Section merupakan perkumpulan musisi Betawi yang mengulas kembali lagu-lagu Dalem yang hampir punah.",
+      "Komunitas Betawi Section merupakan perkumpulan musisi Betawi yang mengulas kembali lagu-lagu Dalem yang hampir punah. Anggota yang tergabung di komunitas ini adalah anak-anak dari berbagai grup Gambang Kromong yang ada di Jakarta dan sekitarnya.",
     ],
     alamat: "Jl. Raya Hankam TMII RT.01 RW.02, Kelurahan Ceger, Kecamatan Cipayung, Jakarta Timur",
     ketua: "Sumitra Adi Kusuma",
@@ -37,14 +37,35 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
       },
     ],
     genre: [],
-    jenisMusik: ["Gambang Kromong Klasik", "Gambang Kromong Modern", "Tanjidor", "Nusantara"],
+    jenisMusik: ["Gambang Kromong Classic", "Gambang Kromong Modern", "Tanjidor", "Nusantara"],
     instrumen: [
       "Gambang", "Kromong", "Kongahyan", "Tehyan", "Jihyan", "Sukong", "Samhyan", "Ciotaw", "Gendang", "Kecrek",
       "Gambang Besi", "Gong Enam", "Selukat", "Kemor", "Perkusi", "Drum", "Brass Section", "Suling",
     ],
-    karyaUnggulan: [{ judul: "Jakarta Dulu" }],
-    pengalamanBerkesenian: [],
-    layanan: [],
+    instrumenLainnya: true,
+    karyaUnggulan: [
+      {
+        judul: "Jakarta Dulu",
+        deskripsi:
+          "Sebuah karya musik yang mengangkat tentang wajah Jakarta pada masa lampau ketika kehidupan kota terasa lebih sederhana. Melalui perpaduan nuansa musik Betawi, karya ini menggambarkan suasana di kampung pada jaman dahulu sebelum era pembangunan.",
+      },
+    ],
+    pengalamanBerkesenian: [
+      "Pagelaran kesenian budaya tradisional Betawi 2025 di Setu Babakan",
+      "Pagelaran kesenian budaya tradisional Betawi 2026 di Setu Babakan",
+      "Abang None Kepulauan Seribu 2026",
+      "Perayaan Shejit Y.M Kongco Cheng Goan Cheng Kun dan Y.M Kongco Thian Kauw Ciong Kun di Vihara Dharma Jaya Toasebio 2026",
+      "Pengiring musik Belajar Bersama Maestro Jaja Mihardja 2026",
+    ],
+    layanan: [
+      "Pertunjukan musik tradisional untuk acara formal maupun nonformal",
+      "Pengisi acara pada kegiatan budaya, festival, seminar, dan kegiatan masyarakat",
+      "Workshop dan pelatihan musik tradisional bagi pelajar, mahasiswa, maupun masyarakat umum",
+      "Edukasi dan pengenalan musik tradisional Betawi",
+      "Kolaborasi musik dengan komunitas seni, musisi, sekolah, perguruan tinggi, dan lembaga kebudayaan",
+      "Dokumentasi dan pertunjukan karya musik tradisional",
+      "Pengembangan serta pelestarian seni dan musik tradisional melalui kegiatan kreatif dan pertunjukan",
+    ],
     prestasi: ["Juara Pertama Lomba Aransemen Lagu Gambang Kromong Tingkat Nasional"],
     // TODO: profile photo / logo not uploaded yet. Put it at /images/musik/komunitas-betawi-section/profile/profile.webp and set
     // fotoProfil to that path (a placeholder is shown until then)
