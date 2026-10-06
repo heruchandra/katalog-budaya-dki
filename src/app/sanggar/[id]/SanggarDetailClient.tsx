@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Maximize2, Images } from "lucide-react";
+import { Maximize2, Images, UserRound } from "lucide-react";
 import { Poppins, Plus_Jakarta_Sans } from 'next/font/google';
 import { dancingScript, playfair } from '@/lib/fonts';
 import dynamic from "next/dynamic";
@@ -10,6 +10,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
 import GoogleMapsIcon from "@/components/icons/GoogleMapsIcon";
+import { ownServiceImage } from "@/lib/sanggarImages";
 
 // Modals are split out of the initial page bundle and fetched the first time they open
 const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
@@ -99,24 +100,6 @@ export interface SanggarDetailData {
   mapsUrl?: string | null;
 }
 
-const DEFAULT_GALLERY_IMAGES = [
-  { type: "Pentas Seni & Tari Betawi", typeEn: "Betawi Art & Dance Performance", url: "/images/sanggar/general/dinamis/dinamis-sanggar-1.webp" },
-  { type: "Kelas & Pelatihan Rutin", typeEn: "Routine Classes & Training", url: "/images/sanggar/general/dinamis/dinamis-sanggar-2.webp" },
-  { type: "Pentas Lenong Tradisional", typeEn: "Traditional Lenong Theater", url: "/images/sanggar/general/dinamis/dinamis-sanggar-3.webp" },
-  { type: "Dokumentasi Tata Busana Betawi", typeEn: "Betawi Traditional Attire", url: "/images/sanggar/general/dinamis/dinamis-sanggar-4.webp" },
-  { type: "Pentas Tari Lenggok Dara", typeEn: "Lenggok Dara Dance Show", url: "/images/sanggar/general/dinamis/dinamis-sanggar-5.webp" },
-  { type: "Koreografi & Gerak Berirama", typeEn: "Choreography & Motion", url: "/images/sanggar/general/dinamis/dinamis-sanggar-6.webp" },
-  { type: "Gladi Resik & Persiapan Pentas", typeEn: "Rehearsal & Stage Prep", url: "/images/sanggar/general/dinamis/dinamis-sanggar-7.webp" },
-  { type: "Kolaborasi Musik Gambang Kromong", typeEn: "Gambang Kromong Collaboration", url: "/images/sanggar/general/dinamis/dinamis-sanggar-8.webp" },
-  { type: "Pentas Teater Sandiwara Betawi", typeEn: "Betawi Folk Theater Show", url: "/images/sanggar/general/dinamis/dinamis-sanggar-9.webp" },
-  { type: "Festival Budaya Nusantara", typeEn: "Cultural Heritage Festival", url: "/images/sanggar/general/dinamis/dinamis-sanggar-10.webp" },
-  { type: "Apresiasi Tari Nindak Si None", typeEn: "Nindak Si None Presentation", url: "/images/sanggar/general/dinamis/dinamis-sanggar-11.webp" },
-  { type: "Dokumentasi Generasi Muda Seni", typeEn: "Youth Performing Arts Archive", url: "/images/sanggar/general/dinamis/dinamis-sanggar-12.webp" },
-  { type: "Gelar Seni Tradisi Jakarta", typeEn: "Jakarta Heritage Art Exhibition", url: "/images/sanggar/general/dinamis/dinamis-sanggar-13.webp" },
-  { type: "Pembinaan Siswa Tari", typeEn: "Dance Mentorship Program", url: "/images/sanggar/general/dinamis/dinamis-sanggar-14.webp" },
-  { type: "Penampilan Pentas Akbar", typeEn: "Grand Gala Showcase", url: "/images/sanggar/general/dinamis/dinamis-sanggar-15.webp" },
-];
-
 export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetailData }) {
   const { language } = useLanguage();
   const isEn = language === "en";
@@ -125,14 +108,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
   const [leaderPhotoFailed, setLeaderPhotoFailed] = useState(false);
+  // This sanggar's own logo / leader photo only; without one (or if it fails to load) a placeholder is shown
   const leaderPhoto =
     sanggar.logo || sanggar.logoUrl ||
-    (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp");
+    (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : null);
+  const showLeaderPhoto = !!leaderPhoto && !leaderPhotoFailed;
 
-  // Uploaded galleries are always used; otherwise only a full (15+) curated set replaces the default photos
-  const galleryList = (sanggar.gallery && sanggar.gallery.length > 0 && (sanggar.galleryIsUploaded || sanggar.gallery.length >= 15))
-    ? sanggar.gallery
-    : DEFAULT_GALLERY_IMAGES;
+  // The sanggar's own photos only (uploaded in the admin panel, or curated). No stock photos of other groups:
+  // a sanggar without photos shows the "not available yet" note instead.
+  const galleryList = sanggar.gallery ?? [];
 
   const previewPhotos = galleryList.slice(0, 4);
 
@@ -226,15 +210,19 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               </h1>
 
               <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-orange-100 shadow-sm shrink-0 bg-zinc-50">
-                  <Image
-                    src={leaderPhotoFailed ? "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp" : leaderPhoto}
-                    alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || (isEn ? "Studio Leader" : "Ketua Sanggar")}
-                    fill
-                    sizes="80px"
-                    onError={() => setLeaderPhotoFailed(true)}
-                    className="object-cover object-center rounded-full"
-                  />
+                <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-orange-100 shadow-sm shrink-0 bg-zinc-50 flex items-center justify-center">
+                  {showLeaderPhoto ? (
+                    <Image
+                      src={leaderPhoto}
+                      alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || (isEn ? "Studio Leader" : "Ketua Sanggar")}
+                      fill
+                      sizes="80px"
+                      onError={() => setLeaderPhotoFailed(true)}
+                      className="object-cover object-center rounded-full"
+                    />
+                  ) : (
+                    <UserRound className="w-9 h-9 text-orange-300" aria-hidden="true" />
+                  )}
                 </div>
 
                 <div className="text-center sm:text-left">
@@ -482,18 +470,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     {serviceList.map((item, idx) => {
                       const isObj = typeof item === 'object' && item !== null;
                       const serviceObj: ServiceItem = isObj ? { ...item } : { title: item, description: '' };
-                      const tLower = (serviceObj.title || '').toLowerCase();
-                      const tEnLower = (serviceObj.titleEn || '').toLowerCase();
 
-                      if (!serviceObj.image) {
-                        if (tLower.includes('kelas tari') || tEnLower.includes('dance class') || tLower.includes('tari betawi')) {
-                          serviceObj.image = '/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp';
-                        } else if (tLower.includes('lenong betawi') || tEnLower.includes('lenong betawi')) {
-                          serviceObj.image = '/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp';
-                        } else if (tLower.includes('gambang kromong') || tEnLower.includes('gambang kromong') || tLower.includes('musik') || tEnLower.includes('music')) {
-                          serviceObj.image = '/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp';
-                        }
-                      }
+                      // Only the sanggar's own service photo (Sinar Norray's are matched by title); none otherwise
+                      if (!serviceObj.image) serviceObj.image = ownServiceImage(sanggar, serviceObj.title, serviceObj.titleEn);
                       const title = isObj ? ((isEn && item.titleEn) ? item.titleEn : item.title) : item;
                       const desc = isObj ? ((isEn && item.descriptionEn) ? item.descriptionEn : item.description) : null;
 
@@ -507,21 +486,18 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                         >
                           <div>
                             {/* 16:9 Banner Image Header */}
-                            <div className="w-full aspect-video rounded-none overflow-hidden bg-zinc-100 relative mb-4 border border-zinc-100">
-                              <Image
-                                src={
-                                  service.image ||
-                                  (service.title.toLowerCase().includes("kelas")
-                                    ? "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
-                                    : service.title.toLowerCase().includes("lenong")
-                                    ? "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
-                                    : "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp")
-                                }
-                                alt={service.title}
-                                fill
-                                sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 90vw"
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
+                            <div className="w-full aspect-video rounded-none overflow-hidden bg-zinc-100 relative mb-4 border border-zinc-100 flex items-center justify-center">
+                              {service.image ? (
+                                <Image
+                                  src={service.image}
+                                  alt={service.title}
+                                  fill
+                                  sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 90vw"
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                              ) : (
+                                <Images className="w-8 h-8 text-zinc-300" aria-hidden="true" />
+                              )}
                             </div>
 
                             <h4 className="text-base sm:text-lg font-bold text-zinc-900 group-hover:text-orange-600 transition-colors leading-snug">
@@ -670,7 +646,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <div className="w-16 h-0.5 bg-orange-600 mt-4" />
             </div>
             
-            {/* Top-Right Action Button with Total Count Badge */}
+            {/* Top-Right Action Button with Total Count Badge (only when there are photos) */}
+            {galleryList.length > 0 && (
             <button
               type="button"
               onClick={() => {
@@ -687,11 +664,20 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 {galleryList.length} {isEn ? "Photos" : "Foto"}
               </span>
             </button>
+            )}
           </div>
 
           {/* 4-photo preview row on a soft gradient panel: sharp white-framed image cards (captions live in the
               lightbox); clicking a card opens the viewer at that photo */}
           <div className="p-4 sm:p-6 bg-zinc-50/60 border border-zinc-200/80 rounded-none">
+          {galleryList.length === 0 && (
+            <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
+              <Images className="w-8 h-8 text-zinc-300" aria-hidden="true" />
+              <p className="text-sm text-zinc-500">
+                {isEn ? "This studio's photos are not available yet." : "Foto sanggar ini belum tersedia."}
+              </p>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {previewPhotos.map((img, idx) => {
               const label = getPhotoLabel(img);

@@ -15,12 +15,12 @@ import type { MusikCardData, MusikCategory } from "@/types/musik";
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = [
-  { image: '/images/musik/dinamis-musik-1.webp', title: 'Seniman Musik 1' },
-  { image: '/images/musik/dinamis-musik-2.webp', title: 'Seniman Musik 2' },
-  { image: '/images/musik/dinamis-musik-3.webp', title: 'Seniman Musik 3' },
-  { image: '/images/musik/dinamis-musik-4.webp', title: 'Seniman Musik 4' },
-  { image: '/images/musik/dinamis-musik-5.webp', title: 'Seniman Musik 5' },
-  { image: '/images/musik/dinamis-musik-6.webp', title: 'Seniman Musik 6' },
+  { image: '/images/musik/dekorasi/dinamis-musik-1.webp', title: 'Seniman Musik 1' },
+  { image: '/images/musik/dekorasi/dinamis-musik-2.webp', title: 'Seniman Musik 2' },
+  { image: '/images/musik/dekorasi/dinamis-musik-3.webp', title: 'Seniman Musik 3' },
+  { image: '/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp', title: 'Seniman Musik 4' },
+  { image: '/images/musik/dekorasi/dinamis-musik-5.webp', title: 'Seniman Musik 5' },
+  { image: '/images/musik/dekorasi/dinamis-musik-6.webp', title: 'Seniman Musik 6' },
 ];
 
 type CategoryFilter = "all" | MusikCategory;

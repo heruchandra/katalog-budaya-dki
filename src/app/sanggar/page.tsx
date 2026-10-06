@@ -100,23 +100,12 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
           ])
         );
 
-        const cardImages = [
-          "/images/sanggar/general/dinamis/card-1.webp",
-          "/images/sanggar/general/dinamis/card-2.webp",
-          "/images/sanggar/general/dinamis/card-3.webp",
-          "/images/sanggar/general/dinamis/card-4.webp",
-          "/images/sanggar/general/dinamis/card-5.webp",
-          "/images/sanggar/general/dinamis/card-6.webp",
-        ];
-
-        sanggars.forEach((s, idx) => {
-          s.thumbnail_url = cardImages[idx % cardImages.length];
-        });
-
+        // Each sanggar shows only its own photo (the owners' card images are assigned below, admin uploads at the
+        // end); sanggars without one show the "No Image" placeholder rather than another sanggar's photo
         const ae = sanggars.find(s => s.nama_sanggar.includes("AE Production") || s.nama_sanggar.includes("Art Enthusiast"));
         if (ae) {
           ae.nama_sanggar = "Art Enthusiast Production";
-          ae.thumbnail_url = "/images/sanggar/general/dinamis/card-1.webp";
+          ae.thumbnail_url = "/images/sanggar/ae-production/card/card-1.webp";
           ae.whatsapp = "6281318702623";
           ae.youtubeUrl = "https://www.youtube.com/@ae.production_";
         }
@@ -132,7 +121,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
           norray.nama_pimpinan = "Engkar Karmilasari";
           norray.grade = "B";
           norray.alamat = "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur";
-          norray.thumbnail_url = "/images/sanggar/general/dinamis/card-7.webp";
+          norray.thumbnail_url = "/images/sanggar/sinar-norray/card/card-7.webp";
           norray.whatsapp = "6281310998647";
           norray.whatsappUrl = "https://wa.me/6281310998647";
           norray.instagramUrl = "https://instagram.com/sinar_norray";
@@ -144,7 +133,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
             nama_pimpinan: "Engkar Karmilasari",
             grade: "B",
             alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
-            thumbnail_url: "/images/sanggar/general/dinamis/card-7.webp",
+            thumbnail_url: "/images/sanggar/sinar-norray/card/card-7.webp",
             whatsapp: "6281310998647",
             whatsappUrl: "https://wa.me/6281310998647",
             instagramUrl: "https://instagram.com/sinar_norray",
@@ -155,35 +144,35 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
         // Assign images to specific Sanggar cards
         const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
         if (am) {
-          am.thumbnail_url = "/images/sanggar/general/dinamis/card-2.webp";
+          am.thumbnail_url = "/images/sanggar/am-dance-studio/card/card-2.webp";
           am.whatsapp = "6281289214320";
           am.youtubeUrl = "https://www.youtube.com";
         }
 
         const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
         if (arunika) {
-          arunika.thumbnail_url = "/images/sanggar/general/dinamis/card-3.webp";
+          arunika.thumbnail_url = "/images/sanggar/arunika-art-production/card/card-3.webp";
           arunika.whatsapp = "6281289214320";
           arunika.youtubeUrl = "https://www.youtube.com";
         }
 
         const ayodya = sanggars.find(s => s.nama_sanggar === "Ayodya Pala");
         if (ayodya) {
-          ayodya.thumbnail_url = "/images/sanggar/general/dinamis/card-4.webp";
+          ayodya.thumbnail_url = "/images/sanggar/ayodya-pala/card/card-4.webp";
           ayodya.whatsapp = "6281399160062";
           ayodya.youtubeUrl = "https://www.youtube.com";
         }
 
         const citra = sanggars.find(s => s.nama_sanggar === "Citra Art Studio");
         if (citra) {
-          citra.thumbnail_url = "/images/sanggar/general/dinamis/card-5.webp";
+          citra.thumbnail_url = "/images/sanggar/citra-art-studio/card/card-5.webp";
           citra.whatsapp = "6281289214320";
           citra.youtubeUrl = "https://www.youtube.com";
         }
 
         const daya = sanggars.find(s => s.nama_sanggar === "Daya Presta");
         if (daya) {
-          daya.thumbnail_url = "/images/sanggar/general/dinamis/card-6.webp";
+          daya.thumbnail_url = "/images/sanggar/daya-presta/card/card-6.webp";
           daya.whatsapp = "6281289214320";
           daya.youtubeUrl = "https://www.youtube.com";
         }
@@ -219,7 +208,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
         grade: "B",
         alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
         jenis_tarian: "Tari Betawi, Lenong Betawi",
-        thumbnail_url: "/images/sanggar/general/dinamis/card-7.webp",
+        thumbnail_url: "/images/sanggar/sinar-norray/card/card-7.webp",
         whatsapp: "6281310998647",
         whatsappUrl: "https://wa.me/6281310998647",
         instagramUrl: "https://instagram.com/sinar_norray",
@@ -231,7 +220,7 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
         nama_pimpinan: "Ahmad",
         grade: "A",
         alamat: "Jakarta",
-        thumbnail_url: "/images/sanggar/general/dinamis/card-1.webp",
+        thumbnail_url: "/images/sanggar/ae-production/card/card-1.webp",
         whatsapp: "6281318702623"
       }
     ];

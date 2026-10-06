@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
+import { ownCardImage } from "@/lib/sanggarImages";
 import SanggarDetailClient, { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -149,13 +150,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     whatsappUrl: "https://wa.me/6281310998647",
     instagram: "https://instagram.com/sinar_norray",
     instagramUrl: "https://instagram.com/sinar_norray",
-    imageUrl: "/images/sanggar/general/dinamis/card-7.webp",
+    imageUrl: "/images/sanggar/sinar-norray/card/card-7.webp",
     fotoKetuaUrl: "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp",
     gallery: [
-      { type: "Pentas Lenong Betawi", url: "/images/sanggar/general/dinamis/card-1.webp" },
-      { type: "Tari Lenggok Dara", url: "/images/sanggar/general/dinamis/card-3.webp" },
-      { type: "Tari Nindak Si None", url: "/images/sanggar/general/dinamis/card-2.webp" },
-      { type: "Musik Gambang Kromong", url: "/images/sanggar/general/dinamis/card-6.webp" }
+      { type: "Pentas Lenong Betawi", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp" },
+      { type: "Tari Lenggok Dara", url: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp" },
+      { type: "Tari Nindak Si None", url: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp" },
+      { type: "Musik Gambang Kromong", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp" }
     ]
   },
   "sandyakala": {
@@ -302,13 +303,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     whatsappUrl: "https://wa.me/6281310998647",
     instagram: "https://instagram.com/sinar_norray",
     instagramUrl: "https://instagram.com/sinar_norray",
-    imageUrl: "/images/sanggar/general/dinamis/card-7.webp",
+    imageUrl: "/images/sanggar/sinar-norray/card/card-7.webp",
     fotoKetuaUrl: "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp",
     gallery: [
-      { type: "Pentas Lenong Betawi", url: "/images/sanggar/general/dinamis/card-1.webp" },
-      { type: "Tari Lenggok Dara", url: "/images/sanggar/general/dinamis/card-3.webp" },
-      { type: "Tari Nindak Si None", url: "/images/sanggar/general/dinamis/card-2.webp" },
-      { type: "Musik Gambang Kromong", url: "/images/sanggar/general/dinamis/card-6.webp" }
+      { type: "Pentas Lenong Betawi", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp" },
+      { type: "Tari Lenggok Dara", url: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp" },
+      { type: "Tari Nindak Si None", url: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp" },
+      { type: "Musik Gambang Kromong", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp" }
     ]
   },
 
@@ -337,22 +338,19 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Sirih Kuning",
         description: "Tari pergaulan klasik khas Betawi yang anggun dan dinamis, dibawakan dengan selendang kuning keemasan sebagai simbol kehangatan silaturahmi masyarakat Jakarta.",
-        image: "/images/sanggar/general/dinamis/card-3.webp"
+        image: "/images/sanggar/arunika-art-production/card/card-3.webp"
       },
       {
         name: "Tari Yapong",
         description: "Tari kreasi bernuansa riang gembira ciptaan maestro Bagong Kussudiardja yang memancarkan keceriaan dan dinamika gerak kaki serta tepuk tangan penari.",
-        image: "/images/sanggar/general/dinamis/card-2.webp"
       },
       {
         name: "Tari Nandak Ganjen",
         description: "Koreografi lincah remaja putri Betawi yang menggambarkan kecentilan dan kebebasan berekspresi dengan langkah kaki yang terampil dan bersahaja.",
-        image: "/images/sanggar/general/dinamis/card-4.webp"
       },
       {
         name: "Tari Lenggang Nyai",
         description: "Mengisahkan ketegaran tokoh Nyai Dasima dalam balutan busana peranakan dengan gerak luwes yang menyiratkan kekuatan emansipasi wanita Betawi.",
-        image: "/images/sanggar/general/dinamis/card-5.webp"
       }
     ],
     prestasi: [
@@ -367,13 +365,10 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       phone: "+62 812-8921-4320",
       email: "info@arunika-art.com"
     },
-    imageUrl: "/images/sanggar/general/dinamis/card-3.webp",
-    fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
+    imageUrl: "/images/sanggar/arunika-art-production/card/card-3.webp",
+    fotoKetuaUrl: null,
     gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/general/dinamis/card-3.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/general/dinamis/card-2.webp" },
-      { type: "Dokumentasi Pementasan", url: "/images/sanggar/general/dinamis/card-4.webp" },
-      { type: "Workshop Tari Remaja", url: "/images/sanggar/general/dinamis/card-5.webp" }
+      { type: "Foto Grup Tari", url: "/images/sanggar/arunika-art-production/card/card-3.webp" },
     ]
   },
 
@@ -401,17 +396,16 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Kembang Lambang Sari",
         description: "Simbol keanggunan penari putri dengan ornamen bunga kembang goyang yang memukau serta formasi pola lantai geometris dinamis.",
-        image: "/images/sanggar/general/dinamis/card-1.webp"
+        image: "/images/sanggar/ae-production/card/card-1.webp"
       },
       {
         name: "Tari Sirih Kuning",
         description: "Tari penyambutan klasik Betawi dengan selendang sutra keemasan yang menyimbolkan ketulusan dan penghormatan kepada tamu agung.",
-        image: "/images/sanggar/general/dinamis/card-1.webp"
+        image: "/images/sanggar/ae-production/card/card-1.webp"
       },
       {
         name: "Tari Renggong Manis",
         description: "Koreografi penuh keceriaan perpaduan ritme kendang Betawi dengan sentuhan tari Sunda dan Melayu pesisir.",
-        image: "/images/sanggar/general/dinamis/card-6.webp"
       }
     ],
     achievements: [
@@ -473,13 +467,11 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       email: "art.enthusiastproduction@gmail.com",
       instagram: "ae.pro_"
     },
-    imageUrl: "/images/sanggar/general/dinamis/card-1.webp",
+    imageUrl: "/images/sanggar/ae-production/card/card-1.webp",
     fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
     gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/general/dinamis/card-1.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/general/dinamis/card-1.webp" },
-      { type: "Dokumentasi Kolosal", url: "/images/sanggar/general/dinamis/card-6.webp" },
-      { type: "Kostum & Rias Seni", url: "/images/sanggar/general/dinamis/card-2.webp" }
+      { type: "Foto Grup Tari", url: "/images/sanggar/ae-production/card/card-1.webp" },
+      { type: "Foto Tari Unggulan", url: "/images/sanggar/ae-production/card/card-1.webp" },
     ]
   },
   "40": {
@@ -505,17 +497,16 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Kembang Lambang Sari",
         description: "Simbol keanggunan penari putri dengan ornamen bunga kembang goyang yang memukau serta formasi pola lantai geometris dinamis.",
-        image: "/images/sanggar/general/dinamis/card-1.webp"
+        image: "/images/sanggar/ae-production/card/card-1.webp"
       },
       {
         name: "Tari Sirih Kuning",
         description: "Tari penyambutan klasik Betawi dengan selendang sutra keemasan yang menyimbolkan ketulusan dan penghormatan kepada tamu agung.",
-        image: "/images/sanggar/general/dinamis/card-1.webp"
+        image: "/images/sanggar/ae-production/card/card-1.webp"
       },
       {
         name: "Tari Renggong Manis",
         description: "Koreografi penuh keceriaan perpaduan ritme kendang Betawi dengan sentuhan tari Sunda dan Melayu pesisir.",
-        image: "/images/sanggar/general/dinamis/card-6.webp"
       }
     ],
     achievements: [
@@ -577,13 +568,11 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       email: "art.enthusiastproduction@gmail.com",
       instagram: "ae.pro_"
     },
-    imageUrl: "/images/sanggar/general/dinamis/card-1.webp",
+    imageUrl: "/images/sanggar/ae-production/card/card-1.webp",
     fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
     gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/general/dinamis/card-1.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/general/dinamis/card-1.webp" },
-      { type: "Dokumentasi Kolosal", url: "/images/sanggar/general/dinamis/card-6.webp" },
-      { type: "Kostum & Rias Seni", url: "/images/sanggar/general/dinamis/card-2.webp" }
+      { type: "Foto Grup Tari", url: "/images/sanggar/ae-production/card/card-1.webp" },
+      { type: "Foto Tari Unggulan", url: "/images/sanggar/ae-production/card/card-1.webp" },
     ]
   },
 
@@ -612,27 +601,23 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Mpok Cantik",
         description: "Tari kreasi Betawi yang menggambarkan kecantikan, keluwesan, dan budi pekerti luhur putri Jakarta dalam balutan busana cerah nan mempesona.",
-        image: "/images/sanggar/general/dinamis/card-4.webp"
+        image: "/images/sanggar/ayodya-pala/card/card-4.webp"
       },
       {
         name: "Tari Kembang Merona",
         description: "Koreografi rancak penuh keceriaan remaja Betawi yang menyiratkan semarak kembang mekar di bawah mentari ibu kota.",
-        image: "/images/sanggar/general/dinamis/card-5.webp"
       },
       {
         name: "Tari Goyang Ngamprok",
         description: "Gerak ritmis interaktif yang memadukan kelincahan langkah kaki dan hentakan irama kendang ronggeng Betawi.",
-        image: "/images/sanggar/general/dinamis/card-2.webp"
       },
       {
         name: "Tari Jari Manis",
         description: "Kelembutan gerak jemari dan lentiknya kiprah tangan dalam iringan alunan musik tradisi yang syahdu dan memikat.",
-        image: "/images/sanggar/general/dinamis/card-6.webp"
       },
       {
         name: "Tari Zapin Habibana",
         description: "Harmoni akulturasi budaya Melayu-Arab di pesisir Jakarta dengan ayunan langkah zapin yang khidmat dan bersahaja.",
-        image: "/images/sanggar/general/dinamis/card-3.webp"
       }
     ],
     prestasi: [
@@ -647,13 +632,10 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       phone: "081399160062",
       email: "ayodyapala.art@gmail.com"
     },
-    imageUrl: "/images/sanggar/general/dinamis/card-4.webp",
-    fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
+    imageUrl: "/images/sanggar/ayodya-pala/card/card-4.webp",
+    fotoKetuaUrl: null,
     gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/general/dinamis/card-4.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/general/dinamis/card-5.webp" },
-      { type: "Pentas MURI Tari Bhinneka", url: "/images/sanggar/general/dinamis/card-2.webp" },
-      { type: "Delegasi Internasional", url: "/images/sanggar/general/dinamis/card-6.webp" }
+      { type: "Foto Grup Tari", url: "/images/sanggar/ayodya-pala/card/card-4.webp" },
     ]
   },
 
@@ -682,17 +664,15 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       {
         name: "Tari Sirih Kuning",
         description: "Tari pergaulan yang menggambarkan rasa gembira dan silaturahmi yang erat di kalangan masyarakat Betawi.",
-        image: "/images/sanggar/general/dinamis/card-6.webp"
+        image: "/images/sanggar/daya-presta/card/card-6.webp"
       },
       {
         name: "Tari Renggong Manis",
         description: "Perpaduan harmonis gerak tari Betawi dan Sunda yang memancarkan dinamika serta kelembutan penari wanita.",
-        image: "/images/sanggar/general/dinamis/card-3.webp"
       },
       {
         name: "Tari Golek Manis",
         description: "Tari klasik dengan keluwesan gerak selendang yang mencerminkan kedewasaan dan keanggunan putri Nusantara.",
-        image: "/images/sanggar/general/dinamis/card-2.webp"
       }
     ],
     prestasi: [
@@ -707,13 +687,10 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
       phone: "+62 812-9724-9285",
       email: "dayapresta14@gmail.com"
     },
-    imageUrl: "/images/sanggar/general/dinamis/card-6.webp",
-    fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
+    imageUrl: "/images/sanggar/daya-presta/card/card-6.webp",
+    fotoKetuaUrl: null,
     gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/general/dinamis/card-6.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/general/dinamis/card-3.webp" },
-      { type: "Pementasan Cikini", url: "/images/sanggar/general/dinamis/card-2.webp" },
-      { type: "Workshop Tari", url: "/images/sanggar/general/dinamis/card-5.webp" }
+      { type: "Foto Grup Tari", url: "/images/sanggar/daya-presta/card/card-6.webp" },
     ]
   }
 };
@@ -766,10 +743,9 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
   const gradeStr = rawGrade ? (rawGrade.toLowerCase().includes('grade') ? rawGrade : `Grade ${rawGrade}`) : "Grade B";
   const wilayah = data?.kota_kab || data?.kecamatan || "DKI Jakarta";
 
-  const imageIndex = (Math.abs(Number(id) || 1) % 6) + 1;
-  const mainImage = `/images/sanggar/general/dinamis/card-${imageIndex}.webp`;
-  const companionImage = `/images/sanggar/general/dinamis/card-${((imageIndex) % 6) + 1}.webp`;
-  const altImage = `/images/sanggar/general/dinamis/card-${((imageIndex + 1) % 6) + 1}.webp`;
+  // Only this sanggar's own photo (uploaded, or its known card image); no photo at all rather than another
+  // sanggar's picture. The dance works below have no photos of their own, so they show without one.
+  const ownPhoto = data?.thumbnail_url || data?.foto_grup_url || ownCardImage(name);
 
   return {
     id,
@@ -796,17 +772,14 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
       {
         name: "Tari Sirih Kuning",
         description: "Tari penyambutan legendaris khas Betawi yang anggun, melambangkan kehangatan sambutan dan penghormatan tulus kepada tamu.",
-        image: mainImage
       },
       {
         name: "Tari Yapong",
         description: "Tarian riang gembira berirama dinamis yang menggambarkan semangat gotong royong dan keceriaan masyarakat ibu kota.",
-        image: companionImage
       },
       {
         name: "Tari Kembang Lambang Sari",
         description: "Koreografi elok penuh pesona yang memadukan kelembutan gerak jemari dengan kelincahan langkah penari.",
-        image: altImage
       }
     ],
     prestasi: [
@@ -821,13 +794,9 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
       phone: data?.kontak_pic || data?.no_hp || "+62 812-9000-8800",
       email: data?.email || `kontak@${cleanName.toLowerCase().replace(/\s+/g, '')}.id`
     },
-    imageUrl: data?.thumbnail_url || data?.foto_grup_url || mainImage,
-    fotoKetuaUrl: data?.foto_ketua_url || "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
-    gallery: [
-      { type: "Foto Pementasan", url: mainImage },
-      { type: "Dokumentasi Tari", url: companionImage },
-      { type: "Pelatihan Sanggar", url: altImage }
-    ]
+    imageUrl: ownPhoto || "",
+    fotoKetuaUrl: data?.foto_ketua_url || null,
+    gallery: ownPhoto ? [{ type: "Foto Sanggar", typeEn: "Studio Photo", url: ownPhoto }] : []
   };
 }
 

@@ -49,7 +49,7 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     // The banner in this photo reads "Orkes Gambang Kromong Suara Lama": a photo of the community itself
     fotoGallery: [
       {
-        url: "/images/musik/dinamis-musik-4.webp",
+        url: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp",
         caption: "Penampilan Orkes Gambang Kromong Suara Lama",
         captionEn: "Orkes Gambang Kromong Suara Lama performing",
       },
@@ -96,10 +96,11 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     pengalamanBerkesenian: [],
     layanan: [],
     prestasi: ["Pemain Tehyan Terbaik 2019", "Penata Musik Terbaik 2019", "Penata Musik Terbaik Parade Musik TMII 2022"],
-    // No photo of Sumitra himself yet: the community he leads, marked as an illustration
+    // No photo of Sumitra himself yet (his own folder, images/musik/sumitra-adi-kusuma/, is for when one arrives):
+    // the community he leads, marked as an illustration
     fotoGallery: [
       {
-        url: "/images/musik/dinamis-musik-4.webp",
+        url: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp",
         caption: "Foto ilustrasi: penampilan Orkes Gambang Kromong Suara Lama, komunitas yang dipimpin Sumitra",
         captionEn: "Illustration: Orkes Gambang Kromong Suara Lama, the community Sumitra leads",
       },

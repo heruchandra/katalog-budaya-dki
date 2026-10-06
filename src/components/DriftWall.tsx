@@ -40,12 +40,12 @@ export interface DriftWallProps {
 }
 
 const DEFAULT_ITEMS: DriftWallItem[] = [
-  { image: '/images/sanggar/general/dinamis/dinamis-sanggar-1.webp', title: 'Seni Tari Betawi' },
-  { image: '/images/sanggar/general/dinamis/dinamis-sanggar-2.webp', title: 'Pentas Kreasi Budaya' },
-  { image: '/images/sanggar/general/dinamis/dinamis-sanggar-3.webp', title: 'Harmoni Nusantara' },
-  { image: '/images/sanggar/general/dinamis/dinamis-sanggar-4.webp', title: 'Pusaka Tradisi Jakarta' },
-  { image: '/images/sanggar/general/dinamis/dinamis-sanggar-5.webp', title: 'Ekspresi Panggung Budaya' },
-  { image: '/images/sanggar/general/dinamis/dinamis-sanggar-6.webp', title: 'Koreografi Tari Kolosal' }
+  { image: '/images/sanggar/dekorasi/dinamis-sanggar-1.webp', title: 'Seni Tari Betawi' },
+  { image: '/images/sanggar/dekorasi/dinamis-sanggar-2.webp', title: 'Pentas Kreasi Budaya' },
+  { image: '/images/sanggar/dekorasi/dinamis-sanggar-3.webp', title: 'Harmoni Nusantara' },
+  { image: '/images/sanggar/dekorasi/dinamis-sanggar-4.webp', title: 'Pusaka Tradisi Jakarta' },
+  { image: '/images/sanggar/dekorasi/dinamis-sanggar-5.webp', title: 'Ekspresi Panggung Budaya' },
+  { image: '/images/sanggar/dekorasi/dinamis-sanggar-6.webp', title: 'Koreografi Tari Kolosal' }
 ];
 
 const prefersReducedMotion = (): boolean =>

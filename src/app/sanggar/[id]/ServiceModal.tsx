@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { ImageOff } from "lucide-react";
 import type { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
+import { ownDanceImage, ownServiceImage } from "@/lib/sanggarImages";
 import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
 
@@ -14,29 +16,12 @@ interface ServiceModalProps {
   onClose: () => void;
 }
 
-const getServiceImage = (service: ServiceItem, sanggar: SanggarDetailData) => {
-  if (service.image) return service.image;
-  const tLower = (service.title || "").toLowerCase();
-  const tEnLower = (service.titleEn || "").toLowerCase();
-  if (tLower.includes("kelas tari") || tEnLower.includes("dance class") || tLower.includes("tari betawi")) {
-    return "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp";
-  }
-  if (tLower.includes("lenong betawi") || tEnLower.includes("lenong betawi")) {
-    return "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp";
-  }
-  if (tLower.includes("gambang kromong") || tEnLower.includes("gambang kromong") || tLower.includes("musik") || tEnLower.includes("music")) {
-    return "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp";
-  }
-  return sanggar.image || sanggar.coverImage || "/images/sanggar/general/dinamis/card-7.webp";
-};
+// The sanggar's own photos only; null when it has none (the image is then left out / a placeholder is shown)
+const getServiceImage = (service: ServiceItem, sanggar: SanggarDetailData) =>
+  service.image || ownServiceImage(sanggar, service.title, service.titleEn) || sanggar.image || sanggar.coverImage || null;
 
-const getDanceImage = (dance: TariItem) => {
-  if (dance.image) return dance.image;
-  const n = (dance.name || dance.title || "").toLowerCase();
-  if (n.includes("lenggok")) return "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp";
-  if (n.includes("nindak")) return "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp";
-  return "/images/sanggar/general/dinamis/card-7.webp";
-};
+const getDanceImage = (dance: TariItem, sanggar: SanggarDetailData) =>
+  dance.image || ownDanceImage(sanggar, dance.name || dance.title) || null;
 
 /**
  * Service detail modal ("Lihat Detail" on a Layanan Sanggar card). Loaded with next/dynamic only when a
@@ -44,6 +29,7 @@ const getDanceImage = (dance: TariItem) => {
  */
 export default function ServiceModal({ service, sanggar, isEn, waNumber, studioName, onClose }: ServiceModalProps) {
   const modalTitle = isEn ? (service.titleEn || service.title) : service.title;
+  const serviceImage = getServiceImage(service, sanggar);
 
   const modalDesc = (isEn && service.descriptionEn)
     ? service.descriptionEn
@@ -96,9 +82,9 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
 
         {/* Featured Service Image Banner: not shown for the Karya Tari service, whose dance-work cards below
             already carry the photos */}
-        {!showDanceWorks && (
+        {!showDanceWorks && serviceImage && (
           <div className="relative w-full aspect-video rounded-none overflow-hidden my-4 border border-zinc-200/80 shadow-sm bg-zinc-100">
-            <Image src={getServiceImage(service, sanggar)} alt={modalTitle} fill sizes="(min-width: 640px) 448px, 90vw" className="object-cover" />
+            <Image src={serviceImage} alt={modalTitle} fill sizes="(min-width: 640px) 448px, 90vw" className="object-cover" />
           </div>
         )}
 
@@ -131,10 +117,15 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {danceHighlights.map((dance, idx) => {
                 const danceName = dance.name || dance.title || "";
+                const danceImage = getDanceImage(dance, sanggar);
                 return (
                   <div key={idx} className="rounded-none border border-zinc-200/80 bg-white shadow-sm overflow-hidden flex flex-col">
-                    <div className="relative w-full aspect-video bg-zinc-100 overflow-hidden">
-                      <Image src={getDanceImage(dance)} alt={danceName} fill sizes="(min-width: 640px) 300px, 90vw" className="object-cover" />
+                    <div className="relative w-full aspect-video bg-zinc-100 overflow-hidden flex items-center justify-center">
+                      {danceImage ? (
+                        <Image src={danceImage} alt={danceName} fill sizes="(min-width: 640px) 300px, 90vw" className="object-cover" />
+                      ) : (
+                        <ImageOff className="w-7 h-7 text-zinc-300" aria-hidden="true" />
+                      )}
                     </div>
                     <div className="p-4 flex flex-col gap-2">
                       <div className="flex items-center gap-2.5">
