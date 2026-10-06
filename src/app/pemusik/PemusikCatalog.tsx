@@ -15,12 +15,12 @@ import type { MusikCardData, MusikCategory } from "@/types/musik";
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
 const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = [
-  { image: '/dinamis-musik-1.webp', title: 'Seniman Musik 1' },
-  { image: '/dinamis-musik-2.webp', title: 'Seniman Musik 2' },
-  { image: '/dinamis-musik-3.webp', title: 'Seniman Musik 3' },
-  { image: '/dinamis-musik-4.webp', title: 'Seniman Musik 4' },
-  { image: '/dinamis-musik-5.webp', title: 'Seniman Musik 5' },
-  { image: '/dinamis-musik-6.webp', title: 'Seniman Musik 6' },
+  { image: '/images/musik/dinamis-musik-1.webp', title: 'Seniman Musik 1' },
+  { image: '/images/musik/dinamis-musik-2.webp', title: 'Seniman Musik 2' },
+  { image: '/images/musik/dinamis-musik-3.webp', title: 'Seniman Musik 3' },
+  { image: '/images/musik/dinamis-musik-4.webp', title: 'Seniman Musik 4' },
+  { image: '/images/musik/dinamis-musik-5.webp', title: 'Seniman Musik 5' },
+  { image: '/images/musik/dinamis-musik-6.webp', title: 'Seniman Musik 6' },
 ];
 
 type CategoryFilter = "all" | MusikCategory;
@@ -290,34 +290,74 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
           {!fetchError && filtered.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-12">
               {paginated.map((item, index) => (
-                <div key={item.id} className="group relative flex flex-col">
-                  <Link href={`/pemusik/${item.id}`} className="absolute inset-0 z-10" aria-label={item.nama} />
+                // Same frame, image ratio, white fade and hover quick actions as the sanggar catalog cards
+                <div key={item.id} className="group relative flex flex-col rounded-none overflow-hidden bg-white border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                  <div className="relative aspect-[3/4] w-full overflow-hidden rounded-none bg-slate-100">
+                    <Link href={`/pemusik/${item.id}`} className="absolute inset-0 block" aria-label={item.nama}>
+                      {item.foto ? (
+                        <Image
+                          src={item.foto}
+                          alt={item.nama}
+                          fill
+                          sizes="(min-width: 1280px) 22vw, (min-width: 768px) 34vw, 90vw"
+                          // first row is above the fold (often the LCP image), so don't lazy-load it
+                          loading={index < 3 ? "eager" : undefined}
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-300">
+                          <Music2 className="h-10 w-10" aria-hidden="true" />
+                          <span className="text-xs font-semibold tracking-widest uppercase text-slate-400">No Image</span>
+                        </span>
+                      )}
+                    </Link>
 
-                  {/* Image Wrapper */}
-                  <div className="relative w-full aspect-[3/4] bg-slate-50/80 overflow-hidden rounded-none border border-slate-100">
-                    {item.foto ? (
-                      <Image
-                        src={item.foto}
-                        alt={item.nama}
-                        fill
-                        sizes="(min-width: 1280px) 22vw, (min-width: 768px) 34vw, 90vw"
-                        // first row is above the fold (often the LCP image), so don't lazy-load it
-                        loading={index < 3 ? "eager" : undefined}
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-300">
-                        <Music2 className="h-10 w-10" aria-hidden="true" />
-                        <span className="text-xs font-semibold tracking-widest uppercase text-slate-400">No Image</span>
+                    {/* Hover quick actions over a white bottom fade. Only the actions with data on record are shown
+                        (no placeholder numbers); real links next to the card link, not nested inside it */}
+                    {(item.youtubeUrl || item.waNumber) && (
+                      <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end p-3.5 sm:p-4">
+                        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-white via-white/80 to-transparent -z-10" />
+                        <div className="flex gap-2 items-center justify-between">
+                          {item.youtubeUrl && (
+                            <a
+                              href={item.youtubeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${t('musikCardWatch')}: ${item.nama}`}
+                              className="pointer-events-auto flex-1 bg-red-600 hover:bg-red-700 text-white rounded-none py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors"
+                            >
+                              <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                              </svg>
+                              <span>{t('musikCardWatch')}</span>
+                            </a>
+                          )}
+                          {item.waNumber && (
+                            <a
+                              href={`https://wa.me/${item.waNumber}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`WhatsApp: ${item.nama}`}
+                              className="pointer-events-auto flex-1 bg-[#16a34a] hover:bg-[#15803d] text-white rounded-none py-2.5 px-3 text-[11px] font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-md transition-colors"
+                            >
+                              <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.12.553 4.108 1.519 5.84L.16 23.479l5.774-1.513a11.97 11.97 0 006.097 1.665c6.646 0 12.031-5.385 12.031-12.031S18.677 0 12.031 0zm.016 21.986a9.92 9.92 0 01-5.06-1.385l-.363-.216-3.763.987.1004-3.669-.237-.377A9.924 9.924 0 012.05 12.03c0-5.503 4.478-9.981 9.981-9.981 5.503 0 9.981 4.478 9.981 9.981 0 5.503-4.478 9.981-9.981 9.981zm5.474-7.481c-.301-.15-1.782-.879-2.057-.979-.275-.1-.475-.15-.675.15-.2.3-.775.979-.95 1.179-.175.2-.35.225-.65.075-.3-.15-1.267-.467-2.414-1.489-.893-.796-1.495-1.78-1.67-2.08-.175-.3-.018-.462.13-.61.135-.133.3-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.582-.492-.503-.675-.512-.175-.008-.375-.01-.575-.01-.2 0-.525.075-.8.375s-1.05 1.025-1.05 2.5 1.075 2.898 1.225 3.1 2.113 3.227 5.118 4.524c.714.309 1.272.494 1.707.632.716.228 1.368.196 1.883.119.575-.086 1.782-.729 2.032-1.43.25-.701.25-1.301.175-1.43-.075-.129-.275-.204-.575-.354z"/>
+                              </svg>
+                              <span>WhatsApp</span>
+                            </a>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
 
                   {/* Text Area: name + "KATEGORI • WILAYAH" ("DKI Jakarta" when the region isn't on record, never guessed) */}
-                  <div className="mt-4 text-left">
-                    <h3 className="text-lg text-slate-900 truncate font-medium group-hover:text-orange-600 transition-colors">
-                      {item.nama}
-                    </h3>
+                  <div className="p-4 pt-3 text-left">
+                    <Link href={`/pemusik/${item.id}`}>
+                      <h3 className="text-lg text-slate-900 truncate font-medium hover:text-orange-600 transition-colors">
+                        {item.nama}
+                      </h3>
+                    </Link>
                     <p className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase mt-1">
                       {categoryLabel(item.category)}
                       {" • "}

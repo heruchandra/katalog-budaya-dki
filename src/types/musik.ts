@@ -84,6 +84,10 @@ export interface MusikCardData {
   alamat?: string;
   /** Administrative city from the address, or null when unknown (never guessed) */
   wilayah: string | null;
+  /** WhatsApp number (62…) for the card quick action, when a contact number is on record */
+  waNumber?: string;
+  /** YouTube video, or the channel / channel search, for the card "Tonton" quick action */
+  youtubeUrl?: string;
   /** Extra text the catalog search matches on */
   searchText: string;
 }

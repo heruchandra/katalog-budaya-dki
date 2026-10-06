@@ -42,7 +42,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2.5">
               <Image
-                src="/logo-disbud.webp"
+                src="/logos/logo-disbud.webp"
                 alt="Logo Dinas Kebudayaan DKI Jakarta"
                 width={40}
                 height={26}

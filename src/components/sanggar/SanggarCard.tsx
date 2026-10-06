@@ -36,7 +36,7 @@ interface SanggarCardProps {
 
 export default function SanggarCard({ sanggar }: SanggarCardProps) {
   const name = sanggar.nama_sanggar || sanggar.name || "Sanggar Seni";
-  const image = sanggar.thumbnail_url || sanggar.coverImage || sanggar.image || "/card-1.webp";
+  const image = sanggar.thumbnail_url || sanggar.coverImage || sanggar.image || "/images/cards/card-1.webp";
   const grade = sanggar.grade ? (sanggar.grade.toLowerCase().includes("grade") ? sanggar.grade : `Grade ${sanggar.grade}`) : null;
   const location = sanggar.kota_kab || sanggar.wilayah || "DKI Jakarta";
 

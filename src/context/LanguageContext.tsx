@@ -169,6 +169,7 @@ const translations: Record<string, Record<Language, string>> = {
   musikCatAll: { id: "Semua Kategori", en: "All Categories" },
   musikCatKomunitas: { id: "Komunitas", en: "Community" },
   musikCatPemusik: { id: "Pemusik", en: "Musician" },
+  musikCardWatch: { id: "Tonton", en: "Watch" },
 
   // ── Footer ──
   footerDescription: {

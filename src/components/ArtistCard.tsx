@@ -67,7 +67,7 @@ export default function ArtistCard({
           />
         ) : (
           <img
-            src="/card-1.webp"
+            src="/images/cards/card-1.webp"
             alt={name || 'Foto Default'}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

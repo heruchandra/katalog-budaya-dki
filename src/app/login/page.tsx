@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentBg, setCurrentBg] = useState(0);
 
-  const backgrounds = ['/bg-login-1.webp', '/bg-login-2.webp', '/bg-login-3.webp', '/bg-login-4.webp'];
+  const backgrounds = ['/bg/bg-login-1.webp', '/bg/bg-login-2.webp', '/bg/bg-login-3.webp', '/bg/bg-login-4.webp'];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,7 +85,7 @@ export default function LoginPage() {
           <div className="text-center mb-5">
             <div className="flex justify-center mb-3">
               <Image 
-                src="/logo-disbud.webp"
+                src="/logos/logo-disbud.webp"
                 alt="Dinas Kebudayaan DKI Jakarta"
                 width={73}
                 height={48}

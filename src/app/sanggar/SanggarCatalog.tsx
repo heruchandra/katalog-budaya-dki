@@ -13,11 +13,11 @@ import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
-const col1Sanggar = ["/dinamis-sanggar-1.webp", "/dinamis-sanggar-2.webp", "/dinamis-sanggar-3.webp"];
-const col2Sanggar = ["/dinamis-sanggar-4.webp", "/dinamis-sanggar-5.webp", "/dinamis-sanggar-6.webp"];
-const col3Sanggar = ["/dinamis-sanggar-7.webp", "/dinamis-sanggar-8.webp", "/dinamis-sanggar-9.webp"];
-const col4Sanggar = ["/dinamis-sanggar-10.webp", "/dinamis-sanggar-11.webp", "/dinamis-sanggar-12.webp"];
-const col5Sanggar = ["/dinamis-sanggar-13.webp", "/dinamis-sanggar-14.webp", "/dinamis-sanggar-15.webp"];
+const col1Sanggar = ["/images/sanggar/dinamis-sanggar-1.webp", "/images/sanggar/dinamis-sanggar-2.webp", "/images/sanggar/dinamis-sanggar-3.webp"];
+const col2Sanggar = ["/images/sanggar/dinamis-sanggar-4.webp", "/images/sanggar/dinamis-sanggar-5.webp", "/images/sanggar/dinamis-sanggar-6.webp"];
+const col3Sanggar = ["/images/sanggar/dinamis-sanggar-7.webp", "/images/sanggar/dinamis-sanggar-8.webp", "/images/sanggar/dinamis-sanggar-9.webp"];
+const col4Sanggar = ["/images/sanggar/dinamis-sanggar-10.webp", "/images/sanggar/dinamis-sanggar-11.webp", "/images/sanggar/dinamis-sanggar-12.webp"];
+const col5Sanggar = ["/images/sanggar/dinamis-sanggar-13.webp", "/images/sanggar/dinamis-sanggar-14.webp", "/images/sanggar/dinamis-sanggar-15.webp"];
 
 const SANGGAR_COLUMNS = [col1Sanggar, col2Sanggar, col3Sanggar, col4Sanggar, col5Sanggar];
 

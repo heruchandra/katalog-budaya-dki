@@ -115,7 +115,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         <div className="relative flex h-16 shrink-0 items-center justify-between px-5">
           <Link href="/admin" className="flex items-center gap-3 min-w-0">
-            <Image src="/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={49} height={32} className="h-8 w-[49px] shrink-0 object-contain" />
+            <Image src="/logos/logo-disbud.webp" alt="Logo Dinas Kebudayaan DKI Jakarta" width={49} height={32} className="h-8 w-[49px] shrink-0 object-contain" />
             <span className="min-w-0 leading-tight">
               <span className="block truncate text-sm font-bold tracking-tight text-white">Katalog Seni</span>
               <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F7941E]">Admin</span>

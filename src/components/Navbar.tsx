@@ -155,7 +155,7 @@ export default function Navbar() {
             >
               <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap shrink-0">
                 <Image
-                  src="/logo-jayaraya.webp"
+                  src="/logos/logo-jayaraya.webp"
                   alt="Logo Jaya Raya DKI Jakarta"
                   width={40}
                   height={40}
@@ -163,7 +163,7 @@ export default function Navbar() {
                   loading="eager"
                 />
                 <Image
-                  src={language === 'en' ? '/logo-5abad-english.webp' : '/logo-5abad.webp'}
+                  src={language === 'en' ? '/logos/logo-5abad-english.webp' : '/logos/logo-5abad.webp'}
                   alt="Logo Jakarta 5 Abad"
                   width={40}
                   height={40}
@@ -171,7 +171,7 @@ export default function Navbar() {
                   loading="eager"
                 />
                 <Image
-                  src="/logo-disbud.webp"
+                  src="/logos/logo-disbud.webp"
                   alt="Logo Dinas Kebudayaan DKI Jakarta"
                   width={49}
                   height={32}
@@ -450,7 +450,7 @@ export default function Navbar() {
             <div className="flex items-center justify-between gap-3 border-b border-zinc-100 pb-4">
               <div className="flex items-center gap-3 min-w-0">
                 <Image
-                  src="/logo-disbud.webp"
+                  src="/logos/logo-disbud.webp"
                   alt="Logo Dinas Kebudayaan DKI Jakarta"
                   width={55}
                   height={36}

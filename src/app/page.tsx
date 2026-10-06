@@ -82,13 +82,13 @@ function StaticHeroHeadline({ lead, words, scriptClassName }: HeroHeadlineProps)
 
 // Same images the sanggar catalog shows for these curated studios (keyed by lowercase name)
 const KNOWN_SANGGAR_THUMBS: Record<string, string> = {
-  "sinar norray": "/profile-sanggar-2.webp",
-  "art enthusiast production": "/card-1.webp",
-  "am dance studio": "/card-2.webp",
-  "arunika art production": "/card-3.webp",
-  "ayodya pala": "/card-4.webp",
-  "citra art studio": "/card-5.webp",
-  "daya presta": "/card-6.webp",
+  "sinar norray": "/images/sanggar/profile-sanggar-2.webp",
+  "art enthusiast production": "/images/cards/card-1.webp",
+  "am dance studio": "/images/cards/card-2.webp",
+  "arunika art production": "/images/cards/card-3.webp",
+  "ayodya pala": "/images/cards/card-4.webp",
+  "citra art studio": "/images/cards/card-5.webp",
+  "daya presta": "/images/cards/card-6.webp",
 };
 
 // First non-empty image-like field on a DB row (column names differ between tables)
@@ -239,7 +239,7 @@ export default function HomePage() {
       title: isEnglish ? 'Dance Studio' : 'Sanggar Tari',
       label: isEnglish ? 'Dance Studio' : 'Sanggar Tari',
       subtitle: isEnglish ? 'Grace of Traditional Betawi Dance' : 'Keanggunan Gerak Tradisional Betawi',
-      image: '/penari1.webp',
+      image: '/images/hero/penari1.webp',
       link: '/sanggar'
     },
     {
@@ -247,7 +247,7 @@ export default function HomePage() {
       title: isEnglish ? 'Music Artists' : 'Seniman Musik',
       label: isEnglish ? 'Music Artists' : 'Seniman Musik',
       subtitle: isEnglish ? 'Harmony of Melodic Traditions' : 'Harmoni Nada & Irama Klasik',
-      image: '/koleksi2.webp',
+      image: '/images/hero/koleksi2.webp',
       link: '/seniman-musik'
     },
     {
@@ -255,7 +255,7 @@ export default function HomePage() {
       title: isEnglish ? 'Martial Artists' : 'Pesilat',
       label: isEnglish ? 'Martial Artists' : 'Pesilat',
       subtitle: isEnglish ? 'Mastery of Traditional Combat' : 'Jurus & Ketangkasan Bela Diri',
-      image: '/koleksi4.webp',
+      image: '/images/hero/koleksi4.webp',
       link: '#'
     },
     {
@@ -263,7 +263,7 @@ export default function HomePage() {
       title: 'Ondel-Ondel',
       label: 'Ondel-Ondel',
       subtitle: isEnglish ? 'Grand Icon of Jakarta Folklore' : 'Ikon Megah Pesta Rakyat Jakarta',
-      image: '/koleksi3.webp',
+      image: '/images/hero/koleksi3.webp',
       link: '#'
     }
   ];
@@ -426,7 +426,7 @@ export default function HomePage() {
             the video is deliberately not requested until the page has loaded. */}
         <Image
           ref={heroImageRef}
-          src="/hero-poster.webp"
+          src="/images/hero/hero-poster.webp"
           alt=""
           fill
           sizes="100vw"
@@ -448,7 +448,7 @@ export default function HomePage() {
               heroVideoReady ? "opacity-100" : "opacity-0"
             }`}
           >
-            <source src="/videoberanda-hd.mp4" type="video/mp4" />
+            <source src="/videos/videoberanda-hd.mp4" type="video/mp4" />
           </video>
         )}
         {/* Dark overlay for premium contrast */}

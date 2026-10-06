@@ -51,7 +51,7 @@ export default function HeroHeadline({ lead, words, scriptClassName }: HeroHeadl
             className={`absolute z-10 ${word === 'Seniman Musik' || word === 'Music Artists' ? '-top-12 md:-top-16 -right-6 md:-right-8' : '-top-8 md:-top-12 -right-8 md:-right-10'}`}
           >
             <Image
-              src="/ondel-ondel.webp"
+              src="/images/hero/ondel-ondel.webp"
               alt="Aksen Ondel-ondel"
               width={80}
               height={80}

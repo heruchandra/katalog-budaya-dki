@@ -49,7 +49,7 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     // The banner in this photo reads "Orkes Gambang Kromong Suara Lama": a photo of the community itself
     fotoGallery: [
       {
-        url: "/dinamis-musik-4.webp",
+        url: "/images/musik/dinamis-musik-4.webp",
         caption: "Penampilan Orkes Gambang Kromong Suara Lama",
         captionEn: "Orkes Gambang Kromong Suara Lama performing",
       },
@@ -99,7 +99,7 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     // No photo of Sumitra himself yet: the community he leads, marked as an illustration
     fotoGallery: [
       {
-        url: "/dinamis-musik-4.webp",
+        url: "/images/musik/dinamis-musik-4.webp",
         caption: "Foto ilustrasi: penampilan Orkes Gambang Kromong Suara Lama, komunitas yang dipimpin Sumitra",
         captionEn: "Illustration: Orkes Gambang Kromong Suara Lama, the community Sumitra leads",
       },
@@ -171,6 +171,8 @@ export function toCardData(m: MusikEntity): MusikCardData {
     hasProfile: !!findMusikMaster(m.id),
     alamat: m.alamat,
     wilayah: resolveWilayah({ alamat: m.alamat }),
+    waNumber: toWaNumber(m.nomorKontak[0]) || undefined,
+    youtubeUrl: m.videoUrl || m.sosialMedia.find((s) => s.platform === "youtube")?.url,
     searchText: [m.nama, m.namaPanggung, subtitle, m.instrumen.join(" ")].filter(Boolean).join(" ").toLowerCase(),
   };
 }
