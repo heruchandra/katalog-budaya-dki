@@ -160,7 +160,8 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
           </div>
         )}
 
-        {/* WhatsApp CTA */}
+        {/* WhatsApp CTA (only when the sanggar has a number on record) */}
+        {waNumber && (
         <a
           href={`https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(
             isEn
@@ -176,6 +177,7 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
           </svg>
           <span>{isEn ? "Consult via WhatsApp" : "Konsultasi via WhatsApp"}</span>
         </a>
+        )}
       </div>
     </div>
   );
