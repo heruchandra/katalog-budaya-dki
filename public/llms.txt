@@ -16,7 +16,7 @@ Catatan untuk agen:
 
 ## Katalog
 - [Sanggar Tari](https://katalog-budaya-dki.vercel.app/sanggar): Daftar sanggar tari tradisional, bisa dicari berdasarkan nama dan difilter berdasarkan grade serta wilayah. Setiap sanggar punya halaman profil di `/sanggar/<id>` berisi profil, karya tari unggulan, galeri foto dan video, prestasi, alamat, serta kontak WhatsApp.
-- [Seniman Musik](https://katalog-budaya-dki.vercel.app/pemusik): Daftar seniman musik tradisional Jakarta.
+- [Seniman Musik](https://katalog-budaya-dki.vercel.app/pemusik): Daftar seniman musik tradisional Jakarta dalam dua kategori, Komunitas dan Pemusik. Setiap entri punya halaman profil di `/pemusik/<id>` berisi profil, jenis musik dan instrumen, karya unggulan, prestasi, alamat, serta kontak WhatsApp.
 
 ## Informasi
 - [Tentang Kami](https://katalog-budaya-dki.vercel.app/tentang-kami): Profil platform dan jaminan kurasi sanggar oleh Dinas Kebudayaan Provinsi DKI Jakarta.

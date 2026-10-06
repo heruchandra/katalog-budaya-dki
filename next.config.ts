@@ -50,8 +50,13 @@ const contentSecurityPolicy = buildCsp({
     isVercelPreview && "wss://ws-us3.pusher.com",
   ],
   "media-src": ["'self'"],
-  // Google Maps embed on the sanggar detail page
-  "frame-src": ["https://maps.google.com", "https://www.google.com", isVercelPreview && "https://vercel.live"],
+  // Google Maps embeds (sanggar + seniman musik detail pages) and the seniman musik video slot (YouTube, no-cookie)
+  "frame-src": [
+    "https://maps.google.com",
+    "https://www.google.com",
+    "https://www.youtube-nocookie.com",
+    isVercelPreview && "https://vercel.live",
+  ],
   "object-src": ["'none'"],
   "base-uri": ["'self'"],
   "form-action": ["'self'"],

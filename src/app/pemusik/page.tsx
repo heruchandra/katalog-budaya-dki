@@ -1,27 +1,19 @@
 import { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
+import type { PemusikRow } from "@/lib/pemusikStats";
+import { buildMusikCatalog } from "@/data/musikData";
 import PemusikCatalog from "./PemusikCatalog";
 
 export const metadata: Metadata = {
-  title: "Pemusik — Katalog Seni DKI Jakarta",
+  title: "Seniman Musik — Katalog Seni DKI Jakarta",
   description:
-    "Temukan pemusik tradisional Jakarta — gambang kromong, tanjidor, dan lainnya. Profil lengkap dengan spesialisasi dan kontak.",
+    "Temukan komunitas dan pemusik tradisional Jakarta — gambang kromong, tanjidor, dan lainnya. Profil lengkap dengan instrumen, karya unggulan, prestasi, dan kontak.",
 };
 
 export const dynamic = "force-dynamic";
 
-interface Pemusik {
-  id: string;
-  nama_seniman: string;
-  jenis_seniman: string;
-  genre_musik: string;
-  instrumen: string;
-  pengalaman: string;
-  deskripsi: string;
-}
-
 export default async function PemusikPage() {
-  let pemusiks: Pemusik[] = [];
+  let rows: PemusikRow[] = [];
   let fetchError: string | null = null;
 
   try {
@@ -34,11 +26,12 @@ export default async function PemusikPage() {
     if (error) {
       fetchError = error.message;
     } else {
-      pemusiks = (data as Pemusik[]) ?? [];
+      rows = (data as PemusikRow[]) ?? [];
     }
-  } catch (err: any) {
-    fetchError = err?.message || "Unknown exception occurred during fetch.";
+  } catch (err: unknown) {
+    fetchError = err instanceof Error ? err.message : "Unknown exception occurred during fetch.";
   }
 
-  return <PemusikCatalog pemusiks={pemusiks} fetchError={fetchError} />;
+  // Database rows merged with the master data (src/data/musikData.ts), plus master entries not in the database
+  return <PemusikCatalog items={fetchError ? [] : buildMusikCatalog(rows)} fetchError={fetchError} />;
 }

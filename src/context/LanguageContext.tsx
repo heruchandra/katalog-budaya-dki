@@ -165,6 +165,10 @@ const translations: Record<string, Record<Language, string>> = {
   pemusikEmptyFilter: { id: "Tidak ditemukan seniman musik yang sesuai dengan filter Anda.", en: "No music artists found matching your filters." },
   pemusikEmptyDefault: { id: "Data seniman musik belum tersedia saat ini.", en: "Music artist data is not available at this time." },
   pemusikResetFilter: { id: "RESET FILTER", en: "RESET FILTERS" },
+  musikCatLabel: { id: "Kategori seniman musik", en: "Music artist category" },
+  musikCatAll: { id: "Semua", en: "All" },
+  musikCatKomunitas: { id: "Komunitas", en: "Community" },
+  musikCatPemusik: { id: "Pemusik", en: "Musician" },
 
   // ── Footer ──
   footerDescription: {

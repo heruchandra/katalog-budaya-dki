@@ -20,6 +20,7 @@ import { dancingScript } from "@/lib/fonts";
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
 import type { HeroHeadlineProps } from "@/components/HeroHeadline";
+import type { MusikCardData } from "@/types/musik";
 // Desktop-only (it is hidden below md), so it and gsap are split out and only fetched on md+ screens
 const AccordionGallery = dynamic(() => import("@/components/AccordionGallery"), {
   ssr: false,
@@ -206,7 +207,7 @@ export default function HomePage() {
   const router = useRouter();
   const searchContainerRef = useRef<HTMLDivElement>(null);
   // Sanggar + musician rows loaded for the live search, reused between keystrokes
-  const catalogCache = useRef<{ sanggars: any[]; pemusiks: any[]; at: number } | null>(null);
+  const catalogCache = useRef<{ sanggars: any[]; pemusiks: MusikCardData[]; at: number } | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -287,14 +288,20 @@ export default function HomePage() {
         const loadCatalog = async () => {
           const cached = catalogCache.current;
           if (cached && Date.now() - cached.at < CATALOG_TTL_MS) return cached;
-          const [s, p] = await Promise.all([
+          const [s, p, musik] = await Promise.all([
             // supabase-js is only fetched once someone starts typing in the search bar
             import("@/lib/supabase").then(({ supabase }) => supabase.from('sanggars').select('*').limit(1000)),
             import("@/lib/supabase").then(({ supabase }) => supabase.from('pemusiks').select('*').limit(1000)),
+            // Seniman Musik master data (komunitas + pemusik profiles), merged with the rows like the /pemusik catalog
+            import("@/data/musikData"),
           ]);
           if (s.error) console.error("Supabase search error:", s.error);
           if (p.error) console.error("Supabase music search error:", p.error);
-          const loaded = { sanggars: (s.data as any[]) || [], pemusiks: (p.data as any[]) || [], at: Date.now() };
+          const loaded = {
+            sanggars: (s.data as any[]) || [],
+            pemusiks: musik.buildMusikCatalog((p.data as any[]) || []),
+            at: Date.now(),
+          };
           // Only cache complete loads, so a failed request is retried on the next keystroke
           if (!s.error && !p.error) catalogCache.current = loaded;
           return loaded;
@@ -349,18 +356,18 @@ export default function HomePage() {
         }
 
         if (selectedCategory === 'all' || selectedCategory === 'music') {
-          const dbPemusiks: any[] = catalog.pemusiks;
-
-          const rawPemusik = dbPemusiks.map((item) => ({
+          const rawPemusik = catalog.pemusiks.map((item) => ({
             id: `p-${item.id}`,
-            name: item.nama_seniman,
+            name: item.nama,
+            // stage / ensemble name also matches ("Mitra", "Orkes Gambang Kromong Suara Lama")
+            fullName: item.namaPanggung,
             type: 'Pemusik',
             href: `/pemusik/${item.id}`,
-            image: pickImage(item),
-            // The pemusiks table has no region/address column yet; this picks one up automatically if added.
-            // The id is left out on purpose: the curated id -> wilayah map is for sanggar ids only.
-            wilayah: resolveWilayah({ ...item, id: undefined }),
-            subtitle: (item.genre_musik || item.jenis_seniman || item.instrumen || null) as string | null,
+            // illustration photos aren't used as a thumbnail: they don't show this artist
+            image: item.isDummyMedia ? null : item.foto ?? null,
+            // The id is left out on purpose: the curated id -> wilayah map is for sanggar ids only
+            wilayah: resolveWilayah({ alamat: item.alamat }),
+            subtitle: (item.subtitle || item.namaPanggung || null) as string | null,
           }));
 
           formattedPemusik = rankByRelevance(rawPemusik, queryLower);
