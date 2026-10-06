@@ -7,6 +7,7 @@ import { Search, Inbox, AlertTriangle, Music2 } from "lucide-react";
 import { Poppins } from 'next/font/google';
 import { dancingScript } from '@/lib/fonts';
 import { useLanguage } from "@/context/LanguageContext";
+import { JAKARTA_WILAYAH } from "@/lib/wilayah";
 import DriftWall, { DriftWallItem } from "@/components/DriftWall";
 import CatalogPagination from "@/components/CatalogPagination";
 import type { MusikCardData, MusikCategory } from "@/types/musik";
@@ -29,32 +30,55 @@ interface PemusikCatalogProps {
   fetchError: string | null;
 }
 
+/** Same filter option style as the sanggar catalog sidebar */
+const sidebarOptionClass = (isActive: boolean) =>
+  `flex w-full items-center justify-between gap-2 text-left px-2 py-1.5 text-xs font-medium uppercase tracking-wider border-l-2 transition-colors outline-none ${
+    isActive
+      ? "text-orange-600 font-bold bg-orange-50 border-orange-500 pl-2.5"
+      : "text-zinc-600 border-transparent hover:text-zinc-900"
+  }`;
+
 export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProps) {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
+  const [activeWilayah, setActiveWilayah] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const { t } = useLanguage();
 
-  const query = searchQuery.trim().toLowerCase();
-  const matchesSearch = (item: MusikCardData) => query === "" || item.searchText.includes(query);
-  // Tab counts follow the search, so each tab shows how many results it would list
-  const countFor = (category: CategoryFilter) =>
-    items.filter((item) => (category === "all" || item.category === category) && matchesSearch(item)).length;
+  const categoryLabel = (category: MusikCategory) => (category === "komunitas" ? t('musikCatKomunitas') : t('musikCatPemusik'));
 
-  const categoryTabs: { value: CategoryFilter; label: string }[] = [
+  const categoryFilters: { value: CategoryFilter; label: string }[] = [
     { value: "all", label: t('musikCatAll') },
     { value: "komunitas", label: t('musikCatKomunitas') },
     { value: "pemusik", label: t('musikCatPemusik') },
   ];
 
+  // Region counts over the whole list, as on the sanggar page (entries without a known region only count in "all")
+  const wilayahCounts = items.reduce<Record<string, number>>((acc, item) => {
+    if (item.wilayah) acc[item.wilayah] = (acc[item.wilayah] || 0) + 1;
+    return acc;
+  }, {});
+  const wilayahFilters = [
+    { value: "all", label: t('sanggarWilayahAll'), count: items.length },
+    ...JAKARTA_WILAYAH.map((w) => ({ value: w as string, label: w as string, count: wilayahCounts[w] || 0 })),
+  ];
+
+  // Search, category and region all apply together
+  const query = searchQuery.trim().toLowerCase();
   const filtered = items
-    .filter((item) => (activeCategory === "all" || item.category === activeCategory) && matchesSearch(item))
+    .filter(
+      (item) =>
+        (activeCategory === "all" || item.category === activeCategory) &&
+        (activeWilayah === "all" || item.wilayah === activeWilayah) &&
+        (query === "" || item.searchText.includes(query))
+    )
     // Full profiles first, then by name
     .sort((a, b) => Number(!a.hasProfile) - Number(!b.hasProfile) || a.nama.localeCompare(b.nama));
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const hasActiveFilter = Boolean(searchQuery) || activeCategory !== "all" || activeWilayah !== "all";
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -63,9 +87,22 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
     }
   };
 
+  const selectCategory = (value: CategoryFilter) => {
+    setActiveCategory(value);
+    setCurrentPage(1);
+  };
+  const selectWilayah = (value: string) => {
+    setActiveWilayah(value);
+    setCurrentPage(1);
+  };
+  const updateSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
   const resetFilters = () => {
     setSearchQuery("");
     setActiveCategory("all");
+    setActiveWilayah("all");
     setCurrentPage(1);
   };
 
@@ -105,7 +142,58 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
 
       <div className={`flex flex-col md:flex-row gap-12 max-w-[90vw] mx-auto py-12 ${poppins.className}`}>
 
-        {/* Left Sidebar (Search) */}
+        {/* Mobile Search & Filter Bar (visible only on mobile; same pattern as the sanggar catalog) */}
+        <div className="w-full md:hidden flex flex-col gap-4 -mt-4 mb-2">
+          <div className="relative border border-zinc-200 rounded-none px-3 py-2 bg-slate-50 focus-within:bg-white focus-within:border-orange-600 focus-within:ring-1 focus-within:ring-orange-600 transition-colors">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+            <input
+              type="text"
+              placeholder={t('pemusikSearchPlaceholder')}
+              aria-label={t('pemusikSearchPlaceholder')}
+              value={searchQuery}
+              onChange={(e) => updateSearch(e.target.value)}
+              className="w-full pl-7 pr-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
+            />
+          </div>
+          {/* Category chips (mobile) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {categoryFilters.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => selectCategory(filter.value)}
+                aria-pressed={activeCategory === filter.value}
+                className={`px-3 py-1.5 rounded-none text-xs font-medium uppercase tracking-wider whitespace-nowrap transition-colors ${
+                  activeCategory === filter.value
+                    ? "bg-brand text-white shadow-md shadow-orange-600/20"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+          {/* Wilayah chips (mobile) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            {wilayahFilters.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => selectWilayah(filter.value)}
+                aria-pressed={activeWilayah === filter.value}
+                className={`px-3 py-1.5 rounded-none text-xs font-medium uppercase tracking-wider whitespace-nowrap transition-colors ${
+                  activeWilayah === filter.value
+                    ? "bg-zinc-900 text-white shadow-md"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Left Sidebar (Filters) */}
         <aside className="w-full md:w-1/4 hidden md:flex flex-col gap-8 sticky top-36 self-start max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar">
           <div className="border-t border-slate-200 pt-6">
             <h2 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('pemusikSearchTitle')}</h2>
@@ -116,48 +204,52 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
                 placeholder={t('pemusikSearchPlaceholder')}
                 aria-label={t('pemusikSearchPlaceholder')}
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
+                onChange={(e) => updateSearch(e.target.value)}
                 className="w-full py-2 pl-8 pr-4 text-sm text-slate-800 placeholder:text-slate-400 !outline-none !ring-0 !border-none !shadow-none focus:!ring-0 focus:!outline-none focus:!border-transparent focus:!shadow-none ring-offset-0 bg-transparent"
               />
+            </div>
+          </div>
+
+          {/* FILTER KATEGORI */}
+          <div className="border-t border-slate-200 pt-6">
+            <h2 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('musikFilterKategori')}</h2>
+            <div className="space-y-1.5">
+              {categoryFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => selectCategory(filter.value)}
+                  aria-pressed={activeCategory === filter.value}
+                  className={sidebarOptionClass(activeCategory === filter.value)}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* FILTER WILAYAH */}
+          <div className="border-t border-slate-200 pt-6">
+            <h2 className="uppercase tracking-widest text-sm text-slate-800 mb-6 font-medium">{t('sanggarFilterWilayah')}</h2>
+            <div className="space-y-1.5">
+              {wilayahFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => selectWilayah(filter.value)}
+                  aria-pressed={activeWilayah === filter.value}
+                  className={sidebarOptionClass(activeWilayah === filter.value)}
+                >
+                  <span>{filter.label}</span>
+                  <span className="text-[10px] font-medium text-zinc-400 tabular-nums">{filter.count}</span>
+                </button>
+              ))}
             </div>
           </div>
         </aside>
 
         {/* Right Grid (Catalog) */}
         <section id="catalog-results" className="w-full md:w-3/4 scroll-mt-24">
-          {/* Sub-category tabs: Semua / Komunitas / Pemusik (all screen sizes) */}
-          {!fetchError && items.length > 0 && (
-            <div role="group" aria-label={t('musikCatLabel')} className="flex flex-wrap gap-2 mb-10">
-              {categoryTabs.map((tab) => {
-                const isActive = activeCategory === tab.value;
-                return (
-                  <button
-                    key={tab.value}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => {
-                      setActiveCategory(tab.value);
-                      setCurrentPage(1);
-                    }}
-                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
-                      isActive
-                        ? "bg-brand border-transparent text-white shadow-sm shadow-orange-600/20"
-                        : "bg-white border-zinc-200 text-slate-600 hover:border-orange-300 hover:text-orange-700"
-                    }`}
-                  >
-                    {tab.label}
-                    <span className={`tabular-nums rounded-full px-1.5 py-px text-[10px] ${isActive ? "bg-white/20 text-white" : "bg-zinc-100 text-slate-500"}`}>
-                      {countFor(tab.value)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
           {/* Error State / Empty State */}
           {(fetchError || filtered.length === 0) && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -176,13 +268,13 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
                   <div className="rounded-none bg-red-50 p-4 text-left font-mono text-xs text-red-600 border border-red-100 overflow-auto whitespace-pre-wrap">
                     {fetchError}
                   </div>
-                ) : searchQuery || activeCategory !== "all" ? (
+                ) : hasActiveFilter ? (
                   <p>{t('pemusikEmptyFilter')}</p>
                 ) : (
                   <p>{t('pemusikEmptyDefault')}</p>
                 )}
               </div>
-              {!fetchError && (searchQuery || activeCategory !== "all") && (
+              {!fetchError && hasActiveFilter && (
                 <button
                   type="button"
                   onClick={resetFilters}
@@ -219,27 +311,18 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
                         <span className="text-xs font-semibold tracking-widest uppercase text-slate-400">No Image</span>
                       </div>
                     )}
-                    <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-orange-700 shadow-sm">
-                      {item.category === "komunitas" ? t('musikCatKomunitas') : t('musikCatPemusik')}
-                    </span>
                   </div>
 
-                  {/* Text Area */}
+                  {/* Text Area: name + "KATEGORI • WILAYAH" ("DKI Jakarta" when the region isn't on record, never guessed) */}
                   <div className="mt-4 text-left">
-                    <h3 className="text-lg text-slate-900 truncate font-medium group-hover:text-orange-700 transition-colors">
+                    <h3 className="text-lg text-slate-900 truncate font-medium group-hover:text-orange-600 transition-colors">
                       {item.nama}
                     </h3>
-                    {item.namaPanggung && (
-                      <p className="text-sm text-slate-600 truncate mt-0.5">{item.namaPanggung}</p>
-                    )}
-                    <p className="text-xs text-slate-500 uppercase tracking-widest mt-1.5 truncate">
-                      {item.subtitle || "Tradisional"}
+                    <p className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase mt-1">
+                      {categoryLabel(item.category)}
+                      {" • "}
+                      {item.wilayah ?? "DKI Jakarta"}
                     </p>
-                    {item.instrumen && (
-                      <p className="text-xs text-slate-400 truncate mt-1">
-                        {item.instrumen}
-                      </p>
-                    )}
                   </div>
                 </div>
               ))}

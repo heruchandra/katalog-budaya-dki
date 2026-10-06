@@ -82,6 +82,8 @@ export interface MusikCardData {
   /** Has a full profile from the master data (listed first in the catalog) */
   hasProfile: boolean;
   alamat?: string;
+  /** Administrative city from the address, or null when unknown (never guessed) */
+  wilayah: string | null;
   /** Extra text the catalog search matches on */
   searchText: string;
 }

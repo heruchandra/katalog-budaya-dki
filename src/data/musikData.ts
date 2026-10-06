@@ -1,5 +1,6 @@
 import type { MusikCardData, MusikCategory, MusikEntity } from "@/types/musik";
 import type { PemusikRow } from "@/lib/pemusikStats";
+import { resolveWilayah } from "@/lib/wilayah";
 
 /**
  * Seniman Musik master data from the registration documents (formulir pendaftaran) of each entry.
@@ -169,6 +170,7 @@ export function toCardData(m: MusikEntity): MusikCardData {
     isDummyMedia: m.isDummyMedia,
     hasProfile: !!findMusikMaster(m.id),
     alamat: m.alamat,
+    wilayah: resolveWilayah({ alamat: m.alamat }),
     searchText: [m.nama, m.namaPanggung, subtitle, m.instrumen.join(" ")].filter(Boolean).join(" ").toLowerCase(),
   };
 }
