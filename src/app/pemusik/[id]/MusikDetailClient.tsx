@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowLeft, CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock } from "lucide-react";
+import { ArrowLeft, CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, MapPin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
 import { toWaNumber } from "@/data/musikData";
 import type { MusikEntity, SosialPlatform } from "@/types/musik";
 
-// Same grid + single-photo viewer as the sanggar gallery, loaded only when opened
-const GalleryLightbox = dynamic(() => import("@/app/sanggar/[id]/GalleryLightbox"), { ssr: false });
+// Photo slider, loaded only when the gallery is opened
+const MusikGalleryLightbox = dynamic(() => import("./MusikGalleryLightbox"), { ssr: false });
 
 /** Brand marks (inline SVG: lucide-react v1 has no brand icons) */
 const SOCIAL_ICONS: Record<SosialPlatform, { label: string; color: string; path: string }> = {
@@ -51,37 +51,13 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
   const isEn = language === "en";
   const isKomunitas = profile.category === "komunitas";
 
-  // Gallery (grid modal + single-photo viewer)
-  const photos = profile.fotoGallery.map((p) => ({ type: p.caption, typeEn: p.captionEn, url: p.url }));
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [activePhotoIndex, setActivePhotoIndex] = useState<number | null>(null);
-  const count = photos.length;
-  const stepPhoto = (step: 1 | -1) => setActivePhotoIndex((i) => (i !== null ? (i + step + count) % count : 0));
-  const closeGallery = () => {
-    setIsGalleryOpen(false);
-    setActivePhotoIndex(null);
-  };
-
-  // Keyboard: Escape closes the viewer (then the grid), arrows step through the photos
-  useEffect(() => {
-    if (!isGalleryOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (activePhotoIndex !== null) setActivePhotoIndex(null);
-        else setIsGalleryOpen(false);
-      } else if (activePhotoIndex !== null && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
-        e.preventDefault();
-        const step = e.key === "ArrowRight" ? 1 : -1;
-        setActivePhotoIndex((i) => (i !== null ? (i + step + count) % count : 0));
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [isGalleryOpen, activePhotoIndex, count]);
+  // Gallery: every photo slot (uploaded or pending); the cover is the first uploaded photo
+  const photos = profile.fotoGallery;
+  const coverIndex = Math.max(0, photos.findIndex((p) => !p.pending));
+  const cover = photos[coverIndex];
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const initials = profile.nama.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   // Direct WhatsApp contact (no internal chat), pre-filled message
   const waNumber = toWaNumber(profile.nomorKontak[0]);
@@ -140,13 +116,23 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
             <span className="inline-flex rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-orange-700">
               {isKomunitas ? (isEn ? "Music Community" : "Komunitas Musik") : isEn ? "Musician" : "Pemusik"}
             </span>
-            <div>
-              <h1 className={`text-4xl sm:text-5xl text-orange-600 leading-tight ${dancingScript.className}`}>{profile.nama}</h1>
-              {profile.namaPanggung && (
-                <p className="mt-1 text-base sm:text-lg font-semibold text-zinc-800">
-                  {isKomunitas ? profile.namaPanggung : `${isEn ? "Stage name" : "Nama panggung"}: ${profile.namaPanggung}`}
-                </p>
-              )}
+            <div className="flex items-center gap-4 sm:gap-5">
+              {/* Profile photo / logo; initials until one is uploaded */}
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-full overflow-hidden border-2 border-orange-100 bg-orange-50 shadow-sm flex items-center justify-center">
+                {profile.fotoProfil ? (
+                  <Image src={profile.fotoProfil} alt={isEn ? `${profile.nama} profile photo` : `Foto profil ${profile.nama}`} fill sizes="96px" className="object-cover" />
+                ) : (
+                  <span className={`text-3xl sm:text-4xl text-orange-500 ${dancingScript.className}`} aria-hidden="true">{initials}</span>
+                )}
+              </div>
+              <div className="min-w-0">
+                <h1 className={`text-4xl sm:text-5xl text-orange-600 leading-tight ${dancingScript.className}`}>{profile.nama}</h1>
+                {profile.namaPanggung && (
+                  <p className="mt-1 text-base sm:text-lg font-semibold text-zinc-800">
+                    {isKomunitas ? profile.namaPanggung : `${isEn ? "Stage name" : "Nama panggung"}: ${profile.namaPanggung}`}
+                  </p>
+                )}
+              </div>
             </div>
             {facts.length > 0 && (
               <dl className="flex flex-wrap gap-x-6 gap-y-3 pt-1">
@@ -160,6 +146,15 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                   </div>
                 ))}
               </dl>
+            )}
+            {profile.alamat && (
+              <p className="flex items-start gap-2.5 text-sm text-zinc-700 leading-relaxed">
+                <MapPin className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" aria-hidden="true" />
+                <span>
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{isEn ? "Address" : "Alamat"}</span>
+                  {profile.alamat}
+                </span>
+              </p>
             )}
           </div>
 
@@ -387,50 +382,56 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
           )}
         </div>
 
-        {/* Media: photo gallery + video demo slot */}
+        {/* Photo gallery: one cover card; clicking it opens the slider with every photo slot */}
         <section className={card}>
-          <h2 className={sectionTitle}>{isEn ? "Gallery & Video" : "Galeri & Video"}</h2>
+          <h2 className={sectionTitle}>{isEn ? "Photo Gallery" : "Galeri Foto"}</h2>
           {accent}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">{isEn ? "Photos" : "Foto"}</h3>
-              {photos.length > 0 ? (
-                <ul className="grid grid-cols-2 gap-3">
-                  {photos.map((photo, i) => (
-                    <li key={photo.url + i} className={photos.length === 1 ? "col-span-2" : ""}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsGalleryOpen(true);
-                          setActivePhotoIndex(i);
-                        }}
-                        className="group relative block w-full aspect-video overflow-hidden border border-zinc-200 bg-zinc-100"
-                        aria-label={`${isEn ? "Open photo" : "Buka foto"}: ${isEn && photo.typeEn ? photo.typeEn : photo.type}`}
-                      >
-                        <Image
-                          src={photo.url}
-                          alt={isEn && photo.typeEn ? photo.typeEn : photo.type}
-                          fill
-                          sizes="(min-width: 1024px) 560px, 90vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        {profile.isDummyMedia && (
-                          <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white">
-                            {isEn ? "Illustration" : "Foto ilustrasi"}
-                          </span>
-                        )}
-                      </button>
-                      <p className="mt-2 text-xs text-zinc-500 leading-relaxed">{isEn && photo.typeEn ? photo.typeEn : photo.type}</p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-zinc-500 italic">{isEn ? "Photos are not available yet." : "Foto belum tersedia."}</p>
+          {photos.length > 0 ? (
+            <figure className="max-w-3xl">
+              <button
+                type="button"
+                onClick={() => setLightboxIndex(coverIndex)}
+                className="group relative block w-full aspect-video overflow-hidden border border-zinc-200 bg-zinc-100"
+                aria-label={isEn ? `Open the photo gallery (${photos.length} photos)` : `Buka galeri foto (${photos.length} foto)`}
+              >
+                {cover && !cover.pending ? (
+                  <Image
+                    src={cover.url}
+                    alt={(isEn && cover.captionEn) || cover.caption}
+                    fill
+                    sizes="(min-width: 1024px) 768px, 90vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <Images className="w-10 h-10 text-zinc-300" aria-hidden="true" />
+                  </span>
+                )}
+                <span className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300" />
+                {profile.isDummyMedia && (
+                  <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white">
+                    {isEn ? "Illustration" : "Foto ilustrasi"}
+                  </span>
+                )}
+                <span className="absolute right-3 bottom-3 inline-flex items-center gap-2 rounded-lg bg-black/65 px-3 py-2 text-xs font-bold text-white backdrop-blur-md group-hover:bg-orange-600 transition-colors">
+                  <ZoomIn className="w-4 h-4" aria-hidden="true" />
+                  {isEn ? `View ${photos.length} Gallery Photos` : `Lihat ${photos.length} Foto Galeri`}
+                </span>
+              </button>
+              {cover && (
+                <figcaption className="mt-2 text-xs text-zinc-500 leading-relaxed">{(isEn && cover.captionEn) || cover.caption}</figcaption>
               )}
-            </div>
+            </figure>
+          ) : (
+            <p className="text-sm text-zinc-500 italic">{isEn ? "Photos are not available yet." : "Foto belum tersedia."}</p>
+          )}
+        </section>
 
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">{isEn ? "Performance Video" : "Video Penampilan"}</h3>
+        {/* Performance video: its own section (the photo gallery holds photos only) */}
+        <section className={card}>
+          <h2 className={sectionTitle}>{isEn ? "Performance Video" : "Video Penampilan"}</h2>
+          {accent}
+          <div className="max-w-3xl">
               {videoId ? (
                 <div className="relative w-full aspect-video overflow-hidden border border-zinc-200 bg-black">
                   <iframe
@@ -477,22 +478,18 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                   )}
                 </div>
               )}
-            </div>
           </div>
         </section>
       </div>
 
-      {isGalleryOpen && photos.length > 0 && (
-        <GalleryLightbox
+      {lightboxIndex !== null && (
+        <MusikGalleryLightbox
           photos={photos}
-          activeIndex={activePhotoIndex}
-          getLabel={(photo) => (isEn && photo.typeEn ? photo.typeEn : photo.type)}
-          onSelect={(i) => setActivePhotoIndex(i)}
-          onBackToGrid={() => setActivePhotoIndex(null)}
-          onClose={closeGallery}
-          onPrev={() => stepPhoto(-1)}
-          onNext={() => stepPhoto(1)}
+          startIndex={lightboxIndex}
           isEn={isEn}
+          isDummyMedia={profile.isDummyMedia}
+          title={profile.nama}
+          onClose={closeLightbox}
         />
       )}
     </div>

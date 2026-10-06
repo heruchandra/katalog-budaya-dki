@@ -46,13 +46,21 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     pengalamanBerkesenian: [],
     layanan: [],
     prestasi: ["Juara Pertama Lomba Aransemen Lagu Gambang Kromong Tingkat Nasional"],
-    // The banner in this photo reads "Orkes Gambang Kromong Suara Lama": a photo of the community itself
+    // TODO: profile photo / logo not uploaded yet. Put it at /images/musik/komunitas-betawi-section/profile/profile.webp and set
+    // fotoProfil to that path (a placeholder is shown until then)
+    fotoProfil: undefined,
+    // Five gallery slots. Only the first photo exists so far (the banner reads "Orkes Gambang Kromong Suara Lama":
+    // the community itself). The others are planned paths marked pending: upload the file and remove `pending`.
     fotoGallery: [
       {
         url: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp",
         caption: "Penampilan Orkes Gambang Kromong Suara Lama",
         captionEn: "Orkes Gambang Kromong Suara Lama performing",
       },
+      { url: "/images/musik/komunitas-betawi-section/tampil/tampil-2.webp", caption: "Dokumentasi penampilan", captionEn: "Performance documentation", pending: true },
+      { url: "/images/musik/komunitas-betawi-section/instrumen/instrumen-1.webp", caption: "Instrumen gambang kromong", captionEn: "Gambang kromong instruments", pending: true },
+      { url: "/images/musik/komunitas-betawi-section/aktivitas/aktivitas-1.webp", caption: "Aktivitas komunitas", captionEn: "Community activities", pending: true },
+      { url: "/images/musik/komunitas-betawi-section/aktivitas/aktivitas-2.webp", caption: "Aktivitas komunitas", captionEn: "Community activities", pending: true },
     ],
     isDummyMedia: false,
   },
@@ -167,7 +175,7 @@ export function toCardData(m: MusikEntity): MusikCardData {
     subtitle: subtitle || undefined,
     instrumen: m.instrumen.join(", ") || undefined,
     // An illustration as the card photo would make two different entries look like the same one
-    foto: m.isDummyMedia ? undefined : m.fotoGallery[0]?.url,
+    foto: m.isDummyMedia ? undefined : m.fotoGallery.find((p) => !p.pending)?.url,
     isDummyMedia: m.isDummyMedia,
     hasProfile: !!findMusikMaster(m.id),
     alamat: m.alamat,
