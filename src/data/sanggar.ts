@@ -98,10 +98,10 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
   description: "Sanggar Seni Sinar Norray didirikan pada tahun 1995 oleh almarhumah Hj. Nori (Mpok Nori). Berawal dari panggung pertunjukan Lenong Betawi, sanggar ini telah berkembang menjadi pusat pelestarian seni tradisi Betawi yang saat ini dipimpin oleh putri bungsu Hj. Nori.",
   descriptionEn: "Sinar Norray Art Studio was established in 1995 by the late Hj. Nori (Mpok Nori). Originally founded through Lenong Betawi performances, the studio has grown into a center for preserving traditional Betawi arts, currently led by Hj. Nori's youngest daughter.",
   address: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
-  logo: "/images/sanggar/profile-sanggar-2.webp",
-  image: "/images/cards/card-7.webp",
-  coverImage: "/images/cards/card-7.webp",
-  thumbnail: "/images/cards/card-7.webp",
+  logo: "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp",
+  image: "/images/sanggar/general/dinamis/card-7.webp",
+  coverImage: "/images/sanggar/general/dinamis/card-7.webp",
+  thumbnail: "/images/sanggar/general/dinamis/card-7.webp",
   youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ",
   whatsappUrl: "https://wa.me/6281310998647",
   instagramUrl: "https://instagram.com/sinar_norray",
@@ -112,28 +112,28 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       description: "Latihan dan pembinaan tari tradisional Betawi untuk berbagai tingkatan usia.",
       titleEn: "Betawi Dance Classes",
       descriptionEn: "Training and mentorship in traditional Betawi dance for all age groups.",
-      image: "/images/sanggar/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
+      image: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
     },
     {
       title: "Pentas Lenong Betawi",
       description: "Pementasan teater komedi dan sandiwara rakyat tradisional Betawi.",
       titleEn: "Lenong Betawi Shows",
       descriptionEn: "Traditional Betawi comedy theater and folk drama performances.",
-      image: "/images/sanggar/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
+      image: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
     },
     {
       title: "Pentas Musik Gambang Kromong",
       description: "Pertunjukan musik tradisional khas Betawi pengiring acara adat & festival.",
       titleEn: "Gambang Kromong Music Performances",
       descriptionEn: "Traditional Betawi music performances accompanying customary ceremonies & festivals.",
-      image: "/images/sanggar/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp"
+      image: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp"
     },
     {
       title: "Karya Tari Unggulan Sanggar",
       description: "Pertunjukan tari kreasi khas Betawi (termasuk Tari Lenggok Dara & Tari Nindak Si None).",
       titleEn: "Studio's Featured Dance Works",
       descriptionEn: "Signature Betawi creative dance performances (including Tari Lenggok Dara & Tari Nindak Si None).",
-      image: "/images/sanggar/layanan-sanggar-sinarnorray-Pentas & Karya Tari Betawi.webp",
+      image: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas & Karya Tari Betawi.webp",
       featuresDanceWorks: true
     }
   ],
@@ -143,14 +143,14 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       choreographer: "Adinda Chamila",
       composer: "Sumitra Adi Kusuma Tohir",
       synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music.",
-      image: "/images/sanggar/tari-lenggok-dara.webp"
+      image: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp"
     },
     {
       name: "Tari Nindak Si None",
       choreographer: "Adinda Chamila",
       composer: "Sumitra Adi Kusuma Tohir",
       synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage.",
-      image: "/images/sanggar/tari-nindak-si-none.webp"
+      image: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp"
     }
   ],
   achievements: [

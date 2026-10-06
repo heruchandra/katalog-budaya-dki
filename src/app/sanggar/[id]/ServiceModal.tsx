@@ -19,23 +19,23 @@ const getServiceImage = (service: ServiceItem, sanggar: SanggarDetailData) => {
   const tLower = (service.title || "").toLowerCase();
   const tEnLower = (service.titleEn || "").toLowerCase();
   if (tLower.includes("kelas tari") || tEnLower.includes("dance class") || tLower.includes("tari betawi")) {
-    return "/images/sanggar/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp";
+    return "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp";
   }
   if (tLower.includes("lenong betawi") || tEnLower.includes("lenong betawi")) {
-    return "/images/sanggar/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp";
+    return "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp";
   }
   if (tLower.includes("gambang kromong") || tEnLower.includes("gambang kromong") || tLower.includes("musik") || tEnLower.includes("music")) {
-    return "/images/sanggar/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp";
+    return "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp";
   }
-  return sanggar.image || sanggar.coverImage || "/images/cards/card-7.webp";
+  return sanggar.image || sanggar.coverImage || "/images/sanggar/general/dinamis/card-7.webp";
 };
 
 const getDanceImage = (dance: TariItem) => {
   if (dance.image) return dance.image;
   const n = (dance.name || dance.title || "").toLowerCase();
-  if (n.includes("lenggok")) return "/images/sanggar/tari-lenggok-dara.webp";
-  if (n.includes("nindak")) return "/images/sanggar/tari-nindak-si-none.webp";
-  return "/images/cards/card-7.webp";
+  if (n.includes("lenggok")) return "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp";
+  if (n.includes("nindak")) return "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp";
+  return "/images/sanggar/general/dinamis/card-7.webp";
 };
 
 /**

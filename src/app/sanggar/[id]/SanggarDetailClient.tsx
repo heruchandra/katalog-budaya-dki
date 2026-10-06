@@ -100,21 +100,21 @@ export interface SanggarDetailData {
 }
 
 const DEFAULT_GALLERY_IMAGES = [
-  { type: "Pentas Seni & Tari Betawi", typeEn: "Betawi Art & Dance Performance", url: "/images/sanggar/dinamis-sanggar-1.webp" },
-  { type: "Kelas & Pelatihan Rutin", typeEn: "Routine Classes & Training", url: "/images/sanggar/dinamis-sanggar-2.webp" },
-  { type: "Pentas Lenong Tradisional", typeEn: "Traditional Lenong Theater", url: "/images/sanggar/dinamis-sanggar-3.webp" },
-  { type: "Dokumentasi Tata Busana Betawi", typeEn: "Betawi Traditional Attire", url: "/images/sanggar/dinamis-sanggar-4.webp" },
-  { type: "Pentas Tari Lenggok Dara", typeEn: "Lenggok Dara Dance Show", url: "/images/sanggar/dinamis-sanggar-5.webp" },
-  { type: "Koreografi & Gerak Berirama", typeEn: "Choreography & Motion", url: "/images/sanggar/dinamis-sanggar-6.webp" },
-  { type: "Gladi Resik & Persiapan Pentas", typeEn: "Rehearsal & Stage Prep", url: "/images/sanggar/dinamis-sanggar-7.webp" },
-  { type: "Kolaborasi Musik Gambang Kromong", typeEn: "Gambang Kromong Collaboration", url: "/images/sanggar/dinamis-sanggar-8.webp" },
-  { type: "Pentas Teater Sandiwara Betawi", typeEn: "Betawi Folk Theater Show", url: "/images/sanggar/dinamis-sanggar-9.webp" },
-  { type: "Festival Budaya Nusantara", typeEn: "Cultural Heritage Festival", url: "/images/sanggar/dinamis-sanggar-10.webp" },
-  { type: "Apresiasi Tari Nindak Si None", typeEn: "Nindak Si None Presentation", url: "/images/sanggar/dinamis-sanggar-11.webp" },
-  { type: "Dokumentasi Generasi Muda Seni", typeEn: "Youth Performing Arts Archive", url: "/images/sanggar/dinamis-sanggar-12.webp" },
-  { type: "Gelar Seni Tradisi Jakarta", typeEn: "Jakarta Heritage Art Exhibition", url: "/images/sanggar/dinamis-sanggar-13.webp" },
-  { type: "Pembinaan Siswa Tari", typeEn: "Dance Mentorship Program", url: "/images/sanggar/dinamis-sanggar-14.webp" },
-  { type: "Penampilan Pentas Akbar", typeEn: "Grand Gala Showcase", url: "/images/sanggar/dinamis-sanggar-15.webp" },
+  { type: "Pentas Seni & Tari Betawi", typeEn: "Betawi Art & Dance Performance", url: "/images/sanggar/general/dinamis/dinamis-sanggar-1.webp" },
+  { type: "Kelas & Pelatihan Rutin", typeEn: "Routine Classes & Training", url: "/images/sanggar/general/dinamis/dinamis-sanggar-2.webp" },
+  { type: "Pentas Lenong Tradisional", typeEn: "Traditional Lenong Theater", url: "/images/sanggar/general/dinamis/dinamis-sanggar-3.webp" },
+  { type: "Dokumentasi Tata Busana Betawi", typeEn: "Betawi Traditional Attire", url: "/images/sanggar/general/dinamis/dinamis-sanggar-4.webp" },
+  { type: "Pentas Tari Lenggok Dara", typeEn: "Lenggok Dara Dance Show", url: "/images/sanggar/general/dinamis/dinamis-sanggar-5.webp" },
+  { type: "Koreografi & Gerak Berirama", typeEn: "Choreography & Motion", url: "/images/sanggar/general/dinamis/dinamis-sanggar-6.webp" },
+  { type: "Gladi Resik & Persiapan Pentas", typeEn: "Rehearsal & Stage Prep", url: "/images/sanggar/general/dinamis/dinamis-sanggar-7.webp" },
+  { type: "Kolaborasi Musik Gambang Kromong", typeEn: "Gambang Kromong Collaboration", url: "/images/sanggar/general/dinamis/dinamis-sanggar-8.webp" },
+  { type: "Pentas Teater Sandiwara Betawi", typeEn: "Betawi Folk Theater Show", url: "/images/sanggar/general/dinamis/dinamis-sanggar-9.webp" },
+  { type: "Festival Budaya Nusantara", typeEn: "Cultural Heritage Festival", url: "/images/sanggar/general/dinamis/dinamis-sanggar-10.webp" },
+  { type: "Apresiasi Tari Nindak Si None", typeEn: "Nindak Si None Presentation", url: "/images/sanggar/general/dinamis/dinamis-sanggar-11.webp" },
+  { type: "Dokumentasi Generasi Muda Seni", typeEn: "Youth Performing Arts Archive", url: "/images/sanggar/general/dinamis/dinamis-sanggar-12.webp" },
+  { type: "Gelar Seni Tradisi Jakarta", typeEn: "Jakarta Heritage Art Exhibition", url: "/images/sanggar/general/dinamis/dinamis-sanggar-13.webp" },
+  { type: "Pembinaan Siswa Tari", typeEn: "Dance Mentorship Program", url: "/images/sanggar/general/dinamis/dinamis-sanggar-14.webp" },
+  { type: "Penampilan Pentas Akbar", typeEn: "Grand Gala Showcase", url: "/images/sanggar/general/dinamis/dinamis-sanggar-15.webp" },
 ];
 
 export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetailData }) {
@@ -127,7 +127,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   const [leaderPhotoFailed, setLeaderPhotoFailed] = useState(false);
   const leaderPhoto =
     sanggar.logo || sanggar.logoUrl ||
-    (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/images/sanggar/profile-sanggar-2.webp");
+    (sanggar.fotoKetuaUrl && !sanggar.fotoKetuaUrl.includes("penari1") ? sanggar.fotoKetuaUrl : "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp");
 
   // Uploaded galleries are always used; otherwise only a full (15+) curated set replaces the default photos
   const galleryList = (sanggar.gallery && sanggar.gallery.length > 0 && (sanggar.galleryIsUploaded || sanggar.gallery.length >= 15))
@@ -228,7 +228,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
                 <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-orange-100 shadow-sm shrink-0 bg-zinc-50">
                   <Image
-                    src={leaderPhotoFailed ? "/images/sanggar/profile-sanggar-2.webp" : leaderPhoto}
+                    src={leaderPhotoFailed ? "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp" : leaderPhoto}
                     alt={sanggar.leader || sanggar.kontak?.ketua || sanggar.name || (isEn ? "Studio Leader" : "Ketua Sanggar")}
                     fill
                     sizes="80px"
@@ -487,11 +487,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
                       if (!serviceObj.image) {
                         if (tLower.includes('kelas tari') || tEnLower.includes('dance class') || tLower.includes('tari betawi')) {
-                          serviceObj.image = '/images/sanggar/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp';
+                          serviceObj.image = '/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp';
                         } else if (tLower.includes('lenong betawi') || tEnLower.includes('lenong betawi')) {
-                          serviceObj.image = '/images/sanggar/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp';
+                          serviceObj.image = '/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp';
                         } else if (tLower.includes('gambang kromong') || tEnLower.includes('gambang kromong') || tLower.includes('musik') || tEnLower.includes('music')) {
-                          serviceObj.image = '/images/sanggar/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp';
+                          serviceObj.image = '/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp';
                         }
                       }
                       const title = isObj ? ((isEn && item.titleEn) ? item.titleEn : item.title) : item;
@@ -512,10 +512,10 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                                 src={
                                   service.image ||
                                   (service.title.toLowerCase().includes("kelas")
-                                    ? "/images/sanggar/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
+                                    ? "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
                                     : service.title.toLowerCase().includes("lenong")
-                                    ? "/images/sanggar/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
-                                    : "/images/sanggar/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp")
+                                    ? "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp"
+                                    : "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp")
                                 }
                                 alt={service.title}
                                 fill

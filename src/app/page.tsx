@@ -82,13 +82,13 @@ function StaticHeroHeadline({ lead, words, scriptClassName }: HeroHeadlineProps)
 
 // Same images the sanggar catalog shows for these curated studios (keyed by lowercase name)
 const KNOWN_SANGGAR_THUMBS: Record<string, string> = {
-  "sinar norray": "/images/sanggar/profile-sanggar-2.webp",
-  "art enthusiast production": "/images/cards/card-1.webp",
-  "am dance studio": "/images/cards/card-2.webp",
-  "arunika art production": "/images/cards/card-3.webp",
-  "ayodya pala": "/images/cards/card-4.webp",
-  "citra art studio": "/images/cards/card-5.webp",
-  "daya presta": "/images/cards/card-6.webp",
+  "sinar norray": "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp",
+  "art enthusiast production": "/images/sanggar/general/dinamis/card-1.webp",
+  "am dance studio": "/images/sanggar/general/dinamis/card-2.webp",
+  "arunika art production": "/images/sanggar/general/dinamis/card-3.webp",
+  "ayodya pala": "/images/sanggar/general/dinamis/card-4.webp",
+  "citra art studio": "/images/sanggar/general/dinamis/card-5.webp",
+  "daya presta": "/images/sanggar/general/dinamis/card-6.webp",
 };
 
 // First non-empty image-like field on a DB row (column names differ between tables)
