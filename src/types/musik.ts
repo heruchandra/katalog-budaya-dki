@@ -52,6 +52,8 @@ export interface MusikEntity {
   /** Contact person, when different from the leader */
   pic?: string;
   nomorKontak: string[];
+  /** The number that is on WhatsApp, when it isn't the first of `nomorKontak` (all numbers stay on display) */
+  nomorWhatsapp?: string;
   email?: string;
   sosialMedia: SosialMedia[];
   genre: string[];

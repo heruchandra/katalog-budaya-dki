@@ -25,6 +25,8 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     alamat: "Jl. Raya Hankam TMII RT.01 RW.02, Kelurahan Ceger, Kecamatan Cipayung, Jakarta Timur",
     ketua: "Sumitra Adi Kusuma",
     nomorKontak: ["081384071949", "085939836744"],
+    // the WhatsApp line (the first number isn't on WhatsApp); both numbers stay on display
+    nomorWhatsapp: "085939836744",
     email: "sumitraadikusuma12@gmail.com",
     sosialMedia: [
       { platform: "instagram", handle: "@Kombes.gksl", url: "https://www.instagram.com/kombes.gksl" },
@@ -202,7 +204,7 @@ export function toCardData(m: MusikEntity): MusikCardData {
     hasProfile: !!findMusikMaster(m.id),
     alamat: m.alamat,
     wilayah: resolveWilayah({ alamat: m.alamat }),
-    waNumber: toWaNumber(m.nomorKontak[0]) || undefined,
+    waNumber: waNumberOf(m) || undefined,
     // the card's "Tonton" button opens YouTube: a YouTube demo video, else the YouTube account (a video file
     // plays on the detail page instead)
     youtubeUrl: (youTubeId(m.videoUrl) ? m.videoUrl : undefined) || m.sosialMedia.find((s) => s.platform === "youtube")?.url,
@@ -219,7 +221,23 @@ export function buildMusikCatalog(rows: PemusikRow[]): MusikCardData[] {
 }
 
 /** WhatsApp number (62…) from the first contact number, for wa.me links */
+/**
+ * WhatsApp digits in international form (62…) from a phone string: "0859-3983-6744", "+62 859 3983 6744" or
+ * "859 3983 6744". A string holding several numbers ("0813… / 0859…") yields the first one, never the digits of
+ * both run together. Empty when there is no usable number.
+ */
 export function toWaNumber(phone?: string) {
-  const digits = (phone || "").replace(/\D/g, "");
-  return digits.startsWith("0") ? `62${digits.slice(1)}` : digits;
+  const digits =
+    (phone || "")
+      .split(/[\/,;|]|\s(?:dan|atau|or)\s/i)
+      .map((part) => part.replace(/\D/g, ""))
+      .find((d) => d.length >= 9) ?? "";
+  if (digits.startsWith("0")) return `62${digits.slice(1)}`;
+  if (digits.startsWith("8")) return `62${digits}`;
+  return digits;
+}
+
+/** The entry's WhatsApp number: its designated WhatsApp line, else its first contact number */
+export function waNumberOf(m: Pick<MusikEntity, "nomorWhatsapp" | "nomorKontak">) {
+  return toWaNumber(m.nomorWhatsapp || m.nomorKontak[0]);
 }

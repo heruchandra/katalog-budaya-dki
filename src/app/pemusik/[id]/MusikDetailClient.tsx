@@ -8,7 +8,7 @@ import PerformanceVideo from "@/components/PerformanceVideo";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
 import FallbackImage from "@/components/FallbackImage";
-import { toWaNumber } from "@/data/musikData";
+import { waNumberOf } from "@/data/musikData";
 import type { MusikEntity } from "@/types/musik";
 import { SOCIAL_ICONS, SocialPills, WhatsAppButton } from "@/components/SocialPills";
 
@@ -34,7 +34,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
   const initials = profile.nama.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   // Direct WhatsApp contact (no internal chat), pre-filled message
-  const waNumber = toWaNumber(profile.nomorKontak[0]);
+  const waNumber = waNumberOf(profile);
   const waLink = waNumber
     ? `https://wa.me/${waNumber}?text=${encodeURIComponent(
         isEn
