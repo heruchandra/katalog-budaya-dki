@@ -75,12 +75,12 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     // slide for the others.
     fotoProfil: "/images/musik/komunitas-betawi-section/profile/profile-komunitas-betawi-section.webp",
     // The banner in this photo reads "Orkes Gambang Kromong Suara Lama": the community itself
-    fotoCard: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp",
+    fotoCard: "/images/musik/komunitas-betawi-section/card/card.webp",
     // Upload folder /images/musik/komunitas-betawi-section/video/; until video.mp4 is there the page shows the
     // "not available yet" placeholder (with the channel link). The poster is the profile photo.
     videoUrl: "/images/musik/komunitas-betawi-section/video/video.mp4",
     fotoGallery: [
-      { url: "/images/musik/komunitas-betawi-section/galeri/galeri-1.webp", fallbackUrl: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
+      { url: "/images/musik/komunitas-betawi-section/galeri/galeri-1.webp", fallbackUrl: "/images/musik/komunitas-betawi-section/card/card.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
       { url: "/images/musik/komunitas-betawi-section/galeri/galeri-2.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
       { url: "/images/musik/komunitas-betawi-section/galeri/galeri-3.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
       { url: "/images/musik/komunitas-betawi-section/galeri/galeri-4.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
@@ -132,7 +132,7 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     // the community he leads, marked as an illustration
     fotoGallery: [
       {
-        url: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp",
+        url: "/images/musik/komunitas-betawi-section/card/card.webp",
         caption: "Foto ilustrasi: penampilan Orkes Gambang Kromong Suara Lama, komunitas yang dipimpin Sumitra",
         captionEn: "Illustration: Orkes Gambang Kromong Suara Lama, the community Sumitra leads",
       },
