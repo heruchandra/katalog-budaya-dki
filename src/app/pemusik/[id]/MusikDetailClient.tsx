@@ -2,7 +2,8 @@
 
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
-import { CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, CheckCircle2, Trophy } from "lucide-react";
+import { CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
+import AwardList from "@/components/AwardList";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
 import FallbackImage from "@/components/FallbackImage";
@@ -271,17 +272,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Achievements & Awards" : "Prestasi & Penghargaan"}</h2>
                 {accent}
-                <ol className="space-y-3">
-                  {profile.prestasi.map((p) => (
-                    // Highlight card
-                    <li key={p} className="flex items-center gap-4 border border-amber-200/80 bg-gradient-to-r from-amber-50 to-white p-4 sm:p-5">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-                        <Trophy className="w-5 h-5" aria-hidden="true" />
-                      </span>
-                      <span className="text-base sm:text-lg font-semibold text-zinc-900 leading-snug">{p}</span>
-                    </li>
-                  ))}
-                </ol>
+                <AwardList items={profile.prestasi.map((title) => ({ title }))} isEn={isEn} />
               </section>
             )}
           </div>

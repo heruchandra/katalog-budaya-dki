@@ -12,6 +12,7 @@ import PracticeInfo from "./PracticeInfo";
 import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
 import type { SosialMedia } from "@/types/musik";
 import { ownServiceImage } from "@/lib/sanggarImages";
+import AwardList from "@/components/AwardList";
 import FallbackImage from "@/components/FallbackImage";
 import { GalleryPlaceholder, type GalleryPhoto } from "./GalleryLightbox";
 
@@ -460,43 +461,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   ? ((sanggar.achievements && sanggar.achievements.length > 0) ? sanggar.achievements : (sanggar.prestasi || []))
                   : ((sanggar.prestasi && sanggar.prestasi.length > 0) ? sanggar.prestasi : (sanggar.achievements || []));
 
-                return achievementList && achievementList.length > 0 ? (
-                  <div className="max-h-[420px] overflow-y-auto pr-2 divide-y divide-zinc-100 border-y border-zinc-100">
-                    {achievementList.map((item, idx) => {
-                      const isObj = typeof item === 'object' && item !== null;
-                      const title = isObj ? item.title : item;
-                      const organizer = isObj && item.organizer ? item.organizer : (isEn ? "Official Artistic Achievement" : "Pencapaian Seni Resmi");
-                      const year = isObj ? item.year : null;
+                // strings and {title, organizer, year} objects alike; only a real organizer/year is shown
+                const awards = (achievementList || []).map((item) =>
+                  typeof item === 'object' && item !== null
+                    ? { title: item.title, organizer: item.organizer, year: item.year }
+                    : { title: String(item) }
+                );
 
-                      return (
-                        <div 
-                          key={idx} 
-                          className="py-4 sm:py-5 flex items-start gap-4 group hover:bg-zinc-50/60 px-2 rounded-none transition-colors"
-                        >
-                          <span className={`text-2xl sm:text-3xl font-normal text-zinc-300 group-hover:text-orange-600 transition-colors leading-none font-serif shrink-0 ${playfair.className}`}>
-                            {String(idx + 1).padStart(2, '0')}
-                          </span>
-                          <div className="space-y-1 flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <p className="text-base sm:text-lg font-medium text-zinc-800 leading-snug">
-                                {title}
-                              </p>
-                              {/* Year badge: solid brand orange. orange-700 (the deep end of bg-brand) keeps white 12px text
-                                  above WCAG AA 4.5:1, which orange-600 (3.6:1) does not */}
-                              {year && (
-                                <span className="shrink-0 text-xs font-semibold tabular-nums px-3 py-1 rounded-lg bg-orange-700 text-white shadow-sm">
-                                  {year}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-zinc-400 uppercase tracking-wider font-sans">
-                              {organizer}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                return awards.length > 0 ? (
+                  <AwardList items={awards} isEn={isEn} />
                 ) : (
                   <p className="text-sm text-zinc-500 italic">
                     {isEn 
