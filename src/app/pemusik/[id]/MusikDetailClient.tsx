@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
-import { CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
+import { CalendarDays, Music, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
 import AwardList from "@/components/AwardList";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
@@ -73,6 +73,9 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
     },
   ].filter((g) => g.items.length > 0);
 
+  // Users for a community / group, a music note for an individual musician
+  const CategoryIcon = isKomunitas ? Users : Music;
+
   const sectionTitle = `text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight ${playfair.className}`;
   const card = "bg-white p-6 sm:p-8 rounded-none border border-zinc-200/80 shadow-sm";
   const accent = <div className="w-12 h-0.5 bg-orange-600 mt-3 mb-6" />;
@@ -83,9 +86,6 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
         {/* Header: identity + contact */}
         <section className={`${card} grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-center`}>
           <div className="lg:col-span-7 space-y-4">
-            <span className="inline-flex rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-orange-700">
-              {isKomunitas ? (isEn ? "Music Community" : "Komunitas Musik") : isEn ? "Musician" : "Pemusik"}
-            </span>
             <div className="flex items-center gap-4 sm:gap-5">
               {/* Profile photo / logo; initials until one is uploaded */}
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-full overflow-hidden border-2 border-orange-100 bg-orange-50 shadow-sm flex items-center justify-center">
@@ -99,7 +99,12 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                 />
               </div>
               <div className="min-w-0">
-                <h1 className={`text-4xl sm:text-5xl text-orange-600 leading-tight ${dancingScript.className}`}>{profile.nama}</h1>
+                {/* Category badge: right of the avatar, directly above the name */}
+                <span className="flex w-fit items-center gap-1.5 rounded-full border border-amber-300/80 bg-amber-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-800 shadow-2xs">
+                  <CategoryIcon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  {isKomunitas ? (isEn ? "Music Community" : "Komunitas Musik") : isEn ? "Musician" : "Pemusik"}
+                </span>
+                <h1 className={`mt-1.5 text-4xl sm:text-5xl text-orange-600 leading-tight ${dancingScript.className}`}>{profile.nama}</h1>
                 {profile.namaPanggung && (
                   <p className="mt-1 text-base sm:text-lg font-semibold text-zinc-800">
                     {isKomunitas ? profile.namaPanggung : `${isEn ? "Stage name" : "Nama panggung"}: ${profile.namaPanggung}`}
