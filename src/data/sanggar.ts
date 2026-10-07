@@ -143,14 +143,14 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       choreographer: "Adinda Chamila",
       composer: "Sumitra Adi Kusuma Tohir",
       synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music.",
-      image: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp"
+      image: "/images/sanggar/sinar-norray/galeri/galeri-1.webp"
     },
     {
       name: "Tari Nindak Si None",
       choreographer: "Adinda Chamila",
       composer: "Sumitra Adi Kusuma Tohir",
       synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage.",
-      image: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp"
+      image: "/images/sanggar/sinar-norray/galeri/galeri-2.webp"
     }
   ],
   achievements: [

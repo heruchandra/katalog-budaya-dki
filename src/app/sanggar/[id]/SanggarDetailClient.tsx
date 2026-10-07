@@ -12,6 +12,8 @@ import PracticeInfo from "./PracticeInfo";
 import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
 import type { SosialMedia } from "@/types/musik";
 import { ownServiceImage } from "@/lib/sanggarImages";
+import FallbackImage from "@/components/FallbackImage";
+import { GalleryPlaceholder, type GalleryPhoto } from "./GalleryLightbox";
 
 // Modals are split out of the initial page bundle and fetched the first time they open
 const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
@@ -94,7 +96,7 @@ export interface SanggarDetailData {
   logoUrl?: string | null;
   fotoKetuaUrl?: string | null;
   youtubeUrl?: string | null;
-  gallery?: { type: string; url: string; typeEn?: string }[];
+  gallery?: GalleryPhoto[];
   /** True when `gallery` holds photos uploaded through the admin panel (always shown, whatever the count) */
   galleryIsUploaded?: boolean;
   /** Google Maps link saved in the admin panel; falls back to a search for the address */
@@ -604,12 +606,14 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   aria-label={isEn ? `View photo: ${label}` : `Lihat foto: ${label}`}
                   className="block w-full rounded-none overflow-hidden bg-white border border-zinc-200 shadow-xs hover:border-orange-500 transition-all duration-200 relative group cursor-pointer aspect-[4/3] outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
-                  <Image
+                  <FallbackImage
+                    key={img.url}
                     src={img.url}
+                    fallbackSrc={img.fallbackUrl}
                     alt={label}
-                    fill
                     sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
                     className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                    placeholder={<GalleryPlaceholder isEn={isEn} />}
                   />
                   {/* Light dim on hover (no heavy full-card overlay) */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 group-focus-visible:bg-black/20 transition-colors duration-300 pointer-events-none" />

@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
-import { ownCardImage } from "@/lib/sanggarImages";
+import { ownCardImage, ownGallery } from "@/lib/sanggarImages";
 import SanggarDetailClient, { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +33,7 @@ const SINAR_NORRAY_SERVICES: ServiceItem[] = [
     description: "Pertunjukan tari kreasi khas Betawi (termasuk Tari Lenggok Dara & Tari Nindak Si None).",
     titleEn: "Studio's Featured Dance Works",
     descriptionEn: "Signature Betawi creative dance performances (including Tari Lenggok Dara & Tari Nindak Si None).",
-    image: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp",
+    image: "/images/sanggar/sinar-norray/galeri/galeri-1.webp",
     featuresDanceWorks: true,
   },
 ];
@@ -72,14 +72,14 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
         synopsis: "Lenggok means to walk or dance, while Dara means a young woman. This dance portrays the grace, elegance, and cheerfulness of Betawi women through beautiful movements accompanied by distinctive Betawi traditional music.",
-        image: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp",
+        image: "/images/sanggar/sinar-norray/galeri/galeri-1.webp",
       },
       {
         name: "Tari Nindak Si None",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
         synopsis: "Nindak means to step forward, while Si None is inspired by the Betawi None, representing the cultural icon of Abang None Jakarta. This dance reflects the confidence, friendliness, and spirit of Betawi young women in preserving their cultural heritage.",
-        image: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp",
+        image: "/images/sanggar/sinar-norray/galeri/galeri-2.webp",
       }
     ],
     tariUnggulan: [
@@ -88,14 +88,14 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
         synopsis: "Lenggok bermakna lenggang atau gerak berirama, sedangkan Dara adalah gadis muda. Tarian ini menggambarkan keluwesan, keanggunan, dan keceriaan gadis Betawi melalui gerak tari indah berpadu alunan musik tradisional khas Betawi.",
-        image: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp",
+        image: "/images/sanggar/sinar-norray/galeri/galeri-1.webp",
       },
       {
         name: "Tari Nindak Si None",
         choreographer: "Adinda Chamila",
         composer: "Sumitra Adi Kusuma Tohir",
         synopsis: "Nindak bermakna melangkah maju, terinspirasi oleh sosok Si None Betawi sebagai representasi ikon budaya Abang None Jakarta. Tarian ini mencerminkan rasa percaya diri, keramahan, dan semangat gadis muda Betawi dalam melestarikan warisan budayanya.",
-        image: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp",
+        image: "/images/sanggar/sinar-norray/galeri/galeri-2.webp",
       }
     ],
     achievements: [
@@ -152,11 +152,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     instagramUrl: "https://instagram.com/sinar_norray",
     imageUrl: "/images/sanggar/sinar-norray/card/card-7.webp",
     fotoKetuaUrl: "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp",
+    // public/images/sanggar/sinar-norray/galeri/ (galeri-3: landscape group photo; galeri-4, galeri-5: 4:5 portraits)
     gallery: [
-      { type: "Pentas Lenong Betawi", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp" },
-      { type: "Tari Lenggok Dara", url: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp" },
-      { type: "Tari Nindak Si None", url: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp" },
-      { type: "Musik Gambang Kromong", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp" }
+      { type: "Tari Lenggok Dara", typeEn: "Lenggok Dara Dance", url: "/images/sanggar/sinar-norray/galeri/galeri-1.webp" },
+      { type: "Tari Nindak Si None", typeEn: "Nindak Si None Dance", url: "/images/sanggar/sinar-norray/galeri/galeri-2.webp" },
+      { type: "Penari Sanggar Sinar Norray", typeEn: "Sinar Norray Dancers", url: "/images/sanggar/sinar-norray/galeri/galeri-3.webp" },
+      { type: "Penari Tari Betawi", typeEn: "Betawi Dancer", url: "/images/sanggar/sinar-norray/galeri/galeri-4.webp" },
+      { type: "Penari Tari Betawi", typeEn: "Betawi Dancer", url: "/images/sanggar/sinar-norray/galeri/galeri-5.webp" }
     ]
   },
   "sandyakala": {
@@ -305,11 +307,13 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     instagramUrl: "https://instagram.com/sinar_norray",
     imageUrl: "/images/sanggar/sinar-norray/card/card-7.webp",
     fotoKetuaUrl: "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp",
+    // public/images/sanggar/sinar-norray/galeri/ (galeri-3: landscape group photo; galeri-4, galeri-5: 4:5 portraits)
     gallery: [
-      { type: "Pentas Lenong Betawi", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp" },
-      { type: "Tari Lenggok Dara", url: "/images/sanggar/sinar-norray/tari/tari-lenggok-dara.webp" },
-      { type: "Tari Nindak Si None", url: "/images/sanggar/sinar-norray/tari/tari-nindak-si-none.webp" },
-      { type: "Musik Gambang Kromong", url: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp" }
+      { type: "Tari Lenggok Dara", typeEn: "Lenggok Dara Dance", url: "/images/sanggar/sinar-norray/galeri/galeri-1.webp" },
+      { type: "Tari Nindak Si None", typeEn: "Nindak Si None Dance", url: "/images/sanggar/sinar-norray/galeri/galeri-2.webp" },
+      { type: "Penari Sanggar Sinar Norray", typeEn: "Sinar Norray Dancers", url: "/images/sanggar/sinar-norray/galeri/galeri-3.webp" },
+      { type: "Penari Tari Betawi", typeEn: "Betawi Dancer", url: "/images/sanggar/sinar-norray/galeri/galeri-4.webp" },
+      { type: "Penari Tari Betawi", typeEn: "Betawi Dancer", url: "/images/sanggar/sinar-norray/galeri/galeri-5.webp" }
     ]
   },
 
@@ -367,9 +371,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     },
     imageUrl: "/images/sanggar/arunika-art-production/card/card-3.webp",
     fotoKetuaUrl: null,
-    gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/arunika-art-production/card/card-3.webp" },
-    ]
+    gallery: ownGallery("Arunika Art Production"),
   },
 
   // ID 1 & 40: AE Production (Art Enthusiast Production) (Grade B)
@@ -469,10 +471,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     },
     imageUrl: "/images/sanggar/ae-production/card/card-1.webp",
     fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
-    gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/ae-production/card/card-1.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/ae-production/card/card-1.webp" },
-    ]
+    gallery: ownGallery("Art Enthusiast Production"),
   },
   "40": {
     name: "Art Enthusiast Production",
@@ -570,10 +569,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     },
     imageUrl: "/images/sanggar/ae-production/card/card-1.webp",
     fotoKetuaUrl: "/images/sanggar/ae-production/profile/profile-sanggar-1.webp",
-    gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/ae-production/card/card-1.webp" },
-      { type: "Foto Tari Unggulan", url: "/images/sanggar/ae-production/card/card-1.webp" },
-    ]
+    gallery: ownGallery("Art Enthusiast Production"),
   },
 
   // ID 17: Ayodya Pala (Grade A) - Exact data from INFORMASI SANGGAR docx/pdf
@@ -634,9 +630,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     },
     imageUrl: "/images/sanggar/ayodya-pala/card/card-4.webp",
     fotoKetuaUrl: null,
-    gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/ayodya-pala/card/card-4.webp" },
-    ]
+    gallery: ownGallery("Ayodya Pala"),
   },
 
   // ID 7: Daya Presta (Grade A)
@@ -689,9 +683,7 @@ const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     },
     imageUrl: "/images/sanggar/daya-presta/card/card-6.webp",
     fotoKetuaUrl: null,
-    gallery: [
-      { type: "Foto Grup Tari", url: "/images/sanggar/daya-presta/card/card-6.webp" },
-    ]
+    gallery: ownGallery("Daya Presta"),
   }
 };
 
@@ -746,6 +738,8 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
   // Only this sanggar's own photo (uploaded, or its known card image); no photo at all rather than another
   // sanggar's picture. The dance works below have no photos of their own, so they show without one.
   const ownPhoto = data?.thumbnail_url || data?.foto_grup_url || ownCardImage(name);
+  // Its galeri/ folder when it has one (showing the card photo until galeri-1 is uploaded)
+  const ownGalleryPhotos = ownGallery(name);
 
   return {
     id,
@@ -796,7 +790,9 @@ function generateFallbackSanggar(data: SanggarDbRow | null | undefined, id: stri
     },
     imageUrl: ownPhoto || "",
     fotoKetuaUrl: data?.foto_ketua_url || null,
-    gallery: ownPhoto ? [{ type: "Foto Sanggar", typeEn: "Studio Photo", url: ownPhoto }] : []
+    gallery: ownGalleryPhotos.length > 0
+      ? ownGalleryPhotos
+      : ownPhoto ? [{ type: "Foto Sanggar", typeEn: "Studio Photo", url: ownPhoto }] : []
   };
 }
 

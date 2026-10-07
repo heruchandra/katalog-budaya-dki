@@ -76,9 +76,9 @@ export default function MusikGalleryLightbox({ photos, startIndex, isEn, isDummy
         </button>
       </div>
 
-      {/* Slide */}
+      {/* Slide: at most 85vh tall; object-contain fits any orientation (landscape, 4:5 portrait, square) whole */}
       <div
-        className="relative flex-1 min-h-0 mx-4 sm:mx-20"
+        className="relative flex-1 min-h-0 max-h-[85vh] mx-4 sm:mx-20"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
         onTouchEnd={(e) => {

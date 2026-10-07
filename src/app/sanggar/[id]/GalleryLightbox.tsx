@@ -1,12 +1,54 @@
 "use client";
 
-import Image from "next/image";
-import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, ImageOff, Maximize2, X } from "lucide-react";
+import FallbackImage from "@/components/FallbackImage";
 
 export interface GalleryPhoto {
   type: string;
   url: string;
   typeEn?: string;
+  /** Shown while `url` hasn't been uploaded yet (e.g. a galeri-N.webp not yet in the sanggar's galeri/ folder) */
+  fallbackUrl?: string;
+}
+
+/** "Photo coming soon" tile for a gallery photo that can't be loaded (fills its positioned parent) */
+export function GalleryPlaceholder({ isEn, dark = false }: { isEn: boolean; dark?: boolean }) {
+  return (
+    <span className={`absolute inset-0 flex flex-col items-center justify-center gap-1.5 ${dark ? "bg-zinc-800 text-zinc-500" : "bg-zinc-100 text-zinc-400"}`}>
+      <ImageOff className="w-7 h-7" aria-hidden="true" />
+      <span className="text-xs font-medium">{isEn ? "Photo coming soon" : "Foto menyusul"}</span>
+    </span>
+  );
+}
+
+/**
+ * The focused viewer's photo at its natural proportions (plain <img>), trying `fallbackUrl` and then a
+ * placeholder when the file can't be loaded. Keyed by the photo index, so the attempt resets per photo.
+ */
+function ViewerPhoto({ photo, label, isEn }: { photo: GalleryPhoto; label: string; isEn: boolean }) {
+  const sources = [photo.url, photo.fallbackUrl].filter((s): s is string => !!s);
+  const [attempt, setAttempt] = useState(0);
+  const src = sources[attempt];
+  if (!src) {
+    return (
+      <div className="relative w-full max-w-2xl aspect-[4/3] min-h-0 max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+        <GalleryPlaceholder isEn={isEn} dark />
+      </div>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      key={src}
+      src={src}
+      alt={label}
+      onError={() => setAttempt((a) => a + 1)}
+      onClick={(e) => e.stopPropagation()}
+      // any orientation (landscape, 4:5 portrait, square) fits whole: capped at the stage and 80vh, never cropped
+      className="min-h-0 max-w-full max-h-[min(100%,80vh)] object-contain rounded-none shadow-2xl select-none animate-[lightbox-in_0.25s_ease-out]"
+    />
+  );
 }
 
 interface GalleryLightboxProps {
@@ -89,12 +131,14 @@ export default function GalleryLightbox({
                   className="text-left bg-zinc-900/90 border border-zinc-800 rounded-2xl p-2.5 hover:border-orange-500/50 transition-all cursor-pointer group"
                 >
                   <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-800">
-                    <Image
+                    <FallbackImage
+                      key={img.url}
                       src={img.url}
+                      fallbackSrc={img.fallbackUrl}
                       alt={label}
-                      fill
                       sizes="(min-width: 1024px) 300px, (min-width: 768px) 30vw, 45vw"
                       className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                      placeholder={<GalleryPlaceholder isEn={isEn} dark />}
                     />
                     {/* Light dim on hover (no heavy full-card overlay) */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 group-focus-visible:bg-black/20 transition-colors duration-300 pointer-events-none" />
@@ -166,16 +210,9 @@ export default function GalleryLightbox({
 
             {/* Image + caption move together as one centred block. The image may shrink (min-h-0) so the
                 caption always fits below it inside the stage. A plain <img> is used on purpose: the viewer
-                shows the photo at its natural proportions, which drive the caption position. */}
+                shows the photo at its natural proportions, which drive the caption position. A photo that isn't uploaded yet shows its fallback, else a placeholder. */}
             <div className="flex h-full w-full min-h-0 flex-col items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                key={activeIndex}
-                src={photo.url}
-                alt={photoLabel}
-                onClick={(e) => e.stopPropagation()}
-                className="min-h-0 max-w-full max-h-full object-contain rounded-none shadow-2xl select-none animate-[lightbox-in_0.25s_ease-out]"
-              />
+              <ViewerPhoto key={activeIndex} photo={photo} label={photoLabel} isEn={isEn} />
               <div
                 className="mt-3 shrink-0 px-4 py-2 bg-zinc-900/90 backdrop-blur-md border border-zinc-800/80 rounded-xl max-w-[85%] sm:max-w-md mx-auto text-center shadow-xl"
                 onClick={(e) => e.stopPropagation()}
