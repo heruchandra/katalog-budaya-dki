@@ -73,8 +73,11 @@ export interface MusikEntity {
   fotoGallery: MusikPhoto[];
   /** true when the photos are illustrations, not photos of this entry itself (shown with a "Foto ilustrasi" note) */
   isDummyMedia: boolean;
-  /** YouTube video (watch or youtu.be URL) for the video demo slot */
+  /** Video demo: a video file (site path such as /images/musik/<slug>/video/video.mp4, or a .mp4 / .webm URL)
+   *  played natively, or a YouTube watch / youtu.be URL shown as an embed */
   videoUrl?: string;
+  /** Poster thumbnail for a video file (defaults to the profile photo, then the card photo) */
+  videoPoster?: string;
 }
 
 /** What a catalog card needs (built from MusikEntity or from a bare `pemusiks` row) */

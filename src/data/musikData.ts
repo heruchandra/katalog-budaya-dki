@@ -1,5 +1,6 @@
 import type { MusikCardData, MusikCategory, MusikEntity } from "@/types/musik";
 import type { PemusikRow } from "@/lib/pemusikStats";
+import { youTubeId } from "@/lib/video";
 import { resolveWilayah } from "@/lib/wilayah";
 
 /**
@@ -73,6 +74,9 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
     fotoProfil: "/images/musik/komunitas-betawi-section/profile/profile-komunitas-betawi-section.webp",
     // The banner in this photo reads "Orkes Gambang Kromong Suara Lama": the community itself
     fotoCard: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp",
+    // Upload folder /images/musik/komunitas-betawi-section/video/; until video.mp4 is there the page shows the
+    // "not available yet" placeholder (with the channel link). The poster is the profile photo.
+    videoUrl: "/images/musik/komunitas-betawi-section/video/video.mp4",
     fotoGallery: [
       { url: "/images/musik/komunitas-betawi-section/galeri/galeri-1.webp", fallbackUrl: "/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
       { url: "/images/musik/komunitas-betawi-section/galeri/galeri-2.webp", caption: "Dokumentasi Komunitas Betawi Section", captionEn: "Komunitas Betawi Section documentation" },
@@ -199,7 +203,9 @@ export function toCardData(m: MusikEntity): MusikCardData {
     alamat: m.alamat,
     wilayah: resolveWilayah({ alamat: m.alamat }),
     waNumber: toWaNumber(m.nomorKontak[0]) || undefined,
-    youtubeUrl: m.videoUrl || m.sosialMedia.find((s) => s.platform === "youtube")?.url,
+    // the card's "Tonton" button opens YouTube: a YouTube demo video, else the YouTube account (a video file
+    // plays on the detail page instead)
+    youtubeUrl: (youTubeId(m.videoUrl) ? m.videoUrl : undefined) || m.sosialMedia.find((s) => s.platform === "youtube")?.url,
     searchText: [m.nama, m.namaPanggung, subtitle, m.instrumen.join(" ")].filter(Boolean).join(" ").toLowerCase(),
   };
 }

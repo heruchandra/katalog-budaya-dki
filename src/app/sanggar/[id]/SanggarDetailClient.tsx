@@ -9,7 +9,8 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
-import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
+import { SOCIAL_ICONS, SocialPills, WhatsAppButton } from "@/components/SocialPills";
+import PerformanceVideo from "@/components/PerformanceVideo";
 import type { SosialMedia } from "@/types/musik";
 import { ownServiceImage } from "@/lib/sanggarImages";
 import AwardList from "@/components/AwardList";
@@ -97,6 +98,10 @@ export interface SanggarDetailData {
   logoUrl?: string | null;
   fotoKetuaUrl?: string | null;
   youtubeUrl?: string | null;
+  /** Video demo: a video file (e.g. /images/sanggar/<slug>/video/video.mp4) or a YouTube video link */
+  videoUrl?: string | null;
+  /** Poster thumbnail for a video file (defaults to the sanggar's photo) */
+  videoPoster?: string | null;
   gallery?: GalleryPhoto[];
   /** True when `gallery` holds photos uploaded through the admin panel (always shown, whatever the count) */
   galleryIsUploaded?: boolean;
@@ -600,6 +605,42 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               );
             })}
           </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Penampilan: video file → native player, YouTube link → embed, else a placeholder (with the
+          sanggar's own YouTube channel when it has one) */}
+      <section id="video-penampilan" className="pt-0 pb-12 sm:pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6 sm:mb-8 border-b border-zinc-200 pb-4 sm:pb-6">
+            <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+              {isEn ? "Performance Video" : "Video Penampilan"}
+            </h2>
+            <div className="w-16 h-0.5 bg-orange-600 mt-4" />
+          </div>
+          <div className="max-w-3xl">
+            <PerformanceVideo
+              videoUrl={sanggar.videoUrl}
+              poster={sanggar.videoPoster || sanggar.imageUrl}
+              title={isEn ? `Performance video of ${studioName}` : `Video penampilan ${studioName}`}
+              isEn={isEn}
+              placeholderActions={
+                ytUrl && (
+                  <a
+                    href={ytUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90"
+                  >
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d={SOCIAL_ICONS.youtube.path} />
+                    </svg>
+                    {isEn ? "YouTube channel" : "Kanal YouTube"}
+                  </a>
+                )
+              }
+            />
           </div>
         </div>
       </section>

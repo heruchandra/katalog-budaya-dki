@@ -2,8 +2,9 @@
 
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
-import { CalendarDays, Music, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
+import { CalendarDays, Music, Users, UserRound, Music2, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
 import AwardList from "@/components/AwardList";
+import PerformanceVideo from "@/components/PerformanceVideo";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
 import FallbackImage from "@/components/FallbackImage";
@@ -13,10 +14,6 @@ import { SOCIAL_ICONS, SocialPills, WhatsAppButton } from "@/components/SocialPi
 
 // Photo slider, loaded only when the gallery is opened
 const MusikGalleryLightbox = dynamic(() => import("./MusikGalleryLightbox"), { ssr: false });
-
-/** YouTube video id from a watch / youtu.be / embed / shorts URL */
-const youTubeId = (url?: string) =>
-  url?.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([\w-]{11})/)?.[1] ?? null;
 
 const BADGE = "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium";
 
@@ -46,7 +43,6 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
       )}`
     : null;
 
-  const videoId = youTubeId(profile.videoUrl);
   const documentationLinks = profile.karyaUnggulan.filter((k) => k.link);
   const youtubeChannel = profile.sosialMedia.find((s) => s.platform === "youtube");
 
@@ -360,57 +356,49 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
         </section>
 
         {/* Performance video: its own card (the photo gallery holds photos only) */}
-        <section className={`${card} flex flex-col`}>
+        <section id="video-penampilan" className={`${card} flex flex-col`}>
           <h2 className={sectionTitle}>{isEn ? "Performance Video" : "Video Penampilan"}</h2>
           {accent}
-          <div>
-              {videoId ? (
-                <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
-                  <iframe
-                    title={isEn ? `Performance video of ${profile.nama}` : `Video penampilan ${profile.nama}`}
-                    src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                    className="absolute inset-0 w-full h-full"
-                    loading="lazy"
-                    allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center gap-3 aspect-video rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
-                  <PlayCircle className="w-10 h-10 text-zinc-300" aria-hidden="true" />
-                  <p className="text-sm text-zinc-500">{isEn ? "A performance video is not available yet." : "Video penampilan belum tersedia."}</p>
-                  {(documentationLinks.length > 0 || youtubeChannel?.url) && (
-                    <div className="flex flex-wrap justify-center gap-2">
-                      {documentationLinks.map((k) => (
-                        <a
-                          key={k.link}
-                          href={k.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90"
-                        >
-                          {isEn ? `Documentation: ${k.judul}` : `Dokumentasi: ${k.judul}`}
-                          <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
-                        </a>
-                      ))}
-                      {youtubeChannel?.url && (
-                        <a
-                          href={youtubeChannel.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90"
-                        >
-                          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d={SOCIAL_ICONS.youtube.path} />
-                          </svg>
-                          {isEn ? "YouTube channel" : "Kanal YouTube"}
-                        </a>
-                      )}
-                    </div>
+          {/* Video file (e.g. /images/musik/<slug>/video/video.mp4) → native player; YouTube link → embed;
+              none / not uploaded yet → placeholder with the documentation and channel links */}
+          <PerformanceVideo
+            videoUrl={profile.videoUrl}
+            // light thumbnail until play: the profile photo, else the card / first gallery photo
+            poster={profile.videoPoster || profile.fotoProfil || profile.fotoCard || cover?.url}
+            title={isEn ? `Performance video of ${profile.nama}` : `Video penampilan ${profile.nama}`}
+            isEn={isEn}
+            placeholderActions={
+              (documentationLinks.length > 0 || youtubeChannel?.url) && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {documentationLinks.map((k) => (
+                    <a
+                      key={k.link}
+                      href={k.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90"
+                    >
+                      {isEn ? `Documentation: ${k.judul}` : `Dokumentasi: ${k.judul}`}
+                      <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                    </a>
+                  ))}
+                  {youtubeChannel?.url && (
+                    <a
+                      href={youtubeChannel.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90"
+                    >
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d={SOCIAL_ICONS.youtube.path} />
+                      </svg>
+                      {isEn ? "YouTube channel" : "Kanal YouTube"}
+                    </a>
                   )}
                 </div>
-              )}
-          </div>
+              )
+            }
+          />
         </section>
         </div>
       </div>
