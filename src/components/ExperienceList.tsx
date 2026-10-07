@@ -1,6 +1,6 @@
 "use client";
 
-import { Music, Sparkles } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { useRowCap } from "./useRowCap";
 
 const MAX_UNSCROLLED = 5;
@@ -22,11 +22,8 @@ export function splitYear(line: string): { text: string; year: string | null } {
   return { text: text || line, year: match[0].replace(/\s*[-–]\s*/, "–") };
 }
 
-// a music icon for accompaniment / concert work, a sparkle for events and stages
-const isMusicWork = (text: string) => /musik|music|pengiring|iring|orkes|gambang|konser|concert/i.test(text);
-
 /**
- * "Pengalaman Berkesenian" as timeline-style card rows: an icon, the event, and its year in a pill on the right.
+ * "Pengalaman Berkesenian" as timeline-style card rows: a calendar icon, the event, and its year in a pill on the right.
  * Up to 5 rows show at their natural height; with more, the list scrolls inside a box exactly 5 rows tall.
  */
 export default function ExperienceList({ items, isEn, lang = "id" }: { items: string[]; isEn: boolean; lang?: string }) {
@@ -45,15 +42,15 @@ export default function ExperienceList({ items, isEn, lang = "id" }: { items: st
     >
       {items.map((line, idx) => {
         const { text, year } = splitYear(line);
-        const Icon = isMusicWork(text) ? Music : Sparkles;
         return (
           <li
             key={`${line}-${idx}`}
             className="flex items-start sm:items-center justify-between gap-4 rounded-xl border border-zinc-100 bg-zinc-50/70 p-3.5 shadow-2xs transition-all hover:bg-amber-50/50"
           >
             <div className="flex min-w-0 items-start sm:items-center gap-3">
-              <span className="shrink-0 rounded-lg bg-amber-100 p-2 text-amber-700">
-                <Icon className="w-4 h-4" aria-hidden="true" />
+              {/* the same calendar icon on every row */}
+              <span className="shrink-0 rounded-lg bg-amber-100/80 p-2 text-amber-800">
+                <CalendarDays className="w-4 h-4" aria-hidden="true" />
               </span>
               <span className="text-sm font-medium leading-relaxed text-zinc-800">{text}</span>
             </div>
