@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { CalendarDays, Users, UserRound, Music2, PlayCircle, ExternalLink, Clock, Images, ZoomIn, CheckCircle2, Trophy } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
+import FallbackImage from "@/components/FallbackImage";
 import { toWaNumber } from "@/data/musikData";
 import type { MusikEntity } from "@/types/musik";
 import { SOCIAL_ICONS, SocialPills, WhatsAppButton } from "@/components/SocialPills";
@@ -85,11 +85,14 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
             <div className="flex items-center gap-4 sm:gap-5">
               {/* Profile photo / logo; initials until one is uploaded */}
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-full overflow-hidden border-2 border-orange-100 bg-orange-50 shadow-sm flex items-center justify-center">
-                {profile.fotoProfil ? (
-                  <Image src={profile.fotoProfil} alt={isEn ? `${profile.nama} profile photo` : `Foto profil ${profile.nama}`} fill sizes="96px" className="object-cover" />
-                ) : (
-                  <span className={`text-3xl sm:text-4xl text-orange-500 ${dancingScript.className}`} aria-hidden="true">{initials}</span>
-                )}
+                {/* initials when there is no profile photo, or it hasn't been uploaded yet */}
+                <FallbackImage
+                  src={profile.fotoProfil}
+                  alt={isEn ? `${profile.nama} profile photo` : `Foto profil ${profile.nama}`}
+                  sizes="96px"
+                  className="object-cover"
+                  placeholder={<span className={`text-3xl sm:text-4xl text-orange-500 ${dancingScript.className}`} aria-hidden="true">{initials}</span>}
+                />
               </div>
               <div className="min-w-0">
                 <h1 className={`text-4xl sm:text-5xl text-orange-600 leading-tight ${dancingScript.className}`}>{profile.nama}</h1>
@@ -322,19 +325,18 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                 className="group relative block w-full aspect-video overflow-hidden border border-zinc-200 bg-zinc-100"
                 aria-label={isEn ? `Open the photo gallery (${photos.length} photos)` : `Buka galeri foto (${photos.length} foto)`}
               >
-                {cover && !cover.pending ? (
-                  <Image
-                    src={cover.url}
-                    alt={(isEn && cover.captionEn) || cover.caption}
-                    fill
-                    sizes="(min-width: 1024px) 768px, 90vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <Images className="w-10 h-10 text-zinc-300" aria-hidden="true" />
-                  </span>
-                )}
+                <FallbackImage
+                  src={cover && !cover.pending ? cover.url : undefined}
+                  fallbackSrc={cover?.fallbackUrl}
+                  alt={cover ? (isEn && cover.captionEn) || cover.caption : ""}
+                  sizes="(min-width: 1024px) 768px, 90vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  placeholder={
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <Images className="w-10 h-10 text-zinc-300" aria-hidden="true" />
+                    </span>
+                  }
+                />
                 <span className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300" />
                 {profile.isDummyMedia && (
                   <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white">

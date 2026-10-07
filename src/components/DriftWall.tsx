@@ -117,12 +117,42 @@ const DriftWall = ({
       );
     }
     const validItems = items && items.length > 0 ? items : DEFAULT_ITEMS;
-    return Array.from({ length: columns }, (_, colIdx) => {
+    if (validItems.length <= columns) {
       // Assign image i to column i (modulo validItems.length), repeating the exact same image vertically within its respective column track
-      const assignedItem = validItems[colIdx % validItems.length];
-      return [assignedItem];
-    });
+      return Array.from({ length: columns }, (_, colIdx) => [validItems[colIdx % validItems.length]]);
+    }
+    // More images than columns: deal them out round-robin (column c gets images c, c + columns, c + 2·columns, …)
+    return Array.from({ length: columns }, (_, colIdx) => validItems.filter((_, i) => i % columns === colIdx));
   }, [items, columns, columnData]);
+
+  // Every distinct photo on the wall, row by row (for `items` that is their original order). A photo that fails to
+  // load (e.g. not uploaded yet) is swapped for one that did load, mapped cyclically and shifted by one per lap
+  // (photo i → loaded[(i + ⌊i / n⌋) % n]) so a column doesn't show the same photo twice; until one has loaded,
+  // the tile stays an empty dark tile. Never a broken-image icon.
+  const pool = useMemo(() => {
+    const rows = Math.max(0, ...columnItems.map(col => col.length));
+    const ordered = Array.from({ length: rows }, (_, r) => columnItems.map(col => col[r]?.image))
+      .flat()
+      .filter((src): src is string => !!src);
+    return [...new Set(ordered)];
+  }, [columnItems]);
+  const [loadedSrcs, setLoadedSrcs] = useState<ReadonlySet<string>>(() => new Set());
+  const [failedSrcs, setFailedSrcs] = useState<ReadonlySet<string>>(() => new Set());
+  const markLoaded = useCallback((src: string) => {
+    setLoadedSrcs(prev => (prev.has(src) ? prev : new Set(prev).add(src)));
+  }, []);
+  const markFailed = useCallback((src: string) => {
+    setFailedSrcs(prev => (prev.has(src) ? prev : new Set(prev).add(src)));
+  }, []);
+  const resolveImage = useMemo(() => {
+    const loaded = pool.filter(src => loadedSrcs.has(src));
+    return (src: string): string | null => {
+      if (!failedSrcs.has(src)) return src;
+      if (loaded.length === 0) return null;
+      const i = Math.max(0, pool.indexOf(src));
+      return loaded[(i + Math.floor(i / loaded.length)) % loaded.length];
+    };
+  }, [pool, loadedSrcs, failedSrcs]);
 
   // Right-sized variants from the Next image optimizer, computed once per photo (each one is repeated in many
   // tiles). The originals are 1920×1080 and up to ~1 MB; a tile needs ~300px. Remote URLs are used as given.
@@ -318,10 +348,19 @@ const DriftWall = ({
   );
 
   const renderTile = (item: DriftWallItem, id: string, colIndex: number) => {
-    const imageProps = imagePropsBySrc.get(item.image) ?? { src: item.image };
+    const shownSrc = resolveImage(item.image);
+    const imageProps = shownSrc ? imagePropsBySrc.get(shownSrc) ?? { src: shownSrc } : null;
     const inner = (
       <span className="drift-wall__inner border-none outline-none ring-0 focus:ring-0">
+        {shownSrc && imageProps && (
         <img
+          key={shownSrc}
+          // an image that settled before hydration doesn't fire onLoad/onError, so check it on mount too
+          ref={el => {
+            if (el?.complete) (el.naturalWidth > 0 ? markLoaded : markFailed)(shownSrc);
+          }}
+          onLoad={() => markLoaded(shownSrc)}
+          onError={() => markFailed(shownSrc)}
           src={imageProps.src}
           srcSet={imageProps.srcSet}
           sizes={imageProps.sizes}
@@ -333,6 +372,7 @@ const DriftWall = ({
           draggable={false}
           className="w-full h-full object-cover object-center border-none outline-none ring-0"
         />
+        )}
         <span className="drift-wall__overlay border-none outline-none ring-0" aria-hidden="true" />
       </span>
     );

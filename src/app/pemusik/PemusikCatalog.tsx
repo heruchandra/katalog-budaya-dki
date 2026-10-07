@@ -14,14 +14,15 @@ import type { MusikCardData, MusikCategory } from "@/types/musik";
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
-const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = [
-  { image: '/images/musik/dekorasi/dinamis-musik-1.webp', title: 'Seniman Musik 1' },
-  { image: '/images/musik/dekorasi/dinamis-musik-2.webp', title: 'Seniman Musik 2' },
-  { image: '/images/musik/dekorasi/dinamis-musik-3.webp', title: 'Seniman Musik 3' },
-  { image: '/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp', title: 'Seniman Musik 4' },
-  { image: '/images/musik/dekorasi/dinamis-musik-5.webp', title: 'Seniman Musik 5' },
-  { image: '/images/musik/dekorasi/dinamis-musik-6.webp', title: 'Seniman Musik 6' },
-];
+// Hero wall: dinamis-musik-1 … 16 in /images/musik/dekorasi/, dealt round-robin over the 6 columns. Photos not
+// uploaded yet are covered by DriftWall's fallback (they show one of the photos that did load).
+// No. 4 is the Komunitas Betawi Section's own photo, kept in its folder.
+const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = Array.from({ length: 16 }, (_, i) => ({
+  image: i === 3
+    ? '/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp'
+    : `/images/musik/dekorasi/dinamis-musik-${i + 1}.webp`,
+  title: `Seniman Musik ${i + 1}`,
+}));
 
 type CategoryFilter = "all" | MusikCategory;
 

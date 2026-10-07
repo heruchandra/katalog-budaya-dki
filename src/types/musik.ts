@@ -28,6 +28,8 @@ export interface MusikPhoto {
   captionEn?: string;
   /** Planned slot: the file at `url` hasn't been uploaded yet, so a placeholder is shown instead */
   pending?: boolean;
+  /** Shown when `url` can't be loaded (not uploaded yet); a placeholder when this fails too */
+  fallbackUrl?: string;
 }
 
 /** Full profile of a Seniman Musik entry (komunitas or pemusik), as submitted in the registration documents */
@@ -66,6 +68,8 @@ export interface MusikEntity {
   prestasi: string[];
   /** Profile photo / logo (images/musik/<slug>/profile/); a placeholder is shown without one */
   fotoProfil?: string;
+  /** Catalog card photo, when it isn't simply the first gallery photo */
+  fotoCard?: string;
   fotoGallery: MusikPhoto[];
   /** true when the photos are illustrations, not photos of this entry itself (shown with a "Foto ilustrasi" note) */
   isDummyMedia: boolean;

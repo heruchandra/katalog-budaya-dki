@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import FallbackImage from "@/components/FallbackImage";
 import { ChevronLeft, ChevronRight, ImageOff, X } from "lucide-react";
 import type { MusikPhoto } from "@/types/musik";
 
@@ -88,14 +88,21 @@ export default function MusikGalleryLightbox({ photos, startIndex, isEn, isDummy
           touchX.current = null;
         }}
       >
-        {photo.pending ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-white/20 bg-white/5 text-center text-white/70">
-            <ImageOff className="h-12 w-12 text-white/30" aria-hidden="true" />
-            <p className="text-sm">{isEn ? "Photo coming soon" : "Foto menyusul"}</p>
-          </div>
-        ) : (
-          <Image key={photo.url} src={photo.url} alt={caption} fill sizes="100vw" className="object-contain animate-[lightbox-in_0.25s_ease-out]" />
-        )}
+        {/* the photo, its fallback, or a "coming soon" slide when the file isn't uploaded yet */}
+        <FallbackImage
+          key={photo.url}
+          src={photo.pending ? undefined : photo.url}
+          fallbackSrc={photo.fallbackUrl}
+          alt={caption}
+          sizes="100vw"
+          className="object-contain animate-[lightbox-in_0.25s_ease-out]"
+          placeholder={
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-white/20 bg-white/5 text-center text-white/70">
+              <ImageOff className="h-12 w-12 text-white/30" aria-hidden="true" />
+              <p className="text-sm">{isEn ? "Photo coming soon" : "Foto menyusul"}</p>
+            </div>
+          }
+        />
         {isDummyMedia && !photo.pending && (
           <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white">
             {isEn ? "Illustration" : "Foto ilustrasi"}
