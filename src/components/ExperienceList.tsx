@@ -1,6 +1,7 @@
 "use client";
 
 import { Music, Sparkles } from "lucide-react";
+import { useRowCap } from "./useRowCap";
 
 const MAX_UNSCROLLED = 5;
 
@@ -26,14 +27,18 @@ const isMusicWork = (text: string) => /musik|music|pengiring|iring|orkes|gambang
 
 /**
  * "Pengalaman Berkesenian" as timeline-style card rows: an icon, the event, and its year in a pill on the right.
- * More than 5 rows scroll inside a 360px box so the section doesn't stretch the page.
+ * Up to 5 rows show at their natural height; with more, the list scrolls inside a box exactly 5 rows tall.
  */
 export default function ExperienceList({ items, isEn, lang = "id" }: { items: string[]; isEn: boolean; lang?: string }) {
   const scrolls = items.length > MAX_UNSCROLLED;
+  const { ref, maxHeight } = useRowCap<HTMLOListElement>(MAX_UNSCROLLED, scrolls);
   return (
     <ol
+      ref={ref}
       lang={lang}
-      className={`space-y-2.5 ${scrolls ? "max-h-[360px] overflow-y-auto pr-1.5 custom-scrollbar" : ""}`}
+      // before the measurement (server render) the cap is a fixed 320px
+      style={scrolls && maxHeight !== null ? { maxHeight } : undefined}
+      className={`relative space-y-2.5 ${scrolls ? `overflow-y-auto pr-2 custom-scrollbar ${maxHeight === null ? "max-h-[320px]" : ""}` : ""}`}
       {...(scrolls
         ? { tabIndex: 0, "aria-label": isEn ? `Artistic experience (${items.length}, scrollable)` : `Pengalaman berkesenian (${items.length}, dapat digulir)` }
         : {})}

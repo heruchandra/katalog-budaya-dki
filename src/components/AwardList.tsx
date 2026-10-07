@@ -1,7 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
 import { Award, Trophy } from "lucide-react";
+import { useRowCap } from "./useRowCap";
 
 export interface AwardItem {
   title: string;
@@ -20,22 +20,8 @@ const isAssessment = (title: string) => /\bgrade\b|evaluasi|evaluation|sertifika
  * cards tall (the height is measured, so wrapped titles still show 3 whole cards).
  */
 export default function AwardList({ items, isEn }: { items: AwardItem[]; isEn: boolean }) {
-  const listRef = useRef<HTMLOListElement>(null);
   const scrolls = items.length > VISIBLE;
-  const [maxHeight, setMaxHeight] = useState<number | null>(null);
-
-  useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!scrolls || !list) return;
-    // the list is `relative`, so offsetTop is measured from its top edge (and isn't affected by scrolling).
-    // ResizeObserver calls back once on observe, then on every resize (wrapping titles change the height).
-    const ro = new ResizeObserver(() => {
-      const third = list.children[VISIBLE - 1] as HTMLElement | undefined;
-      if (third) setMaxHeight(third.offsetTop + third.offsetHeight);
-    });
-    ro.observe(list);
-    return () => ro.disconnect();
-  }, [scrolls, items]);
+  const { ref: listRef, maxHeight } = useRowCap<HTMLOListElement>(VISIBLE, scrolls);
 
   return (
     <ol

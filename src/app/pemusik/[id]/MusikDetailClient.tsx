@@ -2,9 +2,10 @@
 
 import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
-import { CalendarDays, Music, Users, UserRound, Music2, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
+import { CalendarDays, Music, Users, UserRound, Music2, ExternalLink, Clock, Images, ZoomIn } from "lucide-react";
 import AwardList from "@/components/AwardList";
 import ExperienceList from "@/components/ExperienceList";
+import ServiceList from "@/components/ServiceList";
 import PerformanceVideo from "@/components/PerformanceVideo";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
@@ -257,14 +258,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Services" : "Layanan"}</h2>
                 {accent}
-                <ul lang="id" className="space-y-2.5">
-                  {profile.layanan.map((l) => (
-                    <li key={l} className="flex items-start gap-3 text-sm sm:text-base text-zinc-700 leading-relaxed">
-                      <CheckCircle2 className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" aria-hidden="true" />
-                      <span>{l}</span>
-                    </li>
-                  ))}
-                </ul>
+                <ServiceList items={profile.layanan} isEn={isEn} />
               </section>
             )}
 
