@@ -14,15 +14,14 @@ import type { MusikCardData, MusikCategory } from "@/types/musik";
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 
-// Hero wall: dinamis-musik-1 … 16 in /images/musik/dekorasi/, dealt round-robin over the 6 columns. Photos not
-// uploaded yet are covered by DriftWall's fallback (they show one of the photos that did load).
-// No. 4 is the Komunitas Betawi Section's own photo, kept in its folder.
-const PEMUSIK_DRIFT_ITEMS: DriftWallItem[] = Array.from({ length: 16 }, (_, i) => ({
-  image: i === 3
-    ? '/images/musik/komunitas-betawi-section/card/dinamis-musik-4.webp'
-    : `/images/musik/dekorasi/dinamis-musik-${i + 1}.webp`,
-  title: `Seniman Musik ${i + 1}`,
-}));
+// Hero wall: dinamis-musik-1 … 15 in /images/musik/dekorasi/, laid out like the sanggar wall: 5 columns of 3
+// (column 1 = photos 1–3, column 2 = 4–6, …). A photo that fails to load is covered by DriftWall's fallback.
+const PEMUSIK_COLUMNS: DriftWallItem[][] = Array.from({ length: 5 }, (_, col) =>
+  Array.from({ length: 3 }, (_, row) => {
+    const n = col * 3 + row + 1;
+    return { image: `/images/musik/dekorasi/dinamis-musik-${n}.webp`, title: `Seniman Musik ${n}` };
+  })
+);
 
 type CategoryFilter = "all" | MusikCategory;
 
@@ -116,8 +115,8 @@ export default function PemusikCatalog({ items, fetchError }: PemusikCatalogProp
         <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center pointer-events-auto">
           <div className="w-[125%] h-full flex justify-center items-center scale-105 shrink-0">
             <DriftWall
-              items={PEMUSIK_DRIFT_ITEMS}
-              columns={6}
+              columnData={PEMUSIK_COLUMNS}
+              columns={5}
               dim={0.55}
               className="drift-wall--rounded"
               style={{ '--dw-rest-brightness': 0.85, '--dw-hover-brightness': 1.1, '--dw-hover-scale': 1.05 } as React.CSSProperties}
