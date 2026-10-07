@@ -316,12 +316,15 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
           )}
         </div>
 
+        {/* Galeri Foto (left) and Video Penampilan (right) side by side from lg up, stacked below that. Both cards
+            stretch to the row height and hold a 16:9 media box, so they line up */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Photo gallery: one cover card; clicking it opens the slider with every photo slot */}
-        <section className={card}>
+        <section className={`${card} flex flex-col`}>
           <h2 className={sectionTitle}>{isEn ? "Photo Gallery" : "Galeri Foto"}</h2>
           {accent}
           {photos.length > 0 ? (
-            <div className="max-w-3xl">
+            <div>
               <button
                 type="button"
                 onClick={() => setLightboxIndex(coverIndex)}
@@ -332,7 +335,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                   src={cover && !cover.pending ? cover.url : undefined}
                   fallbackSrc={cover?.fallbackUrl}
                   alt={coverAlt}
-                  sizes="(min-width: 1024px) 768px, 90vw"
+                  sizes="(min-width: 1280px) 560px, (min-width: 1024px) 45vw, 90vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   placeholder={
                     <span className="absolute inset-0 flex items-center justify-center">
@@ -353,17 +356,20 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               </button>
             </div>
           ) : (
-            <p className="text-sm text-zinc-500 italic">{isEn ? "Photos are not available yet." : "Foto belum tersedia."}</p>
+            <div className="flex flex-col items-center justify-center gap-3 aspect-video rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
+              <Images className="w-10 h-10 text-zinc-300" aria-hidden="true" />
+              <p className="text-sm text-zinc-500">{isEn ? "Photos are not available yet." : "Foto belum tersedia."}</p>
+            </div>
           )}
         </section>
 
-        {/* Performance video: its own section (the photo gallery holds photos only) */}
-        <section className={card}>
+        {/* Performance video: its own card (the photo gallery holds photos only) */}
+        <section className={`${card} flex flex-col`}>
           <h2 className={sectionTitle}>{isEn ? "Performance Video" : "Video Penampilan"}</h2>
           {accent}
-          <div className="max-w-3xl">
+          <div>
               {videoId ? (
-                <div className="relative w-full aspect-video overflow-hidden border border-zinc-200 bg-black">
+                <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
                   <iframe
                     title={isEn ? `Performance video of ${profile.nama}` : `Video penampilan ${profile.nama}`}
                     src={`https://www.youtube-nocookie.com/embed/${videoId}`}
@@ -374,7 +380,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                   />
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center gap-3 aspect-video border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
+                <div className="flex flex-col items-center justify-center gap-3 aspect-video rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
                   <PlayCircle className="w-10 h-10 text-zinc-300" aria-hidden="true" />
                   <p className="text-sm text-zinc-500">{isEn ? "A performance video is not available yet." : "Video penampilan belum tersedia."}</p>
                   {(documentationLinks.length > 0 || youtubeChannel?.url) && (
@@ -410,6 +416,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               )}
           </div>
         </section>
+        </div>
       </div>
 
       {lightboxIndex !== null && (
