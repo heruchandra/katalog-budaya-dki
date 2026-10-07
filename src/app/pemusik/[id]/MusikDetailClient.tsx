@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import dynamic from "next/dynamic";
 import { CalendarDays, Music, Users, UserRound, Music2, ExternalLink, Clock, Images, ZoomIn, CheckCircle2 } from "lucide-react";
 import AwardList from "@/components/AwardList";
+import ExperienceList from "@/components/ExperienceList";
 import PerformanceVideo from "@/components/PerformanceVideo";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript, playfair } from "@/lib/fonts";
@@ -248,9 +249,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Artistic Experience" : "Pengalaman Berkesenian"}</h2>
                 {accent}
-                <ul lang="id" className="list-disc pl-5 space-y-2 text-sm sm:text-base text-zinc-700 marker:text-orange-600">
-                  {profile.pengalamanBerkesenian.map((p) => <li key={p}>{p}</li>)}
-                </ul>
+                <ExperienceList items={profile.pengalamanBerkesenian} isEn={isEn} />
               </section>
             )}
 
