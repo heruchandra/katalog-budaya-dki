@@ -28,6 +28,9 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
   const photos = profile.fotoGallery;
   const coverIndex = Math.max(0, photos.findIndex((p) => !p.pending));
   const cover = photos[coverIndex];
+  // the cover shows no visible caption: its alt text names the entity (and the photo, when the caption doesn't)
+  const coverCaption = cover ? (isEn && cover.captionEn) || cover.caption : "";
+  const coverAlt = !coverCaption || coverCaption.includes(profile.nama) ? coverCaption || profile.nama : `${profile.nama} – ${coverCaption}`;
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
   const initials = profile.nama.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -318,17 +321,17 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
           <h2 className={sectionTitle}>{isEn ? "Photo Gallery" : "Galeri Foto"}</h2>
           {accent}
           {photos.length > 0 ? (
-            <figure className="max-w-3xl">
+            <div className="max-w-3xl">
               <button
                 type="button"
                 onClick={() => setLightboxIndex(coverIndex)}
-                className="group relative block w-full aspect-video overflow-hidden border border-zinc-200 bg-zinc-100"
+                className="group relative block w-full aspect-video rounded-xl overflow-hidden bg-zinc-100"
                 aria-label={isEn ? `Open the photo gallery (${photos.length} photos)` : `Buka galeri foto (${photos.length} foto)`}
               >
                 <FallbackImage
                   src={cover && !cover.pending ? cover.url : undefined}
                   fallbackSrc={cover?.fallbackUrl}
-                  alt={cover ? (isEn && cover.captionEn) || cover.caption : ""}
+                  alt={coverAlt}
                   sizes="(min-width: 1024px) 768px, 90vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   placeholder={
@@ -348,10 +351,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                   {isEn ? `View ${photos.length} Gallery Photos` : `Lihat ${photos.length} Foto Galeri`}
                 </span>
               </button>
-              {cover && (
-                <figcaption className="mt-2 text-xs text-zinc-500 leading-relaxed">{(isEn && cover.captionEn) || cover.caption}</figcaption>
-              )}
-            </figure>
+            </div>
           ) : (
             <p className="text-sm text-zinc-500 italic">{isEn ? "Photos are not available yet." : "Foto belum tersedia."}</p>
           )}

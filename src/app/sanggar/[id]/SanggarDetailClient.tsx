@@ -581,8 +581,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
             )}
           </div>
 
-          {/* 4-photo preview row on a soft gradient panel: sharp white-framed image cards (captions live in the
-              lightbox); clicking a card opens the viewer at that photo */}
+          {/* 4-photo preview row on a soft gradient panel: rounded photo-only cards (no visible captions; the alt
+              text names the sanggar and the photo); clicking a card opens the viewer at that photo */}
           <div className="p-4 sm:p-6 bg-zinc-50/60 border border-zinc-200/80 rounded-none">
           {galleryList.length === 0 && (
             <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
@@ -604,13 +604,13 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     setActivePhotoIndex(idx);
                   }}
                   aria-label={isEn ? `View photo: ${label}` : `Lihat foto: ${label}`}
-                  className="block w-full rounded-none overflow-hidden bg-white border border-zinc-200 shadow-xs hover:border-orange-500 transition-all duration-200 relative group cursor-pointer aspect-[4/3] outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                  className="group relative block w-full aspect-[4/3] rounded-xl overflow-hidden bg-zinc-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
                   <FallbackImage
                     key={img.url}
                     src={img.url}
                     fallbackSrc={img.fallbackUrl}
-                    alt={label}
+                    alt={`${studioName} – ${label}`}
                     sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
                     className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                     placeholder={<GalleryPlaceholder isEn={isEn} />}
@@ -637,6 +637,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
           photos={galleryList}
           activeIndex={activePhotoIndex}
           getLabel={getPhotoLabel}
+          entityName={studioName}
           onSelect={setActivePhotoIndex}
           onBackToGrid={() => setActivePhotoIndex(null)}
           onClose={closeGallery}

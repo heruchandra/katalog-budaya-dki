@@ -56,6 +56,8 @@ interface GalleryLightboxProps {
   /** Index of the photo open in the focused viewer, or null for the grid */
   activeIndex: number | null;
   getLabel: (photo: GalleryPhoto) => string;
+  /** Sanggar name, used in the photos' alt text (the cards carry no visible caption) */
+  entityName: string;
   onSelect: (index: number) => void;
   onBackToGrid: () => void;
   onClose: () => void;
@@ -73,6 +75,7 @@ export default function GalleryLightbox({
   photos,
   activeIndex,
   getLabel,
+  entityName,
   onSelect,
   onBackToGrid,
   onClose,
@@ -118,7 +121,7 @@ export default function GalleryLightbox({
             </button>
           </div>
 
-          {/* Grid of framed thumbnails */}
+          {/* Grid of rounded photo-only thumbnails (captions show in the focused viewer) */}
           <div className="pt-6 pb-8 px-6 sm:px-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {photos.map((img, idx) => {
               const label = getLabel(img);
@@ -128,14 +131,14 @@ export default function GalleryLightbox({
                   key={idx}
                   onClick={() => onSelect(idx)}
                   aria-label={isEn ? `View photo: ${label}` : `Lihat foto: ${label}`}
-                  className="text-left bg-zinc-900/90 border border-zinc-800 rounded-2xl p-2.5 hover:border-orange-500/50 transition-all cursor-pointer group"
+                  className="group block w-full rounded-xl overflow-hidden cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
                 >
-                  <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-800">
+                  <div className="relative aspect-[4/3] bg-zinc-800">
                     <FallbackImage
                       key={img.url}
                       src={img.url}
                       fallbackSrc={img.fallbackUrl}
-                      alt={label}
+                      alt={`${entityName} – ${label}`}
                       sizes="(min-width: 1024px) 300px, (min-width: 768px) 30vw, 45vw"
                       className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                       placeholder={<GalleryPlaceholder isEn={isEn} dark />}
@@ -149,9 +152,6 @@ export default function GalleryLightbox({
                       </span>
                     </div>
                   </div>
-                  <p className="mt-2.5 px-1 text-xs font-medium text-zinc-300 group-hover:text-orange-400 transition-colors line-clamp-1">
-                    {label}
-                  </p>
                 </button>
               );
             })}
