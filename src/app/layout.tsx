@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Poppins, Plus_Jakarta_Sans } from "next/font/google"
 import { dancingScript } from "@/lib/fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ContactWidget from "@/components/ContactWidget";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ContactWidget />
         </LanguageProvider>
       </body>
     </html>

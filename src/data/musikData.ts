@@ -1,6 +1,10 @@
 import type { MusikCardData, MusikCategory, MusikEntity } from "@/types/musik";
 import type { PemusikRow } from "@/lib/pemusikStats";
 import { youTubeId } from "@/lib/video";
+import { toWaNumber } from "@/lib/phone";
+
+// re-exported: pages import the WhatsApp number helper from here
+export { toWaNumber };
 import { resolveWilayah } from "@/lib/wilayah";
 
 /**
@@ -221,22 +225,6 @@ export function buildMusikCatalog(rows: PemusikRow[]): MusikCardData[] {
 }
 
 /** WhatsApp number (62…) from the first contact number, for wa.me links */
-/**
- * WhatsApp digits in international form (62…) from a phone string: "0859-3983-6744", "+62 859 3983 6744" or
- * "859 3983 6744". A string holding several numbers ("0813… / 0859…") yields the first one, never the digits of
- * both run together. Empty when there is no usable number.
- */
-export function toWaNumber(phone?: string) {
-  const digits =
-    (phone || "")
-      .split(/[\/,;|]|\s(?:dan|atau|or)\s/i)
-      .map((part) => part.replace(/\D/g, ""))
-      .find((d) => d.length >= 9) ?? "";
-  if (digits.startsWith("0")) return `62${digits.slice(1)}`;
-  if (digits.startsWith("8")) return `62${digits}`;
-  return digits;
-}
-
 /** The entry's WhatsApp number: its designated WhatsApp line, else its first contact number */
 export function waNumberOf(m: Pick<MusikEntity, "nomorWhatsapp" | "nomorKontak">) {
   return toWaNumber(m.nomorWhatsapp || m.nomorKontak[0]);
