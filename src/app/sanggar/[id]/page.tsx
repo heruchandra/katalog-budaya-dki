@@ -912,8 +912,6 @@ export default async function SanggarDetail({
     fotoKetuaUrl: data?.foto_ketua_url || specific?.logo || specific?.fotoKetuaUrl || fallback.fotoKetuaUrl,
     youtubeUrl: data?.youtube_url || specific?.youtubeUrl || specific?.contacts?.youtube || null,
     mapsUrl: data?.maps_url || null,
-    videoUrl: specific?.videoUrl || null,
-    videoPoster: specific?.videoPoster || null,
     gallery: dbGallery.length > 0
       ? dbGallery.map((g, i) => ({ type: g.caption || `Foto ${i + 1}`, url: g.url }))
       : specific?.gallery || fallback.gallery,
