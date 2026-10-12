@@ -19,6 +19,7 @@ import { resolveWilayah } from "@/lib/wilayah";
 import { dancingScript } from "@/lib/fonts";
 import { useLanguage } from "@/context/LanguageContext";
 import HeroAudio from "@/components/HeroAudio";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 import type { HeroHeadlineProps } from "@/components/HeroHeadline";
 import type { MusikCardData } from "@/types/musik";
 // Desktop-only (it is hidden below md), so it and gsap are split out and only fetched on md+ screens
@@ -729,11 +730,13 @@ export default function HomePage() {
       <section className="border-t border-surface-200/60 bg-slate-50/50 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="font-extrabold tracking-tight text-4xl text-slate-900">
+            {/* serif accent on the name: Tailwind's system serif, since a next/font serif here would be preloaded on
+                the homepage and compete with the hero image */}
+            <h2 className="font-extrabold tracking-tight text-3xl sm:text-4xl text-slate-900">
               {t('featuresTitle')}{" "}
-              <span className="text-orange-600">Katalog Seni DKI?</span>
+              <span className="font-serif italic font-bold text-orange-600">Katalog Seni DKI?</span>
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-surface-500 sm:text-base">
+            <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base text-zinc-500 leading-relaxed">
               {t('featuresSubtitle')}
             </p>
           </div>
@@ -756,20 +759,17 @@ export default function HomePage() {
                 description: t('featureContactDesc'),
               },
             ].map((feature) => (
-              <div
-                key={feature.title}
-                className="bg-white rounded-none border border-zinc-200/80 p-8 text-center shadow-sm flex flex-col items-center justify-center hover:border-orange-500/40 transition-colors duration-200"
-              >
-                <div className="w-14 h-14 rounded-none bg-orange-100/60 border border-orange-200/50 flex items-center justify-center mb-6 mx-auto">
-                  <feature.icon className="h-7 w-7 stroke-[1.5] text-orange-600" />
+              <SpotlightCard key={feature.title} className="h-full">
+                <div className="bg-gradient-to-br from-amber-100 to-orange-100 text-orange-600 p-3.5 rounded-xl w-fit mb-4 shadow-2xs group-hover:scale-105 transition-transform">
+                  <feature.icon className="h-6 w-6 stroke-[1.75]" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-900 mb-3 text-center">
+                <h3 className="text-lg font-bold text-zinc-900 mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-zinc-600 leading-relaxed text-center max-w-xs mx-auto">
+                <p className="text-sm text-zinc-600 leading-relaxed">
                   {feature.description}
                 </p>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
