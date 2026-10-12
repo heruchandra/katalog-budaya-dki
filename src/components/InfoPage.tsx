@@ -3,12 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
+/** Content strings may mark key terms as **term**: they render as gold highlight pills (see `Rich`) */
 export interface InfoSection {
   heading: string;
   paragraphs: string[];
   bullets?: string[];
+  /** Key notice for the section, shown in a gold callout box after its text */
+  callout?: string;
 }
 
 export interface InfoContent {
@@ -22,6 +26,20 @@ export interface InfoContent {
 }
 
 const sectionId = (index: number) => `bagian-${index + 1}`;
+
+const HIGHLIGHT =
+  "font-semibold text-amber-900 bg-amber-100/70 px-1.5 py-0.5 rounded border border-amber-200/60 box-decoration-clone";
+
+/** Renders a content string with its **key terms** as gold highlight pills (bold, so they read as emphasis too) */
+function Rich({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+        i % 2 === 1 ? <strong key={i} className={HIGHLIGHT}>{part}</strong> : part
+      )}
+    </>
+  );
+}
 
 /** Shared layout for the footer "Informasi" pages (Tentang Kami, Kebijakan Privasi, Syarat & Ketentuan). */
 export default function InfoPage({ content }: { content: { id: InfoContent; en: InfoContent } }) {
@@ -120,23 +138,30 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
 
             <header className="mb-8">
               <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">{c.title}</h1>
-              <p className="mt-3 text-sm sm:text-base text-zinc-600 leading-relaxed text-left sm:text-justify hyphens-auto break-words">{c.subtitle}</p>
+              <p className="mt-3 text-sm sm:text-base text-zinc-600 leading-relaxed text-left sm:text-justify hyphens-auto break-words"><Rich text={c.subtitle} /></p>
             </header>
 
             <div className="space-y-8">
               {c.sections.map((section, i) => (
                 <section key={section.heading} id={sectionId(i)} className="scroll-mt-24">
-                  <h2 className="text-xl font-bold text-zinc-900 border-l-4 border-[#F7941E] pl-3 my-4">{section.heading}</h2>
-                  <div className="space-y-3 text-sm sm:text-base text-zinc-700 leading-relaxed">
+                  <h2 className="my-4 border-l-4 border-amber-500 pl-3.5 text-gray-900 font-serif text-lg sm:text-xl font-bold">{section.heading}</h2>
+                  {/* leading-loose leaves room for the highlight pills' padding between lines */}
+                  <div className="space-y-3 text-sm sm:text-base text-zinc-700 leading-loose">
                     {section.paragraphs.map((p, j) => (
-                      <p key={j} className="text-left sm:text-justify hyphens-auto break-words">{p}</p>
+                      <p key={j} className="text-left sm:text-justify hyphens-auto break-words"><Rich text={p} /></p>
                     ))}
                     {section.bullets && (
-                      <ul className="list-disc pl-5 space-y-1.5 marker:text-[#F7941E]">
+                      <ul className="list-disc pl-5 space-y-1.5 marker:text-amber-500">
                         {section.bullets.map((b, j) => (
-                          <li key={j}>{b}</li>
+                          <li key={j}><Rich text={b} /></li>
                         ))}
                       </ul>
+                    )}
+                    {section.callout && (
+                      <div role="note" className="flex gap-3 bg-amber-50/80 border border-amber-200/90 rounded-2xl p-4 sm:p-5 text-amber-950 shadow-2xs">
+                        <Info className="mt-1 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
+                        <p className="text-left sm:text-justify hyphens-auto break-words"><Rich text={section.callout} /></p>
+                      </div>
                     )}
                   </div>
                 </section>
@@ -144,7 +169,7 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
             </div>
 
             {c.closing && (
-              <p className="mt-4 pt-4 border-t border-zinc-100 text-sm sm:text-base text-zinc-600 leading-relaxed text-left sm:text-justify hyphens-auto break-words">{c.closing}</p>
+              <p className="mt-4 pt-4 border-t border-zinc-100 text-sm sm:text-base text-zinc-600 leading-relaxed text-left sm:text-justify hyphens-auto break-words"><Rich text={c.closing} /></p>
             )}
           </article>
         </div>
