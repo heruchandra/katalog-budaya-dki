@@ -101,18 +101,24 @@ export default function ContactWidget() {
           </div>
 
           <div className="space-y-4 p-5">
-            {/* Contact person (or the agency until a person is set) */}
-            <div className="flex items-center gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-600 ring-2 ring-orange-100">
-                {hasPerson ? <span className="text-sm font-bold">{initials}</span> : <Headset className="h-5 w-5" aria-hidden="true" />}
+            {/* Contact person (or the agency until a person is set): warm badge + small tracked label + serif name.
+                Tailwind's font-serif (system serif) rather than Playfair: this widget sits in the root layout, and a
+                next/font used there is preloaded on every route even while the popup is closed */}
+            <div className="flex items-center gap-3.5">
+              <span className="flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100/60 border border-amber-200/70 p-3 rounded-2xl shadow-2xs flex-shrink-0 text-amber-700">
+                {hasPerson ? (
+                  <span className="flex h-5 w-5 items-center justify-center text-xs font-bold">{initials}</span>
+                ) : (
+                  <Headset className="h-5 w-5" aria-hidden="true" />
+                )}
               </span>
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Contact person</p>
-                <p className="truncate text-sm font-bold text-zinc-900">
+                <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700/90 uppercase font-sans">Contact person</p>
+                <p className="mt-1 text-base font-bold text-gray-900 font-serif tracking-tight leading-tight">
                   {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
                 </p>
                 {hasPerson && CONTACT_PERSON.role && (
-                  <p className="truncate text-xs text-zinc-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
+                  <p className="mt-0.5 truncate text-xs text-zinc-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
                 )}
               </div>
             </div>
