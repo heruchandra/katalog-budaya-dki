@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-/** Content strings may mark key terms as **term**: they render as gold highlight pills (see `Rich`) */
+/** Content strings may mark key terms as **term**: they render in bold (see `Rich`) */
 export interface InfoSection {
   heading: string;
   paragraphs: string[];
@@ -27,10 +27,10 @@ export interface InfoContent {
 
 const sectionId = (index: number) => `bagian-${index + 1}`;
 
-const HIGHLIGHT =
-  "font-semibold text-amber-900 bg-amber-100/70 px-1.5 py-0.5 rounded border border-amber-200/60 box-decoration-clone";
+// plain bold: no fill, padding or border, so the paragraph reads continuously
+const HIGHLIGHT = "font-semibold text-gray-900";
 
-/** Renders a content string with its **key terms** as gold highlight pills (bold, so they read as emphasis too) */
+/** Renders a content string with its **key terms** in bold */
 function Rich({ text }: { text: string }) {
   return (
     <>
@@ -145,8 +145,7 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
               {c.sections.map((section, i) => (
                 <section key={section.heading} id={sectionId(i)} className="scroll-mt-24">
                   <h2 className="my-4 border-l-4 border-amber-500 pl-3.5 text-gray-900 font-serif text-lg sm:text-xl font-bold">{section.heading}</h2>
-                  {/* leading-loose leaves room for the highlight pills' padding between lines */}
-                  <div className="space-y-3 text-sm sm:text-base text-zinc-700 leading-loose">
+                  <div className="space-y-3 text-sm sm:text-base text-zinc-700 leading-relaxed">
                     {section.paragraphs.map((p, j) => (
                       <p key={j} className="text-left sm:text-justify hyphens-auto break-words"><Rich text={p} /></p>
                     ))}
