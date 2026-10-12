@@ -8,6 +8,23 @@ import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard, ChevronDown 
 import { useLanguage } from "@/context/LanguageContext";
 import { Plus_Jakarta_Sans } from 'next/font/google';
 
+type NavMenu = null | "kategori" | "info";
+
+/**
+ * Closes the desktop dropdowns. They also open through CSS (hover / keyboard focus), so closing the state isn't
+ * enough while the pointer is still over a menu or focus is still on one of its links: focus is released, and
+ * `setHoverLock` switches the CSS opening off until the pointer leaves that menu.
+ */
+function dismissNavMenus(setOpenMenu: (m: NavMenu) => void, setHoverLock: (locked: boolean) => void) {
+  setOpenMenu(null);
+  let hovered = false;
+  document.querySelectorAll<HTMLElement>("[data-nav-menu]").forEach((menu) => {
+    if (menu.matches(":hover")) hovered = true;
+    if (document.activeElement instanceof HTMLElement && menu.contains(document.activeElement)) document.activeElement.blur();
+  });
+  if (hovered) setHoverLock(true);
+}
+
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ['latin'], 
   weight: ['400', '500', '600', '700'],
@@ -27,7 +44,22 @@ export default function Navbar() {
 
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   // Desktop dropdown opened by click/tap (hover and keyboard focus open it too, via CSS)
-  const [openMenu, setOpenMenu] = useState<null | "kategori" | "info">(null);
+  const [openMenu, setOpenMenu] = useState<NavMenu>(null);
+  // true right after a pick / route change / scroll: hover & focus no longer open the dropdowns until the pointer
+  // leaves the menu (see dismissNavMenus)
+  const [hoverLock, setHoverLock] = useState(false);
+  const dismissMenus = () => dismissNavMenus(setOpenMenu, setHoverLock);
+
+  // Route change: reset every menu (desktop dropdown, mobile drawer and its accordions). Adjusted while rendering
+  // when the path changes (React's recommended alternative to setting state in an effect)
+  const [menuPath, setMenuPath] = useState(pathname);
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    setOpenMenu(null);
+    setIsMobileMenuOpen(false);
+    setIsCategoryOpen(false);
+    setIsInfoOpen(false);
+  }
   // "Informasi" menu (desktop dropdown + mobile accordion); labels shared with the footer
   const infoLinks = [
     { href: "/tentang-kami", label: t('footerAbout') },
@@ -106,6 +138,9 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      // scrolling closes an open desktop dropdown (opened by click, hover or keyboard focus)
+      const anyOpen = [...document.querySelectorAll<HTMLElement>("[data-nav-panel]")].some((p) => getComputedStyle(p).display !== "none");
+      if (anyOpen) dismissNavMenus(setOpenMenu, setHoverLock);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -122,8 +157,11 @@ export default function Navbar() {
     };
   }, [isMobileMenuOpen]);
 
+  // After a route change, release focus still sitting on a dropdown link (it would keep the menu open via CSS)
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    if (document.activeElement instanceof HTMLElement && document.activeElement.closest("[data-nav-menu]")) {
+      document.activeElement.blur();
+    }
   }, [pathname]);
 
   if (pathname?.startsWith('/admin') || pathname === '/login' || pathname === '/register') {
@@ -227,7 +265,12 @@ export default function Navbar() {
             {(() => {
               const isActive = pathname.startsWith("/sanggar") || pathname.startsWith("/pemusik");
               return (
-                <div data-nav-menu="kategori" className="relative group flex items-center h-full">
+                <div
+                  data-nav-menu="kategori"
+                  // a mouse leaving the menu re-enables hover opening (a touch "leave" doesn't: tap hover sticks)
+                  onPointerLeave={(e) => { if (e.pointerType !== "touch") setHoverLock(false); }}
+                  className="relative group flex items-center h-full"
+                >
                   <button
                     type="button"
                     aria-expanded={openMenu === "kategori"}
@@ -238,11 +281,11 @@ export default function Navbar() {
                         ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
                         : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
                     } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
-                      isActive || openMenu === "kategori" ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
+                      isActive || openMenu === "kategori" ? "after:w-[calc(100%-16px)]" : hoverLock ? "after:w-0" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
                     }`}
                   >
                     {language === 'en' ? 'Category' : 'Kategori'}
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180 ${openMenu === "kategori" ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${hoverLock ? "" : "group-hover:rotate-180 group-focus-within:rotate-180"} ${openMenu === "kategori" ? "rotate-180" : ""}`} />
                   </button>
                   {/* Dropdown Panel: left edge flush with the "Kategori" text/underline (the trigger has px-2, so left-2).
                       pt-2 (not mt-2) is an invisible hover bridge,
@@ -250,7 +293,7 @@ export default function Navbar() {
                       Opens on hover, and on click/keyboard via focus-within.
                       Closed = display:none (not opacity-0/invisible): Safari can keep painting a hidden element's
                       backdrop-blur and shadow, which showed up as a dark bar under the navbar. */}
-                  <div id="nav-menu-kategori" className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "kategori" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
+                  <div id="nav-menu-kategori" data-nav-panel className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "kategori" ? "block" : "hidden"} ${hoverLock ? "" : "group-hover:block group-focus-within:block"}`}>
                     <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {[
                         { href: "/sanggar", label: t('navSanggar') },
@@ -261,7 +304,7 @@ export default function Navbar() {
                           <Link
                             key={item.href}
                             href={item.href}
-                            onClick={() => setOpenMenu(null)}
+                            onClick={dismissMenus}
                             aria-current={isItemActive ? "page" : undefined}
                             className={`block px-3.5 py-2 text-sm whitespace-nowrap rounded-md cursor-pointer transition-colors ${jakarta.className} ${
                               isItemActive
@@ -283,7 +326,12 @@ export default function Navbar() {
             {(() => {
               const isActive = infoLinks.some((item) => pathname === item.href);
               return (
-                <div data-nav-menu="info" className="relative group flex items-center h-full">
+                <div
+                  data-nav-menu="info"
+                  // a mouse leaving the menu re-enables hover opening (a touch "leave" doesn't: tap hover sticks)
+                  onPointerLeave={(e) => { if (e.pointerType !== "touch") setHoverLock(false); }}
+                  className="relative group flex items-center h-full"
+                >
                   <button
                     type="button"
                     aria-expanded={openMenu === "info"}
@@ -294,13 +342,13 @@ export default function Navbar() {
                         ? (isTransparent ? "text-white font-semibold" : "text-orange-600 font-bold")
                         : (isTransparent ? "text-white/80 hover:text-white font-medium" : "text-zinc-700 hover:text-orange-600 font-medium")
                     } after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:rounded-none after:bg-gradient-to-r after:from-orange-600 after:to-orange-700 after:transition-all after:duration-300 ${
-                      isActive || openMenu === "info" ? "after:w-[calc(100%-16px)]" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
+                      isActive || openMenu === "info" ? "after:w-[calc(100%-16px)]" : hoverLock ? "after:w-0" : "after:w-0 group-hover:after:w-[calc(100%-16px)] group-focus-within:after:w-[calc(100%-16px)]"
                     }`}
                   >
                     {t('navInfo')}
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180 ${openMenu === "info" ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${hoverLock ? "" : "group-hover:rotate-180 group-focus-within:rotate-180"} ${openMenu === "info" ? "rotate-180" : ""}`} />
                   </button>
-                  <div id="nav-menu-info" className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "info" ? "block" : "hidden"} group-hover:block group-focus-within:block`}>
+                  <div id="nav-menu-info" data-nav-panel className={`absolute left-2 top-full pt-2 w-max min-w-[190px] z-50 ${openMenu === "info" ? "block" : "hidden"} ${hoverLock ? "" : "group-hover:block group-focus-within:block"}`}>
                     <div className="bg-black/85 backdrop-blur-xl border border-white/20 shadow-2xl rounded-none p-1.5 overflow-hidden">
                       {infoLinks.map((item) => {
                         const isItemActive = pathname === item.href;
@@ -308,7 +356,7 @@ export default function Navbar() {
                           <Link
                             key={item.href}
                             href={item.href}
-                            onClick={() => setOpenMenu(null)}
+                            onClick={dismissMenus}
                             aria-current={isItemActive ? "page" : undefined}
                             className={`block px-3.5 py-2 text-sm whitespace-nowrap rounded-md cursor-pointer transition-colors ${jakarta.className} ${
                               isItemActive
