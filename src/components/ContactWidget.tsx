@@ -9,16 +9,16 @@ import { WHATSAPP_PATH } from "@/components/SocialPills";
 import { toWaNumber } from "@/lib/phone";
 
 /**
- * The catalog's contact person, shown in the corner popup. Fill in `name` and `whatsapp` (e.g. "0812 3456 7890")
- * and the popup shows the person with a direct WhatsApp button; while they're empty it shows the agency's official
- * email only (no made-up number). `role` (e.g. { id: "Admin Katalog Seni", en: "Art Catalog Admin" }) and `hours`
+ * The catalog's contact person, shown in the corner popup. `whatsapp` is shown as written on the WhatsApp button
+ * and linked as wa.me/62…; without it only the official email shows. Until `name` is set the popup names the
+ * agency itself. `role` (e.g. { id: "Admin Katalog Seni", en: "Art Catalog Admin" }) and `hours`
  * (e.g. { id: "Senin–Jumat, 08.00–16.00 WIB", en: "Monday–Friday, 08:00–16:00 WIB" }) are optional lines.
  */
 type Bilingual = { id: string; en: string };
 const CONTACT_PERSON: { name: string; role: Bilingual | null; whatsapp: string; hours: Bilingual | null; email: string } = {
   name: "",
   role: null,
-  whatsapp: "",
+  whatsapp: "+62 812-8645-8884",
   hours: null,
   email: "info@disbud.jakarta.go.id",
 };
@@ -66,13 +66,7 @@ export default function ContactWidget() {
 
   const waNumber = toWaNumber(CONTACT_PERSON.whatsapp);
   const hasPerson = !!CONTACT_PERSON.name;
-  const waLink = waNumber
-    ? `https://wa.me/${waNumber}?text=${encodeURIComponent(
-        isEn
-          ? "Hello, I would like to ask about the DKI Jakarta Art Catalog."
-          : "Halo, saya ingin bertanya mengenai Katalog Seni DKI Jakarta."
-      )}`
-    : null;
+  const waLink = waNumber ? `https://wa.me/${waNumber}` : null;
   const initials = CONTACT_PERSON.name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   return (
@@ -138,17 +132,18 @@ export default function ContactWidget() {
                   href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#059669] text-sm font-bold text-white shadow-sm transition-opacity hover:opacity-90"
+                  aria-label={`WhatsApp ${CONTACT_PERSON.whatsapp}${isEn ? " (opens in a new tab)" : " (buka di tab baru)"}`}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-medium transition-all shadow-2xs"
                 >
-                  <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg className="h-5 w-5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                     <path d={WHATSAPP_PATH} />
                   </svg>
-                  {isEn ? "Chat on WhatsApp" : "Chat via WhatsApp"}
+                  <span className="tabular-nums">{CONTACT_PERSON.whatsapp}</span>
                 </a>
               )}
               <a
                 href={`mailto:${CONTACT_PERSON.email}`}
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white text-sm font-semibold text-zinc-700 transition-colors hover:border-orange-300 hover:text-orange-700"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-zinc-200 bg-white text-sm font-medium text-zinc-700 transition-all shadow-2xs hover:border-orange-300 hover:text-orange-700"
               >
                 <Mail className="h-4 w-4" aria-hidden="true" />
                 {CONTACT_PERSON.email}
