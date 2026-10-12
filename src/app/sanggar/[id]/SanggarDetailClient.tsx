@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Maximize2, Images, UserRound } from "lucide-react";
 import { Poppins, Plus_Jakarta_Sans } from 'next/font/google';
-import { dancingScript, playfair } from '@/lib/fonts';
+import { playfair } from '@/lib/fonts';
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
@@ -219,7 +219,8 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             {/* Left Column: studio name (the page's main heading) + Ketua Sanggar photo & info */}
             <div className="lg:col-span-7">
-              <h1 className={`${dancingScript.className} text-3xl sm:text-4xl md:text-5xl md:font-bold text-orange-600 tracking-wide leading-tight text-center sm:text-left`}>
+              {/* Same title style as the seniman musik page; leading-normal leaves room for the script's swashes */}
+              <h1 className="font-script text-3xl sm:text-4xl lg:text-5xl text-orange-600 leading-normal font-normal text-center sm:text-left">
                 {studioName}
               </h1>
 

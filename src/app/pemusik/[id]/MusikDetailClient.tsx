@@ -102,7 +102,8 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                   <CategoryIcon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                   {isKomunitas ? (isEn ? "Music Community" : "Komunitas Musik") : isEn ? "Musician" : "Pemusik"}
                 </span>
-                <h1 className={`mt-1.5 text-4xl sm:text-5xl text-orange-600 leading-tight ${dancingScript.className}`}>{profile.nama}</h1>
+                {/* Same title style as the sanggar page; leading-normal leaves room for the script's swashes */}
+                <h1 className="mt-1.5 font-script text-3xl sm:text-4xl lg:text-5xl text-orange-600 leading-normal font-normal">{profile.nama}</h1>
                 {profile.namaPanggung && (
                   <p className="mt-1 text-base sm:text-lg font-semibold text-zinc-800">
                     {isKomunitas ? profile.namaPanggung : `${isEn ? "Stage name" : "Nama panggung"}: ${profile.namaPanggung}`}

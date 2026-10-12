@@ -5,11 +5,14 @@ import { Dancing_Script, Playfair_Display } from "next/font/google";
 // The homepage used to create a second Dancing Script instance: that gave it a page-only stylesheet, which Next
 // preloads whenever another page prefetches "/", and the browser then warned that the preload went unused.
 
-/** Script/cursive heading font: `.className`, or `var(--font-script)` (the `font-script` utility) via the layout */
+/**
+ * Script/cursive heading font ("tulisan sambung"): `.className`, or the `font-script` utility / `var(--font-script)`
+ * anywhere (the layout puts this font's variable, --font-dancing, on <html>; globals.css builds --font-script on it)
+ */
 export const dancingScript = Dancing_Script({
   subsets: ["latin"],
   weight: ["400", "700"],
-  variable: "--font-script",
+  variable: "--font-dancing",
   display: "swap",
 });
 
