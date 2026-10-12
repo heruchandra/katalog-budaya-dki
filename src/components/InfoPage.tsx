@@ -144,7 +144,8 @@ export default function InfoPage({ content }: { content: { id: InfoContent; en: 
             <div className="space-y-8">
               {c.sections.map((section, i) => (
                 <section key={section.heading} id={sectionId(i)} className="scroll-mt-24">
-                  <h2 className="my-4 border-l-4 border-amber-500 pl-3.5 text-gray-900 font-serif text-lg sm:text-xl font-bold">{section.heading}</h2>
+                  {/* the page font (Plus Jakarta Sans, like the title and text): the theme font-sans would switch to Geist */}
+                  <h2 className="my-4 border-l-4 border-amber-500 pl-3.5 text-lg sm:text-xl font-bold text-gray-900 tracking-tight">{section.heading}</h2>
                   <div className="space-y-3 text-sm sm:text-base text-zinc-700 leading-relaxed">
                     {section.paragraphs.map((p, j) => (
                       <p key={j} className="text-left sm:text-justify hyphens-auto break-words"><Rich text={p} /></p>
