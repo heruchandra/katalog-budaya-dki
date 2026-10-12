@@ -113,7 +113,8 @@ export default function ContactWidget() {
                 )}
               </span>
               <div className="min-w-0">
-                <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700/90 uppercase font-sans">Contact person</p>
+                {/* full amber-700: at /90 this 10px label drops to 4.25:1, under WCAG AA 4.5:1 */}
+                <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700 uppercase font-sans">Contact person</p>
                 <p className="mt-1 text-base font-bold text-gray-900 font-serif tracking-tight leading-tight">
                   {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
                 </p>
