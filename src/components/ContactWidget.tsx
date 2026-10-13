@@ -101,21 +101,16 @@ export default function ContactWidget() {
           </div>
 
           <div className="space-y-4 p-5">
-            {/* Contact person: headset badge + small tracked label + name (sans, like the label) + position under it */}
-            <div className="flex items-center gap-3.5">
-              <span className="flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100/60 border border-amber-200/70 p-3 rounded-2xl shadow-2xs flex-shrink-0 text-amber-700">
-                <Headset className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <div className="min-w-0">
-                {/* full amber-700: at /90 this 10px label drops to 4.25:1, under WCAG AA 4.5:1 */}
-                <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700 uppercase font-sans">Contact person</p>
-                <p className="mt-1 font-sans font-bold text-gray-900 text-lg sm:text-xl leading-tight tracking-tight break-words">
-                  {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
-                </p>
-                {hasPerson && CONTACT_PERSON.role && (
-                  <p className="mt-1 text-xs font-medium leading-snug text-gray-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
-                )}
-              </div>
+            {/* Contact person: small tracked label + name (sans, like the label) + position, left-aligned text only */}
+            <div className="min-w-0 text-left">
+              {/* full amber-700: at /90 this 10px label drops to 4.25:1, under WCAG AA 4.5:1 */}
+              <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700 uppercase font-sans">Contact person</p>
+              <p className="mt-1 font-sans font-bold text-gray-900 text-lg sm:text-xl leading-tight tracking-tight break-words">
+                {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
+              </p>
+              {hasPerson && CONTACT_PERSON.role && (
+                <p className="mt-1 text-xs font-medium leading-snug text-gray-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
+              )}
             </div>
 
             {CONTACT_PERSON.hours && (
