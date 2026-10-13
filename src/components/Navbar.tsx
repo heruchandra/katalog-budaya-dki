@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { User } from "@supabase/supabase-js";
 import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
-import { profileAvatar, profileName, saveProfileAvatar, saveProfileName, signOutUser } from "@/lib/profileActions";
+import { profileAvatar, profileName, signOutUser } from "@/lib/profileActions";
 
 // The profile menu is only needed once someone is signed in, so it isn't part of the public pages' initial JavaScript
 const ProfileDropdown = dynamic(() => import("@/components/ProfileDropdown"), {
@@ -402,7 +402,7 @@ export default function Navbar() {
                     <span className="hidden xl:inline">{t('navDashboard')}</span>
                   </Link>
                 )}
-                {/* Profile menu (rename, profile photo, sign out) instead of a separate sign-out button */}
+                {/* Profile menu (read-only profile + sign out) instead of a separate sign-out button */}
                 <div className={jakarta.className}>
                   <ProfileDropdown
                     name={displayName}
@@ -410,8 +410,6 @@ export default function Navbar() {
                     avatarUrl={avatarUrl}
                     role={isAdmin ? "admin" : "user"}
                     variant={isTransparent ? "transparent" : "solid"}
-                    onSaveName={async (name) => setUser(await saveProfileName(name))}
-                    onSaveAvatar={async (avatar) => setUser(await saveProfileAvatar(user, avatar))}
                     onLogout={handleLogout}
                   />
                 </div>

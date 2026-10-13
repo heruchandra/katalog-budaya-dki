@@ -10,7 +10,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { ADMIN_EMAIL, SANGGAR_TABLE } from "@/lib/sanggarAdmin";
 import type { User } from "@supabase/supabase-js";
 import ProfileDropdown from "@/components/ProfileDropdown";
-import { profileAvatar, profileName, saveProfileAvatar, saveProfileName } from "@/lib/profileActions";
+import { profileAvatar, profileName } from "@/lib/profileActions";
 
 type AuthState = "checking" | "ok" | "forbidden";
 
@@ -218,7 +218,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ) : null}
             </Link>
 
-            {/* Profile menu: same as the public navbar (rename, profile photo, sign out) */}
+            {/* Profile menu: same as the public navbar (read-only profile + sign out) */}
             <div className="border-l border-zinc-200 pl-3">
               {user ? (
                 <ProfileDropdown
@@ -226,8 +226,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   email={email}
                   avatarUrl={profileAvatar(user)}
                   role="admin"
-                  onSaveName={async (name) => setUser(await saveProfileName(name))}
-                  onSaveAvatar={async (avatar) => setUser(await saveProfileAvatar(user, avatar))}
                   onLogout={handleLogout}
                 />
               ) : (
