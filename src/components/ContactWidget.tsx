@@ -10,13 +10,14 @@ import { toWaNumber } from "@/lib/phone";
 
 /**
  * The catalog's contact person, shown in the corner popup. `whatsapp` is shown as written on the WhatsApp button
- * and linked as wa.me/62… (the popup's only contact option). Until `name` is set the popup names the agency itself. `role` (e.g. { id: "Admin Katalog Seni", en: "Art Catalog Admin" }) and `hours`
- * (e.g. { id: "Senin–Jumat, 08.00–16.00 WIB", en: "Monday–Friday, 08:00–16:00 WIB" }) are optional lines.
+ * and linked as wa.me/62… (the popup's only contact option). Without a `name` the popup names the agency itself.
+ * `role` is the line under the name (here the agency, for official context); `hours` (e.g. { id: "Senin–Jumat,
+ * 08.00–16.00 WIB", en: "Monday–Friday, 08:00–16:00 WIB" }) is an optional line.
  */
 type Bilingual = { id: string; en: string };
 const CONTACT_PERSON: { name: string; role: Bilingual | null; whatsapp: string; hours: Bilingual | null } = {
-  name: "",
-  role: null,
+  name: "Adityo Wibisono",
+  role: { id: "Dinas Kebudayaan DKI Jakarta", en: "Jakarta Culture Agency" },
   whatsapp: "+62 812-8645-8884",
   hours: null,
 };
@@ -65,7 +66,6 @@ export default function ContactWidget() {
   const waNumber = toWaNumber(CONTACT_PERSON.whatsapp);
   const hasPerson = !!CONTACT_PERSON.name;
   const waLink = waNumber ? `https://wa.me/${waNumber}` : null;
-  const initials = CONTACT_PERSON.name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   return (
     <div ref={rootRef} className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[90] flex flex-col items-end gap-3">
@@ -101,25 +101,19 @@ export default function ContactWidget() {
           </div>
 
           <div className="space-y-4 p-5">
-            {/* Contact person (or the agency until a person is set): warm badge + small tracked label + serif name.
-                Tailwind's font-serif (system serif) rather than Playfair: this widget sits in the root layout, and a
-                next/font used there is preloaded on every route even while the popup is closed */}
+            {/* Contact person: headset badge + small tracked label + name (sans, like the label) + the agency under it */}
             <div className="flex items-center gap-3.5">
               <span className="flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100/60 border border-amber-200/70 p-3 rounded-2xl shadow-2xs flex-shrink-0 text-amber-700">
-                {hasPerson ? (
-                  <span className="flex h-5 w-5 items-center justify-center text-xs font-bold">{initials}</span>
-                ) : (
-                  <Headset className="h-5 w-5" aria-hidden="true" />
-                )}
+                <Headset className="h-5 w-5" aria-hidden="true" />
               </span>
               <div className="min-w-0">
                 {/* full amber-700: at /90 this 10px label drops to 4.25:1, under WCAG AA 4.5:1 */}
                 <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700 uppercase font-sans">Contact person</p>
-                <p className="mt-1 text-base font-bold text-gray-900 font-serif tracking-tight leading-tight">
+                <p className="mt-1 font-sans font-bold text-gray-900 text-lg sm:text-xl leading-tight tracking-tight break-words">
                   {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
                 </p>
                 {hasPerson && CONTACT_PERSON.role && (
-                  <p className="mt-0.5 truncate text-xs text-zinc-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
+                  <p className="mt-1 text-xs font-medium text-zinc-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
                 )}
               </div>
             </div>
