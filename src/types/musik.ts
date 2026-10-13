@@ -1,6 +1,9 @@
 /** Seniman Musik sub-category: a music group / community, or an individual musician */
 export type MusikCategory = "komunitas" | "pemusik";
 
+/** The two Seniman Musik categories as shown in the admin and the catalog, and stored in pemusiks.jenis_seniman */
+export type KategoriMusik = "Komunitas Musik" | "Pemusik Perorangan";
+
 export type SosialPlatform = "instagram" | "tiktok" | "facebook" | "youtube";
 
 export interface SosialMedia {

@@ -9,6 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 import { SANGGAR_TABLE, SanggarRow, isDraft } from "@/lib/sanggarAdmin";
 import { PemusikRow, countBy, tallyValues } from "@/lib/pemusikStats";
+import { normalizeKategori } from "@/lib/pemusikData";
 
 // recharts is heavy: load the chart after the stat cards render (grey placeholder meanwhile)
 const SimpleBarChart = dynamic(() => import("@/components/admin/SimpleBarChart"), {
@@ -122,7 +123,7 @@ export default function AdminDashboard() {
   }, [sanggars, language]);
 
   // ---- Seniman Musik analytics (the pemusiks table has no region column, so there is no per-wilayah view) ----
-  const jenisData = useMemo(() => countBy(pemusiks, (p) => p.jenis_seniman), [pemusiks]);
+  const jenisData = useMemo(() => countBy(pemusiks, (p) => normalizeKategori(p.jenis_seniman)), [pemusiks]);
   const genreData = useMemo(() => tallyValues(pemusiks, (p) => p.genre_musik), [pemusiks]);
   const instrumenData = useMemo(() => tallyValues(pemusiks, (p) => p.instrumen), [pemusiks]);
 

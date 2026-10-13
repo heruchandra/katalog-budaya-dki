@@ -103,7 +103,8 @@ export default function PemusikForm({ id }: { id?: string }) {
         )
       : undefined;
 
-  const isKomunitas = values.kategori !== "Perorangan";
+  // labels follow the category (a new, still empty form reads as a community)
+  const isKomunitas = values.kategori !== "Pemusik Perorangan";
   // the number the WhatsApp button would use; anything typed that isn't a valid number blocks the save
   const waNumber = typedWaDigits(values);
   const waInvalid = waNumber !== "" && !isValidWaNumber(waNumber);
@@ -283,7 +284,7 @@ export default function PemusikForm({ id }: { id?: string }) {
                 </select>
                 {errors.kategori
                   ? errorText(tr("Pilih kategori musik.", "Choose a music category."))
-                  : hint(tr("Perorangan tampil sebagai Pemusik; lainnya sebagai Komunitas Musik.", "Perorangan shows as a Musician; the others as a Music Community."))}
+                  : hint(tr("Komunitas Musik: komunitas, grup, orkes, atau sanggar musik. Pemusik Perorangan: musisi individu.", "Komunitas Musik: a community, group, ensemble or music studio. Pemusik Perorangan: a solo musician."))}
               </label>
 
               <label>

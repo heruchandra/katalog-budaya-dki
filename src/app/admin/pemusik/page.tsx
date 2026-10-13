@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 import { MUSIK_MASTER_DATA, findMusikMaster, mergeProfile, waNumberOf } from "@/data/musikData";
-import { normalizeKategori } from "@/lib/pemusikData";
+import { KATEGORI_OF, normalizeKategori } from "@/lib/pemusikData";
 import {
   KATEGORI_MUSIK_OPTIONS,
   PEMUSIK_MIGRATION_COLUMNS,
@@ -51,7 +51,8 @@ function toListItem(row: PemusikRow | null, masterId?: string): ListItem | null 
   const id = row ? String(row.id) : masterId!;
   const profile = mergeProfile(findMusikMaster(id), row);
   if (!profile) return null;
-  const kategori = row ? normalizeKategori(row.jenis_seniman) || "—" : profile.category === "komunitas" ? "Komunitas Musik" : "Perorangan";
+  // the same two categories as the public catalog (older stored values are mapped onto them)
+  const kategori = row ? normalizeKategori(row.jenis_seniman) || KATEGORI_OF[profile.category] : KATEGORI_OF[profile.category];
   const wilayah = profile.wilayah ?? resolveWilayah({ alamat: profile.alamat });
   const cover = profile.fotoProfil ?? (profile.isDummyMedia ? undefined : profile.fotoCard ?? profile.fotoGallery.find((p) => !p.pending)?.url);
   return {

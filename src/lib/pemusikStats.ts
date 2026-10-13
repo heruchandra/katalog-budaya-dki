@@ -6,7 +6,7 @@ export interface PemusikRow {
   id: number | string;
   created_at?: string;
   nama_seniman: string;
-  /** Kategori: "Komunitas Musik", "Sanggar Musik", "Grup / Orkes", "Perorangan" (older rows: "Solo", "Komunitas") */
+  /** Kategori: "Komunitas Musik" or "Pemusik Perorangan" (older rows: "Solo", "Komunitas"; see normalizeKategori) */
   jenis_seniman?: string | null;
   genre_musik?: string | null;
   instrumen?: string | null;

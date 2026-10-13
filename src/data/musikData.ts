@@ -2,6 +2,7 @@ import type { MusikCardData, MusikCategory, MusikEntity, SosialMedia } from "@/t
 import type { PemusikRow } from "@/lib/pemusikStats";
 import {
   isDraftRow,
+  normalizeKategori,
   parsePemusikGaleri,
   parsePemusikKarya,
   parsePemusikLayanan,
@@ -158,9 +159,9 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
 
 export const findMusikMaster = (id: string) => MUSIK_MASTER_DATA.find((m) => m.id === id);
 
-/** Sub-category of a bare `pemusiks` row, from its jenis_seniman ("Solo", "Komunitas", "Grup", …) */
+/** Sub-category of a `pemusiks` row: "Komunitas Musik" (older values: "Komunitas", "Grup", …) or a solo musician */
 export function categoryOfRow(row: Pick<PemusikRow, "jenis_seniman">): MusikCategory {
-  return /komunitas|grup|group|orkes|kelompok|sanggar|band|ensemble/i.test(row.jenis_seniman || "") ? "komunitas" : "pemusik";
+  return normalizeKategori(row.jenis_seniman) === "Komunitas Musik" ? "komunitas" : "pemusik";
 }
 
 const splitList = (value?: string | null) =>

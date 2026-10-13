@@ -6,6 +6,7 @@ import type { MusikEntity, SosialPlatform } from "@/types/musik";
 import type { PemusikRow } from "@/lib/pemusikStats";
 import {
   KATEGORI_MUSIK_OPTIONS,
+  KATEGORI_OF,
   PemusikKaryaItem,
   PemusikPengalamanItem,
   PemusikPrestasiItem,
@@ -175,7 +176,7 @@ export function masterToForm(m: MusikEntity): PemusikFormValues {
     ...EMPTY_PEMUSIK_FORM,
     nama_seniman: m.nama,
     nama_panggung: m.namaPanggung ?? "",
-    kategori: m.category === "komunitas" ? "Komunitas Musik" : "Perorangan",
+    kategori: KATEGORI_OF[m.category],
     wilayah: m.wilayah ?? resolveWilayah({ alamat: m.alamat }) ?? "",
     tahun_berdiri: m.tahunBerdiri ? String(m.tahunBerdiri) : m.tahunAktif ?? "",
     jumlah_anggota: m.jumlahAnggota ? String(m.jumlahAnggota) : "",

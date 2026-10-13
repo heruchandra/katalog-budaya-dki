@@ -1,18 +1,24 @@
 import type { PemusikRow } from "@/lib/pemusikStats";
+import type { KategoriMusik, MusikCategory } from "@/types/musik";
 
 // Shared by the admin form and the public pages (no Supabase client here, so server pages can import it)
 
-/** Kategori Seniman Musik offered in the admin (stored in pemusiks.jenis_seniman) */
-export const KATEGORI_MUSIK_OPTIONS = ["Komunitas Musik", "Sanggar Musik", "Grup / Orkes", "Perorangan"] as const;
+/** The only two Seniman Musik categories (admin filter + form, stored in pemusiks.jenis_seniman) */
+export const KATEGORI_MUSIK_OPTIONS: readonly KategoriMusik[] = ["Komunitas Musik", "Pemusik Perorangan"];
 
-/** Map older / free-text values ("Solo", "Komunitas", …) onto the kategori options; "" when unknown */
-export function normalizeKategori(value?: string | null): string {
+/** Category label of a profile's sub-category */
+export const KATEGORI_OF: Record<MusikCategory, KategoriMusik> = { komunitas: "Komunitas Musik", pemusik: "Pemusik Perorangan" };
+
+/**
+ * Map any stored value onto one of the two categories: groups of any kind (komunitas, sanggar musik, grup, orkes,
+ * band, …) are "Komunitas Musik"; individuals (older rows: "Solo", "Perorangan") are "Pemusik Perorangan".
+ * "" when the value is empty or unrecognised.
+ */
+export function normalizeKategori(value?: string | null): KategoriMusik | "" {
   const v = (value || "").trim();
-  if ((KATEGORI_MUSIK_OPTIONS as readonly string[]).includes(v)) return v;
-  if (/solo|individu|perorangan|pemusik/i.test(v)) return "Perorangan";
-  if (/sanggar/i.test(v)) return "Sanggar Musik";
-  if (/grup|group|orkes|band|ensemble/i.test(v)) return "Grup / Orkes";
-  if (/komunitas|kelompok/i.test(v)) return "Komunitas Musik";
+  if ((KATEGORI_MUSIK_OPTIONS as readonly string[]).includes(v)) return v as KategoriMusik;
+  if (/komunitas|kelompok|sanggar|grup|group|orkes|band|ensemble/i.test(v)) return "Komunitas Musik";
+  if (/solo|individu|perorangan|pemusik|musisi|musician/i.test(v)) return "Pemusik Perorangan";
   return "";
 }
 
