@@ -19,9 +19,9 @@ import {
   parsePemusikPrestasi,
   splitPhoneList,
 } from "@/lib/pemusikData";
-import { GRADE_OPTIONS, STATUS_OPTIONS, type GalleryFormItem, type ImageValue, type SanggarStatus } from "@/lib/sanggarAdmin";
+import { STATUS_OPTIONS, type GalleryFormItem, type ImageValue, type SanggarStatus } from "@/lib/sanggarAdmin";
 
-export { GRADE_OPTIONS, KATEGORI_MUSIK_OPTIONS, STATUS_OPTIONS, isDraftRow };
+export { KATEGORI_MUSIK_OPTIONS, STATUS_OPTIONS, isDraftRow };
 export type { PemusikRow };
 
 export const PEMUSIK_TABLE = "pemusiks";
@@ -32,7 +32,6 @@ export const PEMUSIK_MIGRATION_COLUMNS: Record<string, string> = {
   nama_panggung: "Nama Panggung / Grup",
   wilayah: "Wilayah",
   status: "Status",
-  grade: "Grade",
   tahun_berdiri: "Tahun Berdiri / Aktif",
   jumlah_anggota: "Jumlah Anggota",
   ketua: "Ketua",
@@ -63,7 +62,6 @@ export interface PemusikFormValues {
   kategori: string;
   wilayah: string;
   status: SanggarStatus;
-  grade: string;
   tahun_berdiri: string;
   jumlah_anggota: string;
   ketua: string;
@@ -100,7 +98,6 @@ export const EMPTY_PEMUSIK_FORM: PemusikFormValues = {
   kategori: "",
   wilayah: "",
   status: "terverifikasi",
-  grade: "",
   tahun_berdiri: "",
   jumlah_anggota: "",
   ketua: "",
@@ -136,7 +133,6 @@ export function pemusikRowToForm(row: PemusikRow): PemusikFormValues {
     kategori: normalizeKategori(row.jenis_seniman),
     wilayah: str(row.wilayah),
     status: isDraftRow(row) ? "draft" : "terverifikasi",
-    grade: str(row.grade).replace(/grade/i, "").trim().toUpperCase(),
     tahun_berdiri: str(row.tahun_berdiri),
     jumlah_anggota: row.jumlah_anggota ? String(row.jumlah_anggota) : "",
     ketua: str(row.ketua),
@@ -279,7 +275,6 @@ export async function buildPemusikPayload(values: PemusikFormValues): Promise<Re
     nama_panggung: nullable(values.nama_panggung),
     wilayah: nullable(values.wilayah),
     status: values.status,
-    grade: nullable(values.grade),
     tahun_berdiri: nullable(values.tahun_berdiri),
     jumlah_anggota: Number.isFinite(anggota) && anggota > 0 ? anggota : null,
     ketua: nullable(values.ketua),

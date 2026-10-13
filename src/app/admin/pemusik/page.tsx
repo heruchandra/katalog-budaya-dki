@@ -43,7 +43,6 @@ interface ListItem {
   pic?: string;
   wa: string;
   draft: boolean;
-  grade: string;
   searchText: string;
 }
 
@@ -68,7 +67,6 @@ function toListItem(row: PemusikRow | null, masterId?: string): ListItem | null 
     pic: profile.pic,
     wa: waNumberOf(profile),
     draft: row ? isDraftRow(row) : false,
-    grade: (row?.grade || "").replace(/grade/i, "").trim().toUpperCase(),
     searchText: [profile.nama, profile.namaPanggung, kategori, wilayah, profile.ketua, profile.pic, profile.nomorKontak.join(" "), profile.email, profile.alamat, profile.genre.join(" "), profile.jenisMusik.join(" "), profile.instrumen.join(" ")]
       .filter(Boolean)
       .join(" \n ")
@@ -238,7 +236,7 @@ function AdminPemusikContent() {
                 <th scope="col" className={th}>{tr("Wilayah", "Region")}</th>
                 <th scope="col" className={th}>{tr("Ketua / PIC", "Leader / PIC")}</th>
                 <th scope="col" className={th}>WhatsApp</th>
-                <th scope="col" className={th}>{tr("Status / Grade", "Status / Grade")}</th>
+                <th scope="col" className={th}>Status</th>
                 <th scope="col" className={`${th} text-right`}>{tr("Aksi", "Actions")}</th>
               </tr>
             </thead>
@@ -292,18 +290,11 @@ function AdminPemusikContent() {
                     ) : dash}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-semibold ${
-                        item.draft ? "bg-zinc-100 text-zinc-600 ring-1 ring-inset ring-zinc-300" : "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
-                      }`}>
-                        {item.draft ? "Draft" : tr("Terverifikasi", "Verified")}
-                      </span>
-                      {item.grade && (
-                        <span className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-bold ${
-                          item.grade === "A" ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20" : "bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-600/20"
-                        }`}>Grade {item.grade}</span>
-                      )}
-                    </div>
+                    <span className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-semibold ${
+                      item.draft ? "bg-zinc-100 text-zinc-600 ring-1 ring-inset ring-zinc-300" : "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+                    }`}>
+                      {item.draft ? "Draft" : tr("Terverifikasi", "Verified")}
+                    </span>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
                     <div className="flex justify-end gap-1">

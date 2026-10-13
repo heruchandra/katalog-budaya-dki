@@ -15,7 +15,6 @@ import ExperienceList from "@/components/ExperienceList";
 import { pengalamanLine } from "@/lib/pemusikData";
 import {
   EMPTY_PEMUSIK_FORM,
-  GRADE_OPTIONS,
   KATEGORI_MUSIK_OPTIONS,
   PEMUSIK_MIGRATION_COLUMNS,
   PEMUSIK_MIGRATION_FILE,
@@ -310,15 +309,6 @@ export default function PemusikForm({ id }: { id?: string }) {
                 </select>
               </label>
 
-              <label>
-                <FieldLabel tag={migrationTag("grade")}>Grade</FieldLabel>
-                <select value={values.grade} onChange={(e) => set("grade", e.target.value)} disabled={isMissing("grade")} className={inputClass}>
-                  <option value="">{tr("Belum tergrade", "Ungraded")}</option>
-                  {GRADE_OPTIONS.map((g) => (
-                    <option key={g} value={g}>Grade {g}</option>
-                  ))}
-                </select>
-              </label>
 
               <label>
                 <FieldLabel tag={migrationTag("tahun_berdiri")}>{isKomunitas ? tr("Tahun Berdiri", "Year Founded") : tr("Aktif Sejak", "Active Since")}</FieldLabel>

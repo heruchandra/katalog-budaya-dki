@@ -8,7 +8,6 @@ alter table public.pemusiks
   add column if not exists nama_panggung    text,                                -- stage / ensemble name
   add column if not exists wilayah          text,
   add column if not exists status           text not null default 'terverifikasi',
-  add column if not exists grade            text,
   add column if not exists tahun_berdiri    text,                                -- founded (komunitas) / active since (pemusik)
   add column if not exists jumlah_anggota   integer,
   add column if not exists ketua            text,
@@ -40,15 +39,6 @@ begin
   if not exists (select 1 from pg_constraint where conname = 'pemusiks_status_check') then
     alter table public.pemusiks
       add constraint pemusiks_status_check check (status in ('terverifikasi', 'draft'));
-  end if;
-end $$;
-
--- Optional grade, as for sanggars
-do $$
-begin
-  if not exists (select 1 from pg_constraint where conname = 'pemusiks_grade_check') then
-    alter table public.pemusiks
-      add constraint pemusiks_grade_check check (grade is null or grade in ('A', 'B'));
   end if;
 end $$;
 

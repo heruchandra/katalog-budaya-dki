@@ -17,7 +17,6 @@ export interface PemusikRow {
   nama_panggung?: string | null;
   wilayah?: string | null;
   status?: string | null;
-  grade?: string | null;
   tahun_berdiri?: string | null;
   jumlah_anggota?: number | null;
   ketua?: string | null;
