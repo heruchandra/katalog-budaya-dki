@@ -7,8 +7,8 @@ export type { GalleryItem, LayananItem, PrestasiItem };
 export const SANGGAR_TABLE = "sanggars";
 export { MEDIA_BUCKET };
 export type { SaveResult };
-/** Same rule the public Navbar uses to show the admin link. Real enforcement must be Supabase RLS. */
-export const ADMIN_EMAIL = "admindisbud@gmail.com";
+// re-exported: the admin pages import it from here (defined in lib/auth so the auth callback route can use it)
+export { ADMIN_EMAIL } from "@/lib/auth";
 
 /** The only grades offered in the admin filter and form */
 export const GRADE_OPTIONS = ["A", "B"] as const;

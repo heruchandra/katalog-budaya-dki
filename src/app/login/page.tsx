@@ -1,16 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle } from "lucide-react";
+import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
+import { authCallbackUrl, homeFor, isEmailNotConfirmed } from "@/lib/auth";
+
+// The query string, read without useSearchParams (this page is static): "" while prerendering and hydrating
+const noSubscribe = () => () => {};
+const useSearch = () => useSyncExternalStore(noSubscribe, () => window.location.search, () => "");
 
 export default function LoginPage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const tr = (idText: string, enText: string) => (language === "en" ? enText : idText);
+  // Messages from /auth/callback: ?verified=1 (address verified) or ?auth_error=expired|invalid (bad link)
+  const params = new URLSearchParams(useSearch());
+  const justVerified = params.get("verified") === "1";
+  const linkError = params.get("auth_error");
+  const [unverified, setUnverified] = useState(false);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +43,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setUnverified(false);
 
     try {
       const { data, error: authError } = await supabase.auth.signInWithPassword({
@@ -39,12 +52,20 @@ export default function LoginPage() {
       });
 
       if (authError) {
-        setError("Email atau password tidak valid.");
+        if (isEmailNotConfirmed(authError)) {
+          setUnverified(true);
+          setError(tr(
+            "Email Anda belum diverifikasi. Silakan cek inbox/spam email Anda untuk melakukan verifikasi.",
+            "Your email hasn't been verified yet. Please check your inbox/spam to verify it."
+          ));
+        } else {
+          setError(tr("Email atau password tidak valid.", "Invalid email or password."));
+        }
       } else {
-        router.push("/admin");
+        router.push(homeFor(data.user?.email));
         router.refresh();
       }
-    } catch (err: any) {
+    } catch {
       setError("Terjadi kesalahan pada sistem.");
     } finally {
       setIsLoading(false);
@@ -161,7 +182,44 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
+            {justVerified && !error && (
+              <p role="status" className="mb-3 flex items-start gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-left text-xs font-medium text-emerald-800">
+                <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                {tr("Email Anda berhasil diverifikasi. Silakan masuk dengan email dan password Anda.", "Your email has been verified. Please sign in with your email and password.")}
+              </p>
+            )}
+            {linkError && !error && (
+              <p role="alert" className="mb-3 flex items-start gap-1.5 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-xs text-red-700">
+                <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                {linkError === "expired"
+                  ? tr("Tautan verifikasi sudah kedaluwarsa. Isi email Anda lalu kirim ulang tautan verifikasi.", "The verification link has expired. Enter your email and resend the verification link.")
+                  : tr("Tautan verifikasi tidak valid atau sudah dipakai. Coba masuk, atau kirim ulang tautan verifikasi.", "The verification link is invalid or was already used. Try signing in, or resend the verification link.")}
+              </p>
+            )}
             {error && <p className="text-red-500 text-xs mb-3 ml-1 text-left flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {error}</p>}
+            {/* Resend the verification email (unverified account, or an expired / invalid link) */}
+            {(unverified || linkError) && (
+              <div className="mb-3 ml-1 text-left text-xs">
+                <button
+                  type="button"
+                  disabled={!email || resendState === "sending" || resendState === "sent"}
+                  onClick={async () => {
+                    setResendState("sending");
+                    const { error: resendError } = await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: authCallbackUrl() } });
+                    setResendState(resendError ? "error" : "sent");
+                  }}
+                  className="font-semibold text-orange-700 underline underline-offset-2 disabled:no-underline disabled:opacity-60"
+                >
+                  {resendState === "sent"
+                    ? tr(`Email verifikasi dikirim ulang ke ${email}`, `Verification email sent again to ${email}`)
+                    : resendState === "sending"
+                      ? tr("Mengirim…", "Sending…")
+                      : tr("Kirim ulang email verifikasi", "Resend the verification email")}
+                </button>
+                {!email && <span className="ml-1 text-zinc-500">{tr("(isi email terlebih dahulu)", "(enter your email first)")}</span>}
+                {resendState === "error" && <p className="mt-1 text-red-600">{tr("Gagal mengirim ulang. Coba lagi beberapa saat lagi.", "Could not resend. Please try again in a moment.")}</p>}
+              </div>
+            )}
             <button
               type="submit"
               disabled={isLoading}
@@ -185,7 +243,7 @@ export default function LoginPage() {
 
             <button
               type="button"
-              onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
+              onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: authCallbackUrl() } })}
               className="flex w-full items-center justify-center gap-2 rounded-none border border-surface-200 bg-white px-6 py-2.5 text-[13px] font-semibold text-surface-700 shadow-sm transition-all duration-200 hover:bg-surface-50 hover:text-surface-900"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">

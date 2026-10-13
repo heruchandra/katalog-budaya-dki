@@ -7,10 +7,13 @@ import { useRouter } from "next/navigation";
 import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
+import { authCallbackUrl, homeFor } from "@/lib/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const tr = (idText: string, enText: string) => (language === "en" ? enText : idText);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -42,19 +45,29 @@ export default function RegisterPage() {
         options: {
           data: {
             full_name: name,
-          }
+          },
+          // the verification link comes back to this same host (localhost, LAN IP, preview or production)
+          emailRedirectTo: authCallbackUrl(),
         }
       });
 
       if (authError) {
         setError(authError.message || "Gagal mendaftar. Silakan coba lagi.");
+      } else if (data.user && data.user.identities?.length === 0) {
+        // Supabase answers a sign-up for an address that is already registered with an empty identity list
+        setError(tr(
+          "Email ini sudah terdaftar. Silakan masuk, atau cek inbox/spam bila belum memverifikasinya.",
+          "This email is already registered. Please sign in, or check your inbox/spam if you haven't verified it yet."
+        ));
+      } else if (data.session) {
+        // email confirmation is turned off in Supabase: the account is signed in right away
+        router.push(homeFor(data.user?.email));
+        router.refresh();
       } else {
+        // stays on this page: the visitor has to act on the email now
         setSuccess(true);
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
       }
-    } catch (err: any) {
+    } catch {
       setError("Terjadi kesalahan pada sistem.");
     } finally {
       setIsLoading(false);
@@ -193,7 +206,36 @@ export default function RegisterPage() {
 
             {/* Submit Button */}
             {error && <p className="text-red-500 text-xs mb-3 ml-1 text-left flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {error}</p>}
-            {success && <p className="text-green-600 text-xs mb-3 ml-1 text-left flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Registrasi berhasil! Mengalihkan ke halaman login...</p>}
+            {success && (
+              <div role="status" className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-left text-xs text-emerald-800">
+                <p className="flex items-start gap-1.5 font-semibold">
+                  <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  {tr(
+                    "Pendaftaran berhasil! Silakan periksa email Anda untuk mengonfirmasi pendaftaran.",
+                    "Registration successful! Please check your email to confirm your registration."
+                  )}
+                </p>
+                <p className="mt-1.5 pl-5 text-emerald-700">
+                  {tr(`Tautan verifikasi dikirim ke ${email}. Tidak ada di inbox? Cek folder spam.`, `A verification link was sent to ${email}. Not in your inbox? Check the spam folder.`)}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-3 pl-5">
+                  <button
+                    type="button"
+                    disabled={resendState === "sending" || resendState === "sent"}
+                    onClick={async () => {
+                      setResendState("sending");
+                      const { error: resendError } = await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: authCallbackUrl() } });
+                      setResendState(resendError ? "error" : "sent");
+                    }}
+                    className="font-semibold text-emerald-800 underline underline-offset-2 disabled:no-underline disabled:opacity-70"
+                  >
+                    {resendState === "sent" ? tr("Email terkirim ulang", "Email sent again") : resendState === "sending" ? tr("Mengirim…", "Sending…") : tr("Kirim ulang email", "Resend email")}
+                  </button>
+                  <Link href="/login" className="font-semibold text-emerald-800 underline underline-offset-2">{tr("Ke halaman Masuk", "Go to Sign In")}</Link>
+                </div>
+                {resendState === "error" && <p className="mt-1.5 pl-5 text-red-600">{tr("Gagal mengirim ulang. Coba lagi beberapa saat lagi.", "Could not resend. Please try again in a moment.")}</p>}
+              </div>
+            )}
             <button
               type="submit"
               disabled={isLoading || success}

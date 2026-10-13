@@ -5,6 +5,7 @@ import { dancingScript } from "@/lib/fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ContactWidget from "@/components/ContactWidget";
+import VerifiedToast from "@/components/VerifiedToast";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
           <ContactWidget />
+          <VerifiedToast />
         </LanguageProvider>
       </body>
     </html>
