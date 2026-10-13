@@ -173,12 +173,14 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   // false on the server and during hydration, then the real value: phones never request the accordion chunk
   const isDesktop = useSyncExternalStore(subscribeDesktop, () => window.matchMedia(DESKTOP_QUERY).matches, () => false);
-  // Hero video (1.6 MB, 720p) is attached only after the page has loaded (and fades in once playing), so it doesn't
-  // compete with the page's own CSS/JS/images. Skipped for reduced-motion, Save-Data and slow connections.
+  // Hero video (videoberanda-hd.mp4: 1080p, 10 s, 8.7 MB) is attached only after the page has loaded (and fades in
+  // once playing), so it doesn't compete with the page's own CSS/JS/images. Skipped for reduced-motion, Save-Data and
+  // slow connections.
   const [showHeroVideo, setShowHeroVideo] = useState(false);
   const [heroVideoReady, setHeroVideoReady] = useState(false);
   // The video's poster reuses the frame next/image already downloaded (its currentSrc), so it costs no extra request
   const heroImageRef = useRef<HTMLImageElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const [heroPoster, setHeroPoster] = useState<string>();
   // The animated headline (and motion with it) is loaded after the page has loaded; StaticHeroHeadline until then
   const [AnimatedHeroHeadline, setAnimatedHeroHeadline] = useState<ComponentType<HeroHeadlineProps> | null>(null);
@@ -192,6 +194,31 @@ export default function HomePage() {
       setShowHeroVideo(true);
     });
   }, []);
+
+  // Start the muted hero video once it is attached. No visibilitychange/pageshow "resume" handler: calling play()
+  // while Chrome restores the page from the back/forward cache left the video frozen; Chrome resumes it by itself.
+  useEffect(() => {
+    if (!showHeroVideo) return;
+    const video = heroVideoRef.current;
+    if (!video) return;
+    // React sets `muted` only as a property; autoplay policies (iOS Safari in particular) also check the default
+    // and the attribute, so set all three before asking it to play
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("muted", "");
+    const play = () => {
+      if (video.paused) video.play().catch((error) => console.log("Autoplay deferred:", error));
+    };
+    // Start once enough is buffered to play through: started earlier, it stalls (freezes) on slower connections
+    if (video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) play();
+    else video.addEventListener("canplaythrough", play, { once: true });
+    // Autoplay blocked (e.g. low-power mode): start on the first tap or click
+    window.addEventListener("pointerdown", play, { once: true });
+    return () => {
+      video.removeEventListener("canplaythrough", play);
+      window.removeEventListener("pointerdown", play);
+    };
+  }, [showHeroVideo]);
 
   useEffect(() => {
     let cancelled = false;
@@ -438,14 +465,17 @@ export default function HomePage() {
         />
         {showHeroVideo && (
           <video
+            ref={heroVideoRef}
             autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
+            // the element only exists once the page has loaded, so buffering the whole clip no longer competes with
+            // the page; a full buffer keeps playback and the loop restart from stalling on slower connections
+            preload="auto"
             poster={heroPoster}
             onPlaying={() => setHeroVideoReady(true)}
-            className={`absolute inset-0 w-full h-full object-cover -z-20 transition-opacity duration-700 ${
+            className={`absolute inset-0 w-full h-full object-cover pointer-events-none -z-20 transition-opacity duration-700 ${
               heroVideoReady ? "opacity-100" : "opacity-0"
             }`}
           >
