@@ -8,6 +8,9 @@ import { Bell, ExternalLink, LayoutDashboard, Loader2, LogOut, Menu, Music, Sett
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { ADMIN_EMAIL, SANGGAR_TABLE } from "@/lib/sanggarAdmin";
+import type { User } from "@supabase/supabase-js";
+import ProfileDropdown from "@/components/ProfileDropdown";
+import { profileAvatar, profileName, saveProfileAvatar, saveProfileName } from "@/lib/profileActions";
 
 type AuthState = "checking" | "ok" | "forbidden";
 
@@ -15,6 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [auth, setAuth] = useState<AuthState>("checking");
   const [email, setEmail] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [draftCount, setDraftCount] = useState<number | null>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -32,10 +36,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
       setEmail(userEmail);
+      setUser(session?.user ?? null);
       setAuth(userEmail === ADMIN_EMAIL ? "ok" : "forbidden");
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) router.replace("/login");
+      else setUser(session.user);
     });
     return () => {
       cancelled = true;
@@ -212,15 +218,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ) : null}
             </Link>
 
-            {/* Profile */}
-            <div className="flex items-center gap-2.5 border-l border-zinc-200 pl-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F7941E] via-[#E01A67] to-[#2B3990] text-sm font-bold text-white">
-                {initial}
-              </span>
-              <span className="hidden min-w-0 leading-tight md:block">
-                <span className="block text-sm font-semibold text-zinc-900">Admin</span>
-                <span className="block max-w-[180px] truncate text-xs text-zinc-500">{email}</span>
-              </span>
+            {/* Profile menu: same as the public navbar (rename, profile photo, sign out) */}
+            <div className="border-l border-zinc-200 pl-3">
+              {user ? (
+                <ProfileDropdown
+                  name={profileName(user)}
+                  email={email}
+                  avatarUrl={profileAvatar(user)}
+                  role="admin"
+                  onSaveName={async (name) => setUser(await saveProfileName(name))}
+                  onSaveAvatar={async (avatar) => setUser(await saveProfileAvatar(user, avatar))}
+                  onLogout={handleLogout}
+                />
+              ) : (
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F7941E] via-[#E01A67] to-[#2B3990] text-sm font-bold text-white">
+                  {initial}
+                </span>
+              )}
             </div>
           </div>
         </header>

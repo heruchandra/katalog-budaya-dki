@@ -31,11 +31,13 @@ const contentSecurityPolicy = buildCsp({
   ],
   // 'unsafe-inline': style attributes rendered by React/next/image and styles injected by components
   "style-src": ["'self'", "'unsafe-inline'", isVercelPreview && "https://vercel.live"],
-  // data: inline SVG backgrounds, blob: local previews of images being cropped/uploaded in the admin
+  // data: inline SVG backgrounds, blob: local previews of images being cropped/uploaded in the admin,
+  // https: profile photos given as an image URL (or from the sign-in provider) can be hosted anywhere
   "img-src": [
     "'self'",
     "data:",
     "blob:",
+    "https:",
     `https://${SUPABASE_HOST}`,
     isVercelPreview && "https://vercel.live",
     isVercelPreview && "https://vercel.com",

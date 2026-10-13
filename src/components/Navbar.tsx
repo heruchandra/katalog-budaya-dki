@@ -4,7 +4,16 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+import type { User } from "@supabase/supabase-js";
 import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
+import { profileAvatar, profileName, saveProfileAvatar, saveProfileName, signOutUser } from "@/lib/profileActions";
+
+// The profile menu is only needed once someone is signed in, so it isn't part of the public pages' initial JavaScript
+const ProfileDropdown = dynamic(() => import("@/components/ProfileDropdown"), {
+  ssr: false,
+  loading: () => <span className="block h-7 w-7 rounded-full bg-zinc-200/60" aria-hidden="true" />,
+});
 import { useLanguage } from "@/context/LanguageContext";
 import { Plus_Jakarta_Sans } from 'next/font/google';
 
@@ -34,7 +43,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
@@ -71,7 +80,8 @@ export default function Navbar() {
   const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
 
   const isAdmin = user?.email === 'admindisbud@gmail.com';
-  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
+  const displayName = profileName(user);
+  const avatarUrl = profileAvatar(user);
 
   // The Supabase client is loaded lazily: the navbar is on every page but only needs it for the login state,
   // so supabase-js stays out of the initial JavaScript of public pages. It is also only fetched once the page
@@ -112,8 +122,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    const { supabase } = await import("@/lib/supabase");
-    await supabase.auth.signOut();
+    await signOutUser();
     router.push("/login");
     router.refresh();
   };
@@ -393,26 +402,19 @@ export default function Navbar() {
                     <span className="hidden xl:inline">{t('navDashboard')}</span>
                   </Link>
                 )}
-                <div className="flex items-center gap-1.5">
-                  <div className={`flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold text-xs border border-primary-200 shadow-sm ${jakarta.className}`}>
-                    {displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-3 w-3" />}
-                  </div>
-                  <span className={`text-xs font-medium hidden xl:block max-w-[120px] truncate whitespace-nowrap transition-colors duration-300 ${jakarta.className} ${
-                    isTransparent ? 'text-white' : 'text-zinc-800'
-                  }`}>
-                    {displayName}
-                  </span>
+                {/* Profile menu (rename, profile photo, sign out) instead of a separate sign-out button */}
+                <div className={jakarta.className}>
+                  <ProfileDropdown
+                    name={displayName}
+                    email={user?.email}
+                    avatarUrl={avatarUrl}
+                    role={isAdmin ? "admin" : "user"}
+                    variant={isTransparent ? "transparent" : "solid"}
+                    onSaveName={async (name) => setUser(await saveProfileName(name))}
+                    onSaveAvatar={async (avatar) => setUser(await saveProfileAvatar(user, avatar))}
+                    onLogout={handleLogout}
+                  />
                 </div>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={`inline-flex shrink-0 items-center gap-1 rounded-none px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${jakarta.className} ${
-                    isTransparent ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-red-600 hover:bg-red-50'
-                  }`}
-                >
-                  <LogOut className="h-3.5 w-3.5" />
-                  {t('navLogout')}
-                </button>
               </div>
             ) : (
               <Link
@@ -702,8 +704,11 @@ export default function Navbar() {
             {user ? (
               <div className="flex flex-col gap-2.5">
                 <div className="flex items-center gap-3 px-1 py-1">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200">
-                    {displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-4 w-4" />}
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-orange-100 text-orange-700 font-bold text-xs border border-orange-200">
+                    {avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={avatarUrl} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                    ) : displayName ? displayName.charAt(0).toUpperCase() : <UserIcon className="h-4 w-4" />}
                   </div>
                   <div className="flex flex-col text-left overflow-hidden">
                     <span className="text-sm font-semibold text-zinc-900 truncate">{displayName}</span>
