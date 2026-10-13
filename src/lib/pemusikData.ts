@@ -4,21 +4,21 @@ import type { KategoriMusik, MusikCategory } from "@/types/musik";
 // Shared by the admin form and the public pages (no Supabase client here, so server pages can import it)
 
 /** The only two Seniman Musik categories (admin filter + form, stored in pemusiks.jenis_seniman) */
-export const KATEGORI_MUSIK_OPTIONS: readonly KategoriMusik[] = ["Komunitas Musik", "Pemusik Perorangan"];
+export const KATEGORI_MUSIK_OPTIONS: readonly KategoriMusik[] = ["Komunitas Musik", "Pemusik"];
 
 /** Category label of a profile's sub-category */
-export const KATEGORI_OF: Record<MusikCategory, KategoriMusik> = { komunitas: "Komunitas Musik", pemusik: "Pemusik Perorangan" };
+export const KATEGORI_OF: Record<MusikCategory, KategoriMusik> = { komunitas: "Komunitas Musik", pemusik: "Pemusik" };
 
 /**
  * Map any stored value onto one of the two categories: groups of any kind (komunitas, sanggar musik, grup, orkes,
- * band, …) are "Komunitas Musik"; individuals (older rows: "Solo", "Perorangan") are "Pemusik Perorangan".
+ * band, …) are "Komunitas Musik"; individuals (older rows: "Solo", "Perorangan", "Pemusik Perorangan") are "Pemusik".
  * "" when the value is empty or unrecognised.
  */
 export function normalizeKategori(value?: string | null): KategoriMusik | "" {
   const v = (value || "").trim();
   if ((KATEGORI_MUSIK_OPTIONS as readonly string[]).includes(v)) return v as KategoriMusik;
   if (/komunitas|kelompok|sanggar|grup|group|orkes|band|ensemble/i.test(v)) return "Komunitas Musik";
-  if (/solo|individu|perorangan|pemusik|musisi|musician/i.test(v)) return "Pemusik Perorangan";
+  if (/solo|individu|perorangan|pemusik|musisi|musician/i.test(v)) return "Pemusik";
   return "";
 }
 

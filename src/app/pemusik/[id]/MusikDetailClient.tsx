@@ -100,7 +100,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
                 {/* Category badge: right of the avatar, directly above the name */}
                 <span className="flex w-fit items-center gap-1.5 rounded-full border border-amber-300/80 bg-amber-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-800 shadow-2xs">
                   <CategoryIcon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                  {isKomunitas ? (isEn ? "Music Community" : "Komunitas Musik") : isEn ? "Solo Musician" : "Pemusik Perorangan"}
+                  {isKomunitas ? (isEn ? "Music Community" : "Komunitas Musik") : isEn ? "Musician" : "Pemusik"}
                 </span>
                 {/* Same title style as the sanggar page; leading-normal leaves room for the script's swashes */}
                 <h1 className="mt-1.5 font-script text-3xl sm:text-4xl lg:text-5xl text-orange-600 leading-normal font-normal">{profile.nama}</h1>

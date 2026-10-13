@@ -2,7 +2,7 @@
 export type MusikCategory = "komunitas" | "pemusik";
 
 /** The two Seniman Musik categories as shown in the admin and the catalog, and stored in pemusiks.jenis_seniman */
-export type KategoriMusik = "Komunitas Musik" | "Pemusik Perorangan";
+export type KategoriMusik = "Komunitas Musik" | "Pemusik";
 
 export type SosialPlatform = "instagram" | "tiktok" | "facebook" | "youtube";
 
