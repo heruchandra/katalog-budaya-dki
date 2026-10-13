@@ -11,13 +11,13 @@ import { toWaNumber } from "@/lib/phone";
 /**
  * The catalog's contact person, shown in the corner popup. `whatsapp` is shown as written on the WhatsApp button
  * and linked as wa.me/62… (the popup's only contact option). Without a `name` the popup names the agency itself.
- * `role` is the line under the name (here the agency, for official context); `hours` (e.g. { id: "Senin–Jumat,
+ * `role` is the line under the name (the contact person's position); `hours` (e.g. { id: "Senin–Jumat,
  * 08.00–16.00 WIB", en: "Monday–Friday, 08:00–16:00 WIB" }) is an optional line.
  */
 type Bilingual = { id: string; en: string };
 const CONTACT_PERSON: { name: string; role: Bilingual | null; whatsapp: string; hours: Bilingual | null } = {
   name: "Adityo Wibisono",
-  role: { id: "Dinas Kebudayaan DKI Jakarta", en: "Jakarta Culture Agency" },
+  role: { id: "Ketua Subkelompok Promosi Seni dan Budaya", en: "Head of the Arts and Culture Promotion Subgroup" },
   whatsapp: "+62 812-8645-8884",
   hours: null,
 };
@@ -101,7 +101,7 @@ export default function ContactWidget() {
           </div>
 
           <div className="space-y-4 p-5">
-            {/* Contact person: headset badge + small tracked label + name (sans, like the label) + the agency under it */}
+            {/* Contact person: headset badge + small tracked label + name (sans, like the label) + position under it */}
             <div className="flex items-center gap-3.5">
               <span className="flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100/60 border border-amber-200/70 p-3 rounded-2xl shadow-2xs flex-shrink-0 text-amber-700">
                 <Headset className="h-5 w-5" aria-hidden="true" />
@@ -113,7 +113,7 @@ export default function ContactWidget() {
                   {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
                 </p>
                 {hasPerson && CONTACT_PERSON.role && (
-                  <p className="mt-1 text-xs font-medium text-zinc-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
+                  <p className="mt-1 text-xs font-medium leading-snug text-gray-500">{isEn ? CONTACT_PERSON.role.en : CONTACT_PERSON.role.id}</p>
                 )}
               </div>
             </div>
