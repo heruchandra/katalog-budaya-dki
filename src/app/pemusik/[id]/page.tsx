@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import type { PemusikRow } from "@/lib/pemusikStats";
 import { findMusikMaster, mergeProfile } from "@/data/musikData";
+import { isDraftRow } from "@/lib/pemusikData";
 import MusikDetailClient from "./MusikDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,8 @@ const loadProfile = cache(async (id: string) => {
       row = null;
     }
   }
+  // a draft is hidden from the public site (its master entry too), like a draft sanggar
+  if (row && isDraftRow(row)) return null;
   return mergeProfile(findMusikMaster(id), row);
 });
 

@@ -1,13 +1,44 @@
-/** A row of the `pemusiks` table (Seniman Musik). */
+/**
+ * A row of the `pemusiks` table (Seniman Musik). Columns marked (migration) only exist after
+ * supabase/migrations/20261013_admin_pemusik_fields.sql is run.
+ */
 export interface PemusikRow {
   id: number | string;
   created_at?: string;
   nama_seniman: string;
+  /** Kategori: "Komunitas Musik", "Sanggar Musik", "Grup / Orkes", "Perorangan" (older rows: "Solo", "Komunitas") */
   jenis_seniman?: string | null;
   genre_musik?: string | null;
   instrumen?: string | null;
+  /** Legacy single free-text experience (superseded by pengalaman_items) */
   pengalaman?: string | null;
   deskripsi?: string | null;
+  // (migration)
+  nama_panggung?: string | null;
+  wilayah?: string | null;
+  status?: string | null;
+  grade?: string | null;
+  tahun_berdiri?: string | null;
+  jumlah_anggota?: number | null;
+  ketua?: string | null;
+  nama_pic?: string | null;
+  jenis_musik?: string | null;
+  kontak?: string | null;
+  whatsapp?: string | null;
+  email?: string | null;
+  instagram?: string | null;
+  youtube_url?: string | null;
+  tiktok?: string | null;
+  facebook?: string | null;
+  alamat?: string | null;
+  logo_url?: string | null;
+  foto_card_url?: string | null;
+  galeri?: unknown;
+  video_url?: string | null;
+  layanan_items?: unknown;
+  karya_items?: unknown;
+  prestasi_items?: unknown;
+  pengalaman_items?: unknown;
 }
 
 export interface CountRow {

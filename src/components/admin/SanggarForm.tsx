@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, ArrowLeft, ExternalLink, ImagePlus, Info, Loader2, Plus, Save, Trash2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ExternalLink, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { resizeImageFile } from "@/lib/cropImage";
 import { JAKARTA_WILAYAH } from "@/lib/wilayah";
 import { useLanguage } from "@/context/LanguageContext";
 import ImageField from "@/components/admin/ImageField";
+import { FieldLabel, GalleryEditor, SectionNotice, inputClass } from "@/components/admin/FormParts";
 import {
   EMPTY_FORM,
   GRADE_OPTIONS,
@@ -25,35 +25,6 @@ import {
 
 type TabKey = "umum" | "kontak" | "media" | "galeri";
 
-const inputClass =
-  "w-full rounded-sm border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-colors focus:border-orange-600 focus:ring-1 focus:ring-orange-600 disabled:bg-zinc-100 disabled:text-zinc-400 disabled:cursor-not-allowed";
-
-const MAX_GALLERY = 30;
-
-function FieldLabel({ children, required, tag }: { children: React.ReactNode; required?: boolean; tag?: string }) {
-  return (
-    <span className="mb-1.5 flex items-center text-sm font-semibold text-zinc-800">
-      {children}
-      {required && <span className="ml-1 text-red-500">*</span>}
-      {tag && (
-        <span className="ml-2 inline-flex items-center rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
-          {tag}
-        </span>
-      )}
-    </span>
-  );
-}
-
-function SectionNotice({ text }: { text?: string }) {
-  if (!text) return null;
-  return (
-    <div className="flex items-start gap-2.5 rounded-sm border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-      <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-      <p>{text}</p>
-    </div>
-  );
-}
-
 export default function SanggarForm({ id }: { id?: string }) {
   const isEdit = Boolean(id);
   const router = useRouter();
@@ -69,8 +40,6 @@ export default function SanggarForm({ id }: { id?: string }) {
   const [nameError, setNameError] = useState(false);
   const [gradeError, setGradeError] = useState(false);
   const hasValidGrade = (GRADE_OPTIONS as readonly string[]).includes(values.grade);
-  const [isGalleryBusy, setIsGalleryBusy] = useState(false);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,24 +78,6 @@ export default function SanggarForm({ id }: { id?: string }) {
     { key: "media", label: tr("Media & Foto Profil", "Media & Profile Photos") },
     { key: "galeri", label: tr("Galeri & Layanan", "Gallery & Services") },
   ];
-
-  const addGalleryFiles = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    setIsGalleryBusy(true);
-    const room = MAX_GALLERY - values.galeri.length;
-    const picked = Array.from(files).filter((f) => f.type.startsWith("image/")).slice(0, Math.max(0, room));
-    const added: SanggarFormValues["galeri"] = [];
-    for (const file of picked) {
-      try {
-        const blob = await resizeImageFile(file);
-        if (blob) added.push({ url: URL.createObjectURL(blob), blob, caption: "" });
-      } catch {
-        // skip files the browser cannot decode
-      }
-    }
-    setValues((prev) => ({ ...prev, galeri: [...prev.galeri, ...added] }));
-    setIsGalleryBusy(false);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -407,69 +358,13 @@ export default function SanggarForm({ id }: { id?: string }) {
           {/* ===== Tab 4: Galeri & Layanan ===== */}
           {activeTab === "galeri" && (
             <div role="tabpanel" className="space-y-10">
-              {/* Galeri */}
-              <section>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h2 className="text-base font-bold text-zinc-900">{tr("Galeri Foto & Aktivitas", "Photo Gallery & Activities")}</h2>
-                    <p className="text-xs text-zinc-500">
-                      {values.galeri.length}/{MAX_GALLERY} {tr("foto. Keterangan tampil di lightbox galeri.", "photos. Captions show in the gallery lightbox.")}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={isMissing("galeri") || isGalleryBusy || values.galeri.length >= MAX_GALLERY}
-                    onClick={() => galleryInputRef.current?.click()}
-                    className="inline-flex items-center justify-center gap-2 rounded-sm border border-zinc-200 bg-white px-3.5 py-2 text-sm font-semibold text-zinc-800 hover:border-orange-400 hover:text-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isGalleryBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-                    {tr("Tambah Foto", "Add Photos")}
-                  </button>
-                  <input ref={galleryInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addGalleryFiles(e.target.files); e.target.value = ""; }} />
-                </div>
-
-                <div className="mt-3"><SectionNotice text={sectionNotice("galeri")} /></div>
-
-                {values.galeri.length === 0 ? (
-                  <div
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => { e.preventDefault(); if (!isMissing("galeri")) addGalleryFiles(e.dataTransfer.files); }}
-                    className="mt-3 flex h-32 items-center justify-center rounded-sm border-2 border-dashed border-zinc-200 bg-zinc-50 px-4 text-center text-xs text-zinc-500"
-                  >
-                    {tr("Belum ada foto. Seret beberapa foto ke sini atau klik “Tambah Foto”.", "No photos yet. Drop several photos here or click “Add Photos”.")}
-                  </div>
-                ) : (
-                  <ul
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => { e.preventDefault(); if (!isMissing("galeri")) addGalleryFiles(e.dataTransfer.files); }}
-                    className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
-                  >
-                    {values.galeri.map((photo, i) => (
-                      <li key={photo.url ?? i} className="rounded-sm border border-zinc-200 bg-white p-2">
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-zinc-100">
-                          {photo.url && <img src={photo.url} alt={photo.caption || `Foto ${i + 1}`} className="h-full w-full object-cover" />}
-                          <button
-                            type="button"
-                            onClick={() => set("galeri", values.galeri.filter((_, j) => j !== i))}
-                            className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-sm bg-black/65 text-white hover:bg-red-600 transition-colors"
-                            aria-label={tr(`Hapus foto ${i + 1}`, `Remove photo ${i + 1}`)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                        <input
-                          type="text"
-                          value={photo.caption}
-                          onChange={(e) => set("galeri", values.galeri.map((g, j) => (j === i ? { ...g, caption: e.target.value } : g)))}
-                          placeholder={tr("Keterangan foto", "Photo caption")}
-                          aria-label={tr(`Keterangan foto ${i + 1}`, `Caption for photo ${i + 1}`)}
-                          className={`${inputClass} mt-2 px-2.5 py-1.5 text-xs`}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
+              <GalleryEditor
+                title={tr("Galeri Foto & Aktivitas", "Photo Gallery & Activities")}
+                items={values.galeri}
+                onChange={(galeri) => set("galeri", galeri)}
+                disabled={isMissing("galeri")}
+                notice={sectionNotice("galeri")}
+              />
 
               {/* Layanan / Karya */}
               <section>

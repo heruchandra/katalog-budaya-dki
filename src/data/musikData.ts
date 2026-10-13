@@ -1,11 +1,22 @@
-import type { MusikCardData, MusikCategory, MusikEntity } from "@/types/musik";
+import type { MusikCardData, MusikCategory, MusikEntity, SosialMedia } from "@/types/musik";
 import type { PemusikRow } from "@/lib/pemusikStats";
+import {
+  isDraftRow,
+  parsePemusikGaleri,
+  parsePemusikKarya,
+  parsePemusikLayanan,
+  parsePemusikPengalaman,
+  parsePemusikPrestasi,
+  pengalamanLine,
+  splitPhoneList,
+} from "@/lib/pemusikData";
+import { socialFromInput } from "@/lib/social";
 import { youTubeId } from "@/lib/video";
 import { toWaNumber } from "@/lib/phone";
 
 // re-exported: pages import the WhatsApp number helper from here
 export { toWaNumber };
-import { resolveWilayah } from "@/lib/wilayah";
+import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 
 /**
  * Seniman Musik master data from the registration documents (formulir pendaftaran) of each entry.
@@ -158,38 +169,76 @@ const splitList = (value?: string | null) =>
     .map((s) => s.trim())
     .filter(Boolean);
 
-/** Profile for a bare `pemusiks` row (no master data): whatever the row has */
+const text = (value?: string | null) => (value && value.trim() ? value.trim() : undefined);
+const isFilled = (value: unknown) =>
+  value !== undefined && value !== null && value !== "" && !(Array.isArray(value) && value.length === 0);
+
+/** Profile from a `pemusiks` row: every field the admin has filled in (see the admin Seniman Musik form) */
 export function profileFromRow(row: PemusikRow): MusikEntity {
+  const category = categoryOfRow(row);
+  const nama = row.nama_seniman;
+  const tahun = text(row.tahun_berdiri);
+  const isYear = !!tahun && /^\d{4}$/.test(tahun);
+  const wilayah = text(row.wilayah);
   return {
     id: String(row.id),
-    category: categoryOfRow(row),
-    nama: row.nama_seniman,
+    category,
+    nama,
+    namaPanggung: text(row.nama_panggung),
+    // a komunitas shows "Tahun Berdiri" (a year), a pemusik "Aktif Sejak" (any text, e.g. "2010" or "1990-an")
+    tahunBerdiri: category === "komunitas" && isYear ? Number(tahun) : undefined,
+    tahunAktif: tahun && !(category === "komunitas" && isYear) ? tahun : undefined,
     deskripsi: row.deskripsi ? row.deskripsi.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean) : [],
-    nomorKontak: [],
-    sosialMedia: [],
+    alamat: text(row.alamat),
+    wilayah: wilayah && (JAKARTA_WILAYAH as readonly string[]).includes(wilayah) ? wilayah : undefined,
+    ketua: text(row.ketua),
+    pic: text(row.nama_pic),
+    nomorKontak: splitPhoneList(row.kontak),
+    nomorWhatsapp: text(row.whatsapp),
+    email: text(row.email),
+    sosialMedia: [
+      socialFromInput("instagram", row.instagram),
+      socialFromInput("tiktok", row.tiktok),
+      socialFromInput("facebook", row.facebook),
+      socialFromInput("youtube", row.youtube_url),
+    ].filter((s): s is SosialMedia => s !== null),
     genre: splitList(row.genre_musik),
-    jenisMusik: [],
+    jenisMusik: splitList(row.jenis_musik),
     instrumen: splitList(row.instrumen),
-    karyaUnggulan: [],
-    pengalamanBerkesenian: row.pengalaman ? [row.pengalaman] : [],
-    layanan: [],
-    prestasi: [],
-    fotoGallery: [],
+    jumlahAnggota: row.jumlah_anggota && row.jumlah_anggota > 0 ? row.jumlah_anggota : undefined,
+    karyaUnggulan: parsePemusikKarya(row).map((k) => ({
+      judul: k.judul,
+      deskripsi: k.deskripsi || undefined,
+      tahun: k.tahun || undefined,
+      link: k.link || undefined,
+    })),
+    pengalamanBerkesenian: parsePemusikPengalaman(row).map(pengalamanLine),
+    layanan: parsePemusikLayanan(row),
+    prestasi: parsePemusikPrestasi(row).map((p) => ({ title: p.title, organizer: p.organizer || undefined, year: p.year || undefined })),
+    fotoProfil: text(row.logo_url),
+    fotoCard: text(row.foto_card_url),
+    fotoGallery: parsePemusikGaleri(row).map((g) => ({ url: g.url, caption: g.caption || `Dokumentasi ${nama}` })),
     isDummyMedia: false,
+    videoUrl: text(row.video_url),
   };
 }
 
-/** Master data, with gaps filled from the database row when there is one */
+/**
+ * Master data merged with its database row. Like the sanggar pages, whatever the admin has filled in wins; the
+ * master data fills the fields the row leaves empty. Photos saved in the admin replace illustration photos.
+ */
 export function mergeProfile(master: MusikEntity | undefined, row: PemusikRow | null): MusikEntity | null {
   if (!master) return row ? profileFromRow(row) : null;
   if (!row) return master;
   const fromRow = profileFromRow(row);
+  const filled = Object.fromEntries(
+    Object.entries(fromRow).filter(([key, value]) => !["id", "category", "isDummyMedia"].includes(key) && isFilled(value))
+  ) as Partial<MusikEntity>;
   return {
     ...master,
-    deskripsi: master.deskripsi.length ? master.deskripsi : fromRow.deskripsi,
-    genre: master.genre.length ? master.genre : fromRow.genre,
-    instrumen: master.instrumen.length ? master.instrumen : fromRow.instrumen,
-    pengalamanBerkesenian: master.pengalamanBerkesenian.length ? master.pengalamanBerkesenian : fromRow.pengalamanBerkesenian,
+    ...filled,
+    category: text(row.jenis_seniman) ? fromRow.category : master.category,
+    isDummyMedia: fromRow.fotoGallery.length > 0 ? false : master.isDummyMedia,
   };
 }
 
@@ -205,9 +254,10 @@ export function toCardData(m: MusikEntity): MusikCardData {
     // An illustration as the card photo would make two different entries look like the same one
     foto: m.isDummyMedia ? undefined : m.fotoCard ?? m.fotoGallery.find((p) => !p.pending)?.url,
     isDummyMedia: m.isDummyMedia,
-    hasProfile: !!findMusikMaster(m.id),
+    // master data, or a database profile with a description: listed before bare name-only entries
+    hasProfile: !!findMusikMaster(m.id) || m.deskripsi.length > 0,
     alamat: m.alamat,
-    wilayah: resolveWilayah({ alamat: m.alamat }),
+    wilayah: m.wilayah ?? resolveWilayah({ alamat: m.alamat }),
     waNumber: waNumberOf(m) || undefined,
     // the card's "Tonton" button opens YouTube: a YouTube demo video, else the YouTube account (a video file
     // plays on the detail page instead)
@@ -216,10 +266,13 @@ export function toCardData(m: MusikEntity): MusikCardData {
   };
 }
 
-/** Catalog list: every database row (merged with its master data) plus master entries not in the database */
+/**
+ * Catalog list: every published database row (merged with its master data) plus master entries not in the
+ * database. Draft rows are hidden, and so is the master entry of a draft row.
+ */
 export function buildMusikCatalog(rows: PemusikRow[]): MusikCardData[] {
   const rowIds = new Set(rows.map((r) => String(r.id)));
-  const fromRows = rows.map((row) => mergeProfile(findMusikMaster(String(row.id)), row)!);
+  const fromRows = rows.filter((row) => !isDraftRow(row)).map((row) => mergeProfile(findMusikMaster(String(row.id)), row)!);
   const masterOnly = MUSIK_MASTER_DATA.filter((m) => !rowIds.has(m.id));
   return [...masterOnly, ...fromRows].map(toCardData);
 }

@@ -267,7 +267,7 @@ export default function MusikDetailClient({ profile }: { profile: MusikEntity })
               <section className={card}>
                 <h2 className={sectionTitle}>{isEn ? "Achievements & Awards" : "Prestasi & Penghargaan"}</h2>
                 {accent}
-                <AwardList items={profile.prestasi.map((title) => ({ title }))} isEn={isEn} />
+                <AwardList items={profile.prestasi.map((p) => (typeof p === "string" ? { title: p } : p))} isEn={isEn} />
               </section>
             )}
           </div>

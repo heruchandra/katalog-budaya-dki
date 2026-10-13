@@ -22,6 +22,9 @@ export interface KaryaUnggulan {
   link?: string;
 }
 
+/** An achievement: a plain line, or with its organizer / year (shown as a year badge) */
+export type MusikPrestasi = string | { title: string; organizer?: string; year?: string };
+
 export interface MusikPhoto {
   url: string;
   caption: string;
@@ -47,6 +50,8 @@ export interface MusikEntity {
   /** Biography / profile, one string per paragraph */
   deskripsi: string[];
   alamat?: string;
+  /** Administrative city set in the admin (otherwise derived from the address) */
+  wilayah?: string;
   /** Leader (komunitas) */
   ketua?: string;
   /** Contact person, when different from the leader */
@@ -67,7 +72,7 @@ export interface MusikEntity {
   karyaUnggulan: KaryaUnggulan[];
   pengalamanBerkesenian: string[];
   layanan: string[];
-  prestasi: string[];
+  prestasi: MusikPrestasi[];
   /** Profile photo / logo (images/musik/<slug>/profile/); a placeholder is shown without one */
   fotoProfil?: string;
   /** Catalog card photo, when it isn't simply the first gallery photo */

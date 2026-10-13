@@ -1,11 +1,12 @@
-import { supabase } from "@/lib/supabase";
+import { MEDIA_BUCKET, SaveResult, deleteRow, getTableColumns, saveRow, uploadImage as uploadToBucket } from "@/lib/adminDb";
 import { GalleryItem, LayananItem, PrestasiItem, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
 
 export { isDraft, parseGallery, parseLayanan, parsePrestasi };
 export type { GalleryItem, LayananItem, PrestasiItem };
 
 export const SANGGAR_TABLE = "sanggars";
-export const MEDIA_BUCKET = "katalog-media";
+export { MEDIA_BUCKET };
+export type { SaveResult };
 /** Same rule the public Navbar uses to show the admin link. Real enforcement must be Supabase RLS. */
 export const ADMIN_EMAIL = "admindisbud@gmail.com";
 
@@ -167,22 +168,10 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
 }
 
 /** Column names of the sanggars table, read from an existing row (null when the table is empty or unreadable). */
-export async function getSanggarColumns(): Promise<Set<string> | null> {
-  const { data, error } = await supabase.from(SANGGAR_TABLE).select("*").limit(1);
-  if (error || !data || data.length === 0) return null;
-  return new Set(Object.keys(data[0]));
-}
+export const getSanggarColumns = () => getTableColumns(SANGGAR_TABLE);
 
-/** Upload a cropped/resized image and return its public URL. */
-export async function uploadImage(blob: Blob, prefix: string): Promise<string> {
-  const ext = blob.type.split("/")[1] || "jpg";
-  const path = `sanggar/${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, blob, { contentType: blob.type, upsert: false });
-  if (error) {
-    throw new Error(`Gagal mengunggah gambar ke bucket "${MEDIA_BUCKET}": ${error.message}`);
-  }
-  return supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path).data.publicUrl;
-}
+/** Upload a cropped/resized image (to sanggar/ in the media bucket) and return its public URL. */
+export const uploadImage = (blob: Blob, prefix: string) => uploadToBucket(blob, prefix, "sanggar");
 
 const resolveImage = async (image: ImageValue, prefix: string): Promise<string | null> =>
   image.blob ? uploadImage(image.blob, prefix) : image.url;
@@ -248,54 +237,11 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
   };
 }
 
-export interface SaveResult {
-  id: number | string;
-  /** Columns that could not be saved because they don't exist in the database yet */
-  skipped: string[];
-}
-
 /**
  * Insert or update a sanggar. Columns missing from the database are left out (and reported) instead of
  * failing the whole save, so the form works before and after the migration is applied.
  */
-export async function saveSanggar(
-  id: number | string | null,
-  payload: Record<string, unknown>,
-  knownColumns: Set<string> | null
-): Promise<SaveResult> {
-  const body = { ...payload };
-  const skipped: string[] = [];
+export const saveSanggar = (id: number | string | null, payload: Record<string, unknown>, knownColumns: Set<string> | null) =>
+  saveRow(SANGGAR_TABLE, id, payload, knownColumns);
 
-  if (knownColumns) {
-    for (const column of Object.keys(body)) {
-      if (!knownColumns.has(column)) {
-        delete body[column];
-        skipped.push(column);
-      }
-    }
-  }
-
-  // Safety net when columns couldn't be detected up front: drop the column PostgREST rejects and retry
-  for (let attempt = 0; attempt < 12; attempt++) {
-    const query = id === null
-      ? supabase.from(SANGGAR_TABLE).insert([body]).select("id").single()
-      : supabase.from(SANGGAR_TABLE).update(body).eq("id", id).select("id").single();
-    const { data, error } = await query;
-
-    if (!error) return { id: data?.id ?? id!, skipped };
-
-    const missing = error.code === "PGRST204" ? /'([^']+)' column/.exec(error.message)?.[1] : undefined;
-    if (missing && missing in body) {
-      delete body[missing];
-      skipped.push(missing);
-      continue;
-    }
-    throw new Error(error.message);
-  }
-  throw new Error("Gagal menyimpan data sanggar.");
-}
-
-export async function deleteSanggar(id: number | string): Promise<void> {
-  const { error } = await supabase.from(SANGGAR_TABLE).delete().eq("id", id);
-  if (error) throw new Error(error.message);
-}
+export const deleteSanggar = (id: number | string) => deleteRow(SANGGAR_TABLE, id);
