@@ -790,15 +790,18 @@ export default function HomePage() {
               },
             ].map((feature) => (
               <SpotlightCard key={feature.title} className="h-full">
-                <div className="bg-gradient-to-br from-amber-100 to-orange-100 text-orange-600 p-3.5 rounded-xl w-fit mb-4 shadow-2xs group-hover:scale-105 transition-transform">
-                  <feature.icon className="h-6 w-6 stroke-[1.75]" aria-hidden="true" />
+                {/* icon, title and description centred in the card */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="mx-auto flex items-center justify-center bg-gradient-to-br from-amber-100 to-orange-100 text-orange-600 p-3.5 rounded-xl w-fit mb-4 shadow-2xs group-hover:scale-105 transition-transform">
+                    <feature.icon className="h-6 w-6 stroke-[1.75]" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 mb-2 text-center">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-zinc-600 leading-relaxed text-center">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-lg font-bold text-zinc-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-zinc-600 leading-relaxed">
-                  {feature.description}
-                </p>
               </SpotlightCard>
             ))}
           </div>
