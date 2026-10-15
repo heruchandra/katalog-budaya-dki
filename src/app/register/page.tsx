@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
-import { authCallbackUrl, homeFor } from "@/lib/auth";
+import { authCallbackUrl, fetchProfileRole, homeForRole } from "@/lib/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function RegisterPage() {
         ));
       } else if (data.session) {
         // email confirmation is turned off in Supabase: the account is signed in right away
-        router.push(homeFor(data.user?.email));
+        router.push(homeForRole(data.user ? await fetchProfileRole(supabase, data.user.id) : null));
         router.refresh();
       } else {
         // stays on this page: the visitor has to act on the email now

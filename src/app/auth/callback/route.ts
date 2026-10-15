@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { homeFor } from "@/lib/auth";
+import { fetchProfileRole, homeForRole } from "@/lib/auth";
 
 /**
  * Auth callback: the email verification link (and Google sign-in) lands here.
@@ -14,7 +14,8 @@ import { homeFor } from "@/lib/auth";
  *   template links to {{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email.
  * - `?error=…&error_description=…`: the link was invalid or expired.
  *
- * The session cookies set while exchanging/verifying are added to the redirect response.
+ * The session cookies set while exchanging/verifying are added to the redirect response. The landing page follows the
+ * account's role in public.profiles (admin → /admin, everyone else → /).
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -28,16 +29,17 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = await createServerSupabaseClient();
+  const landing = async (userId?: string) => homeForRole(userId ? await fetchProfileRole(supabase, userId) : null);
 
   if (tokenHash && type) {
     const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
     if (error) return to(`/login?auth_error=${/expired/i.test(error.message) ? "expired" : "invalid"}`);
-    return to(`${homeFor(data.user?.email)}?verified=1`);
+    return to(`${await landing(data.user?.id)}?verified=1`);
   }
 
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return to(`${homeFor(data.user?.email)}?verified=1`);
+    if (!error) return to(`${await landing(data.user?.id)}?verified=1`);
     // No code verifier on this device: the address is verified, the session just can't be created here
     if (/code verifier|code_verifier|flow state/i.test(error.message)) return to("/login?verified=1");
     return to("/login?auth_error=invalid");

@@ -51,14 +51,14 @@ create index if not exists sanggars_wilayah_idx on public.sanggars (wilayah);
 --
 -- create policy "katalog-media admin upload"
 --   on storage.objects for insert to authenticated
---   with check (bucket_id = 'katalog-media' and auth.jwt() ->> 'email' = 'admindisbud@gmail.com');
+--   with check (bucket_id = 'katalog-media' and exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
 
 -- ---------------------------------------------------------------------------------------------
--- RECOMMENDED: the admin pages are only guarded in the browser. Make sure Row Level Security on
--- public.sanggars allows INSERT / UPDATE / DELETE only for the admin account, e.g.:
+-- RECOMMENDED: the admin pages are only guarded by the app (proxy + browser). Make sure Row Level Security on
+-- public.sanggars allows INSERT / UPDATE / DELETE only for admin accounts (profiles.role = 'admin'), e.g.:
 -- ---------------------------------------------------------------------------------------------
 -- alter table public.sanggars enable row level security;
 -- create policy "sanggars public read"  on public.sanggars for select using (true);
 -- create policy "sanggars admin write"  on public.sanggars for all to authenticated
---   using (auth.jwt() ->> 'email' = 'admindisbud@gmail.com')
---   with check (auth.jwt() ->> 'email' = 'admindisbud@gmail.com');
+--   using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
+--   with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));

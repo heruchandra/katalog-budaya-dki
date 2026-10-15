@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import type { User } from "@supabase/supabase-js";
 import { Menu, X, LogIn, User as UserIcon, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { profileAvatar, profileName, signOutUser } from "@/lib/profileActions";
+import { fetchProfileRole, isAdminRole } from "@/lib/auth";
 
 // The profile menu is only needed once someone is signed in, so it isn't part of the public pages' initial JavaScript
 const ProfileDropdown = dynamic(() => import("@/components/ProfileDropdown"), {
@@ -44,6 +45,8 @@ export default function Navbar() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  // role from public.profiles, tagged with the account it was read for (so a previous account's role never shows)
+  const [profileRole, setProfileRole] = useState<{ userId: string; role: string | null } | null>(null);
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
@@ -79,7 +82,7 @@ export default function Navbar() {
   const isEnglish = language === 'en';
   const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
 
-  const isAdmin = user?.email === 'admindisbud@gmail.com';
+  const isAdmin = !!user && profileRole?.userId === user.id && isAdminRole(profileRole.role);
   const displayName = profileName(user);
   const avatarUrl = profileAvatar(user);
 
@@ -120,6 +123,21 @@ export default function Navbar() {
       unsubscribe?.();
     };
   }, []);
+
+  // Dashboard link / admin badge: the role is read again on sign-in and on every route change, like the /admin gate
+  const userId = user?.id;
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    import("@/lib/supabase")
+      .then(({ supabase }) => fetchProfileRole(supabase, userId))
+      .then((role) => {
+        if (!cancelled) setProfileRole({ userId, role });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, pathname]);
 
   const handleLogout = async () => {
     await signOutUser();

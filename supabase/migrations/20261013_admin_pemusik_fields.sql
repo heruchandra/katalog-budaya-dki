@@ -59,11 +59,11 @@ create index if not exists pemusiks_status_idx on public.pemusiks (status);
 create index if not exists pemusiks_wilayah_idx on public.pemusiks (wilayah);
 
 -- ---------------------------------------------------------------------------------------------
--- RECOMMENDED: the admin pages are only guarded in the browser. Make sure Row Level Security on
--- public.pemusiks allows INSERT / UPDATE / DELETE only for the admin account, e.g.:
+-- RECOMMENDED: the admin pages are only guarded by the app (proxy + browser). Make sure Row Level Security on
+-- public.pemusiks allows INSERT / UPDATE / DELETE only for admin accounts (profiles.role = 'admin'), e.g.:
 -- ---------------------------------------------------------------------------------------------
 -- alter table public.pemusiks enable row level security;
 -- create policy "pemusiks public read"  on public.pemusiks for select using (true);
 -- create policy "pemusiks admin write"  on public.pemusiks for all to authenticated
---   using (auth.jwt() ->> 'email' = 'admindisbud@gmail.com')
---   with check (auth.jwt() ->> 'email' = 'admindisbud@gmail.com');
+--   using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
+--   with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));

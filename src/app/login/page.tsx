@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { LogIn, Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
-import { authCallbackUrl, homeFor, isEmailNotConfirmed } from "@/lib/auth";
+import { authCallbackUrl, fetchProfileRole, homeForRole, isEmailNotConfirmed } from "@/lib/auth";
 
 // The query string, read without useSearchParams (this page is static): "" while prerendering and hydrating
 const noSubscribe = () => () => {};
@@ -62,7 +62,8 @@ export default function LoginPage() {
           setError(tr("Email atau password tidak valid.", "Invalid email or password."));
         }
       } else {
-        router.push(homeFor(data.user?.email));
+        // admin (profiles.role) → dashboard, everyone else → homepage
+        router.push(homeForRole(await fetchProfileRole(supabase, data.user.id)));
         router.refresh();
       }
     } catch {

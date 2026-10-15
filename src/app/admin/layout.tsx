@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, ExternalLink, LayoutDashboard, Loader2, LogOut, Menu, Music, Settings, ShieldAlert, Users, X } from "lucide-react";
+import { Bell, ExternalLink, LayoutDashboard, Loader2, LogOut, Menu, Music, Settings, Users, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
-import { ADMIN_EMAIL, SANGGAR_TABLE } from "@/lib/sanggarAdmin";
+import { SANGGAR_TABLE } from "@/lib/sanggarAdmin";
+import { fetchProfileRole, isAdminRole, UNAUTHORIZED_REDIRECT } from "@/lib/auth";
 import type { User } from "@supabase/supabase-js";
 import ProfileDropdown from "@/components/ProfileDropdown";
 import { profileAvatar, profileName } from "@/lib/profileActions";
 
-type AuthState = "checking" | "ok" | "forbidden";
+type AuthState = "checking" | "ok";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -25,28 +26,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { t, language, setLanguage } = useLanguage();
   const tr = (idText: string, enText: string) => (language === "en" ? enText : idText);
 
-  // Browser-side gate only: the database must still enforce admin-only writes with Row Level Security.
+  // Role gate: public.profiles.role must be 'admin'. Read again on every route change inside /admin, so a role
+  // changed in Supabase takes effect on the next navigation even when the page comes from the router cache (the
+  // /admin proxy does the same check on the server). The database must still enforce admin-only writes with RLS.
   useEffect(() => {
     let cancelled = false;
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const sessionUser = session?.user ?? null;
       if (cancelled) return;
-      const userEmail = session?.user?.email ?? null;
-      if (!userEmail) {
+      if (!sessionUser) {
         router.replace("/login");
         return;
       }
-      setEmail(userEmail);
-      setUser(session?.user ?? null);
-      setAuth(userEmail === ADMIN_EMAIL ? "ok" : "forbidden");
+      const role = await fetchProfileRole(supabase, sessionUser.id);
+      if (cancelled) return;
+      if (!isAdminRole(role)) {
+        router.replace(UNAUTHORIZED_REDIRECT);
+        return;
+      }
+      setEmail(sessionUser.email ?? null);
+      setUser(sessionUser);
+      setAuth("ok");
     });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname, router]);
+
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) router.replace("/login");
       else setUser(session.user);
     });
-    return () => {
-      cancelled = true;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [router]);
 
   // Notification badge: sanggar saved as draft, i.e. waiting for verification (needs the `status` column)
@@ -83,26 +95,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
       <div className="flex h-screen items-center justify-center bg-zinc-50 text-zinc-400">
         <Loader2 className="h-6 w-6 animate-spin" aria-label="Loading" />
-      </div>
-    );
-  }
-
-  if (auth === "forbidden") {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-zinc-50 px-6 text-center">
-        <ShieldAlert className="h-10 w-10 text-red-500" aria-hidden="true" />
-        <h1 className="text-xl font-bold text-zinc-900">{tr("Akses ditolak", "Access denied")}</h1>
-        <p className="max-w-sm text-sm text-zinc-600">
-          {tr(`Akun ${email} tidak memiliki hak akses admin.`, `The account ${email} does not have admin access.`)}
-        </p>
-        <div className="flex gap-2.5">
-          <Link href="/" className="rounded-sm border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50">
-            {tr("Ke Beranda", "Go to Home")}
-          </Link>
-          <button type="button" onClick={handleLogout} className="rounded-sm bg-brand px-4 py-2 text-sm font-bold text-white hover:bg-brand-deep">
-            {tr("Ganti akun", "Switch account")}
-          </button>
-        </div>
       </div>
     );
   }
