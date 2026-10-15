@@ -2,8 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Lock, Mail, Save, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Lock, Mail, Save, AlertCircle, CheckCircle2, Circle, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+
+/** New password rules: at least 10 characters, with an uppercase letter, a lowercase letter and a number */
+const PASSWORD_RULES: { test: (p: string) => boolean; id: string; en: string }[] = [
+  { test: (p) => p.length >= 10, id: "Minimal 10 karakter", en: "At least 10 characters" },
+  { test: (p) => /[A-Z]/.test(p), id: "Huruf besar (A-Z)", en: "An uppercase letter (A-Z)" },
+  { test: (p) => /[a-z]/.test(p), id: "Huruf kecil (a-z)", en: "A lowercase letter (a-z)" },
+  { test: (p) => /[0-9]/.test(p), id: "Angka (0-9)", en: "A number (0-9)" },
+];
+const isStrongPassword = (p: string) => PASSWORD_RULES.every((rule) => rule.test(p));
 
 export default function SettingsPage() {
   const [email, setEmail] = useState("");
@@ -31,8 +40,9 @@ export default function SettingsPage() {
     e.preventDefault();
     setMessage(null);
 
-    if (newPassword.length < 6) {
-      setMessage({ text: "Password minimal 6 karakter.", type: "error" });
+    // checked here, before Supabase is asked to change anything
+    if (!isStrongPassword(newPassword)) {
+      setMessage({ text: "Password minimal 10 karakter dan harus mengandung kombinasi huruf besar, huruf kecil, serta angka.", type: "error" });
       return;
     }
 
@@ -51,9 +61,9 @@ export default function SettingsPage() {
       setMessage({ text: "Password berhasil diperbarui.", type: "success" });
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setMessage({ text: err.message || "Gagal memperbarui password.", type: "error" });
+      setMessage({ text: (err instanceof Error && err.message) || "Gagal memperbarui password.", type: "error" });
     } finally {
       setIsLoading(false);
     }
@@ -125,6 +135,7 @@ export default function SettingsPage() {
                 <input
                   type={showNewPassword ? "text" : "password"}
                   id="new-password"
+                  aria-describedby="new-password-hint"
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -141,6 +152,22 @@ export default function SettingsPage() {
                   {showNewPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
                 </button>
               </div>
+              {/* Rules hint + live checklist (each rule turns green once the typed password meets it) */}
+              <p id="new-password-hint" className="mt-2 text-xs text-gray-500">
+                {isEn ? "At least 10 characters (a mix of A-Z, a-z, 0-9)." : "Minimal 10 karakter (kombinasi A-Z, a-z, 0-9)."}
+              </p>
+              <ul className="mt-1.5 grid grid-cols-1 gap-x-4 gap-y-1 text-xs sm:grid-cols-2">
+                {PASSWORD_RULES.map((rule) => {
+                  const met = rule.test(newPassword);
+                  return (
+                    <li key={rule.id} className={`flex items-center gap-1.5 transition-colors ${met ? "text-emerald-600" : "text-gray-400"}`}>
+                      {met ? <CheckCircle2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> : <Circle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />}
+                      <span>{isEn ? rule.en : rule.id}</span>
+                      <span className="sr-only">{met ? (isEn ? "(met)" : "(terpenuhi)") : (isEn ? "(not met)" : "(belum)")}</span>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
 
             <div>
