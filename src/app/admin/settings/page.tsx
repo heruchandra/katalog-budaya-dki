@@ -2,16 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Lock, Mail, Save, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Lock, Mail, Save, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function SettingsPage() {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  // show / hide the typed password (eye toggle inside each field)
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEn = language === "en";
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -119,14 +123,23 @@ export default function SettingsPage() {
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  type="password"
+                  type={showNewPassword ? "text" : "password"}
                   id="new-password"
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="block w-full py-2.5 pl-10 text-gray-900 placeholder:text-gray-400 bg-transparent border-none focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm sm:leading-6"
+                  className="block w-full py-2.5 pl-10 pr-10 text-gray-900 placeholder:text-gray-400 bg-transparent border-none focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm sm:leading-6"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword((v) => !v)}
+                  aria-label={showNewPassword ? (isEn ? "Hide password" : "Sembunyikan password") : (isEn ? "Show password" : "Tampilkan password")}
+                  aria-pressed={showNewPassword}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showNewPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                </button>
               </div>
             </div>
 
@@ -139,14 +152,23 @@ export default function SettingsPage() {
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   id="confirm-password"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full py-2.5 pl-10 text-gray-900 placeholder:text-gray-400 bg-transparent border-none focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm sm:leading-6"
+                  className="block w-full py-2.5 pl-10 pr-10 text-gray-900 placeholder:text-gray-400 bg-transparent border-none focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm sm:leading-6"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  aria-label={showConfirmPassword ? (isEn ? "Hide password" : "Sembunyikan password") : (isEn ? "Show password" : "Tampilkan password")}
+                  aria-pressed={showConfirmPassword}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                </button>
               </div>
             </div>
 
