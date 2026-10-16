@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CheckCheck, MapPin, MessageCircle, Search, SendHorizontal } from "lucide-react";
+import { CheckCheck, MapPin, MoreVertical, Search, SendHorizontal } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export type StepIllustrationName = "search" | "profile" | "whatsapp";
@@ -206,7 +206,8 @@ export default function StepIllustration({ name }: { name: StepIllustrationName 
           <span className="block truncate text-xs font-semibold @lg:text-sm">{c.chatName}</span>
           <span className="block text-[10px] text-white/75 @lg:text-xs">online</span>
         </span>
-        <MessageCircle className="h-4 w-4 shrink-0 text-white/80 @lg:h-5 @lg:w-5" />
+        {/* the chat's menu button, as in WhatsApp's header */}
+        <MoreVertical className="h-4 w-4 shrink-0 text-white/90 @lg:h-5 @lg:w-5" />
       </div>
       <div className="space-y-2 bg-[#EFE7DD] px-3 py-3.5 @lg:space-y-2.5 @lg:px-5 @lg:py-5">
         {c.chat.map((message) => (
