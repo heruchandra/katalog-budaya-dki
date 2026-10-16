@@ -15,7 +15,6 @@ import {
   PartyPopper,
   Search,
   ShieldCheck,
-  Sparkles,
   UserCheck,
   type LucideIcon,
 } from "lucide-react";
@@ -116,15 +115,6 @@ function Reveal({ open, className, children }: { open: boolean; className: strin
   );
 }
 
-function PreviewBadge({ label, className }: { label: string; className: string }) {
-  return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary-700 shadow-sm backdrop-blur-sm ${className}`}>
-      <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-      {label}
-    </span>
-  );
-}
-
 /**
  * Cards + photo preview ("Hadir di Setiap Momen Istimewa"). Wide containers: the cards on the left, the selected
  * card's photo on the right (all photos are stacked there and cross-fade). Narrow ones: the photo opens below the
@@ -136,7 +126,6 @@ function Gallery({ items }: { items: InfoItem[] }) {
   const [active, setActive] = useState(0);
   const previewId = useId();
   const current = items[active];
-  const badge = isEn ? "Art Moment Preview" : "Pratinjau Momen Seni";
 
   return (
     <div className="@container pt-1">
@@ -180,7 +169,6 @@ function Gallery({ items }: { items: InfoItem[] }) {
                         style={{ objectPosition: item.image.position }}
                         className="object-cover"
                       />
-                      <PreviewBadge label={badge} className="absolute left-3 top-3" />
                     </div>
                   </Reveal>
                 )}
@@ -212,7 +200,6 @@ function Gallery({ items }: { items: InfoItem[] }) {
           )}
           {/* dark at the bottom so the white caption reads over bright costumes */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 via-30% to-transparent to-60%" />
-          <PreviewBadge label={badge} className="absolute left-4 top-4" />
           <span className="absolute right-4 top-4 rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-semibold tabular-nums text-white backdrop-blur-sm">
             {active + 1} / {items.length}
           </span>
