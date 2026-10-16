@@ -7,6 +7,14 @@ export const metadata: Metadata = {
     "Temukan sanggar tari dan seniman musik tradisional pilihan Jakarta. Setiap sanggar terkurasi oleh Dinas Kebudayaan Provinsi DKI Jakarta dan bisa dihubungi langsung lewat WhatsApp.",
 };
 
+// "Hadir di Setiap Momen Istimewa" previews: photos already used on the site (position = the crop's focus point)
+const MOMENT_PHOTOS = {
+  welcome: { src: "/images/hero/hero-poster.webp", position: "40% 50%" },
+  wedding: { src: "/bg/bg-login-1.webp", position: "50% 40%" },
+  festival: { src: "/images/musik/dekorasi/dinamis-musik-10.webp", position: "48% 50%" },
+  dance: { src: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp", position: "60% 50%" },
+};
+
 export default function TentangKamiPage() {
   return (
     <InfoPage
@@ -30,12 +38,32 @@ export default function TentangKamiPage() {
               paragraphs: [
                 "Berikan sentuhan budaya Jakarta yang berkesan bagi tamu dan keluarga Anda:",
               ],
-              layout: "grid",
+              layout: "gallery",
               items: [
-                { icon: "party-popper", title: "Penyambutan Tamu Kehormatan", text: "Acara kantor, peresmian, dan perayaan hari besar." },
-                { icon: "heart-handshake", title: "Pernikahan & Acara Keluarga", text: "Lengkap dengan nuansa adat Betawi yang berkesan." },
-                { icon: "music", title: "Festival & Pentas Seni", text: "Festival, pentas seni sekolah, hingga kegiatan komunitas." },
-                { icon: "graduation-cap", title: "Kelas Tari Tradisional", text: "Untuk anak, remaja, hingga dewasa." },
+                {
+                  icon: "party-popper",
+                  title: "Penyambutan Tamu Kehormatan",
+                  text: "Acara kantor, peresmian, dan perayaan hari besar.",
+                  image: { ...MOMENT_PHOTOS.welcome, alt: "Penari Betawi berkostum merah keemasan tampil di panggung terbuka" },
+                },
+                {
+                  icon: "heart-handshake",
+                  title: "Pernikahan & Acara Keluarga",
+                  text: "Lengkap dengan nuansa adat Betawi yang berkesan.",
+                  image: { ...MOMENT_PHOTOS.wedding, alt: "Sepasang ondel-ondel, boneka raksasa khas Betawi, berdiri berdampingan" },
+                },
+                {
+                  icon: "music",
+                  title: "Festival & Pentas Seni",
+                  text: "Festival, pentas seni sekolah, hingga kegiatan komunitas.",
+                  image: { ...MOMENT_PHOTOS.festival, alt: "Grup musik Betawi tampil di panggung perayaan HUT ke-497 Jakarta" },
+                },
+                {
+                  icon: "graduation-cap",
+                  title: "Kelas Tari Tradisional",
+                  text: "Untuk anak, remaja, hingga dewasa.",
+                  image: { ...MOMENT_PHOTOS.dance, alt: "Pelatih memandu murid berlatih di kelas tari Betawi" },
+                },
               ],
             },
             {
@@ -45,9 +73,9 @@ export default function TentangKamiPage() {
               ],
               layout: "steps",
               items: [
-                { icon: "search", title: "Temukan Penampil", text: "Cari sanggar & seniman musik berdasarkan nama, kategori, grade, dan wilayah." },
-                { icon: "eye", title: "Pelajari Profilnya", text: "Lihat profil, galeri, dan video penampilan sebelum memutuskan." },
-                { icon: "message-circle", title: "Hubungi Langsung", text: "Hubungi sanggar **langsung lewat WhatsApp**, tanpa perantara." },
+                { icon: "search", title: "Temukan Penampil", text: "Cari sanggar & seniman musik berdasarkan nama, kategori, grade, dan wilayah.", illustration: "search" },
+                { icon: "eye", title: "Pelajari Profilnya", text: "Lihat profil, galeri, dan video penampilan sebelum memutuskan.", illustration: "profile" },
+                { icon: "message-circle", title: "Hubungi Langsung", text: "Hubungi sanggar **langsung lewat WhatsApp**, tanpa perantara.", illustration: "whatsapp" },
               ],
             },
             {
@@ -78,12 +106,32 @@ export default function TentangKamiPage() {
               paragraphs: [
                 "Give your guests and family a memorable touch of Jakarta culture:",
               ],
-              layout: "grid",
+              layout: "gallery",
               items: [
-                { icon: "party-popper", title: "Welcoming Honored Guests", text: "Corporate events, inaugurations, and holiday celebrations." },
-                { icon: "heart-handshake", title: "Weddings & Family Celebrations", text: "Complete with a memorable traditional Betawi touch." },
-                { icon: "music", title: "Festivals & Art Shows", text: "Festivals, school art shows, and community events." },
-                { icon: "graduation-cap", title: "Traditional Dance Classes", text: "For children, teenagers, and adults." },
+                {
+                  icon: "party-popper",
+                  title: "Welcoming Honored Guests",
+                  text: "Corporate events, inaugurations, and holiday celebrations.",
+                  image: { ...MOMENT_PHOTOS.welcome, alt: "Betawi dancers in red and gold costumes performing on an open-air stage" },
+                },
+                {
+                  icon: "heart-handshake",
+                  title: "Weddings & Family Celebrations",
+                  text: "Complete with a memorable traditional Betawi touch.",
+                  image: { ...MOMENT_PHOTOS.wedding, alt: "A pair of ondel-ondel, the giant Betawi puppets, standing side by side" },
+                },
+                {
+                  icon: "music",
+                  title: "Festivals & Art Shows",
+                  text: "Festivals, school art shows, and community events.",
+                  image: { ...MOMENT_PHOTOS.festival, alt: "A Betawi music group performing on stage at Jakarta's 497th anniversary celebration" },
+                },
+                {
+                  icon: "graduation-cap",
+                  title: "Traditional Dance Classes",
+                  text: "For children, teenagers, and adults.",
+                  image: { ...MOMENT_PHOTOS.dance, alt: "An instructor guiding students in a Betawi dance class" },
+                },
               ],
             },
             {
@@ -93,9 +141,9 @@ export default function TentangKamiPage() {
               ],
               layout: "steps",
               items: [
-                { icon: "search", title: "Find Performers", text: "Search for studios & music artists by name, category, grade, and region." },
-                { icon: "eye", title: "Check Their Profile", text: "View profiles, galleries, and performance videos before you decide." },
-                { icon: "message-circle", title: "Contact Directly", text: "Contact the studio **directly on WhatsApp**, with no middleman." },
+                { icon: "search", title: "Find Performers", text: "Search for studios & music artists by name, category, grade, and region.", illustration: "search" },
+                { icon: "eye", title: "Check Their Profile", text: "View profiles, galleries, and performance videos before you decide.", illustration: "profile" },
+                { icon: "message-circle", title: "Contact Directly", text: "Contact the studio **directly on WhatsApp**, with no middleman.", illustration: "whatsapp" },
               ],
             },
             {

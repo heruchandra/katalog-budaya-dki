@@ -3,45 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  ChevronRight,
-  Eye,
-  FileText,
-  GraduationCap,
-  HeartHandshake,
-  Info,
-  Lock,
-  MessageCircle,
-  Music,
-  PartyPopper,
-  Search,
-  ShieldCheck,
-  UserCheck,
-  type LucideIcon,
-} from "lucide-react";
+import { Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-
-// The pages are server components, so an item names its icon instead of passing the component
-const ITEM_ICONS = {
-  "party-popper": PartyPopper,
-  "heart-handshake": HeartHandshake,
-  music: Music,
-  "graduation-cap": GraduationCap,
-  search: Search,
-  eye: Eye,
-  "message-circle": MessageCircle,
-  "shield-check": ShieldCheck,
-  lock: Lock,
-  "file-text": FileText,
-  "user-check": UserCheck,
-} satisfies Record<string, LucideIcon>;
-
-/** One point of a section, shown as an icon card */
-export interface InfoItem {
-  icon: keyof typeof ITEM_ICONS;
-  title: string;
-  text: string;
-}
+import Rich from "@/components/informasi/Rich";
+import ItemCards, { type InfoItem, type InfoLayout } from "@/components/informasi/InfoCards";
 
 /** Content strings may mark key terms as **term**: they render in bold (see `Rich`) */
 export interface InfoSection {
@@ -49,8 +14,8 @@ export interface InfoSection {
   paragraphs: string[];
   /** The section's points as icon cards (instead of a plain bullet list) */
   items?: InfoItem[];
-  /** "grid": 2 x 2 feature cards, "steps": numbered process cards, "list" (default): one card per row */
-  layout?: "grid" | "steps" | "list";
+  /** "gallery": cards with a photo preview, "steps": numbered process with illustrations, "list" (default): one card per row */
+  layout?: InfoLayout;
   /** Key notice for the section, shown in a gold callout box after its text */
   callout?: string;
 }
@@ -66,104 +31,6 @@ export interface InfoContent {
 }
 
 const sectionId = (index: number) => `bagian-${index + 1}`;
-
-// plain bold: no fill, padding or border, so the paragraph reads continuously
-const HIGHLIGHT = "font-semibold text-gray-900";
-
-/** Renders a content string with its **key terms** in bold */
-function Rich({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
-        i % 2 === 1 ? <strong key={i} className={HIGHLIGHT}>{part}</strong> : part
-      )}
-    </>
-  );
-}
-
-// Card hover: lifts slightly, the border turns orange and the icon badge fills with the primary orange
-const CARD_HOVER =
-  "transition duration-300 hover:-translate-y-1 hover:border-primary-300 hover:shadow-lg hover:shadow-primary-500/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
-const ICON_BADGE =
-  "flex shrink-0 items-center justify-center bg-primary-50 text-primary-600 ring-1 ring-primary-100 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white group-hover:ring-primary-600";
-
-/** A section's points as icon cards: a 2 x 2 feature grid, numbered process steps, or a list of cards */
-function ItemCards({ items, layout = "list" }: { items: InfoItem[]; layout?: InfoSection["layout"] }) {
-  // role="list": Safari drops list semantics from lists styled without bullets
-  if (layout === "steps") {
-    return (
-      <ol role="list" className="grid grid-cols-1 gap-4 pt-1 md:grid-cols-3">
-        {items.map((item, i) => {
-          const Icon = ITEM_ICONS[item.icon];
-          return (
-            <li key={item.title} className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white p-5 ${CARD_HOVER}`}>
-              <div className="flex items-center justify-between">
-                <span className={`h-12 w-12 rounded-2xl ${ICON_BADGE}`}>
-                  <Icon className="h-6 w-6" aria-hidden="true" />
-                </span>
-                <span aria-hidden="true" className="text-3xl font-bold tabular-nums text-primary-200 transition-colors duration-300 group-hover:text-primary-400">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </div>
-              <h3 className="mt-4 text-base font-bold text-slate-900">{item.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-700"><Rich text={item.text} /></p>
-              {/* arrow to the next step: in the gap below on phones, in the gap to the right from md up */}
-              {i < items.length - 1 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute -bottom-[22px] left-1/2 z-10 flex h-7 w-7 -translate-x-1/2 rotate-90 items-center justify-center rounded-full bg-white text-primary-500 ring-1 ring-slate-200 md:top-1/2 md:bottom-auto md:left-auto md:-right-[22px] md:translate-x-0 md:-translate-y-1/2 md:rotate-0"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </span>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-    );
-  }
-
-  if (layout === "grid") {
-    return (
-      <ul role="list" className="grid grid-cols-1 gap-4 pt-1 sm:grid-cols-2">
-        {items.map((item) => {
-          const Icon = ITEM_ICONS[item.icon];
-          return (
-            <li key={item.title} className={`group flex flex-col rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-primary-50/40 p-5 sm:p-6 ${CARD_HOVER}`}>
-              <span className={`h-12 w-12 rounded-full ${ICON_BADGE}`}>
-                <Icon className="h-6 w-6" aria-hidden="true" />
-              </span>
-              <h3 className="mt-4 text-base font-bold text-slate-900">{item.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-700"><Rich text={item.text} /></p>
-            </li>
-          );
-        })}
-      </ul>
-    );
-  }
-
-  return (
-    <ul role="list" className="space-y-3 pt-1">
-      {items.map((item) => {
-        const Icon = ITEM_ICONS[item.icon];
-        return (
-          <li
-            key={item.title}
-            className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition-colors duration-200 hover:border-primary-200 hover:bg-primary-50/50 sm:p-5"
-          >
-            <span className={`h-10 w-10 rounded-xl ${ICON_BADGE}`}>
-              <Icon className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div className="min-w-0">
-              <h3 className="text-sm font-bold text-slate-900 sm:text-base">{item.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-slate-700 break-words"><Rich text={item.text} /></p>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
 
 /** Shared layout for the footer "Informasi" pages (Tentang Kami, Kebijakan Privasi, Syarat & Ketentuan). */
 export default function InfoPage({ content }: { content: { id: InfoContent; en: InfoContent } }) {

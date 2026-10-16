@@ -67,6 +67,7 @@
   --animate-fade-in: fade-in 0.6s ease-out forwards;
   --animate-slide-up: slide-up 0.5s ease-out forwards;
   --animate-float: float 6s ease-in-out infinite;
+  --animate-icon-pulse: icon-pulse 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 /* ===== Brand Primary Orange (single source for "Masuk" and every primary orange CTA) =====
@@ -135,6 +136,18 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+/* Information page cards: a ring pulsing out of the icon badge while the card is hovered */
+@keyframes icon-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
   }
 }
 
