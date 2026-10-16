@@ -9,7 +9,6 @@ import {
   FileText,
   GraduationCap,
   HeartHandshake,
-  ImageIcon,
   Lock,
   MessageCircle,
   Music,
@@ -266,24 +265,11 @@ function Steps({ items }: { items: InfoItem[] }) {
               <h3 className="mt-4 text-base font-bold text-slate-900">{item.title}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-slate-700"><Rich text={item.text} /></p>
               {item.illustration && (
-                <>
-                  {/* tells the card can be opened; reads "showing" on the selected one (kept at the card's bottom edge) */}
-                  <div aria-hidden="true" className="mt-auto pt-4">
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 transition-colors duration-300 ${
-                        selected ? "bg-primary-600 text-white ring-primary-600" : "bg-white text-slate-600 ring-slate-200 group-hover:text-primary-700 group-hover:ring-primary-300"
-                      }`}
-                    >
-                      {selected ? <Eye className="h-3.5 w-3.5" /> : <ImageIcon className="h-3.5 w-3.5" />}
-                      {selected ? (isEn ? "Showing" : "Ditampilkan") : isEn ? "View illustration" : "Lihat Ilustrasi"}
-                    </span>
+                <Reveal open={selected} className="@xl:hidden">
+                  <div className="mt-4 rounded-2xl bg-primary-50 p-3 ring-1 ring-primary-100">
+                    <StepIllustration name={item.illustration} />
                   </div>
-                  <Reveal open={selected} className="@xl:hidden">
-                    <div className="mt-4 rounded-2xl bg-primary-50 p-3 ring-1 ring-primary-100">
-                      <StepIllustration name={item.illustration} />
-                    </div>
-                  </Reveal>
-                </>
+                </Reveal>
               )}
               {/* arrow to the next step: in the gap below (stacked) or to the right (side by side) */}
               {i < items.length - 1 && (
@@ -311,9 +297,8 @@ function Steps({ items }: { items: InfoItem[] }) {
           className="absolute -top-2 z-10 h-4 w-4 rotate-45 border-l border-t border-primary-200 bg-primary-50 transition-[left] duration-300 ease-in-out motion-reduce:transition-none"
           style={{ left: notchLeft(active, items.length) }}
         />
-        <div id={panelId} className="relative overflow-hidden rounded-3xl border border-primary-200 bg-primary-50 px-6 pb-6 pt-14">
+        <div id={panelId} className="relative overflow-hidden rounded-3xl border border-primary-200 bg-primary-50 p-8">
           <div aria-hidden="true" className="batik-pattern pointer-events-none absolute inset-0" />
-          <PreviewBadge label={isEn ? `Step ${active + 1} illustration` : `Ilustrasi Langkah ${active + 1}`} className="absolute left-5 top-4 ring-1 ring-primary-100" />
           {/* every illustration sits in the same grid cell (the panel keeps the tallest one's height) and cross-fades */}
           <div className="relative grid items-center">
             {items.map((item, i) =>
