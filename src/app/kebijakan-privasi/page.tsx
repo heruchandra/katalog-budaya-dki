@@ -22,10 +22,14 @@ export default function KebijakanPrivasiPage() {
               paragraphs: [
                 "Kami mengelola dua jenis informasi:",
               ],
-              bullets: [
-                "**Data profil sanggar dan seniman** yang disampaikan saat pendaftaran atau pendataan oleh Dinas Kebudayaan, seperti nama sanggar, nama pimpinan dan kontak PIC, alamat, nomor WhatsApp, email, tautan media sosial, deskripsi, foto, dan video.",
-                "**Data akun pengelola** (misalnya email untuk masuk ke dasbor admin).",
-                "Pengunjung umum dapat menjelajahi katalog **tanpa membuat akun**.",
+              items: [
+                {
+                  icon: "file-text",
+                  title: "Data Profil Sanggar & Seniman",
+                  text: "Disampaikan saat pendaftaran atau pendataan oleh Dinas Kebudayaan, seperti nama sanggar, nama pimpinan dan kontak PIC, alamat, nomor WhatsApp, email, tautan media sosial, deskripsi, foto, dan video.",
+                },
+                { icon: "lock", title: "Data Akun Pengelola", text: "Misalnya email untuk masuk ke dasbor admin." },
+                { icon: "user-check", title: "Pengunjung Tanpa Akun", text: "Pengunjung umum dapat menjelajahi katalog **tanpa membuat akun**." },
               ],
             },
             {
@@ -61,10 +65,14 @@ export default function KebijakanPrivasiPage() {
               paragraphs: [
                 "We manage two kinds of information:",
               ],
-              bullets: [
-                "**Studio and artist profile data** provided during registration or data collection by the Department of Culture, such as studio name, leader and contact person, address, WhatsApp number, email, social media links, description, photos, and videos.",
-                "**Administrator account data** (for example, the email used to sign in to the admin dashboard).",
-                "General visitors can browse the catalog **without creating an account**.",
+              items: [
+                {
+                  icon: "file-text",
+                  title: "Studio & Artist Profile Data",
+                  text: "Provided during registration or data collection by the Department of Culture, such as studio name, leader and contact person, address, WhatsApp number, email, social media links, description, photos, and videos.",
+                },
+                { icon: "lock", title: "Administrator Account Data", text: "For example, the email used to sign in to the admin dashboard." },
+                { icon: "user-check", title: "No Account Needed for Visitors", text: "General visitors can browse the catalog **without creating an account**." },
               ],
             },
             {

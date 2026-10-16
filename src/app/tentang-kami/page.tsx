@@ -30,11 +30,12 @@ export default function TentangKamiPage() {
               paragraphs: [
                 "Berikan sentuhan budaya Jakarta yang berkesan bagi tamu dan keluarga Anda:",
               ],
-              bullets: [
-                "**Penyambutan tamu kehormatan**, acara kantor, peresmian, dan perayaan hari besar.",
-                "**Pernikahan dan acara keluarga** dengan nuansa adat Betawi.",
-                "Festival, pentas seni sekolah, hingga kegiatan komunitas.",
-                "**Kelas tari tradisional** untuk anak, remaja, hingga dewasa.",
+              layout: "grid",
+              items: [
+                { icon: "party-popper", title: "Penyambutan Tamu Kehormatan", text: "Acara kantor, peresmian, dan perayaan hari besar." },
+                { icon: "heart-handshake", title: "Pernikahan & Acara Keluarga", text: "Lengkap dengan nuansa adat Betawi yang berkesan." },
+                { icon: "music", title: "Festival & Pentas Seni", text: "Festival, pentas seni sekolah, hingga kegiatan komunitas." },
+                { icon: "graduation-cap", title: "Kelas Tari Tradisional", text: "Untuk anak, remaja, hingga dewasa." },
               ],
             },
             {
@@ -42,10 +43,11 @@ export default function TentangKamiPage() {
               paragraphs: [
                 "Menemukan penampil yang tepat kini hanya butuh beberapa langkah:",
               ],
-              bullets: [
-                "Cari sanggar dan seniman musik berdasarkan nama, kategori, grade, dan wilayah.",
-                "Lihat profil, galeri, dan video penampilan sebelum memutuskan.",
-                "Hubungi sanggar **langsung lewat WhatsApp**, tanpa perantara.",
+              layout: "steps",
+              items: [
+                { icon: "search", title: "Temukan Penampil", text: "Cari sanggar & seniman musik berdasarkan nama, kategori, grade, dan wilayah." },
+                { icon: "eye", title: "Pelajari Profilnya", text: "Lihat profil, galeri, dan video penampilan sebelum memutuskan." },
+                { icon: "message-circle", title: "Hubungi Langsung", text: "Hubungi sanggar **langsung lewat WhatsApp**, tanpa perantara." },
               ],
             },
             {
@@ -76,11 +78,12 @@ export default function TentangKamiPage() {
               paragraphs: [
                 "Give your guests and family a memorable touch of Jakarta culture:",
               ],
-              bullets: [
-                "**Welcoming honored guests**, corporate events, inaugurations, and holiday celebrations.",
-                "**Weddings and family celebrations** with a traditional Betawi touch.",
-                "Festivals, school art shows, and community events.",
-                "**Traditional dance classes** for children, teenagers, and adults.",
+              layout: "grid",
+              items: [
+                { icon: "party-popper", title: "Welcoming Honored Guests", text: "Corporate events, inaugurations, and holiday celebrations." },
+                { icon: "heart-handshake", title: "Weddings & Family Celebrations", text: "Complete with a memorable traditional Betawi touch." },
+                { icon: "music", title: "Festivals & Art Shows", text: "Festivals, school art shows, and community events." },
+                { icon: "graduation-cap", title: "Traditional Dance Classes", text: "For children, teenagers, and adults." },
               ],
             },
             {
@@ -88,10 +91,11 @@ export default function TentangKamiPage() {
               paragraphs: [
                 "Finding the right performers takes just a few steps:",
               ],
-              bullets: [
-                "Search for studios and music artists by name, category, grade, and region.",
-                "View profiles, galleries, and performance videos before you decide.",
-                "Contact the studio **directly on WhatsApp**, with no middleman.",
+              layout: "steps",
+              items: [
+                { icon: "search", title: "Find Performers", text: "Search for studios & music artists by name, category, grade, and region." },
+                { icon: "eye", title: "Check Their Profile", text: "View profiles, galleries, and performance videos before you decide." },
+                { icon: "message-circle", title: "Contact Directly", text: "Contact the studio **directly on WhatsApp**, with no middleman." },
               ],
             },
             {

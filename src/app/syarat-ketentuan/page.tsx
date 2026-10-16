@@ -34,9 +34,17 @@ export default function SyaratKetentuanPage() {
               paragraphs: [
                 "Foto, video, nama karya, dan materi lain yang ditampilkan merupakan milik sanggar atau seniman yang bersangkutan dan **dilindungi hak cipta**.",
               ],
-              bullets: [
-                "Materi tidak boleh disalin, diunduh untuk keperluan komersial, atau digunakan ulang **tanpa izin tertulis** dari pemiliknya.",
-                "Karya seni tradisi yang ditampilkan adalah bagian dari **warisan budaya** dan harus dihormati serta tidak disalahgunakan.",
+              items: [
+                {
+                  icon: "lock",
+                  title: "Wajib Izin Tertulis",
+                  text: "Materi tidak boleh disalin, diunduh untuk keperluan komersial, atau digunakan ulang **tanpa izin tertulis** dari pemiliknya.",
+                },
+                {
+                  icon: "shield-check",
+                  title: "Hormati Warisan Budaya",
+                  text: "Karya seni tradisi yang ditampilkan adalah bagian dari **warisan budaya** dan harus dihormati serta tidak disalahgunakan.",
+                },
               ],
             },
             {
@@ -72,9 +80,17 @@ export default function SyaratKetentuanPage() {
               paragraphs: [
                 "Photos, videos, work titles, and other materials shown belong to the respective studios or artists and are **protected by copyright**.",
               ],
-              bullets: [
-                "Materials may not be copied, downloaded for commercial use, or reused **without written permission** from their owners.",
-                "Traditional works shown are part of our **cultural heritage** and must be respected and not misused.",
+              items: [
+                {
+                  icon: "lock",
+                  title: "Written Permission Required",
+                  text: "Materials may not be copied, downloaded for commercial use, or reused **without written permission** from their owners.",
+                },
+                {
+                  icon: "shield-check",
+                  title: "Respect Cultural Heritage",
+                  text: "Traditional works shown are part of our **cultural heritage** and must be respected and not misused.",
+                },
               ],
             },
             {
