@@ -54,8 +54,8 @@ export interface PhotoCredit {
   author: string;
   /** Where it was published, e.g. "Wikimedia Commons" */
   source: string;
-  /** e.g. "CC BY-SA 3.0" */
-  license: string;
+  /** e.g. "CC BY-SA 3.0"; per language when the words differ, e.g. { id: "domain publik", en: "public domain" } */
+  license: string | { id: string; en: string };
   /** The photo's source page (author, licence and original file) */
   href: string;
   /** The file was cropped from the original (CC licences ask to say so) */
@@ -87,7 +87,7 @@ function Credit({ credit, isEn, className }: { credit: PhotoCredit; isEn: boolea
       rel="noopener noreferrer"
       className={`text-[10px] leading-tight underline-offset-2 hover:underline ${className}`}
     >
-      {isEn ? "Photo" : "Foto"}: {credit.author} / {credit.source} ({credit.license}){credit.cropped && (isEn ? ", cropped" : ", dipotong")}
+      {isEn ? "Photo" : "Foto"}: {credit.author} / {credit.source} ({typeof credit.license === "string" ? credit.license : isEn ? credit.license.en : credit.license.id}){credit.cropped && (isEn ? ", cropped" : ", dipotong")}
       <span className="sr-only">{isEn ? " (opens in a new tab)" : " (buka di tab baru)"}</span>
     </a>
   );

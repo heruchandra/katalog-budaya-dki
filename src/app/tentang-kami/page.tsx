@@ -51,11 +51,19 @@ const MOMENT_PHOTOS = {
       cropped: true,
     },
   },
+  // "Bhakti Kanyini 25 Cultural Day at Taman Mini Indonesia Indah" by Lance Cpl. Alexis Ballin, U.S. Marine Corps:
+  // public domain (credited anyway), resized and saved as WebP
   dance: {
-    src: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
-    width: 1672,
-    height: 941,
-    position: "60% 50%",
+    src: "/images/informasi/kelas-tari-pelatih.webp",
+    width: 2000,
+    height: 1334,
+    position: "54% 50%",
+    credit: {
+      author: "Lance Cpl. Alexis Ballin, U.S. Marine Corps",
+      source: "Wikimedia Commons",
+      license: { id: "domain publik", en: "public domain" },
+      href: "https://commons.wikimedia.org/wiki/File:Bhakti_Kanyini_25_Cultural_Day_at_Taman_Mini_Indonesia_Indah_(9420222).jpg",
+    },
   },
 };
 
@@ -109,7 +117,10 @@ export default function TentangKamiPage() {
                   icon: "graduation-cap",
                   title: "Kelas Tari Tradisional",
                   text: "Untuk anak, remaja, hingga dewasa.",
-                  image: { ...MOMENT_PHOTOS.dance, alt: "Pelatih memandu murid berlatih di kelas tari Betawi" },
+                  image: {
+                    ...MOMENT_PHOTOS.dance,
+                    alt: "Suasana kelas tari tradisional: guru tari Taman Mini Indonesia Indah memperagakan gerakan tangan, diikuti para peserta",
+                  },
                 },
               ],
             },
@@ -180,7 +191,10 @@ export default function TentangKamiPage() {
                   icon: "graduation-cap",
                   title: "Traditional Dance Classes",
                   text: "For children, teenagers, and adults.",
-                  image: { ...MOMENT_PHOTOS.dance, alt: "An instructor guiding students in a Betawi dance class" },
+                  image: {
+                    ...MOMENT_PHOTOS.dance,
+                    alt: "A traditional dance class: a Taman Mini Indonesia Indah dance teacher demonstrating arm movements as participants follow along",
+                  },
                 },
               ],
             },
