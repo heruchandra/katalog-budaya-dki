@@ -32,7 +32,6 @@ const COPY = {
       { name: "Sanggar Seni Kreasi", region: "Jakarta Selatan" },
     ],
     profileLabel: "Ilustrasi: profil sanggar dengan video penampilan dan galeri foto",
-    video: "Video penampilan",
     chatLabel: "Ilustrasi: percakapan WhatsApp langsung dengan pengelola sanggar",
     chatName: "Pengelola Sanggar",
     chat: [
@@ -53,7 +52,6 @@ const COPY = {
       { name: "Creative Arts Studio", region: "South Jakarta" },
     ],
     profileLabel: "Illustration: a studio profile with a performance video and a photo gallery",
-    video: "Performance video",
     chatLabel: "Illustration: a direct WhatsApp chat with the studio manager",
     chatName: "Studio Manager",
     chat: [
@@ -66,10 +64,10 @@ const COPY = {
   },
 };
 
-/** Placeholder sanggar avatar: an initial on the brand gradient */
+/** Placeholder sanggar avatar: an initial on the brand orange */
 function Avatar({ className }: { className: string }) {
   return (
-    <span className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-700 font-bold text-white ${className}`}>
+    <span className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-500 font-bold text-white ${className}`}>
       S
     </span>
   );
@@ -77,7 +75,7 @@ function Avatar({ className }: { className: string }) {
 
 function RegionPill({ region }: { region: string }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-[10px] font-semibold text-primary-700 ring-1 ring-primary-100">
+    <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-primary-50 px-2 py-0.5 text-[10px] font-semibold text-primary-700 ring-1 ring-primary-100">
       <MapPin className="h-3 w-3" />
       {region}
     </span>
@@ -136,31 +134,32 @@ export default function StepIllustration({ name }: { name: StepIllustrationName 
   if (name === "profile") {
     return (
       <div role="img" aria-label={c.profileLabel} className="@container mx-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+        {/* performance video: only a centred play button over the cover */}
         <div className="relative aspect-[16/8] bg-slate-100 @lg:aspect-[21/8]">
           <Image src={PROFILE_COVER} alt="" fill sizes="672px" className="object-cover" />
-          <span className="absolute inset-0 flex items-center justify-center bg-black/15">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-primary-600 shadow-lg @lg:h-14 @lg:w-14">
-              <Play className="ml-0.5 h-4 w-4 fill-current @lg:h-6 @lg:w-6" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="flex items-center justify-center rounded-full bg-black/30 p-3 text-white ring-1 ring-white/40 backdrop-blur-sm transition-all hover:bg-black/40 @lg:p-4">
+              <Play className="ml-0.5 h-5 w-5 fill-current @lg:h-6 @lg:w-6" />
             </span>
-          </span>
-          <span className="absolute left-2.5 top-2.5 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-semibold text-white @lg:left-4 @lg:top-4 @lg:px-2.5 @lg:text-xs">
-            {c.video}
           </span>
         </div>
         <div className="p-3 @lg:p-4">
-          <div className="flex items-center gap-2.5 @lg:gap-3">
-            <Avatar className="relative -mt-7 h-11 w-11 text-base shadow ring-2 ring-white @lg:-mt-9 @lg:h-14 @lg:w-14 @lg:text-xl" />
+          {/* profile row: avatar, name with location under it, grade on the right */}
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12 border-2 border-white text-base shadow-sm" />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold text-slate-900 @lg:text-base">{c.results[0].name}</p>
-              <div className="mt-1 hidden @lg:block">
+              <p className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 @lg:text-base">{c.results[0].name}</p>
+              {/* narrow mock-up (phones): the grade sits next to the location instead of at the row's end */}
+              <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 <RegionPill region={c.results[0].region} />
+                <span className={`${GRADE_PILL} @sm:hidden`}>Grade A</span>
               </div>
             </div>
-            <span className={GRADE_PILL}>Grade A</span>
+            <span className={`hidden shrink-0 @sm:inline ${GRADE_PILL}`}>Grade A</span>
           </div>
-          <div className="mt-3 grid grid-cols-3 gap-1.5 @lg:mt-4 @lg:gap-2">
+          <div className="mt-3 grid grid-cols-3 gap-3 @lg:mt-4">
             {PROFILE_GALLERY.map((src) => (
-              <div key={src} className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-100 @lg:aspect-video @lg:rounded-xl">
+              <div key={src} className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200">
                 <Image src={src} alt="" fill sizes="220px" className="object-cover" />
               </div>
             ))}
