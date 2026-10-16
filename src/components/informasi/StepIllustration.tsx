@@ -1,19 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { CheckCheck, MapPin, MessageCircle, Play, Search, SendHorizontal } from "lucide-react";
+import { CheckCheck, MapPin, MessageCircle, Search, SendHorizontal } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export type StepIllustrationName = "search" | "profile" | "whatsapp";
 
-// Photos already in the catalog (sanggar cards and gallery photos), shown inside the mock-ups. The names are made
-// up and no logo appears: the mock-ups stand for any listing
+// Step 1: catalog card photos under made-up names (the results stand for any listing). Step 2: a real profile,
+// Sanggar Seni Sinar Norray, with its own logo and gallery; its facts match its catalog profile (sanggar/[id])
 const RESULT_THUMBS = [
   "/images/sanggar/am-dance-studio/card/card-2.webp",
   "/images/sanggar/ayodya-pala/card/card-4.webp",
   "/images/sanggar/citra-art-studio/card/card-5.webp",
 ];
-const PROFILE_COVER = "/images/sanggar/sinar-norray/galeri/galeri-3.webp";
+const PROFILE_LOGO = "/images/sanggar/sinar-norray/profile/profile-sanggar-2.webp";
 const PROFILE_GALLERY = [
   "/images/sanggar/sinar-norray/galeri/galeri-1.webp",
   "/images/sanggar/sinar-norray/galeri/galeri-4.webp",
@@ -31,7 +31,14 @@ const COPY = {
       { name: "Sanggar Nusantara", region: "Jakarta Selatan" },
       { name: "Sanggar Seni Kreasi", region: "Jakarta Selatan" },
     ],
-    profileLabel: "Ilustrasi: profil sanggar dengan video penampilan dan galeri foto",
+    profileLabel: "Ilustrasi: profil Sanggar Seni Sinar Norray dengan kutipan khas, layanan, dan galeri foto",
+    profile: {
+      name: "Sanggar Seni Sinar Norray",
+      leader: "Ketua",
+      region: "Jakarta Timur",
+      about: "Pusat pelestarian seni tradisi & Lenong Betawi · sejak 1995",
+      services: ["Tari Betawi", "Lenong Betawi", "Musik Gambang Kromong", "Kelas Tari"],
+    },
     chatLabel: "Ilustrasi: percakapan WhatsApp langsung dengan pengelola sanggar",
     chatName: "Pengelola Sanggar",
     chat: [
@@ -51,7 +58,14 @@ const COPY = {
       { name: "Nusantara Studio", region: "South Jakarta" },
       { name: "Creative Arts Studio", region: "South Jakarta" },
     ],
-    profileLabel: "Illustration: a studio profile with a performance video and a photo gallery",
+    profileLabel: "Illustration: the Sinar Norray Art Studio profile with its motto, services and photo gallery",
+    profile: {
+      name: "Sinar Norray Art Studio",
+      leader: "Leader",
+      region: "East Jakarta",
+      about: "A home of traditional Betawi arts & Lenong · since 1995",
+      services: ["Betawi Dance", "Lenong Betawi", "Gambang Kromong Music", "Dance Classes"],
+    },
     chatLabel: "Illustration: a direct WhatsApp chat with the studio manager",
     chatName: "Studio Manager",
     chat: [
@@ -83,6 +97,11 @@ function RegionPill({ region }: { region: string }) {
 }
 
 const GRADE_PILL = "rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800";
+
+// Sinar Norray facts shared by both languages (as in its catalog profile: Grade B, motto in Betawi)
+const PROFILE_LEADER = "Engkar Karmilasari";
+const PROFILE_GRADE = "Grade B";
+const PROFILE_MOTTO = "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe Mati";
 
 /**
  * Mock-ups of the catalog for the "Mudah, Cepat, dan Langsung" steps. Each one is a single image for screen readers
@@ -134,32 +153,42 @@ export default function StepIllustration({ name }: { name: StepIllustrationName 
   if (name === "profile") {
     return (
       <div role="img" aria-label={c.profileLabel} className="@container mx-auto w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-        {/* performance video: only a centred play button over the cover */}
-        <div className="relative aspect-[16/8] bg-slate-100 @lg:aspect-[21/8]">
-          <Image src={PROFILE_COVER} alt="" fill sizes="672px" className="object-cover" />
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex items-center justify-center rounded-full bg-black/30 p-3 text-white ring-1 ring-white/40 backdrop-blur-sm transition-all hover:bg-black/40 @lg:p-4">
-              <Play className="ml-0.5 h-5 w-5 fill-current @lg:h-6 @lg:w-6" />
-            </span>
-          </span>
-        </div>
-        <div className="p-3 @lg:p-4">
-          {/* profile row: avatar, name with location under it, grade on the right */}
+        <div aria-hidden="true" className="h-1.5 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600" />
+        <div className="space-y-3 p-4 @lg:space-y-4 @lg:p-5">
+          {/* header: logo, name, leader, location + grade */}
           <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12 border-2 border-white text-base shadow-sm" />
+            <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm ring-1 ring-primary-100 @lg:h-14 @lg:w-14">
+              <Image src={PROFILE_LOGO} alt="" fill sizes="56px" className="object-cover" />
+            </span>
             <div className="min-w-0 flex-1">
-              <p className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 @lg:text-base">{c.results[0].name}</p>
-              {/* narrow mock-up (phones): the grade sits next to the location instead of at the row's end */}
-              <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                <RegionPill region={c.results[0].region} />
-                <span className={`${GRADE_PILL} @sm:hidden`}>Grade A</span>
+              <p className="text-sm font-bold leading-tight text-slate-900 @lg:text-base">{c.profile.name}</p>
+              <p className="mt-0.5 text-[11px] text-slate-500 @lg:text-xs">
+                {c.profile.leader}: <span className="font-semibold text-slate-700">{PROFILE_LEADER}</span>
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                <RegionPill region={c.profile.region} />
+                <span className={GRADE_PILL}>{PROFILE_GRADE}</span>
               </div>
             </div>
-            <span className={`hidden shrink-0 @sm:inline ${GRADE_PILL}`}>Grade A</span>
           </div>
-          <div className="mt-3 grid grid-cols-3 gap-3 @lg:mt-4">
+          {/* the studio's motto */}
+          <div className="rounded-xl border-l-4 border-primary-500 bg-primary-50 px-3 py-2 @lg:px-4 @lg:py-2.5">
+            <p className="text-xs italic leading-snug text-slate-800 @lg:text-[13px]">&ldquo;{PROFILE_MOTTO}&rdquo;</p>
+            <p className="mt-1 text-[10px] font-semibold text-primary-700 @lg:text-[11px]">{c.profile.about}</p>
+          </div>
+          {/* services */}
+          <div className="flex flex-wrap gap-1.5">
+            {c.profile.services.map((service) => (
+              <span key={service} className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 ring-1 ring-slate-200">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary-500" />
+                {service}
+              </span>
+            ))}
+          </div>
+          {/* gallery */}
+          <div className="grid grid-cols-3 gap-2 @lg:gap-3">
             {PROFILE_GALLERY.map((src) => (
-              <div key={src} className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200">
+              <div key={src} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-slate-100 bg-slate-100">
                 <Image src={src} alt="" fill sizes="220px" className="object-cover" />
               </div>
             ))}
