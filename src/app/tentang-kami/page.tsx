@@ -7,12 +7,27 @@ export const metadata: Metadata = {
     "Temukan sanggar tari dan seniman musik tradisional pilihan Jakarta. Setiap sanggar terkurasi oleh Dinas Kebudayaan Provinsi DKI Jakarta dan bisa dihubungi langsung lewat WhatsApp.",
 };
 
-// "Hadir di Setiap Momen Istimewa" previews: photos already used on the site (position = the crop's focus point)
+// "Hadir di Setiap Momen Istimewa" previews (position = the crop's focus point; width/height = the file's pixel size,
+// used to request a sharp enough version for the crop)
 const MOMENT_PHOTOS = {
-  welcome: { src: "/images/hero/hero-poster.webp", position: "40% 50%" },
+  // Tari_Yapong.jpg by Arief Rahardjo, CC BY-SA 4.0, saved as WebP (the credit is shown on the photo)
+  welcome: {
+    src: "/images/informasi/tari-yapong.webp",
+    width: 2000,
+    height: 1333,
+    position: "59% 40%",
+    credit: {
+      author: "Arief Rahardjo",
+      source: "Wikimedia Commons",
+      license: "CC BY-SA 4.0",
+      href: "https://commons.wikimedia.org/wiki/File:Tari_Yapong.jpg",
+    },
+  },
   // Betawi_wedding.jpg by Yulivan S. Saaba, CC BY-SA 3.0, resized and saved as WebP (the credit is shown on the photo)
   wedding: {
     src: "/images/informasi/pernikahan-adat-betawi.webp",
+    width: 1200,
+    height: 1810,
     position: "50% 36%",
     credit: {
       author: "Yulivan S. Saaba",
@@ -21,8 +36,27 @@ const MOMENT_PHOTOS = {
       href: "https://commons.wikimedia.org/wiki/File:Betawi_wedding.jpg",
     },
   },
-  festival: { src: "/images/musik/dekorasi/dinamis-musik-10.webp", position: "48% 50%" },
-  dance: { src: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp", position: "60% 50%" },
+  // Gambang_keromong_keliling.jpg by Bangrapip, CC BY 4.0, cropped (the dark foreground on the right removed) and
+  // saved as WebP (the credit is shown on the photo)
+  festival: {
+    src: "/images/informasi/gambang-kromong-pawai.webp",
+    width: 2000,
+    height: 2016,
+    position: "35% 35%",
+    credit: {
+      author: "Bangrapip",
+      source: "Wikimedia Commons",
+      license: "CC BY 4.0",
+      href: "https://commons.wikimedia.org/wiki/File:Gambang_keromong_keliling.jpg",
+      cropped: true,
+    },
+  },
+  dance: {
+    src: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp",
+    width: 1672,
+    height: 941,
+    position: "60% 50%",
+  },
 };
 
 export default function TentangKamiPage() {
@@ -54,7 +88,7 @@ export default function TentangKamiPage() {
                   icon: "party-popper",
                   title: "Penyambutan Tamu Kehormatan",
                   text: "Acara kantor, peresmian, dan perayaan hari besar.",
-                  image: { ...MOMENT_PHOTOS.welcome, alt: "Penari Betawi berkostum merah keemasan tampil di panggung terbuka" },
+                  image: { ...MOMENT_PHOTOS.welcome, alt: "Penari Yapong berkostum warna-warni menari dalam pawai budaya di Jakarta" },
                 },
                 {
                   icon: "heart-handshake",
@@ -69,7 +103,7 @@ export default function TentangKamiPage() {
                   icon: "music",
                   title: "Festival & Pentas Seni",
                   text: "Festival, pentas seni sekolah, hingga kegiatan komunitas.",
-                  image: { ...MOMENT_PHOTOS.festival, alt: "Grup musik Betawi tampil di panggung perayaan HUT ke-497 Jakarta" },
+                  image: { ...MOMENT_PHOTOS.festival, alt: "Seniman gambang kromong berbaju hijau bersiap tampil dalam pawai budaya Betawi di Tebet, Jakarta Selatan" },
                 },
                 {
                   icon: "graduation-cap",
@@ -125,7 +159,7 @@ export default function TentangKamiPage() {
                   icon: "party-popper",
                   title: "Welcoming Honored Guests",
                   text: "Corporate events, inaugurations, and holiday celebrations.",
-                  image: { ...MOMENT_PHOTOS.welcome, alt: "Betawi dancers in red and gold costumes performing on an open-air stage" },
+                  image: { ...MOMENT_PHOTOS.welcome, alt: "Yapong dancers in colourful costumes performing in a cultural parade in Jakarta" },
                 },
                 {
                   icon: "heart-handshake",
@@ -140,7 +174,7 @@ export default function TentangKamiPage() {
                   icon: "music",
                   title: "Festivals & Art Shows",
                   text: "Festivals, school art shows, and community events.",
-                  image: { ...MOMENT_PHOTOS.festival, alt: "A Betawi music group performing on stage at Jakarta's 497th anniversary celebration" },
+                  image: { ...MOMENT_PHOTOS.festival, alt: "Gambang kromong musicians in green getting ready to perform in a Betawi cultural parade in Tebet, South Jakarta" },
                 },
                 {
                   icon: "graduation-cap",

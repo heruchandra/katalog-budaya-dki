@@ -41,6 +41,9 @@ const ITEM_ICONS = {
 export interface InfoImage {
   src: string;
   alt: string;
+  /** The file's pixel size: tells how wide the cropped photo is drawn (see `previewSizes`) */
+  width: number;
+  height: number;
   /** CSS object-position of the crop, e.g. "35% 50%" (centred by default) */
   position?: string;
   /** Attribution for a photo under a licence that requires it (e.g. Creative Commons): shown on the photo */
@@ -55,7 +58,25 @@ export interface PhotoCredit {
   license: string;
   /** The photo's source page (author, licence and original file) */
   href: string;
+  /** The file was cropped from the original (CC licences ask to say so) */
+  cropped?: boolean;
 }
+
+/**
+ * `sizes` for a gallery photo. The photos fill their frame (object-cover), so a landscape photo in the tall side
+ * preview is drawn much wider than the preview itself: `sizes` must give that drawn width, otherwise the browser
+ * downloads a version that is too small and the photo looks pixelated.
+ * - side preview: about 480px tall (it matches the card column), at least ~380px wide
+ * - stacked (inline under the card): a 4:3 frame on phones (80vw), a 16:9 frame up to 640px wide from 1024px
+ */
+const PREVIEW_HEIGHT = 480;
+const previewSizes = (img: InfoImage) => {
+  const ratio = img.width / img.height;
+  return {
+    side: `${Math.ceil(Math.max(380, PREVIEW_HEIGHT * ratio))}px`,
+    inline: `(min-width: 1024px) ${Math.ceil(640 * Math.max(1, (ratio * 9) / 16))}px, ${Math.ceil(80 * Math.max(1, (ratio * 3) / 4))}vw`,
+  };
+};
 
 /** "Foto: author / Wikimedia Commons (CC BY-SA 3.0)"-style line linking to the source page */
 function Credit({ credit, isEn, className }: { credit: PhotoCredit; isEn: boolean; className: string }) {
@@ -66,7 +87,7 @@ function Credit({ credit, isEn, className }: { credit: PhotoCredit; isEn: boolea
       rel="noopener noreferrer"
       className={`text-[10px] leading-tight underline-offset-2 hover:underline ${className}`}
     >
-      {isEn ? "Photo" : "Foto"}: {credit.author} / {credit.source} ({credit.license})
+      {isEn ? "Photo" : "Foto"}: {credit.author} / {credit.source} ({credit.license}){credit.cropped && (isEn ? ", cropped" : ", dipotong")}
       <span className="sr-only">{isEn ? " (opens in a new tab)" : " (buka di tab baru)"}</span>
     </a>
   );
@@ -193,7 +214,7 @@ function Gallery({ items }: { items: InfoItem[] }) {
                         src={item.image.src}
                         alt={item.image.alt}
                         fill
-                        sizes="(min-width: 1024px) 640px, 80vw"
+                        sizes={previewSizes(item.image).inline}
                         style={{ objectPosition: item.image.position }}
                         className="object-cover"
                       />
@@ -228,7 +249,7 @@ function Gallery({ items }: { items: InfoItem[] }) {
                 alt={i === active ? item.image.alt : ""}
                 aria-hidden={i !== active}
                 fill
-                sizes="(min-width: 1280px) 360px, 45vw"
+                sizes={previewSizes(item.image).side}
                 style={{ objectPosition: item.image.position }}
                 className={`object-cover transition duration-500 ease-in-out motion-reduce:transition-none ${i === active ? "scale-100 opacity-100" : "scale-105 opacity-0"}`}
               />
