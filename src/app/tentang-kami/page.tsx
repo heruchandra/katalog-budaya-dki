@@ -10,7 +10,17 @@ export const metadata: Metadata = {
 // "Hadir di Setiap Momen Istimewa" previews: photos already used on the site (position = the crop's focus point)
 const MOMENT_PHOTOS = {
   welcome: { src: "/images/hero/hero-poster.webp", position: "40% 50%" },
-  wedding: { src: "/bg/bg-login-1.webp", position: "50% 40%" },
+  // Betawi_wedding.jpg by Yulivan S. Saaba, CC BY-SA 3.0, resized and saved as WebP (the credit is shown on the photo)
+  wedding: {
+    src: "/images/informasi/pernikahan-adat-betawi.webp",
+    position: "50% 36%",
+    credit: {
+      author: "Yulivan S. Saaba",
+      source: "Wikimedia Commons",
+      license: "CC BY-SA 3.0",
+      href: "https://commons.wikimedia.org/wiki/File:Betawi_wedding.jpg",
+    },
+  },
   festival: { src: "/images/musik/dekorasi/dinamis-musik-10.webp", position: "48% 50%" },
   dance: { src: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp", position: "60% 50%" },
 };
@@ -50,7 +60,10 @@ export default function TentangKamiPage() {
                   icon: "heart-handshake",
                   title: "Pernikahan & Acara Keluarga",
                   text: "Lengkap dengan nuansa adat Betawi yang berkesan.",
-                  image: { ...MOMENT_PHOTOS.wedding, alt: "Sepasang ondel-ondel, boneka raksasa khas Betawi, berdiri berdampingan" },
+                  image: {
+                    ...MOMENT_PHOTOS.wedding,
+                    alt: "Pernikahan adat Betawi: sepasang pengantin berbusana merah duduk di pelaminan, mempelai wanita bercadar siangko dan bermahkota kembang goyang",
+                  },
                 },
                 {
                   icon: "music",
@@ -118,7 +131,10 @@ export default function TentangKamiPage() {
                   icon: "heart-handshake",
                   title: "Weddings & Family Celebrations",
                   text: "Complete with a memorable traditional Betawi touch.",
-                  image: { ...MOMENT_PHOTOS.wedding, alt: "A pair of ondel-ondel, the giant Betawi puppets, standing side by side" },
+                  image: {
+                    ...MOMENT_PHOTOS.wedding,
+                    alt: "Traditional Betawi wedding: a couple in red seated on the wedding dais, the bride wearing a beaded siangko veil and a kembang goyang crown",
+                  },
                 },
                 {
                   icon: "music",

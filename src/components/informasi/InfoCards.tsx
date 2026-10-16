@@ -43,6 +43,33 @@ export interface InfoImage {
   alt: string;
   /** CSS object-position of the crop, e.g. "35% 50%" (centred by default) */
   position?: string;
+  /** Attribution for a photo under a licence that requires it (e.g. Creative Commons): shown on the photo */
+  credit?: PhotoCredit;
+}
+
+export interface PhotoCredit {
+  author: string;
+  /** Where it was published, e.g. "Wikimedia Commons" */
+  source: string;
+  /** e.g. "CC BY-SA 3.0" */
+  license: string;
+  /** The photo's source page (author, licence and original file) */
+  href: string;
+}
+
+/** "Foto: author / Wikimedia Commons (CC BY-SA 3.0)"-style line linking to the source page */
+function Credit({ credit, isEn, className }: { credit: PhotoCredit; isEn: boolean; className: string }) {
+  return (
+    <a
+      href={credit.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`text-[10px] leading-tight underline-offset-2 hover:underline ${className}`}
+    >
+      {isEn ? "Photo" : "Foto"}: {credit.author} / {credit.source} ({credit.license})
+      <span className="sr-only">{isEn ? " (opens in a new tab)" : " (buka di tab baru)"}</span>
+    </a>
+  );
 }
 
 /** One point of a section, shown as an icon card */
@@ -108,6 +135,7 @@ function Reveal({ open, className, children }: { open: boolean; className: strin
   return (
     <div
       aria-hidden={!open}
+      inert={!open}
       className={`grid transition-[grid-template-rows] duration-300 ease-in-out motion-reduce:transition-none ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"} ${className}`}
     >
       <div className="min-h-0 overflow-hidden">{children}</div>
@@ -169,6 +197,14 @@ function Gallery({ items }: { items: InfoItem[] }) {
                         style={{ objectPosition: item.image.position }}
                         className="object-cover"
                       />
+                      {/* above the card's select button, so the link stays clickable */}
+                      {item.image.credit && (
+                        <Credit
+                          credit={item.image.credit}
+                          isEn={isEn}
+                          className="absolute bottom-2 right-2 z-20 rounded-full bg-black/55 px-2 py-0.5 text-white/90 backdrop-blur-sm"
+                        />
+                      )}
                     </div>
                   </Reveal>
                 )}
@@ -207,6 +243,7 @@ function Gallery({ items }: { items: InfoItem[] }) {
           <figcaption key={active} className="absolute inset-x-0 bottom-0 p-5 text-white animate-[fade-in_0.4s_ease-out] motion-reduce:animate-none">
             <p className="text-lg font-bold leading-snug">{current.title}</p>
             <p className="mt-1 text-sm leading-relaxed text-white/85">{current.text.replace(/\*\*/g, "")}</p>
+            {current.image?.credit && <Credit credit={current.image.credit} isEn={isEn} className="mt-2 inline-block text-white/65 hover:text-white" />}
           </figcaption>
         </figure>
       </div>
