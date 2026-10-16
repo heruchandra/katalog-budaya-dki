@@ -25,10 +25,11 @@ const COPY = {
     searchLabel: "Ilustrasi: kolom pencarian dengan filter kategori, grade, dan wilayah, beserta hasil sanggar",
     search: "Cari sanggar atau seniman musik…",
     chips: ["Seni Tari", "Grade A", "Jakarta Selatan"],
+    // every result matches all three active filters (Seni Tari, Grade A, Jakarta Selatan)
     results: [
-      { name: "Sanggar Tari Betawi", region: "Jakarta Timur" },
-      { name: "Sanggar Tari Nusantara", region: "Jakarta Selatan" },
-      { name: "Sanggar Tari Kreasi", region: "Jakarta Barat" },
+      { name: "Sanggar Tari Betawi", region: "Jakarta Selatan" },
+      { name: "Sanggar Nusantara", region: "Jakarta Selatan" },
+      { name: "Sanggar Seni Kreasi", region: "Jakarta Selatan" },
     ],
     profileLabel: "Ilustrasi: profil sanggar dengan video penampilan dan galeri foto",
     video: "Video penampilan",
@@ -47,9 +48,9 @@ const COPY = {
     search: "Search studios or music artists…",
     chips: ["Dance", "Grade A", "South Jakarta"],
     results: [
-      { name: "Betawi Dance Studio", region: "East Jakarta" },
-      { name: "Nusantara Dance Studio", region: "South Jakarta" },
-      { name: "Creative Dance Studio", region: "West Jakarta" },
+      { name: "Betawi Dance Studio", region: "South Jakarta" },
+      { name: "Nusantara Studio", region: "South Jakarta" },
+      { name: "Creative Arts Studio", region: "South Jakarta" },
     ],
     profileLabel: "Illustration: a studio profile with a performance video and a photo gallery",
     video: "Performance video",
@@ -102,12 +103,10 @@ export default function StepIllustration({ name }: { name: StepIllustrationName 
             <Search className="h-4 w-4 shrink-0 text-primary-600" />
             <span className="truncate text-xs text-slate-500 @sm:text-sm">{c.search}</span>
           </div>
+          {/* all three filters are active: the results below match each of them */}
           <div className="flex flex-wrap gap-1.5 @sm:justify-center">
-            {c.chips.map((chip, i) => (
-              <span
-                key={chip}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${i < 2 ? "bg-primary-600 text-white" : "bg-white text-slate-600 ring-1 ring-slate-200"}`}
-              >
+            {c.chips.map((chip) => (
+              <span key={chip} className="rounded-full bg-primary-600 px-2.5 py-1 text-[11px] font-semibold text-white">
                 {chip}
               </span>
             ))}
