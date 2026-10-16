@@ -287,7 +287,7 @@ function Steps({ items }: { items: InfoItem[] }) {
         <div id={panelId} className="relative overflow-hidden rounded-3xl border border-primary-200 bg-primary-50 p-8">
           <div aria-hidden="true" className="batik-pattern pointer-events-none absolute inset-0" />
           {/* every illustration sits in the same grid cell (the panel keeps the tallest one's height) and cross-fades */}
-          <div className="relative grid items-center">
+          <div className="relative mx-auto grid w-full max-w-3xl items-center">
             {items.map((item, i) =>
               item.illustration ? (
                 <div

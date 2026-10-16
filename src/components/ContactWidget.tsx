@@ -104,7 +104,7 @@ export default function ContactWidget() {
             {/* Contact person: small tracked label + name (sans, like the label) + position, left-aligned text only */}
             <div className="min-w-0 text-left">
               {/* full amber-700: at /90 this 10px label drops to 4.25:1, under WCAG AA 4.5:1 */}
-              <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700 uppercase font-sans">Contact person</p>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-amber-700 uppercase font-sans">{isEn ? "Contact person" : "Narahubung"}</p>
               <p className="mt-1 font-sans font-bold text-gray-900 text-lg sm:text-xl leading-tight tracking-tight break-words">
                 {hasPerson ? CONTACT_PERSON.name : isEn ? "Jakarta Culture Agency" : "Dinas Kebudayaan DKI Jakarta"}
               </p>
@@ -145,7 +145,7 @@ export default function ContactWidget() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        aria-label={open ? (isEn ? "Close contact person" : "Tutup contact person") : "Contact person"}
+        aria-label={open ? (isEn ? "Close contact person" : "Tutup narahubung") : isEn ? "Contact person" : "Narahubung"}
         className="w-12 h-12 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
       >
         {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Headset className="h-6 w-6" aria-hidden="true" />}
