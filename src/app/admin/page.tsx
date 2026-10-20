@@ -8,8 +8,10 @@ import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 import { SANGGAR_TABLE, SanggarRow, isDraft } from "@/lib/sanggarAdmin";
-import { PemusikRow, countBy, tallyValues } from "@/lib/pemusikStats";
-import { normalizeKategori } from "@/lib/pemusikData";
+import { PemusikRow, tallyValues } from "@/lib/pemusikStats";
+import { KATEGORI_MUSIK_OPTIONS, KATEGORI_OF } from "@/lib/pemusikData";
+import { MUSIK_MASTER_DATA, findMusikMaster, mergeProfile } from "@/data/musikData";
+import type { MusikEntity } from "@/types/musik";
 
 // recharts is heavy: load the chart after the stat cards render (grey placeholder meanwhile)
 const SimpleBarChart = dynamic(() => import("@/components/admin/SimpleBarChart"), {
@@ -88,10 +90,20 @@ export default function AdminDashboard() {
     };
   }, []);
 
+  // Seniman Musik as the public catalog (/pemusik) lists them: every pemusiks row merged with its master data, plus
+  // the master-only entries of src/data/musikData.ts (e.g. Komunitas Betawi Section) that have no row yet
+  const musikProfiles = useMemo<MusikEntity[]>(() => {
+    const rowIds = new Set(pemusiks.map((row) => String(row.id)));
+    return [
+      ...MUSIK_MASTER_DATA.filter((m) => !rowIds.has(m.id)),
+      ...pemusiks.map((row) => mergeProfile(findMusikMaster(String(row.id)), row)!),
+    ];
+  }, [pemusiks]);
+
   const stats = useMemo(() => {
     const drafts = sanggars.filter(isDraft).length;
-    return { total: sanggars.length, seniman: pemusiks.length, pending: drafts, verified: sanggars.length - drafts };
-  }, [sanggars, pemusiks]);
+    return { total: sanggars.length, seniman: musikProfiles.length, pending: drafts, verified: sanggars.length - drafts };
+  }, [sanggars, musikProfiles]);
 
   // ---- Sanggar analytics ----
   const gradeData = useMemo(() => {
@@ -122,22 +134,28 @@ export default function AdminDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sanggars, language]);
 
-  // ---- Seniman Musik analytics (the pemusiks table has no region column, so there is no per-wilayah view) ----
-  const jenisData = useMemo(() => countBy(pemusiks, (p) => normalizeKategori(p.jenis_seniman)), [pemusiks]);
-  const genreData = useMemo(() => tallyValues(pemusiks, (p) => p.genre_musik), [pemusiks]);
-  const instrumenData = useMemo(() => tallyValues(pemusiks, (p) => p.instrumen), [pemusiks]);
+  // ---- Seniman Musik analytics, over the same profiles as the public catalog ----
+  // both categories always get a bar (also at 0), the larger first
+  const jenisData = useMemo(
+    () =>
+      KATEGORI_MUSIK_OPTIONS.map((kategori) => ({ name: kategori, total: musikProfiles.filter((m) => KATEGORI_OF[m.category] === kategori).length }))
+        .sort((a, b) => b.total - a.total),
+    [musikProfiles]
+  );
+  const genreData = useMemo(() => tallyValues(musikProfiles, (m) => m.genre.join(",")), [musikProfiles]);
+  const instrumenData = useMemo(() => tallyValues(musikProfiles, (m) => m.instrumen.join(",")), [musikProfiles]);
 
   const musikCompleteness = useMemo(() => {
-    const count = (fn: (p: PemusikRow) => unknown) => pemusiks.filter((p) => Boolean(fn(p))).length;
+    const count = (fn: (m: MusikEntity) => boolean) => musikProfiles.filter(fn).length;
     return [
-      { label: tr("Jenis seniman", "Artist type"), n: count((p) => p.jenis_seniman) },
-      { label: tr("Genre musik", "Music genre"), n: count((p) => p.genre_musik) },
-      { label: tr("Instrumen / alat musik", "Instrument"), n: count((p) => p.instrumen) },
-      { label: tr("Pengalaman", "Experience"), n: count((p) => p.pengalaman) },
-      { label: tr("Deskripsi profil", "Profile description"), n: count((p) => p.deskripsi) },
+      { label: tr("Jenis seniman", "Artist type"), n: count((m) => Boolean(m.category)) },
+      { label: tr("Genre musik", "Music genre"), n: count((m) => m.genre.length > 0) },
+      { label: tr("Instrumen / alat musik", "Instrument"), n: count((m) => m.instrumen.length > 0) },
+      { label: tr("Pengalaman", "Experience"), n: count((m) => m.pengalamanBerkesenian.length > 0) },
+      { label: tr("Deskripsi profil", "Profile description"), n: count((m) => m.deskripsi.length > 0) },
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pemusiks, language]);
+  }, [musikProfiles, language]);
 
   const recent = useMemo(() => {
     const items = [
@@ -248,7 +266,7 @@ export default function AdminDashboard() {
           <div className={`${panel} p-5`}>
             <h3 className="text-sm font-bold text-zinc-900">{tr("Seniman per Jenis", "Artists by Type")}</h3>
             <div className="mt-4 h-52">
-              {jenisData.length === 0 ? (
+              {jenisData.every((d) => d.total === 0) ? (
                 <p className="text-xs text-zinc-500">{notFilled}</p>
               ) : (
                 <SimpleBarChart data={jenisData.map((d, i) => ({ name: d.name, total: d.total, fill: SERIES_COLORS[i % SERIES_COLORS.length] }))} countLabel={tr("Jumlah", "Count")} />
@@ -265,7 +283,7 @@ export default function AdminDashboard() {
 
           <div className={`${panel} p-5`}>
             <h3 className="text-sm font-bold text-zinc-900">{tr("Kelengkapan Profil Seniman", "Artist Profile Completeness")}</h3>
-            <Completeness rows={musikCompleteness} total={pemusiks.length} />
+            <Completeness rows={musikCompleteness} total={musikProfiles.length} />
           </div>
         </div>
       )}
