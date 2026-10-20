@@ -70,6 +70,10 @@ export function SocialPills({ items, isEn }: { items: SosialMedia[]; isEn: boole
   );
 }
 
+/** WhatsApp CTA look: sharp corners and a deep green gradient (shared by the detail pages, service modal and cards) */
+export const WHATSAPP_CTA =
+  "rounded-none bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 font-medium text-white shadow-md transition-all hover:shadow-lg hover:brightness-105 active:scale-[0.99]";
+
 /** Full-width green "Hubungi via WhatsApp" button (direct wa.me link, no internal chat) */
 export function WhatsAppButton({ href, isEn }: { href: string; isEn: boolean }) {
   return (
@@ -77,7 +81,7 @@ export function WhatsAppButton({ href, isEn }: { href: string; isEn: boolean }) 
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#059669] text-sm font-bold text-white shadow-xs transition-opacity hover:opacity-90"
+      className={`flex w-full items-center justify-center gap-2.5 px-6 py-3.5 text-sm ${WHATSAPP_CTA}`}
     >
       <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
         <path d={WHATSAPP_PATH} />

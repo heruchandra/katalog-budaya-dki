@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MapPin } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
+import { WHATSAPP_CTA } from "@/components/SocialPills";
 
 export interface ArtistCardProps {
   /** Link destination for the detail page */
@@ -133,7 +134,7 @@ export default function ArtistCard({
           href={getWaLink(phone || '[MASUKKAN_NOMOR_TES_DISINI]')} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="relative z-10 mt-auto w-full flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#1DA851] text-white py-2 px-4 rounded-none text-sm font-medium transition-colors"
+          className={`relative z-10 mt-auto w-full flex items-center justify-center gap-1.5 py-2 px-4 text-sm ${WHATSAPP_CTA}`}
           onClick={(e) => e.stopPropagation()}
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
