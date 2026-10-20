@@ -54,7 +54,7 @@ export const isSinarNorray = (s: { id?: string | number; name?: string | null })
 export function ownServiceImage(sanggar: { id?: string | number; name?: string | null }, title?: string, titleEn?: string) {
   if (!isSinarNorray(sanggar)) return undefined;
   const t = `${title || ""} ${titleEn || ""}`.toLowerCase();
-  if (/kelas tari|dance class|tari betawi/.test(t)) return `${SN}/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp`;
+  if (/kelas tari|dance class|tari betawi/.test(t)) return "/images/latihan-tari-margasari.jpg";
   if (/lenong/.test(t)) return `${SN}/layanan/layanan-sanggar-sinarnorray-Pentas Lenong Betawi.webp`;
   if (/gambang kromong|musik|music/.test(t)) return `${SN}/layanan/layanan-sanggar-sinarnorray-Pentas Musik Gambang Kromong.webp`;
   return undefined;

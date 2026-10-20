@@ -112,7 +112,7 @@ export const SINAR_NORRAY_DATA: SanggarItem = {
       description: "Latihan dan pembinaan tari tradisional Betawi untuk berbagai tingkatan usia.",
       titleEn: "Betawi Dance Classes",
       descriptionEn: "Training and mentorship in traditional Betawi dance for all age groups.",
-      image: "/images/sanggar/sinar-norray/layanan/layanan-sanggar-sinarnorray-Kelas Tari Betawi.webp"
+      image: "/images/latihan-tari-margasari.jpg"
     },
     {
       title: "Pentas Lenong Betawi",
