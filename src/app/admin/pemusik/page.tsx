@@ -74,6 +74,9 @@ function toListItem(row: PemusikRow | null, masterId?: string): ListItem | null 
   };
 }
 
+/** Status filter value from the URL's ?status= ("all" when absent or unknown) */
+const statusFromUrl = (value: string | null) => (value === "draft" || value === "terverifikasi" ? value : "all");
+
 function AdminPemusikContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -86,7 +89,20 @@ function AdminPemusikContent() {
   const [query, setQuery] = useState("");
   const [kategori, setKategori] = useState("all");
   const [wilayah, setWilayah] = useState("all");
-  const [status, setStatus] = useState(searchParams.get("status") === "draft" ? "draft" : "all");
+  // The status filter lives in the URL (?status=draft | terverifikasi): a link to it, such as the header
+  // notifications, applies it even while this list is already open (adjusted while rendering when the URL changes),
+  // and the select writes it back
+  const statusParam = statusFromUrl(searchParams.get("status"));
+  const [status, setStatus] = useState(statusParam);
+  const [seenStatusParam, setSeenStatusParam] = useState(statusParam);
+  if (seenStatusParam !== statusParam) {
+    setSeenStatusParam(statusParam);
+    setStatus(statusParam);
+  }
+  const changeStatus = (value: string) => {
+    setStatus(value);
+    router.replace(value === "all" ? "/admin/pemusik" : `/admin/pemusik?status=${value}`, { scroll: false });
+  };
   const [pendingDelete, setPendingDelete] = useState<ListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   // Success / skipped-columns message when arriving back from the form (?success=1&skipped=a,b)
@@ -214,13 +230,13 @@ function AdminPemusikContent() {
                 <option key={w} value={w}>{w}</option>
               ))}
             </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter status" className={selectClass} disabled={!hasStatusColumn} title={hasStatusColumn ? undefined : tr("Perlu migrasi database", "Needs the database migration")}>
+            <select value={status} onChange={(e) => changeStatus(e.target.value)} aria-label="Filter status" className={selectClass} disabled={!hasStatusColumn} title={hasStatusColumn ? undefined : tr("Perlu migrasi database", "Needs the database migration")}>
               <option value="all">{tr("Semua Status", "All Statuses")}</option>
               <option value="terverifikasi">{tr("Terverifikasi", "Verified")}</option>
               <option value="draft">Draft</option>
             </select>
             {hasFilter && (
-              <button type="button" onClick={() => { setQuery(""); setKategori("all"); setWilayah("all"); setStatus("all"); }} className="inline-flex items-center gap-1 px-2 py-2 text-xs font-semibold text-zinc-500 hover:text-orange-600">
+              <button type="button" onClick={() => { setQuery(""); setKategori("all"); setWilayah("all"); changeStatus("all"); }} className="inline-flex items-center gap-1 px-2 py-2 text-xs font-semibold text-zinc-500 hover:text-orange-600">
                 <X className="h-3.5 w-3.5" /> Reset
               </button>
             )}

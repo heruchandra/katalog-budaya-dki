@@ -12,15 +12,19 @@ export interface PendingItem {
   type: "sanggar" | "musik";
   name: string;
   date?: string | null;
-  /** Its edit page in the admin */
-  href: string;
 }
+
+/** The admin list of each type, filtered to its drafts (the Seniman Musik admin lives under /admin/pemusik) */
+export const DRAFT_LIST_HREF: Record<PendingItem["type"], string> = {
+  sanggar: "/admin/sanggar?status=draft",
+  musik: "/admin/pemusik?status=draft",
+};
 
 const MAX_ITEMS = 6;
 
 /**
  * Admin header bell: a popover listing the sanggar and seniman musik drafts waiting for verification (newest first),
- * each linking to its edit page. `items` is null while loading or when the drafts can't be read. Closes on an outside
+ * each linking to the draft list of its own type. `items` is null while loading or when the drafts can't be read. Closes on an outside
  * click, Escape (focus returns to the bell) or a route change, like the profile menu.
  */
 export default function NotificationMenu({ items }: { items: PendingItem[] | null }) {
@@ -62,8 +66,22 @@ export default function NotificationMenu({ items }: { items: PendingItem[] | nul
   const list = items ?? [];
   const count = list.length;
   const sanggarCount = list.filter((i) => i.type === "sanggar").length;
-  // the list holding the drafts (sanggar first; seniman musik when only those wait)
-  const allHref = sanggarCount === 0 && count > 0 ? "/admin/pemusik?status=draft" : "/admin/sanggar?status=draft";
+  const musikCount = count - sanggarCount;
+  // "Lihat Semua Pengajuan": drafts of both types → one link per list; of one type → that list; none → the list of
+  // the admin section open now
+  const inMusikSection = (pathname || "").startsWith("/admin/pemusik");
+  const footerLinks =
+    sanggarCount > 0 && musikCount > 0
+      ? [
+          { href: DRAFT_LIST_HREF.sanggar, label: `Sanggar (${sanggarCount})` },
+          { href: DRAFT_LIST_HREF.musik, label: tr(`Seniman Musik (${musikCount})`, `Music Artists (${musikCount})`) },
+        ]
+      : [
+          {
+            href: musikCount > 0 || (count === 0 && inMusikSection) ? DRAFT_LIST_HREF.musik : DRAFT_LIST_HREF.sanggar,
+            label: tr("Lihat Semua Pengajuan", "View All Submissions"),
+          },
+        ];
   const formatDate = (iso?: string | null) => {
     if (!iso) return null;
     const d = new Date(iso);
@@ -128,7 +146,7 @@ export default function NotificationMenu({ items }: { items: PendingItem[] | nul
                 return (
                   <li key={item.key}>
                     <Link
-                      href={item.href}
+                      href={DRAFT_LIST_HREF[item.type]}
                       onClick={() => setOpen(false)}
                       className="group flex items-start gap-3 px-4 py-3 transition-colors hover:bg-orange-50/60 focus-visible:bg-orange-50/60 focus-visible:outline-none"
                     >
@@ -159,14 +177,24 @@ export default function NotificationMenu({ items }: { items: PendingItem[] | nul
             </ul>
           )}
 
-          <Link
-            href={allHref}
-            onClick={() => setOpen(false)}
-            className="flex items-center justify-center gap-1 border-t border-zinc-100 px-4 py-2.5 text-xs font-semibold text-orange-600 transition-colors hover:bg-orange-50/60"
-          >
-            {tr("Lihat Semua Pengajuan", "View All Submissions")}
-            <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
+          <div className="border-t border-zinc-100">
+            {footerLinks.length > 1 && (
+              <p className="px-4 pt-2 text-center text-[11px] font-medium text-zinc-400">{tr("Lihat semua pengajuan", "View all submissions")}</p>
+            )}
+            <div className={footerLinks.length > 1 ? "grid grid-cols-2 divide-x divide-zinc-100" : ""}>
+              {footerLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-1 px-4 py-2.5 text-xs font-semibold text-orange-600 transition-colors hover:bg-orange-50/60"
+                >
+                  {link.label}
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

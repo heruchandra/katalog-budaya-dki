@@ -78,8 +78,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
       const items: PendingItem[] = [
-        ...(s.data ?? []).map((r) => ({ key: `s-${r.id}`, type: "sanggar" as const, name: r.nama_sanggar, date: r.created_at, href: `/admin/sanggar/edit/${r.id}` })),
-        ...(p.data ?? []).map((r) => ({ key: `p-${r.id}`, type: "musik" as const, name: r.nama_seniman, date: r.created_at, href: `/admin/pemusik/edit/${r.id}` })),
+        ...(s.data ?? []).map((r) => ({ key: `s-${r.id}`, type: "sanggar" as const, name: r.nama_sanggar, date: r.created_at })),
+        ...(p.data ?? []).map((r) => ({ key: `p-${r.id}`, type: "musik" as const, name: r.nama_seniman, date: r.created_at })),
       ];
       // newest first
       items.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
