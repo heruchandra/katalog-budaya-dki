@@ -9,7 +9,10 @@ import { useLanguage } from "@/context/LanguageContext";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
 import { SANGGAR_TABLE, SanggarRow, isDraft } from "@/lib/sanggarAdmin";
 import { PemusikRow, tallyValues } from "@/lib/pemusikStats";
-import { KATEGORI_MUSIK_OPTIONS, KATEGORI_OF } from "@/lib/pemusikData";
+import { KATEGORI_MUSIK_OPTIONS, KATEGORI_OF, isDraftRow } from "@/lib/pemusikData";
+import { curatedPhoneOf, findCuratedProfile } from "@/data/sanggarProfiles";
+import { ownCardImage } from "@/lib/sanggarImages";
+import { toWaNumber } from "@/lib/phone";
 import { MUSIK_MASTER_DATA, findMusikMaster, mergeProfile } from "@/data/musikData";
 import type { MusikEntity } from "@/types/musik";
 
@@ -20,6 +23,7 @@ const SimpleBarChart = dynamic(() => import("@/components/admin/SimpleBarChart")
 });
 
 const GRADE_COLORS: Record<string, string> = { A: "#F7941E", B: "#E01A67" };
+const OTHER_GRADE_COLORS = ["#2B3990", "#71717a", "#059669"];
 const SERIES_COLORS = ["#F7941E", "#E01A67", "#2B3990", "#059669", "#d97706", "#71717a"];
 
 type AnalyticsTab = "sanggar" | "musik";
@@ -101,14 +105,28 @@ export default function AdminDashboard() {
   }, [pemusiks]);
 
   const stats = useMemo(() => {
-    const drafts = sanggars.filter(isDraft).length;
-    return { total: sanggars.length, seniman: musikProfiles.length, pending: drafts, verified: sanggars.length - drafts };
-  }, [sanggars, musikProfiles]);
+    const sanggarDrafts = sanggars.filter(isDraft).length;
+    // a master-only entry (no row yet) is public, so it counts as verified
+    const musikDrafts = pemusiks.filter(isDraftRow).length;
+    return {
+      total: sanggars.length,
+      seniman: musikProfiles.length,
+      pending: { sanggar: sanggarDrafts, musik: musikDrafts },
+      verified: { sanggar: sanggars.length - sanggarDrafts, musik: musikProfiles.length - musikDrafts },
+    };
+  }, [sanggars, pemusiks, musikProfiles]);
 
   // ---- Sanggar analytics ----
   const gradeData = useMemo(() => {
     const gradeOf = (s: SanggarRow) => (s.grade || "").replace(/grade/i, "").trim().toUpperCase();
-    return (["A", "B"] as const).map((g) => ({ key: g, name: `Grade ${g}`, total: sanggars.filter((s) => gradeOf(s) === g).length }));
+    const others = [...new Set(sanggars.map(gradeOf).filter((g) => g && g !== "A" && g !== "B"))].sort();
+    const rows = ["A", "B", ...others].map((g, i) => ({
+      key: g,
+      name: `Grade ${g}`,
+      total: sanggars.filter((s) => gradeOf(s) === g).length,
+      fill: GRADE_COLORS[g] || OTHER_GRADE_COLORS[(i - 2) % OTHER_GRADE_COLORS.length],
+    }));
+    return { rows, ungraded: sanggars.filter((s) => !gradeOf(s)).length };
   }, [sanggars]);
 
   const wilayahData = useMemo(() => {
@@ -123,13 +141,15 @@ export default function AdminDashboard() {
   }, [sanggars]);
 
   const sanggarCompleteness = useMemo(() => {
-    const count = (fn: (s: SanggarRow) => unknown) => sanggars.filter((s) => Boolean(fn(s))).length;
+    const withProfile = sanggars.map((s) => ({ s, curated: findCuratedProfile(String(s.id), s.nama_sanggar) }));
+    const count = (fn: (p: (typeof withProfile)[number]) => unknown) => withProfile.filter((p) => Boolean(fn(p))).length;
     return [
-      { label: tr("Foto thumbnail / logo", "Thumbnail / logo photo"), n: count((s) => s.thumbnail_url || s.logo_url) },
-      { label: tr("Kontak PIC (WhatsApp)", "PIC contact (WhatsApp)"), n: count((s) => s.kontak_pic) },
-      { label: tr("Alamat", "Address"), n: count((s) => s.alamat) },
-      { label: tr("Wilayah diketahui", "Region known"), n: count((s) => resolveWilayah(s)) },
-      { label: tr("Deskripsi profil", "Profile description"), n: count((s) => s.deskripsi) },
+      { label: tr("Foto thumbnail / logo", "Thumbnail / logo photo"), n: count(({ s }) => s.thumbnail_url || s.logo_url || ownCardImage(s.nama_sanggar)) },
+      // a usable number only (9+ digits), as the public WhatsApp button
+      { label: tr("Kontak PIC (WhatsApp)", "PIC contact (WhatsApp)"), n: count(({ s, curated }) => toWaNumber(s.kontak_pic || undefined) || toWaNumber(curatedPhoneOf(curated))) },
+      { label: tr("Alamat", "Address"), n: count(({ s, curated }) => s.alamat || curated?.alamatSanggar) },
+      { label: tr("Wilayah diketahui", "Region known"), n: count(({ s }) => resolveWilayah(s)) },
+      { label: tr("Deskripsi profil", "Profile description"), n: count(({ s, curated }) => s.deskripsi || curated?.description?.length) },
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sanggars, language]);
@@ -171,8 +191,23 @@ export default function AdminDashboard() {
   const cards = [
     { label: tr("Total Sanggar", "Total Sanggar"), value: stats.total, icon: Users, accent: "#F7941E", href: "/admin/sanggar" },
     { label: tr("Total Seniman Musik", "Total Music Artists"), value: stats.seniman, icon: Music, accent: "#E01A67", href: "/admin/pemusik" },
-    { label: tr("Menunggu Verifikasi", "Awaiting Verification"), value: stats.pending, icon: Clock3, accent: "#d97706", href: "/admin/sanggar?status=draft" },
-    { label: tr("Terverifikasi", "Verified"), value: stats.verified, icon: CheckCircle2, accent: "#059669", href: "/admin/sanggar" },
+    {
+      label: tr("Menunggu Verifikasi", "Awaiting Verification"),
+      value: stats.pending.sanggar + stats.pending.musik,
+      detail: tr(`${stats.pending.sanggar} sanggar · ${stats.pending.musik} seniman musik`, `${stats.pending.sanggar} sanggar · ${stats.pending.musik} music artists`),
+      icon: Clock3,
+      accent: "#d97706",
+      // the list holding the drafts (sanggar first)
+      href: stats.pending.sanggar === 0 && stats.pending.musik > 0 ? "/admin/pemusik?status=draft" : "/admin/sanggar?status=draft",
+    },
+    {
+      label: tr("Terverifikasi", "Verified"),
+      value: stats.verified.sanggar + stats.verified.musik,
+      detail: tr(`${stats.verified.sanggar} sanggar · ${stats.verified.musik} seniman musik`, `${stats.verified.sanggar} sanggar · ${stats.verified.musik} music artists`),
+      icon: CheckCircle2,
+      accent: "#059669",
+      href: "/admin/sanggar",
+    },
   ];
 
   const panel = "rounded-sm border border-zinc-200 bg-white shadow-xs";
@@ -203,6 +238,7 @@ export default function AdminDashboard() {
               </span>
             </div>
             <p className="mt-3 text-3xl font-bold leading-none tabular-nums text-zinc-900">{isLoading ? "–" : card.value}</p>
+            {"detail" in card && !isLoading && <p className="mt-1.5 text-[11px] font-medium text-zinc-500">{card.detail}</p>}
             <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-zinc-400 group-hover:text-orange-600">
               {tr("Lihat", "View")} <ArrowRight className="h-3 w-3" />
             </span>
@@ -242,8 +278,13 @@ export default function AdminDashboard() {
           <div className={`${panel} p-5`}>
             <h3 className="text-sm font-bold text-zinc-900">{tr("Sanggar per Grade", "Sanggar by Grade")}</h3>
             <div className="mt-4 h-52">
-              <SimpleBarChart data={gradeData.map((d) => ({ name: d.name, total: d.total, fill: GRADE_COLORS[d.key] }))} countLabel={tr("Jumlah", "Count")} />
+              <SimpleBarChart data={gradeData.rows.map((d) => ({ name: d.name, total: d.total, fill: d.fill }))} countLabel={tr("Jumlah", "Count")} />
             </div>
+            {gradeData.ungraded > 0 && (
+              <p className="mt-3 text-xs text-zinc-500">
+                {tr(`${gradeData.ungraded} sanggar belum memiliki grade.`, `${gradeData.ungraded} sanggar have no grade yet.`)}
+              </p>
+            )}
           </div>
 
           <div className={`${panel} p-5`}>

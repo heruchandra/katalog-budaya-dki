@@ -12,6 +12,7 @@ import PracticeInfo from "./PracticeInfo";
 import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
 import type { SosialMedia } from "@/types/musik";
 import { ownServiceImage } from "@/lib/sanggarImages";
+import { toWaNumber } from "@/lib/phone";
 import AwardList from "@/components/AwardList";
 import FallbackImage from "@/components/FallbackImage";
 import { GalleryPlaceholder, type GalleryPhoto } from "./GalleryLightbox";
@@ -175,28 +176,23 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
   }, [selectedService, isGalleryOpen, activePhotoIndex, showNextPhoto, showPrevPhoto]);
 
   // Safely format phone number for WhatsApp API
-  const formatWaNumber = (phone?: string) => {
-    if (!phone) return "";
-    let cleaned = phone.replace(/\D/g, '');
-    if (cleaned.startsWith('0')) {
-      cleaned = '62' + cleaned.substring(1);
-    }
-    return cleaned;
-  };
 
 
   const studioName = sanggar?.name || 'Sanggar Seni';
+  const studioAddress = sanggar.address || sanggar.alamatSanggar || "";
 
   // Header contact: WhatsApp link (direct link, else built from the number) and social media pills
   const waDirect = sanggar.whatsappUrl || sanggar.contacts?.whatsapp;
   const waPhone = Array.isArray(sanggar.contacts?.phone) ? sanggar.contacts.phone[0] : (sanggar.whatsappNumber || sanggar.kontak?.phone);
   const waLink = waDirect && waDirect.startsWith("http")
     ? waDirect
-    : waPhone
-      ? `https://wa.me/${formatWaNumber(waPhone)}?text=${encodeURIComponent(isEn ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to ask about costume rental / performance services / dance classes.` : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin bertanya mengenai sewa kostum / jasa pentas / kelas tari.`)}`
+    : toWaNumber(waPhone)
+      ? `https://wa.me/${toWaNumber(waPhone)}?text=${encodeURIComponent(isEn ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to ask about costume rental / performance services / dance classes.` : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin bertanya mengenai sewa kostum / jasa pentas / kelas tari.`)}`
       : null;
   // Same number for the service modal's "Konsultasi via WhatsApp" (empty when none is on record: no button)
-  const waNumber = formatWaNumber(waPhone);
+  const waNumber = toWaNumber(waPhone);
+  // shown where a value isn't on record (never another sanggar's data or an invented one)
+  const notAvailable = isEn ? "Not available yet" : "Belum tersedia";
   const igRaw = sanggar.instagramUrl || sanggar.contacts?.instagram || sanggar.instagram || sanggar.kontak?.instagram;
   const igName = igRaw?.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/[/?#].*$/, "").replace(/^@/, "");
   // a bare youtube.com link is a placeholder, not a channel
@@ -245,7 +241,7 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     {isEn ? "Studio Leader" : "Ketua Sanggar"}
                   </span>
                   <h4 className="text-lg font-bold text-zinc-900 tracking-tight mb-2">
-                    {sanggar.leader || sanggar.kontak?.ketua}
+                    {sanggar.leader || sanggar.kontak?.ketua || <span className="font-medium text-zinc-400">{notAvailable}</span>}
                   </h4>
                   <p className="text-sm text-zinc-600 leading-relaxed max-w-md mx-auto sm:mx-0">
                     {isEn 
@@ -275,7 +271,9 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   <div key={row.label} className="flex flex-col sm:grid sm:grid-cols-[150px_auto_1fr] sm:gap-x-3 sm:items-center py-2.5 first:pt-0 last:pb-0">
                     <dt className="text-[10px] sm:text-[11px] font-bold sm:font-semibold text-zinc-500 uppercase tracking-wider">{row.label}</dt>
                     <span className="hidden sm:inline-block text-zinc-400 font-medium" aria-hidden="true">:</span>
-                    <dd className="mt-0.5 sm:mt-0 text-sm font-semibold sm:font-bold text-zinc-900 sm:text-right [overflow-wrap:anywhere]">{row.value}</dd>
+                    <dd className="mt-0.5 sm:mt-0 text-sm font-semibold sm:font-bold text-zinc-900 sm:text-right [overflow-wrap:anywhere]">
+                      {row.value || <span className="font-medium text-zinc-400">{notAvailable}</span>}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -307,18 +305,26 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                 <div className="w-16 h-0.5 bg-orange-600 mt-4 mb-8" />
               </div>
 
-              <div className="border-l-4 border-orange-600 pl-4 py-2 my-6 bg-orange-50/50 rounded-none">
-                <p className="text-lg md:text-xl font-serif italic text-zinc-800 leading-relaxed">
-                  &ldquo;{sanggar.tagline || "Berbudaya, Berprestasi, Berkualitas, Santun dan Kreatif."}&rdquo;
-                </p>
-              </div>
+              {sanggar.tagline && (
+                <div className="border-l-4 border-orange-600 pl-4 py-2 my-6 bg-orange-50/50 rounded-none">
+                  <p className="text-lg md:text-xl font-serif italic text-zinc-800 leading-relaxed">
+                    &ldquo;{sanggar.tagline}&rdquo;
+                  </p>
+                </div>
+              )}
 
               {/* Storytelling Paragraphs with Drop-Cap on first paragraph */}
               {(() => {
                 const showsEnglish = !!(isEn && sanggar.descriptionEn && sanggar.descriptionEn.length > 0);
                 const descList = showsEnglish ? sanggar.descriptionEn! : (sanggar.description || []);
 
-                if (!descList || descList.length === 0) return null;
+                if (!descList || descList.length === 0) {
+                  return (
+                    <p className="text-sm text-zinc-500 italic">
+                      {isEn ? "The studio profile is still being compiled by the department." : "Profil sanggar sedang dalam pendataan dinas."}
+                    </p>
+                  );
+                }
 
                 return (
                   // Justified from sm up, left-aligned on phones (no Indonesian hyphenation in browsers, so narrow justified
@@ -381,6 +387,11 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                     </p>
                   </div>
 
+                  {serviceList.length === 0 && (
+                    <p className="text-sm text-zinc-500 italic">
+                      {isEn ? "Service data is still being compiled by the department." : "Data layanan sedang dalam pendataan dinas."}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     {serviceList.map((item, idx) => {
                       const isObj = typeof item === 'object' && item !== null;
@@ -491,29 +502,35 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               <h3 className="text-xs font-bold uppercase tracking-wider text-orange-600 mb-4">
                 {isEn ? "Studio Location" : "Lokasi Sanggar"}
               </h3>
-              <p className="text-sm text-zinc-600 leading-relaxed mb-3">
-                {sanggar.address || sanggar.alamatSanggar || "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur"}
-              </p>
-              <div className="w-full h-44 sm:h-52 my-3 rounded-none overflow-hidden border border-zinc-200 shadow-sm">
-                <iframe
-                  title={isEn ? "Studio Location" : "Lokasi Sanggar"}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(sanggar.address || sanggar.alamatSanggar || "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur")}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                />
-              </div>
-              <a 
-                // the Google Maps link saved in the admin panel when there is one, otherwise a search for the address
-                href={sanggar.mapsUrl || (sanggar.address || sanggar.alamatSanggar ? `https://maps.google.com/?q=${encodeURIComponent(sanggar.address || sanggar.alamatSanggar || "")}` : "https://maps.google.com")} 
-                target="_blank" 
-                rel="noreferrer"
-                className="block w-full text-center py-2.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-none transition-all"
-              >
-                {isEn ? "Open in Google Maps ↗" : "Buka di Google Maps ↗"}
-              </a>
+              {studioAddress ? (
+                <>
+                  <p className="text-sm text-zinc-600 leading-relaxed mb-3">{studioAddress}</p>
+                  <div className="w-full h-44 sm:h-52 my-3 rounded-none overflow-hidden border border-zinc-200 shadow-sm">
+                    <iframe
+                      title={isEn ? "Studio Location" : "Lokasi Sanggar"}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      allowFullScreen
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(studioAddress)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    />
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-zinc-500 italic mb-3">{isEn ? "The studio address is not available yet." : "Alamat sanggar belum tersedia."}</p>
+              )}
+              {(sanggar.mapsUrl || studioAddress) && (
+                <a
+                  // the Google Maps link saved in the admin panel when there is one, otherwise a search for the address
+                  href={sanggar.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(studioAddress)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-full text-center py-2.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-none transition-all"
+                >
+                  {isEn ? "Open in Google Maps ↗" : "Buka di Google Maps ↗"}
+                </a>
+              )}
             </div>
 
           </div>

@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { curatedPhoneOf, findCuratedProfile } from "@/data/sanggarProfiles";
+import { ownCardImage } from "@/lib/sanggarImages";
+import { toWaNumber } from "@/lib/phone";
 import SanggarCatalog from "./SanggarCatalog";
 
 export const metadata: Metadata = {
@@ -13,21 +16,17 @@ export const dynamic = "force-dynamic";
 export interface Sanggar {
   id: string;
   nama_sanggar: string;
-  nama_pimpinan?: string;
   grade?: string;
   alamat?: string;
   kelurahan?: string;
   kecamatan?: string;
   kota_kab?: string;
-  no_hp?: string;
   kontak_pic?: string;
+  /** WhatsApp digits (62…) on record for this sanggar; no button without one */
   whatsapp?: string;
-  whatsappNumber?: string;
-  whatsappUrl?: string;
   instagram?: string;
   instagramUrl?: string;
   youtubeUrl?: string;
-  youtube?: string;
   jenis_tarian?: string;
   thumbnail_url: string | null;
   // Admin-managed columns (some only exist after the 20260930 migration)
@@ -39,6 +38,30 @@ export interface Sanggar {
 
 interface SanggarPageProps {
   searchParams?: Promise<{ q?: string }> | { q?: string };
+}
+
+/** A link only when it points at a channel (a bare youtube.com address is a placeholder) */
+const channelUrl = (url?: string | null) => (url && !/^https?:\/\/(www\.)?youtube\.com\/?$/i.test(url) ? url : undefined);
+
+const instagramLink = (value?: string | null) =>
+  value ? (value.startsWith("http") ? value : `https://instagram.com/${value.replace("@", "")}`) : undefined;
+
+/**
+ * A database row as its catalog card shows it: what the admin has saved first, then the sanggar's curated profile
+ * (src/data/sanggarProfiles.ts, the same source as its detail page) and its own card photo. Nothing is borrowed from
+ * another sanggar and nothing is made up: a contact that isn't on record hides its button.
+ */
+function toCatalogEntry(row: Sanggar): Sanggar {
+  const curated = findCuratedProfile(String(row.id), row.nama_sanggar);
+  return {
+    ...row,
+    grade: row.grade || curated?.grade?.replace(/grade/i, "").trim() || undefined,
+    alamat: row.alamat || curated?.alamatSanggar || undefined,
+    thumbnail_url: row.thumbnail_url || row.logo_url || ownCardImage(row.nama_sanggar) || null,
+    whatsapp: toWaNumber(row.kontak_pic) || toWaNumber(curatedPhoneOf(curated)) || undefined,
+    youtubeUrl: channelUrl(row.youtube_url) || channelUrl(curated?.youtubeUrl) || channelUrl(curated?.contacts?.youtube),
+    instagramUrl: instagramLink(row.instagram) || instagramLink(curated?.instagramUrl || curated?.contacts?.instagram || curated?.kontak?.instagram),
+  };
 }
 
 export default async function SanggarPage({ searchParams }: SanggarPageProps) {
@@ -82,114 +105,9 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
         });
         fetchError = error.message || "Gagal mengambil data sanggar.";
       } else {
-        // Drafts are hidden from the public catalog
-        sanggars = ((data as Sanggar[]) ?? []).filter((s) => s.status !== "draft");
-
-        // What the admin panel has saved for each sanggar. The demo defaults below (stock card images,
-        // placeholder contacts) must never override real data, so these are re-applied at the end.
-        const adminSaved = new Map(
-          sanggars.map((s) => [
-            s.id,
-            {
-              thumbnail: s.thumbnail_url || s.logo_url || null,
-              whatsapp: s.kontak_pic || null,
-              youtube: s.youtube_url || null,
-              instagram: s.instagram || null,
-              alamat: s.alamat || null,
-            },
-          ])
-        );
-
-        // Each sanggar shows only its own photo (the owners' card images are assigned below, admin uploads at the
-        // end); sanggars without one show the "No Image" placeholder rather than another sanggar's photo
-        const ae = sanggars.find(s => s.nama_sanggar.includes("AE Production") || s.nama_sanggar.includes("Art Enthusiast"));
-        if (ae) {
-          ae.nama_sanggar = "Art Enthusiast Production";
-          ae.thumbnail_url = "/images/sanggar/ae-production/card/card-1.webp";
-          ae.whatsapp = "6281318702623";
-          ae.youtubeUrl = "https://www.youtube.com/@ae.production_";
-        }
-
-        // Sinar Norray (Replaces Sandyakala Art Performance if present)
-        const norray = sanggars.find(s => 
-          s.nama_sanggar?.toLowerCase().includes("sinar norray") || 
-          s.nama_sanggar?.toLowerCase().includes("sandyakala") ||
-          s.id === "sinar-norray"
-        );
-        if (norray) {
-          norray.nama_sanggar = "Sinar Norray";
-          norray.nama_pimpinan = "Engkar Karmilasari";
-          norray.grade = "B";
-          norray.alamat = "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur";
-          norray.thumbnail_url = "/images/sanggar/sinar-norray/card/card-7.webp";
-          norray.whatsapp = "6281310998647";
-          norray.whatsappUrl = "https://wa.me/6281310998647";
-          norray.instagramUrl = "https://instagram.com/sinar_norray";
-          norray.youtubeUrl = "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ";
-        } else {
-          sanggars.push({
-            id: "sinar-norray",
-            nama_sanggar: "Sinar Norray",
-            nama_pimpinan: "Engkar Karmilasari",
-            grade: "B",
-            alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
-            thumbnail_url: "/images/sanggar/sinar-norray/card/card-7.webp",
-            whatsapp: "6281310998647",
-            whatsappUrl: "https://wa.me/6281310998647",
-            instagramUrl: "https://instagram.com/sinar_norray",
-            youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
-          });
-        }
-
-        // Assign images to specific Sanggar cards
-        const am = sanggars.find(s => s.nama_sanggar === "AM Dance Studio");
-        if (am) {
-          am.thumbnail_url = "/images/sanggar/am-dance-studio/card/card-2.webp";
-          am.whatsapp = "6281289214320";
-          am.youtubeUrl = "https://www.youtube.com";
-        }
-
-        const arunika = sanggars.find(s => s.nama_sanggar === "Arunika Art Production");
-        if (arunika) {
-          arunika.thumbnail_url = "/images/sanggar/arunika-art-production/card/card-3.webp";
-          arunika.whatsapp = "6281289214320";
-          arunika.youtubeUrl = "https://www.youtube.com";
-        }
-
-        const ayodya = sanggars.find(s => s.nama_sanggar === "Ayodya Pala");
-        if (ayodya) {
-          ayodya.thumbnail_url = "/images/sanggar/ayodya-pala/card/card-4.webp";
-          ayodya.whatsapp = "6281399160062";
-          ayodya.youtubeUrl = "https://www.youtube.com";
-        }
-
-        const citra = sanggars.find(s => s.nama_sanggar === "Citra Art Studio");
-        if (citra) {
-          citra.thumbnail_url = "/images/sanggar/citra-art-studio/card/card-5.webp";
-          citra.whatsapp = "6281289214320";
-          citra.youtubeUrl = "https://www.youtube.com";
-        }
-
-        const daya = sanggars.find(s => s.nama_sanggar === "Daya Presta");
-        if (daya) {
-          daya.thumbnail_url = "/images/sanggar/daya-presta/card/card-6.webp";
-          daya.whatsapp = "6281289214320";
-          daya.youtubeUrl = "https://www.youtube.com";
-        }
-
-        // Admin-saved data wins over every default above
-        for (const s of sanggars) {
-          const saved = adminSaved.get(s.id);
-          if (!saved) continue;
-          if (saved.thumbnail) s.thumbnail_url = saved.thumbnail;
-          if (saved.whatsapp) {
-            s.whatsapp = saved.whatsapp;
-            s.whatsappUrl = undefined;
-          }
-          if (saved.youtube) s.youtubeUrl = saved.youtube;
-          if (saved.instagram) s.instagramUrl = saved.instagram.startsWith("http") ? saved.instagram : `https://instagram.com/${saved.instagram.replace("@", "")}`;
-          if (saved.alamat) s.alamat = saved.alamat;
-        }
+        // Exactly the verified rows the admin dashboard counts: drafts are hidden from the public catalog, and no
+        // sanggar is added that isn't in the database
+        sanggars = ((data as Sanggar[]) ?? []).filter((s) => s.status !== "draft").map(toCatalogEntry);
       }
     }
   } catch (err: unknown) {
@@ -197,33 +115,6 @@ export default async function SanggarPage({ searchParams }: SanggarPageProps) {
       err instanceof Error ? err.message : String(err);
     console.error("Unexpected fetch exception:", errMsg, err);
     fetchError = errMsg || "Terjadi kesalahan koneksi ke server database.";
-  }
-
-  if (!sanggars || sanggars.length === 0) {
-    sanggars = [
-      {
-        id: "sinar-norray",
-        nama_sanggar: "Sinar Norray",
-        nama_pimpinan: "Engkar Karmilasari",
-        grade: "B",
-        alamat: "Jl. Daman 1 No.39 RT.008/002 Bambu Apus Cipayung Jakarta Timur",
-        jenis_tarian: "Tari Betawi, Lenong Betawi",
-        thumbnail_url: "/images/sanggar/sinar-norray/card/card-7.webp",
-        whatsapp: "6281310998647",
-        whatsappUrl: "https://wa.me/6281310998647",
-        instagramUrl: "https://instagram.com/sinar_norray",
-        youtubeUrl: "https://youtube.com/@sinarnorray6913?si=oV-MbzLOy6alf8JJ"
-      },
-      {
-        id: "1",
-        nama_sanggar: "Art Enthusiast Production",
-        nama_pimpinan: "Ahmad",
-        grade: "A",
-        alamat: "Jakarta",
-        thumbnail_url: "/images/sanggar/ae-production/card/card-1.webp",
-        whatsapp: "6281318702623"
-      }
-    ];
   }
 
   return <SanggarCatalog sanggars={sanggars} fetchError={fetchError} initialQuery={initialQuery} />;

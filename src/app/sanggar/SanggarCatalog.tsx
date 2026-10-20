@@ -389,7 +389,8 @@ export default function SanggarCatalog({
                       </div>
                     )}
 
-                    {/* Hover Overlay Container */}
+                    {/* Hover Overlay Container: only the actions with data on record (YouTube channel, WhatsApp number) */}
+                    {(sanggar.youtubeUrl || sanggar.whatsapp) && (
                     <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto flex flex-col justify-end p-3.5 sm:p-4">
                       {/* White Bottom Fade Gradient */}
                       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-white via-white/80 to-transparent -z-10 pointer-events-none" />
@@ -397,13 +398,13 @@ export default function SanggarCatalog({
                       {/* Action Buttons */}
                       <div className="flex gap-2 items-center justify-between">
                         {/* YouTube Button */}
+                        {sanggar.youtubeUrl && (
                         <button
                           type="button"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const targetUrl = sanggar.youtubeUrl || "https://www.youtube.com";
-                            window.open(targetUrl, '_blank', 'noopener,noreferrer');
+                            window.open(sanggar.youtubeUrl, '_blank', 'noopener,noreferrer');
                           }}
                           className="flex-1 rounded-none bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-bold text-xs shadow-sm hover:shadow-md hover:brightness-105 active:scale-[0.98] transition-all py-2.5 px-3 tracking-wider uppercase flex items-center justify-center gap-1.5 cursor-pointer"
                         >
@@ -412,21 +413,16 @@ export default function SanggarCatalog({
                           </svg>
                           <span>Tonton</span>
                         </button>
+                        )}
 
                         {/* WhatsApp Button */}
+                        {sanggar.whatsapp && (
                         <button
                           type="button"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const wa = sanggar.whatsappUrl || sanggar.whatsappNumber || sanggar.whatsapp || '6281310998647';
-                            if (wa.startsWith('http')) {
-                              window.open(wa, '_blank', 'noopener,noreferrer');
-                            } else {
-                              const cleaned = wa.replace(/\D/g, '');
-                              const formatted = cleaned.startsWith('0') ? '62' + cleaned.substring(1) : cleaned;
-                              window.open(`https://wa.me/${formatted}`, '_blank', 'noopener,noreferrer');
-                            }
+                            window.open(`https://wa.me/${sanggar.whatsapp}`, '_blank', 'noopener,noreferrer');
                           }}
                           className="flex-1 rounded-none bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white font-bold text-xs shadow-sm hover:shadow-md hover:brightness-105 active:scale-[0.98] transition-all py-2.5 px-3 tracking-wider uppercase flex items-center justify-center gap-1.5 cursor-pointer"
                         >
@@ -435,8 +431,10 @@ export default function SanggarCatalog({
                           </svg>
                           <span>WhatsApp</span>
                         </button>
+                        )}
                       </div>
                     </div>
+                    )}
                   </Link>
 
                   {/* Text Area */}
