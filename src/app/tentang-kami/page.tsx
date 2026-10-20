@@ -53,16 +53,17 @@ const MOMENT_PHOTOS = {
   },
   // "Bhakti Kanyini 25 Cultural Day at Taman Mini Indonesia Indah" by Lance Cpl. Alexis Ballin, U.S. Marine Corps:
   // public domain (credited anyway), resized and saved as WebP
+  // Sanggar Margasari's weekly rehearsal at Balai Budaya Condet, photo by Dermawan Ismail for RRI Jakarta (berita foto,
+  // 19 Apr 2025; resized from the 4032px original). © RRI: no open licence, the credit links to the article
   dance: {
-    src: "/images/informasi/kelas-tari-pelatih.webp",
+    src: "/images/latihan-tari-margasari.jpg",
     width: 2000,
-    height: 1334,
-    position: "54% 50%",
+    height: 1125,
+    position: "60% 50%",
     credit: {
-      author: "Lance Cpl. Alexis Ballin, U.S. Marine Corps",
-      source: "Wikimedia Commons",
-      license: { id: "domain publik", en: "public domain" },
-      href: "https://commons.wikimedia.org/wiki/File:Bhakti_Kanyini_25_Cultural_Day_at_Taman_Mini_Indonesia_Indah_(9420222).jpg",
+      author: "Dermawan Ismail",
+      source: "RRI Jakarta",
+      href: "https://rri.co.id/jakarta/berita-foto/21868/sanggar-margasari-adakan-latihan-tari-rutin",
     },
   },
 };
@@ -119,7 +120,7 @@ export default function TentangKamiPage() {
                   text: "Untuk anak, remaja, hingga dewasa.",
                   image: {
                     ...MOMENT_PHOTOS.dance,
-                    alt: "Suasana kelas tari tradisional: guru tari Taman Mini Indonesia Indah memperagakan gerakan tangan, diikuti para peserta",
+                    alt: "Latihan rutin tari Betawi Sanggar Margasari di Balai Budaya Condet: para penari berbaju hitam dan berselendang kuning",
                   },
                 },
               ],
@@ -193,7 +194,7 @@ export default function TentangKamiPage() {
                   text: "For children, teenagers, and adults.",
                   image: {
                     ...MOMENT_PHOTOS.dance,
-                    alt: "A traditional dance class: a Taman Mini Indonesia Indah dance teacher demonstrating arm movements as participants follow along",
+                    alt: "Sanggar Margasari's weekly Betawi dance rehearsal at Balai Budaya Condet: dancers in black with yellow sashes",
                   },
                 },
               ],
