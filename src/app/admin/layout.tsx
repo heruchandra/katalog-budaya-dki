@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, ExternalLink, LayoutDashboard, Loader2, LogOut, Menu, Music, Settings, Users, X } from "lucide-react";
+import { ExternalLink, LayoutDashboard, Loader2, LogOut, Menu, Music, Settings, Users, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { SANGGAR_TABLE } from "@/lib/sanggarAdmin";
 import { fetchProfileRole, isAdminRole, UNAUTHORIZED_REDIRECT } from "@/lib/auth";
 import type { User } from "@supabase/supabase-js";
 import ProfileDropdown from "@/components/ProfileDropdown";
+import NotificationMenu, { type PendingItem } from "@/components/admin/NotificationMenu";
 import { profileAvatar, profileName } from "@/lib/profileActions";
 
 type AuthState = "checking" | "ok";
@@ -20,7 +21,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [auth, setAuth] = useState<AuthState>("checking");
   const [email, setEmail] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [draftCount, setDraftCount] = useState<number | null>(null);
+  // drafts waiting for verification (sanggar + seniman musik); null while loading or when they can't be read
+  const [pending, setPending] = useState<PendingItem[] | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { t, language, setLanguage } = useLanguage();
@@ -61,17 +63,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => subscription.unsubscribe();
   }, [router]);
 
-  // Notification badge: sanggar saved as draft, i.e. waiting for verification (needs the `status` column)
+  // Notifications: sanggar and seniman musik saved as draft, i.e. waiting for verification (needs the `status`
+  // columns). Read again on every admin route change, so a verified entry disappears from the list.
   useEffect(() => {
     if (auth !== "ok") return;
     let cancelled = false;
-    supabase
-      .from(SANGGAR_TABLE)
-      .select("id", { count: "exact", head: true })
-      .eq("status", "draft")
-      .then(({ count, error }) => {
-        if (!cancelled) setDraftCount(error ? null : count ?? 0);
-      });
+    Promise.all([
+      supabase.from(SANGGAR_TABLE).select("id, nama_sanggar, created_at").eq("status", "draft"),
+      supabase.from("pemusiks").select("id, nama_seniman, created_at").eq("status", "draft"),
+    ]).then(([s, p]) => {
+      if (cancelled) return;
+      if (s.error && p.error) {
+        setPending(null);
+        return;
+      }
+      const items: PendingItem[] = [
+        ...(s.data ?? []).map((r) => ({ key: `s-${r.id}`, type: "sanggar" as const, name: r.nama_sanggar, date: r.created_at, href: `/admin/sanggar/edit/${r.id}` })),
+        ...(p.data ?? []).map((r) => ({ key: `p-${r.id}`, type: "musik" as const, name: r.nama_seniman, date: r.created_at, href: `/admin/pemusik/edit/${r.id}` })),
+      ];
+      // newest first
+      items.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
+      setPending(items);
+    });
     return () => {
       cancelled = true;
     };
@@ -187,28 +200,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ))}
             </div>
 
-            {/* Notifications: drafts waiting for verification */}
-            <Link
-              href="/admin/sanggar?status=draft"
-              className="relative flex h-9 w-9 items-center justify-center rounded-sm text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"
-              title={
-                draftCount
-                  ? tr(`${draftCount} sanggar menunggu verifikasi`, `${draftCount} sanggar awaiting verification`)
-                  : tr("Tidak ada notifikasi", "No notifications")
-              }
-              aria-label={
-                draftCount
-                  ? tr(`${draftCount} sanggar menunggu verifikasi`, `${draftCount} sanggar awaiting verification`)
-                  : tr("Notifikasi", "Notifications")
-              }
-            >
-              <Bell className="h-[18px] w-[18px]" />
-              {draftCount ? (
-                <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E01A67] px-1 text-[10px] font-bold text-white">
-                  {draftCount > 99 ? "99+" : draftCount}
-                </span>
-              ) : null}
-            </Link>
+            {/* Notifications: drafts waiting for verification, in a popover */}
+            <NotificationMenu items={pending} />
 
             {/* Profile menu: same as the public navbar (read-only profile + sign out) */}
             <div className="border-l border-zinc-200 pl-3">
