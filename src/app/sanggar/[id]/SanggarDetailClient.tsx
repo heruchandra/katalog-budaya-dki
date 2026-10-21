@@ -50,8 +50,6 @@ export interface ServiceItem {
   image?: string;
   /** Tampilkan Karya Tari Unggulan sanggar di dalam modal layanan ini */
   featuresDanceWorks?: boolean;
-  /** Price / rate text entered in the admin panel, e.g. "Mulai Rp 2.500.000" */
-  price?: string;
 }
 
 export interface SanggarDetailData {
@@ -419,9 +417,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                               <p className="text-xs sm:text-sm text-zinc-500 line-clamp-2 mt-1 leading-relaxed">
                                 {desc}
                               </p>
-                            )}
-                            {service.price && (
-                              <p className="text-xs sm:text-sm font-semibold text-zinc-900 mt-2">{service.price}</p>
                             )}
                           </div>
 

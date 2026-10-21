@@ -95,12 +95,6 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
             {isEn ? "Service Summary" : "Ringkasan Layanan"}
           </p>
           <p className="text-sm sm:text-base text-zinc-700 leading-relaxed">{modalDesc}</p>
-          {service.price && (
-            <p className="mt-3 pt-3 border-t border-zinc-200 text-sm text-zinc-700">
-              <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase mr-2">{isEn ? "Rate" : "Tarif"}</span>
-              <span className="font-semibold text-zinc-900">{service.price}</span>
-            </p>
-          )}
         </div>
 
         {practiceInfo && (

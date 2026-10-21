@@ -72,7 +72,6 @@ export interface GalleryFormItem extends ImageValue {
 export interface LayananFormItem {
   title: string;
   description: string;
-  price: string;
   image: ImageValue;
 }
 
@@ -157,7 +156,7 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
     foto_ketua: { url: str(row.foto_ketua_url) || null },
     foto_grup: { url: str(row.foto_grup_url) || null },
     galeri: parseGallery(row).map((g) => ({ url: g.url, caption: g.caption })),
-    layanan: parseLayanan(row).map((l) => ({ title: l.title, description: l.description, price: l.price, image: { url: l.image } })),
+    layanan: parseLayanan(row).map((l) => ({ title: l.title, description: l.description, image: { url: l.image } })),
     prestasi: parsePrestasi(row),
   };
 }
@@ -197,7 +196,6 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
     layanan_items.push({
       title: item.title.trim(),
       description: item.description.trim(),
-      price: item.price.trim(),
       image: await resolveImage(item.image, "layanan"),
     });
   }

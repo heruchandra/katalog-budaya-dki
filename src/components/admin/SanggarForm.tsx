@@ -371,7 +371,7 @@ export default function SanggarForm({ id }: { id?: string }) {
                   <button
                     type="button"
                     disabled={isMissing("layanan_items")}
-                    onClick={() => set("layanan", [...values.layanan, { title: "", description: "", price: "", image: { url: null } }])}
+                    onClick={() => set("layanan", [...values.layanan, { title: "", description: "", image: { url: null } }])}
                     className="inline-flex items-center gap-2 rounded-sm border border-zinc-200 bg-white px-3.5 py-2 text-sm font-semibold text-zinc-800 hover:border-orange-400 hover:text-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Plus className="h-4 w-4" /> {tr("Tambah Layanan", "Add Service")}
@@ -392,20 +392,16 @@ export default function SanggarForm({ id }: { id?: string }) {
                           previewClass="aspect-video"
                           onChange={(v) => update({ image: v })}
                         />
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px]">
+                        <div className="grid grid-cols-1 gap-3">
                           <label>
                             <FieldLabel>{tr("Nama layanan / karya", "Service / work name")}</FieldLabel>
                             <input type="text" value={item.title} onChange={(e) => update({ title: e.target.value })} className={inputClass} />
                           </label>
                           <label>
-                            <FieldLabel>{tr("Harga / tarif", "Price / rate")}</FieldLabel>
-                            <input type="text" value={item.price} onChange={(e) => update({ price: e.target.value })} className={inputClass} placeholder={tr("Mis. Mulai Rp 2.500.000", "e.g. From Rp 2,500,000")} />
-                          </label>
-                          <label className="sm:col-span-2">
                             <FieldLabel>{tr("Deskripsi", "Description")}</FieldLabel>
-                            <textarea rows={2} value={item.description} onChange={(e) => update({ description: e.target.value })} className={inputClass} />
+                            <textarea rows={3} value={item.description} onChange={(e) => update({ description: e.target.value })} className={inputClass} />
                           </label>
-                          <div className="sm:col-span-2 flex justify-end">
+                          <div className="flex justify-end">
                             <button type="button" onClick={() => set("layanan", values.layanan.filter((_, j) => j !== i))} className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800">
                               <Trash2 className="h-3.5 w-3.5" /> {tr("Hapus layanan", "Remove service")}
                             </button>

@@ -11,7 +11,6 @@ export interface GalleryItem {
 export interface LayananItem {
   title: string;
   description: string;
-  price: string;
   image: string | null;
 }
 
@@ -56,7 +55,7 @@ export function parseLayanan(row: { layanan_items?: unknown }): LayananItem[] {
   return asArray(row.layanan_items)
     .map((item) => {
       const o = item as Record<string, unknown>;
-      return { title: str(o?.title), description: str(o?.description), price: str(o?.price), image: str(o?.image) || null };
+      return { title: str(o?.title), description: str(o?.description), image: str(o?.image) || null };
     })
     .filter((l) => l.title);
 }

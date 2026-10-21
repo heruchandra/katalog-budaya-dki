@@ -73,7 +73,7 @@ export default async function SanggarDetail({
     logo: data?.logo_url || specific?.logo,
     services: dbLayanan.length > 0 ? undefined : specific?.services,
     layanan: dbLayanan.length > 0
-      ? dbLayanan.map((l) => ({ title: l.title, description: l.description, image: l.image || undefined, price: l.price || undefined }))
+      ? dbLayanan.map((l) => ({ title: l.title, description: l.description, image: l.image || undefined }))
       : specific?.layanan || specific?.services || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
     danceSpecialties: specific?.danceSpecialties || specific?.tariUnggulan || fallback.tariUnggulan,
     tariUnggulan: specific?.tariUnggulan || specific?.danceSpecialties || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
