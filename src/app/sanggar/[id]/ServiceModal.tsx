@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ImageOff } from "lucide-react";
+import { Drama } from "lucide-react";
 import type { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
 import { ownDanceImage, ownServiceImage } from "@/lib/sanggarImages";
-import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
+import { danceWorksOf, isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import { WHATSAPP_CTA } from "@/components/SocialPills";
 import PracticeInfo from "./PracticeInfo";
 
@@ -38,9 +38,10 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
         ? "In-depth studio training, performance programs, and cultural consultation guided by experienced mentors."
         : "Program pelatihan terarah, pementasan kesenian, dan konsultasi budaya yang dibimbing langsung oleh instruktur berpengalaman."));
 
-  const danceHighlights = isEn
+  // the works with a synopsis, in the page language when the record has an English version
+  const danceHighlights = danceWorksOf(isEn
     ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
-    : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
+    : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || [])));
 
   // Karya Tari Unggulan hanya tampil di layanan yang ditandai featuresDanceWorks.
   const showDanceWorks = !!service.featuresDanceWorks && danceHighlights.length > 0;
@@ -111,11 +112,12 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
                 const danceImage = getDanceImage(dance, sanggar);
                 return (
                   <div key={idx} className="rounded-none border border-zinc-200/80 bg-white shadow-sm overflow-hidden flex flex-col">
-                    <div className="relative w-full aspect-video bg-zinc-100 overflow-hidden flex items-center justify-center">
+                    <div className="relative w-full aspect-video bg-gradient-to-br from-orange-50 via-amber-50 to-zinc-50 overflow-hidden flex items-center justify-center">
                       {danceImage ? (
                         <Image src={danceImage} alt={danceName} fill sizes="(min-width: 640px) 300px, 90vw" className="object-cover" />
                       ) : (
-                        <ImageOff className="w-7 h-7 text-zinc-300" aria-hidden="true" />
+                        // no photo of this work yet: a soft placeholder rather than an empty box
+                        <Drama className="w-8 h-8 text-orange-300" aria-hidden="true" />
                       )}
                     </div>
                     <div className="p-4 flex flex-col gap-2">
@@ -126,7 +128,24 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
                         <h5 className="text-base font-bold text-zinc-900 leading-snug">{danceName}</h5>
                       </div>
                       <p className="text-[11px] font-bold tracking-wider text-zinc-400 uppercase">{isEn ? "Work Synopsis:" : "Sinopsis Karya:"}</p>
-                      <p className="text-zinc-600 text-sm leading-relaxed text-justify">{dance.synopsis || dance.description}</p>
+                      {/* left-aligned: justified text in these narrow cards opens wide gaps (no Indonesian hyphenation) */}
+                      <p className="text-zinc-600 text-sm leading-relaxed">{dance.synopsis || dance.description}</p>
+                      {(dance.choreographer || dance.composer) && (
+                        <dl className="mt-1 space-y-0.5 border-t border-zinc-100 pt-2 text-xs text-zinc-500">
+                          {dance.choreographer && (
+                            <div>
+                              <dt className="inline font-semibold text-zinc-600">{isEn ? "Choreography: " : "Penata tari: "}</dt>
+                              <dd className="inline">{dance.choreographer}</dd>
+                            </div>
+                          )}
+                          {dance.composer && (
+                            <div>
+                              <dt className="inline font-semibold text-zinc-600">{isEn ? "Music: " : "Penata musik: "}</dt>
+                              <dd className="inline">{dance.composer}</dd>
+                            </div>
+                          )}
+                        </dl>
+                      )}
                     </div>
                   </div>
                 );
@@ -138,7 +157,7 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
         {/* WhatsApp CTA (only when the sanggar has a number on record) */}
         {waNumber && (
         <a
-          href={`https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(
+          href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
             isEn
               ? `Hello, I saw the profile of ${studioName} on DKI Jakarta Art Catalog and would like to inquire about the service: "${modalTitle}".`
               : `Halo, saya melihat profil ${studioName} di Katalog Seni DKI Jakarta dan ingin berkonsultasi mengenai layanan: "${modalTitle}".`

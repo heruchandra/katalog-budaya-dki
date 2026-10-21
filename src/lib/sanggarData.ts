@@ -78,6 +78,16 @@ export const isDanceClassService = (title?: string | null, titleEn?: string | nu
   /kelas tari|pelatihan tari|latihan tari|dance class/i.test(`${title || ""} ${titleEn || ""}`);
 
 /**
+ * A sanggar's featured dance works that have a written synopsis (from its own form). Only these are presented as its
+ * "Karya Tari Unggulan Sanggar"; a list of dance names with one-line blurbs is not.
+ */
+export const danceWorksOf = <T extends { synopsis?: string }>(list?: T[] | null): T[] =>
+  (list || []).filter((t) => !!t.synopsis?.trim());
+
+/** Title of the service card that opens a sanggar's featured dance works */
+export const DANCE_WORKS_TITLE = { id: "Karya Tari Unggulan Sanggar", en: "Studio's Featured Dance Works" };
+
+/**
  * Splits a practice-venue text into venue and schedule. The data writes the schedule in trailing
  * parentheses: "Studio Sinar Norray, Jl. Daman 1 … (Rabu & Sabtu, 15.00 - 18.00 WIB)".
  */

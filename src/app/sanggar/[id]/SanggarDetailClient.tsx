@@ -7,7 +7,7 @@ import { playfair } from '@/lib/fonts';
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
-import { isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
+import { DANCE_WORKS_TITLE, danceWorksOf, isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
 import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
 import type { SosialMedia } from "@/types/musik";
@@ -346,9 +346,29 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* 2. Layanan Sanggar Section (Structured Service Cards) */}
             {(() => {
-              const serviceList = isEn 
+              const baseList = isEn
                 ? ((sanggar.services && sanggar.services.length > 0) ? sanggar.services : (sanggar.layanan || []))
                 : ((sanggar.layanan && sanggar.layanan.length > 0) ? sanggar.layanan : (sanggar.services || []));
+              // Featured dance works (with a synopsis) open together from one "Karya Tari Unggulan Sanggar" card, as on
+              // Sinar Norray's page; a work also saved as its own Layanan / Karya item is folded into that card
+              const works = danceWorksOf(sanggar.tariUnggulan);
+              const workNames = new Set(works.map((w) => w.name.trim().toLowerCase()));
+              const itemTitle = (item: string | ServiceItem) => (typeof item === 'object' && item !== null ? item.title : item);
+              const hasWorksCard = baseList.some((item) => typeof item === 'object' && item !== null && item.featuresDanceWorks);
+              const workList = works.map((w) => w.name).join(", ");
+              const serviceList: (string | ServiceItem)[] = works.length > 0 && !hasWorksCard
+                ? [
+                    ...baseList.filter((item) => !workNames.has(String(itemTitle(item) || '').trim().toLowerCase())),
+                    {
+                      title: DANCE_WORKS_TITLE.id,
+                      titleEn: DANCE_WORKS_TITLE.en,
+                      description: `Pertunjukan karya tari unggulan sanggar: ${workList}.`,
+                      descriptionEn: `Performances of the studio's featured dance works: ${workList}.`,
+                      image: works.find((w) => w.image)?.image,
+                      featuresDanceWorks: true,
+                    },
+                  ]
+                : baseList;
               // Practice schedule + venue are shown only in the dance-class service's "Lihat Detail" modal (the card stays
               // minimal), so the page has one address section ("Lokasi Sanggar") and no second, conflicting schedule.
               // Studios without a dance-class service get them once, under the service cards.
