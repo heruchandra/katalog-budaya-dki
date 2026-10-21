@@ -362,7 +362,7 @@ export default function HomePage() {
             { id: "s-40", name: "Art Enthusiast Production", fullName: "Art Enthusiast Production", type: "Sanggar", href: "/sanggar/40" },
             { id: "s-30", name: "AM Dance Studio", fullName: "AM Dance Studio", type: "Sanggar", href: "/sanggar/30" },
             { id: "s-21", name: "Arunika Art Production", fullName: "Arunika Art Production", type: "Sanggar", href: "/sanggar/21" },
-            { id: "s-17", name: "Ayodya Pala", fullName: "Ayodya Pala", type: "Sanggar", href: "/sanggar/17" },
+            { id: "s-17", name: "Ayodya Pala", fullName: "Ayodya Pala Indonesia Art Center", type: "Sanggar", href: "/sanggar/17" },
             { id: "s-6", name: "Citra Art Studio", fullName: "Citra Art Studio", type: "Sanggar", href: "/sanggar/6" },
             { id: "s-7", name: "Daya Presta", fullName: "Daya Presta", type: "Sanggar", href: "/sanggar/7" },
           ].map((k) => ({

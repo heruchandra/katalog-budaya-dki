@@ -38,6 +38,48 @@ const SINAR_NORRAY_SERVICES: ServiceItem[] = [
   },
 ];
 
+// Ayodya Pala's Tari Unggulan as written in its INFORMASI SANGGAR form (spelling tidied only). The same texts fill its
+// database row through supabase/migrations/20261021_ayodya_pala_profile.sql (as its "Layanan / Karya").
+export const AYODYA_PALA_COSTUME = "Rumah Kostum Ayodya Pala";
+export const AYODYA_PALA_TARI: TariItem[] = [
+  {
+    name: "Tari Mpok Cantik",
+    synopsis:
+      "Tari Mpok Cantik ini berpijak pada Tari Betawi Tradisi yang dikembangkan kembali menjadi gerak kreasi Betawi, yang menceritakan tentang sekumpulan mpok-mpok remaja cantik yang berkumpul dan bersenda gurau bersama. Cerita ini diambil dari kehidupan sehari-hari layaknya remaja. “Pisang kapok mau dipetik / Pohon nangke jangan ditebang / Mpok mpok yang paling cantik / Boleh tau sape namanye.”",
+    choreographer: "Wahyu Kardinata Suroso, S.Pd",
+    composer: "Rizki Aidul Akbar, S.Sn",
+    image: "/images/sanggar/ayodya-pala/card/card-4.webp",
+  },
+  {
+    name: "Tari Kembang Merona",
+    synopsis:
+      "Merupakan Tari Kreasi Baru yang berpijak dari kesenian Cokek Betawi. Menggambarkan gadis-gadis yang sedang kasmaran adalah fase di mana bunga berada dalam kondisi terbaiknya—mekar sempurna, wangi, dan menawan. Ini melambangkan manusia yang telah mencapai potensi maksimal atau kedewasaan diri yang utuh. Divisualisasikan dalam bentuk gerak-gerak tari Betawi yang dikembangkan dengan unsur-unsur keindahan, keberanian, dan semangat hidup. Dengan kostum dominan merah serta menggunakan saputangan merah, sebagai simbol wanita yang mandiri, kecantikan yang mempesona, kekuatan diri, dan kebahagiaan yang terpancar.",
+    choreographer: "Yulli Fajar & Ratna Kurniasih",
+    composer: "Ricky",
+  },
+  {
+    name: "Tari Godeg Ayu",
+    synopsis:
+      "Merupakan Tari Kreasi Depok. Menggambarkan perjalanan kehidupan seorang gadis yang menginjak dewasa, disempurnakan oleh berbagai sifatnya yang khas, semuanya terpadu dalam pribadi yang penuh dengan harapan, cita-cita dan cinta. Tak lepas pula dari kodratnya sebagai manusia, konflik, dilema dan tantangan kadang kala hadir menyelimuti kehidupannya.",
+    choreographer: "Wulandari, S.Sn",
+    composer: "Mang Ujang & Imam Firmansyah, S.Sn",
+  },
+  {
+    name: "Tari Jari Manis",
+    synopsis:
+      "Tari Jari Manis (Jangan Iri Mpok Manis). “Seperti halnya cinta, sahabat akan muncul dari pihak yang tak terduga. Ketika kebencian meliputi, dialah musuhmu. Ketika cinta bernaung, mereka menjadi sahabatmu. Tetapi, ketika musuhmu adalah rasa iri dan keegoisan hati, di situlah persahabatan diuji.” Sebuah karya yang berpijak pada tari cokek yang menceritakan tentang konflik persahabatan gadis Jakarta yang diwarnai oleh rasa kecemburuan terhadap sahabatnya sendiri.",
+    choreographer: "Myta Rahmawati, S.Pd",
+    composer: "Septian Ray Sukirman",
+  },
+  {
+    name: "Tari Goyang Ngamprok",
+    synopsis:
+      "Tari ini menceritakan tentang persahabatan yang runtuh karena perbedaan. Perbedaan bukan berarti tidak dapat disatukan, tetapi perbedaan itu membuat kita semakin lebih dewasa dan juga semakin kuat dalam membina persahabatan.",
+    choreographer: "Wahyu Kardinata Suroso, S.Pd",
+    composer: "Firman, S.Pd & Imam Firmansyah, S.Sn",
+  },
+];
+
 // Known rich profiles based on INFORMASI SANGGAR.docx and official survey data
 export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
   // Sinar Norray (Grade B) - Founded by late Hj. Nori (Mpok Nori) in 1995
@@ -570,57 +612,48 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
   // ID 17: Ayodya Pala (Grade A) - Exact data from INFORMASI SANGGAR docx/pdf
   "17": {
     name: "Ayodya Pala Indonesia Art Center",
-    tagline: "Membangun Bangsa Melalui Seni dan Budaya",
+    tagline: "Membangun Bangsa Melalui Seni Budaya",
     grade: "Grade A",
     wilayah: "Jakarta Selatan",
     description: [
-      "Yayasan Ayodya Pala dirintis mulai tahun 1978 dan resmi dibentuk menjadi yayasan pada tanggal 24 April 1980. Memiliki lebih dari 2.400 siswa aktif dengan semboyan 'Membangun Bangsa Melalui Seni dan Budaya', Ayodya Pala telah menjadi ikon pelestarian budaya bangsa selama lebih dari 45 tahun.",
-      "Nama AYODYA diambil dari epos Ramayana yaitu kerajaan kelahiran Sri Rama yang makmur, aman, tentram, dan masyarakatnya berbudaya tinggi. Sedangkan kata PALA terinspirasi dari Sumpah Palapa Patih Gajah Mada dari Kerajaan Majapahit yang bersumpah mempersatukan seluruh kepulauan Nusantara.",
-      "Kini dengan lebih dari 3.000 anggota terdaftar dan puluhan cabang latihan, Ayodya Pala telah mewakili Indonesia di panggung internasional, memecahkan rekor dunia, dan mendidik generasi muda agar bangga atas identitas seni tradisi nusantara."
+      "Yayasan Ayodya Pala dirintis mulai tahun 1978 dan dibentuk menjadi yayasan pada tanggal 24 April 1980, memiliki kurang lebih 2.400 siswa aktif dan mempunyai Motto “Membangun Bangsa Melalui Seni dan Budaya”. Ayodya Pala berasal dari kata AYODYA yang diambil dari Epos Ramayana yaitu suatu negara / kerajaan tempat Rama dilahirkan. Kerajaan tersebut makmur, aman, tentram, dan masyarakatnya berbudaya. Sedangkan kata PALA berasal dari sumpah palapa yang dikumandangkan oleh Maha Patih Gajah Mada yang berasal dari Kerajaan Majapahit yang intinya mempersatukan wilayah Nusantara.",
     ],
-    alamatSanggar: "Jalan Raya Lenteng Agung No. 1, Kel. Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12610",
-    alamatLatihan: "Jalan Raya Lenteng Agung No. 1, Kel. Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12610",
+    alamatSanggar: "Jalan Raya Lenteng Agung No. 1 Kel. Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12610",
+    alamatLatihan: "Jalan Raya Lenteng Agung No. 1 Kel. Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12610",
+    // "Layanan Sanggar" from the form, then its five Tari Unggulan as works (the admin's "Layanan / Karya")
     layanan: [
-      "Pelatihan Tari Daerah Nusantara Lengkap",
-      "Modelling Busana Adat Anak & Remaja",
-      "Olah Vokal & Ansambel Musik Tradisional",
-      "Penyewaan Kostum Adat Lengkap 38 Provinsi",
-      "Pementasan Kebudayaan Skala Nasional & Mancanegara"
+      { title: "Tari Daerah Nusantara" },
+      { title: "Modelling Anak" },
+      { title: "Vokal dan Musik" },
+      ...AYODYA_PALA_TARI.map((t) => ({
+        title: t.name,
+        description: `${t.synopsis} Penata tari: ${t.choreographer}; penata musik: ${t.composer}; kostum: ${AYODYA_PALA_COSTUME}.`,
+      })),
     ],
-    tariUnggulan: [
-      {
-        name: "Tari Mpok Cantik",
-        description: "Tari kreasi Betawi yang menggambarkan kecantikan, keluwesan, dan budi pekerti luhur putri Jakarta dalam balutan busana cerah nan mempesona.",
-        image: "/images/sanggar/ayodya-pala/card/card-4.webp"
-      },
-      {
-        name: "Tari Kembang Merona",
-        description: "Koreografi rancak penuh keceriaan remaja Betawi yang menyiratkan semarak kembang mekar di bawah mentari ibu kota.",
-      },
-      {
-        name: "Tari Goyang Ngamprok",
-        description: "Gerak ritmis interaktif yang memadukan kelincahan langkah kaki dan hentakan irama kendang ronggeng Betawi.",
-      },
-      {
-        name: "Tari Jari Manis",
-        description: "Kelembutan gerak jemari dan lentiknya kiprah tangan dalam iringan alunan musik tradisi yang syahdu dan memikat.",
-      },
-      {
-        name: "Tari Zapin Habibana",
-        description: "Harmoni akulturasi budaya Melayu-Arab di pesisir Jakarta dengan ayunan langkah zapin yang khidmat dan bersahaja.",
-      }
-    ],
+    tariUnggulan: AYODYA_PALA_TARI,
     prestasi: [
-      "Pemegang Rekor MURI – 1.117 Penari dari Satu Sanggar (Tari Bhinneka di Depok Open Space 2025)",
-      "Dipercaya Tampil di Berbagai Event Nasional: Jakarnaval, TRANS7, UNDP, dan Warta Kota Awards",
-      "Pengembangan Seni Tari Nusantara Lintas 45 Tahun dengan Lebih dari 3.000 Anggota",
-      "Penampil Resmi Delegasi Kebudayaan Republik Indonesia di Festival Seni Internasional"
+      {
+        title: "Pemegang Rekor MURI – 1.117 Penari dari Satu Sanggar",
+        organizer:
+          "Ayodya Pala berhasil meraih Rekor Museum Rekor-Dunia Indonesia (MURI) untuk kategori Pagelaran Penari Terbanyak dari Satu Sanggar, dengan 1.117 penari yang tampil serempak membawakan Tari Bhinneka pada Depok Culture Festival, 25 Oktober 2025 di Depok Open Space, Balai Kota Depok.",
+        year: "2025",
+      },
+      {
+        title: "Dipercaya tampil dalam berbagai acara nasional, pemerintahan, korporasi, dan internasional",
+        organizer:
+          "Penari Ayodya Pala telah terlibat dalam berbagai event seperti Jakarnaval 2026, program TRANS7, kegiatan United Nations Development Programme (UNDP), Warta Kota Awards, kegiatan DPRD Jawa Barat, serta berbagai event perusahaan dan institusi.",
+      },
+      {
+        title: "Lebih dari 3.000 anggota/siswa Ayodya Pala & 45 tahun berkarya",
+        organizer:
+          "Pada pemberitaan pemecahan Rekor MURI 2025, Ayodya Pala disebut telah memiliki lebih dari 3.000 anggota dan telah berkarya selama sekitar 45 tahun dalam pengembangan seni tari Nusantara.",
+      },
     ],
+    // the form gives no email address
     kontak: {
       ketua: "Dra. Budi Agustinah",
       pic: "Dra. Budi Agustinah",
       phone: "081399160062",
-      email: "ayodyapala.art@gmail.com"
     },
     imageUrl: "/images/sanggar/ayodya-pala/card/card-4.webp",
     fotoKetuaUrl: null,
