@@ -452,11 +452,6 @@ export default function SanggarCatalog({
                       {" • "}
                       {resolveWilayah(sanggar) ?? "DKI Jakarta"}
                     </p>
-                    {sanggar.jenis_tarian && (
-                      <p className="text-xs text-slate-400 truncate mt-1">
-                        {sanggar.jenis_tarian}
-                      </p>
-                    )}
                   </div>
                 </div>
               ))}
