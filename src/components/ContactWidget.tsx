@@ -25,25 +25,20 @@ const CONTACT_PERSON: { name: string; role: Bilingual | null; whatsapp: string; 
 // Admin screens have their own bottom action bars and toasts; sign-in pages don't need it
 const HIDDEN_ON = /^\/(admin|login|register)(\/|$)/;
 
-/** A contact person: a silhouette wearing a headset with a mic (lucide's Headset has no person), drawn on lucide's 24px grid */
+/**
+ * A contact person: a solid silhouette of a representative wearing headphones, matching the reference artwork chosen
+ * for the button (traced from it onto a 24px grid, 20 units tall and centred). The head, the headphones (band and
+ * ear cups) and the shoulders are separate shapes with clear space between them, as in the reference.
+ */
 function ContactPersonIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="9.5" r="3.5" fill="currentColor" stroke="none" />
-      <path d="M5.5 11V9.5a6.5 6.5 0 0 1 13 0V11" />
-      <rect x="4.25" y="10" width="2.5" height="4" rx="1.25" fill="currentColor" />
-      <rect x="17.25" y="10" width="2.5" height="4" rx="1.25" fill="currentColor" />
-      <path d="M18.5 14v.25a2.25 2.25 0 0 1-2.25 2.25H14.5" />
-      <path d="M5.5 23.5a6.5 6.5 0 0 1 13 0Z" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      {/* headphones: band and ear cups */}
+      <path d="M11.33 2.02L13.05 2.07L14.07 2.3L14.81 2.58L15.7 3.05L16.58 3.7L17.33 4.44L17.88 5.19L18.35 6.02L18.72 7L18.91 7.79L19 8.58L19.42 9L19.7 9.42L19.98 10.21L19.98 10.58L20.02 10.63L19.98 11.19L19.74 11.88L19.42 12.4L18.81 12.95L18.4 13.19L17.98 13.33L17.19 13.37L16.86 13.19L16.63 12.81L16.63 8.58L16.67 8.44L16.91 8.16L17.33 8.02L17.37 7.93L16.95 6.67L16.49 5.88L16.16 5.47L15.56 4.86L14.63 4.21L13.51 3.74L12.53 3.56L11.47 3.56L11.42 3.6L10.86 3.65L10.07 3.88L9.47 4.16L8.44 4.86L7.84 5.47L7.14 6.49L6.81 7.23L6.63 7.98L7.09 8.16L7.28 8.35L7.42 8.77L7.42 12.63L7.37 12.86L7.23 13.09L6.81 13.33L5.84 13.37L5.19 13.14L4.91 12.95L4.58 12.63L4.21 11.98L4.07 11.51L4.02 10.81L3.98 10.77L4.02 10.21L4.3 9.42L4.63 8.95L5 8.58L5.09 7.79L5.28 7L5.65 6.02L6.12 5.19L6.67 4.44L7.42 3.7L8.3 3.05L9.65 2.4L10.26 2.21L10.95 2.07L11.28 2.07Z" />
+      {/* head */}
+      <path d="M11.47 5.74L12.81 5.79L13.65 6.07L14.26 6.44L14.86 7.05L15.19 7.56L15.42 8.12L15.6 9L15.6 10.02L15.42 11L15.09 11.88L14.67 12.63L14.4 13L13.6 13.74L13.14 14.02L12.4 14.26L11.6 14.26L10.86 14.02L10.21 13.6L9.6 13L9.23 12.49L8.77 11.56L8.49 10.63L8.44 10.07L8.4 10.02L8.4 9L8.44 8.95L8.49 8.44L8.77 7.65L9.14 7.05L9.74 6.44L10.26 6.12L10.81 5.88Z" />
+      {/* shoulders */}
+      <path d="M9.93 15.09L14.07 15.09L14.12 15.14L14.58 15.14L15.28 15.28L16.07 15.56L17.09 16.16L18.16 17.23L18.53 17.79L18.95 18.72L19.19 19.7L19.23 20.63L19.14 21L18.91 21.42L18.49 21.79L17.98 21.98L6.02 21.98L5.7 21.88L5.33 21.65L5.09 21.42L4.86 21L4.77 20.63L4.77 20.12L4.81 20.07L4.86 19.42L5.09 18.58L5.7 17.42L6.02 17L6.67 16.35L7.56 15.74L8.72 15.28L9.42 15.14L9.88 15.14Z" />
     </svg>
   );
 }
@@ -171,7 +166,7 @@ export default function ContactWidget() {
           aria-expanded={open}
           aria-controls={open ? panelId : undefined}
           aria-label={open ? (isEn ? "Close contact person" : "Tutup narahubung") : isEn ? "Contact person" : "Narahubung"}
-          className="peer w-12 h-12 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
+          className="peer w-14 h-14 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
         >
           {open ? <X className="h-6 w-6" aria-hidden="true" /> : <ContactPersonIcon className="h-7 w-7" />}
         </button>
