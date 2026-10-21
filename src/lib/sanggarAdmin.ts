@@ -84,7 +84,6 @@ export interface SanggarFormValues {
   wilayah: string;
   status: SanggarStatus;
   tagline: string;
-  jenis_tarian: string;
   alamat: string;
   alamat_tempat_latihan: string;
   deskripsi: string;
@@ -114,7 +113,6 @@ export const EMPTY_FORM: SanggarFormValues = {
   wilayah: "",
   status: "terverifikasi",
   tagline: "",
-  jenis_tarian: "",
   alamat: "",
   alamat_tempat_latihan: "",
   deskripsi: "",
@@ -144,7 +142,6 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
     wilayah: str(row.wilayah),
     status: isDraft(row) ? "draft" : "terverifikasi",
     tagline: str(row.tagline),
-    jenis_tarian: str(row.jenis_tarian),
     alamat: str(row.alamat),
     alamat_tempat_latihan: str(row.alamat_tempat_latihan),
     deskripsi: str(row.deskripsi),
@@ -176,7 +173,10 @@ const resolveImage = async (image: ImageValue, prefix: string): Promise<string |
 
 const nullable = (v: string) => (v.trim() ? v.trim() : null);
 
-/** Upload any pending images, then build the full row payload (all columns, including migration ones). */
+/**
+ * Upload any pending images, then build the full row payload (all columns, including migration ones).
+ * `jenis_tarian` is no longer edited in the form, so it is left out: an update keeps the stored value.
+ */
 export async function buildPayload(values: SanggarFormValues): Promise<Record<string, unknown>> {
   const [thumbnail_url, logo_url, foto_ketua_url, foto_grup_url] = await Promise.all([
     resolveImage(values.thumbnail, "thumbnail"),
@@ -210,7 +210,6 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
     nama_sanggar: values.nama_sanggar.trim(),
     grade: nullable(values.grade),
     tagline: nullable(values.tagline),
-    jenis_tarian: nullable(values.jenis_tarian),
     alamat: nullable(values.alamat),
     alamat_tempat_latihan: nullable(values.alamat_tempat_latihan),
     deskripsi: nullable(values.deskripsi),

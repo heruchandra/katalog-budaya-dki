@@ -254,11 +254,6 @@ export default function SanggarForm({ id }: { id?: string }) {
               </label>
 
               <label className="md:col-span-2">
-                <FieldLabel>{tr("Spesialisasi / Jenis Kesenian", "Specialty / Art Forms")}</FieldLabel>
-                <input type="text" value={values.jenis_tarian} onChange={(e) => set("jenis_tarian", e.target.value)} className={inputClass} placeholder={tr("Contoh: Tari Betawi, Lenong Betawi", "e.g. Betawi Dance, Lenong Betawi")} />
-              </label>
-
-              <label className="md:col-span-2">
                 <FieldLabel>Tagline</FieldLabel>
                 <input type="text" value={values.tagline} onChange={(e) => set("tagline", e.target.value)} className={inputClass} />
               </label>
