@@ -48,8 +48,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
-    philosophy: "Seni Betawi adalah nafas dan marwah masyarakat Jakarta. Boleh orangnya tiada, namun warisan seni dan budayanya harus tetap hidup dan berkobar di hati generasi penerus.",
-    philosophyEn: "Betawi art is the breath and dignity of Jakarta's people. A person may pass away, but the artistic and cultural heritage must remain alive and burning in the hearts of future generations.",
     description: [
       "Sanggar Seni Sinar Norray didirikan pada tahun 1995 oleh almarhumah Hj. Nori (Mpok Nori). Berawal dari panggung pertunjukan Lenong Betawi, sanggar ini telah berkembang menjadi pusat pelestarian seni tradisi Betawi yang saat ini dipimpin oleh putri bungsu Hj. Nori.",
       "Berangkat dari panggung sandiwara rakyat Lenong Betawi yang melegenda, sanggar ini terus meregenerasi bakat-bakat seni tradisi mulai dari seni tari klasik hingga tabuhan irama musik Gambang Kromong.",
@@ -169,8 +167,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Orang Nya Boleh Mati, Tapi Seni Nya Kaga Boleh Sampe mati",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
-    philosophy: "Seni Betawi adalah nafas dan marwah masyarakat Jakarta. Boleh orangnya tiada, namun warisan seni dan budayanya harus tetap hidup dan berkobar di hati generasi penerus.",
-    philosophyEn: "Betawi art is the breath and dignity of Jakarta's people. A person may pass away, but the artistic and cultural heritage must remain alive and burning in the hearts of future generations.",
     description: [
       "Sanggar Seni Sinar Norray didirikan pada tahun 1995 oleh almarhumah Hj. Nori (Mpok Nori). Berawal dari panggung pertunjukan Lenong Betawi, sanggar ini telah berkembang menjadi pusat pelestarian seni tradisi Betawi yang saat ini dipimpin oleh putri bungsu Hj. Nori.",
       "Berangkat dari panggung sandiwara rakyat Lenong Betawi yang melegenda, sanggar ini terus meregenerasi bakat-bakat seni tradisi mulai dari seni tari klasik hingga tabuhan irama musik Gambang Kromong.",
@@ -323,7 +319,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Menghidupkan Warisan Betawi Lewat Gerak Dinamis dan Jiwa Muda",
     grade: "Grade B",
     wilayah: "Jakarta Selatan",
-    philosophy: "Arunika—seperti fajar yang merekah—menghadirkan nafas segar pada tari tradisi, membuktikan bahwa warisan leluhur senantiasa hidup di dada generasi muda.",
     description: [
       "Arunika Art Production didirikan sebagai ruang eksplorasi gerak tari tradisional Betawi dan tari kreasi kontemporer Nusantara. Berangkat dari semangat generasi muda yang mencintai akar budaya, sanggar ini terus berinovasi dalam mengemas pertunjukan yang memukau tanpa menanggalkan pakem dan filosofi tradisi leluhur.",
       "Dengan kurikulum pembinaan yang terstruktur dan didampingi koreografer berpengalaman, Arunika telah melahirkan puluhan penari muda berprestasi yang aktif tampil dalam berbagai perhelatan kebudayaan tingkat daerah, nasional, hingga representasi seni antarprovinsi.",
@@ -381,7 +376,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
-    philosophy: "Seni tari dan musik sebagai wahana ekspresi generasi muda dalam melestarikan serta mengembangkan kekayaan tradisi Betawi dan Nusantara.",
     description: [
       "Sanggar kesenian di bidang seni tari dan musik yang mengusung seni budaya Betawi, Jawa Barat, dan seni daerah Nusantara lainnya. Resmi berdiri sejak 1 Mei 2023 dengan rekam jejak pembinaan sejak 2011.",
       "Dengan bimbingan koreografer profesional dan kurikulum pembinaan berkesinambungan, sanggar ini terus berinovasi dalam mengemas pertunjukan yang memukau tanpa menanggalkan pakem dan filosofi tradisi leluhur.",
@@ -480,7 +474,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Harmoni Seni Tradisi dan Ekspresi Panggung Spektakuler Jakarta",
     grade: "Grade B",
     wilayah: "Jakarta Timur",
-    philosophy: "Seni tari dan musik sebagai wahana ekspresi generasi muda dalam melestarikan serta mengembangkan kekayaan tradisi Betawi dan Nusantara.",
     description: [
       "Sanggar kesenian di bidang seni tari dan musik yang mengusung seni budaya Betawi, Jawa Barat, dan seni daerah Nusantara lainnya. Resmi berdiri sejak 1 Mei 2023 dengan rekam jejak pembinaan sejak 2011.",
       "Dengan bimbingan koreografer profesional dan kurikulum pembinaan berkesinambungan, sanggar ini terus berinovasi dalam mengemas pertunjukan yang memukau tanpa menanggalkan pakem dan filosofi tradisi leluhur.",
@@ -580,7 +573,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Membangun Bangsa Melalui Seni dan Budaya",
     grade: "Grade A",
     wilayah: "Jakarta Selatan",
-    philosophy: "AYODYA melambangkan negeri yang aman, makmur, dan berbudaya luhur, sementara PALA mewarisi sumpah pemersatu Nusantara dari Patih Gajah Mada.",
     description: [
       "Yayasan Ayodya Pala dirintis mulai tahun 1978 dan resmi dibentuk menjadi yayasan pada tanggal 24 April 1980. Memiliki lebih dari 2.400 siswa aktif dengan semboyan 'Membangun Bangsa Melalui Seni dan Budaya', Ayodya Pala telah menjadi ikon pelestarian budaya bangsa selama lebih dari 45 tahun.",
       "Nama AYODYA diambil dari epos Ramayana yaitu kerajaan kelahiran Sri Rama yang makmur, aman, tentram, dan masyarakatnya berbudaya tinggi. Sedangkan kata PALA terinspirasi dari Sumpah Palapa Patih Gajah Mada dari Kerajaan Majapahit yang bersumpah mempersatukan seluruh kepulauan Nusantara.",
@@ -641,7 +633,6 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     tagline: "Kemampuan bertindak untuk mencapai dan mencetak prestasi seni sejak 1985",
     grade: "Grade A",
     wilayah: "Jakarta Pusat",
-    philosophy: "Daya adalah kemampuan untuk bertindak dengan ketulusan hati, dan Presta adalah pencapaian keluhuran budi melalui gerak seni.",
     description: [
       "Sanggar Tari Daya Presta sudah berdiri, berkarya, dan menjadi salah satu wadah pengembangan seni tari tradisional di Jakarta sejak tahun 1985. Nama 'Daya Presta' diserap dari kata 'Daya' (daya cipta dan kemampuan bertindak) serta 'Presta' (prestasi dan dedikasi).",
       "Tidak hanya aktif berkembang di DKI Jakarta, Daya Presta telah melebarkan jejaring pembinaan ke Bandung hingga Yogyakarta, memperkuat rasa persaudaraan seniman antar-wilayah.",
@@ -752,7 +743,6 @@ export function generateFallbackSanggar(data: SanggarDbRow | null | undefined, i
     tagline: "",
     grade: gradeStr,
     wilayah,
-    philosophy: "",
     description: [],
     alamatSanggar: data?.alamat || "",
     alamatLatihan: data?.alamat_tempat_latihan || "",

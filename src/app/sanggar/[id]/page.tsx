@@ -65,8 +65,6 @@ export default async function SanggarDetail({
     grade: dbGrade || specific?.grade || fallback.grade,
     // the catalog card's rule: database value, curated city, kecamatan or address; else the province
     wilayah: resolveWilayah({ ...(data ?? {}), id: data?.id ?? id }) || specific?.wilayah || fallback.wilayah,
-    philosophy: specific?.philosophy || fallback.philosophy,
-    philosophyEn: specific?.philosophyEn,
     description: dbDescription || specific?.description || fallback.description,
     descriptionEn: dbDescription ? undefined : specific?.descriptionEn,
     alamatSanggar: data?.alamat || specific?.alamatSanggar || fallback.alamatSanggar,

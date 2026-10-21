@@ -61,8 +61,6 @@ export interface SanggarDetailData {
   tagline: string;
   grade: string;
   wilayah: string;
-  philosophy?: string;
-  philosophyEn?: string;
   description: string[];
   descriptionEn?: string[];
   alamatSanggar: string;
@@ -346,18 +344,6 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
                   </div>
                 );
               })()}
-
-              {/* Philosophy Callout Quote */}
-              {(sanggar.philosophy || sanggar.philosophyEn) && (
-                <blockquote className="border-l-2 border-orange-600 pl-6 my-8 py-3 text-zinc-800 bg-orange-50/50 rounded-none">
-                  <p className={`font-serif italic text-lg sm:text-xl text-zinc-800 leading-relaxed ${playfair.className}`}>
-                    &ldquo;{(isEn && sanggar.philosophyEn) ? sanggar.philosophyEn : sanggar.philosophy}&rdquo;
-                  </p>
-                  <footer className="text-xs uppercase tracking-widest text-zinc-400 font-sans mt-2 font-medium">
-                    {isEn ? `— ${sanggar.name} Philosophy` : `— Filosofi ${sanggar.name}`}
-                  </footer>
-                </blockquote>
-              )}
             </div>
 
             {/* 2. Layanan Sanggar Section (Structured Service Cards) */}
