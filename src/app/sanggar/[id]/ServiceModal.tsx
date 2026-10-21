@@ -42,12 +42,8 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
     ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
     : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || []));
 
-  // Karya Tari Unggulan hanya tampil penuh di layanan yang ditandai featuresDanceWorks.
-  // Sanggar tanpa layanan bertanda tetap memakai chip "Pementasan Terkait" (perilaku lama).
+  // Karya Tari Unggulan hanya tampil di layanan yang ditandai featuresDanceWorks.
   const showDanceWorks = !!service.featuresDanceWorks && danceHighlights.length > 0;
-  const hasDanceWorksService = [...(sanggar.layanan || []), ...(sanggar.services || [])]
-    .some((s) => typeof s === "object" && s !== null && s.featuresDanceWorks);
-  const showDanceChips = !hasDanceWorksService && danceHighlights.length > 0;
 
   // The dance class carries the studio's practice schedule + venue; this modal is the only place they appear
   const practiceInfo = isDanceClassService(service.title, service.titleEn)
@@ -135,22 +131,6 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
                   </div>
                 );
               })}
-            </div>
-          </div>
-        )}
-
-        {/* Related Specialties (sanggar tanpa layanan Karya Tari) */}
-        {showDanceChips && (
-          <div className="mb-6">
-            <p className="text-xs font-semibold tracking-wider text-orange-600 uppercase mb-2.5 flex items-center gap-1.5">
-              <span>♫</span> {isEn ? "Related Performances" : "Cakupan Materi & Pementasan Terkait"}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {danceHighlights.map((item, idx) => (
-                <span key={idx} className="inline-flex items-center rounded-none bg-orange-50 text-orange-700 text-xs font-medium px-3.5 py-1.5 border border-orange-200/60">
-                  {item.name}
-                </span>
-              ))}
             </div>
           </div>
         )}
