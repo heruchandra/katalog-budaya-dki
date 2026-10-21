@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Clock, Headset, X } from "lucide-react";
+import { Clock, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { dancingScript } from "@/lib/fonts";
 import { WHATSAPP_PATH } from "@/components/SocialPills";
@@ -24,6 +24,29 @@ const CONTACT_PERSON: { name: string; role: Bilingual | null; whatsapp: string; 
 
 // Admin screens have their own bottom action bars and toasts; sign-in pages don't need it
 const HIDDEN_ON = /^\/(admin|login|register)(\/|$)/;
+
+/** A contact person: a silhouette wearing a headset with a mic (lucide's Headset has no person), drawn on lucide's 24px grid */
+function ContactPersonIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="9.5" r="3.5" fill="currentColor" stroke="none" />
+      <path d="M5.5 11V9.5a6.5 6.5 0 0 1 13 0V11" />
+      <rect x="4.25" y="10" width="2.5" height="4" rx="1.25" fill="currentColor" />
+      <rect x="17.25" y="10" width="2.5" height="4" rx="1.25" fill="currentColor" />
+      <path d="M18.5 14v.25a2.25 2.25 0 0 1-2.25 2.25H14.5" />
+      <path d="M5.5 23.5a6.5 6.5 0 0 1 13 0Z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 /**
  * Floating "contact person" button (icon-only circle) in the bottom-right corner of the public pages. It opens a small
@@ -138,18 +161,29 @@ export default function ContactWidget() {
         </div>
       )}
 
-      {/* Corner button: icon only (the aria-label names it) — headset when closed, X when open */}
-      <button
-        ref={buttonRef}
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-controls={open ? panelId : undefined}
-        aria-label={open ? (isEn ? "Close contact person" : "Tutup narahubung") : isEn ? "Contact person" : "Narahubung"}
-        className="w-12 h-12 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
-      >
-        {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Headset className="h-6 w-6" aria-hidden="true" />}
-      </button>
+      {/* Corner button: icon only (the aria-label names it) — a person with a headset when closed, X when open.
+          While closed, hovering or keyboard focus shows a "Narahubung" label beside it. */}
+      <div className="relative">
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-controls={open ? panelId : undefined}
+          aria-label={open ? (isEn ? "Close contact person" : "Tutup narahubung") : isEn ? "Contact person" : "Narahubung"}
+          className="peer w-12 h-12 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
+        >
+          {open ? <X className="h-6 w-6" aria-hidden="true" /> : <ContactPersonIcon className="h-7 w-7" />}
+        </button>
+        {!open && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-full bg-zinc-900/90 px-3 py-1.5 text-xs font-semibold text-white shadow-md opacity-0 transition-all duration-200 peer-hover:translate-x-0 peer-hover:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100 motion-reduce:transition-none"
+          >
+            {isEn ? "Contact person" : "Narahubung"}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
