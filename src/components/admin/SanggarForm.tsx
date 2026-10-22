@@ -491,22 +491,16 @@ export default function SanggarForm({ id }: { id?: string }) {
                                       previewClass="aspect-video"
                                       onChange={(v) => updateSub(sub.id, { image: v })}
                                     />
-                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                      <label className="sm:col-span-2">
+                                    {/* Only photo, title and synopsis are edited here. Penata tari / musik saved earlier (e.g.
+                                        Ayodya Pala's, from its seed) stay in the form state and are saved back unchanged */}
+                                    <div className="grid grid-cols-1 gap-3">
+                                      <label>
                                         <FieldLabel>{tr("Judul Tarian / Karya", "Dance / Work Title")}</FieldLabel>
                                         <input type="text" value={sub.judul} onChange={(e) => updateSub(sub.id, { judul: e.target.value })} className={inputClass} placeholder={tr("Mis. Tari Mpok Cantik", "e.g. Tari Mpok Cantik")} />
                                       </label>
-                                      <label className="sm:col-span-2">
+                                      <label>
                                         <FieldLabel>{tr("Sinopsis Karya", "Work Synopsis")}</FieldLabel>
                                         <textarea rows={4} value={sub.sinopsis} onChange={(e) => updateSub(sub.id, { sinopsis: e.target.value })} className={inputClass} />
-                                      </label>
-                                      <label>
-                                        <FieldLabel>{tr("Penata Tari", "Choreographer")}</FieldLabel>
-                                        <input type="text" value={sub.penata_tari} onChange={(e) => updateSub(sub.id, { penata_tari: e.target.value })} className={inputClass} placeholder={tr("Mis. Wahyu Kardinata Suroso, S.Pd", "e.g. Wahyu Kardinata Suroso, S.Pd")} />
-                                      </label>
-                                      <label>
-                                        <FieldLabel>{tr("Penata Musik", "Music Arranger")}</FieldLabel>
-                                        <input type="text" value={sub.penata_musik} onChange={(e) => updateSub(sub.id, { penata_musik: e.target.value })} className={inputClass} placeholder={tr("Mis. Rizki Aidul Akbar, S.Sn", "e.g. Rizki Aidul Akbar, S.Sn")} />
                                       </label>
                                     </div>
                                   </div>
