@@ -326,7 +326,9 @@ export default function SanggarForm({ id }: { id?: string }) {
 
           {/* ===== Tab 3: Media ===== */}
           {activeTab === "media" && (
-            <div role="tabpanel" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            // The two photos the site shows. (Leader and group photos were dropped from the form; a value saved
+            // earlier stays in the form state and is saved back unchanged.) max-w-2xl keeps the 3:4 preview modest.
+            <div role="tabpanel" className="grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
               <ImageField
                 label={tr("Thumbnail Katalog", "Catalog Thumbnail")}
                 hint={tr("Poster kartu di halaman katalog (3:4).", "Card poster on the catalog page (3:4).")}
@@ -343,22 +345,6 @@ export default function SanggarForm({ id }: { id?: string }) {
                 aspect={1}
                 previewClass="aspect-square"
                 onChange={(v) => set("logo", v)}
-              />
-              <ImageField
-                label={tr("Foto Ketua Sanggar", "Leader Photo")}
-                hint={tr("Dipakai bila logo kosong (1:1).", "Used when there is no logo (1:1).")}
-                value={values.foto_ketua}
-                aspect={1}
-                previewClass="aspect-square"
-                onChange={(v) => set("foto_ketua", v)}
-              />
-              <ImageField
-                label={tr("Foto Grup / Sampul", "Group / Cover Photo")}
-                hint={tr("Foto utama sanggar (16:9).", "Main sanggar photo (16:9).")}
-                value={values.foto_grup}
-                aspect={16 / 9}
-                previewClass="aspect-video"
-                onChange={(v) => set("foto_grup", v)}
               />
             </div>
           )}
