@@ -39,7 +39,8 @@ const SINAR_NORRAY_SERVICES: ServiceItem[] = [
 ];
 
 // Ayodya Pala's Tari Unggulan as written in its INFORMASI SANGGAR form (spelling tidied only). The same texts fill its
-// database row through supabase/migrations/20261021_ayodya_pala_profile.sql (as its "Layanan / Karya").
+// database row through supabase/migrations/20261021_ayodya_pala_profile.sql (as the sub_karya of its
+// "Karya Tari Unggulan Sanggar" service, whose description names the costume house).
 export const AYODYA_PALA_COSTUME = "Rumah Kostum Ayodya Pala";
 export const AYODYA_PALA_TARI: TariItem[] = [
   {
@@ -620,16 +621,9 @@ export const SPECIFIC_PROFILES: Record<string, Partial<SanggarDetailData>> = {
     ],
     alamatSanggar: "Jalan Raya Lenteng Agung No. 1 Kel. Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12610",
     alamatLatihan: "Jalan Raya Lenteng Agung No. 1 Kel. Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12610",
-    // "Layanan Sanggar" from the form, then its five Tari Unggulan as works (the admin's "Layanan / Karya")
-    layanan: [
-      { title: "Tari Daerah Nusantara" },
-      { title: "Modelling Anak" },
-      { title: "Vokal dan Musik" },
-      ...AYODYA_PALA_TARI.map((t) => ({
-        title: t.name,
-        description: `${t.synopsis} Penata tari: ${t.choreographer}; penata musik: ${t.composer}; kostum: ${AYODYA_PALA_COSTUME}.`,
-      })),
-    ],
+    // "Layanan Sanggar" from the form; its Tari Unggulan open from the "Karya Tari Unggulan Sanggar" card (tariUnggulan
+    // below; in the database, that service's sub_karya)
+    layanan: [{ title: "Tari Daerah Nusantara" }, { title: "Modelling Anak" }, { title: "Vokal dan Musik" }],
     tariUnggulan: AYODYA_PALA_TARI,
     prestasi: [
       {

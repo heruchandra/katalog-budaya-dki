@@ -8,10 +8,25 @@ export interface GalleryItem {
   caption: string;
 }
 
+/**
+ * A work under a service, e.g. one dance of "Karya Tari Unggulan Sanggar". Stored inside its layanan_items entry
+ * (jsonb), so it needs no column of its own.
+ */
+export interface SubKarya {
+  id?: string;
+  judul: string;
+  sinopsis: string;
+  penata_tari?: string;
+  penata_musik?: string;
+  gambar_url?: string;
+}
+
 export interface LayananItem {
   title: string;
   description: string;
   image: string | null;
+  /** Its works (dances), when the service groups some */
+  sub_karya?: SubKarya[];
 }
 
 export interface PrestasiItem {
@@ -55,7 +70,25 @@ export function parseLayanan(row: { layanan_items?: unknown }): LayananItem[] {
   return asArray(row.layanan_items)
     .map((item) => {
       const o = item as Record<string, unknown>;
-      return { title: str(o?.title), description: str(o?.description), image: str(o?.image) || null };
+      const subKarya = asArray(o?.sub_karya)
+        .map((sub): SubKarya => {
+          const s = sub as Record<string, unknown>;
+          return {
+            ...(str(s?.id) ? { id: str(s?.id) } : {}),
+            judul: str(s?.judul),
+            sinopsis: str(s?.sinopsis),
+            ...(str(s?.penata_tari) ? { penata_tari: str(s?.penata_tari) } : {}),
+            ...(str(s?.penata_musik) ? { penata_musik: str(s?.penata_musik) } : {}),
+            ...(str(s?.gambar_url) ? { gambar_url: str(s?.gambar_url) } : {}),
+          };
+        })
+        .filter((s) => s.judul);
+      return {
+        title: str(o?.title),
+        description: str(o?.description),
+        image: str(o?.image) || null,
+        ...(subKarya.length > 0 ? { sub_karya: subKarya } : {}),
+      };
     })
     .filter((l) => l.title);
 }
@@ -86,6 +119,12 @@ export const danceWorksOf = <T extends { synopsis?: string }>(list?: T[] | null)
 
 /** Title of the service card that opens a sanggar's featured dance works */
 export const DANCE_WORKS_TITLE = { id: "Karya Tari Unggulan Sanggar", en: "Studio's Featured Dance Works" };
+
+/** Summary of a works card that has no description of its own: the works' titles */
+export const danceWorksSummary = (names: string[]) => ({
+  id: `Pertunjukan karya tari unggulan sanggar: ${names.join(", ")}.`,
+  en: `Performances of the studio's featured dance works: ${names.join(", ")}.`,
+});
 
 /**
  * Splits a practice-venue text into venue and schedule. The data writes the schedule in trailing

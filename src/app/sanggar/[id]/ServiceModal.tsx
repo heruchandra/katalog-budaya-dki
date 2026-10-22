@@ -38,10 +38,13 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
         ? "In-depth studio training, performance programs, and cultural consultation guided by experienced mentors."
         : "Program pelatihan terarah, pementasan kesenian, dan konsultasi budaya yang dibimbing langsung oleh instruktur berpengalaman."));
 
-  // the works with a synopsis, in the page language when the record has an English version
-  const danceHighlights = danceWorksOf(isEn
-    ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
-    : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || [])));
+  // The service's own works (its sub-karya from the admin panel); otherwise the sanggar's curated works with a synopsis,
+  // in the page language when the record has an English version
+  const danceHighlights = service.works && service.works.length > 0
+    ? service.works
+    : danceWorksOf(isEn
+      ? ((sanggar.danceSpecialties && sanggar.danceSpecialties.length > 0) ? sanggar.danceSpecialties : (sanggar.tariUnggulan || []))
+      : ((sanggar.tariUnggulan && sanggar.tariUnggulan.length > 0) ? sanggar.tariUnggulan : (sanggar.danceSpecialties || [])));
 
   // Karya Tari Unggulan hanya tampil di layanan yang ditandai featuresDanceWorks.
   const showDanceWorks = !!service.featuresDanceWorks && danceHighlights.length > 0;
@@ -127,9 +130,13 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
                         </span>
                         <h5 className="text-base font-bold text-zinc-900 leading-snug">{danceName}</h5>
                       </div>
-                      <p className="text-[11px] font-bold tracking-wider text-zinc-400 uppercase">{isEn ? "Work Synopsis:" : "Sinopsis Karya:"}</p>
-                      {/* left-aligned: justified text in these narrow cards opens wide gaps (no Indonesian hyphenation) */}
-                      <p className="text-zinc-600 text-sm leading-relaxed">{dance.synopsis || dance.description}</p>
+                      {(dance.synopsis || dance.description) && (
+                        <>
+                          <p className="text-[11px] font-bold tracking-wider text-zinc-400 uppercase">{isEn ? "Work Synopsis:" : "Sinopsis Karya:"}</p>
+                          {/* left-aligned: justified text in these narrow cards opens wide gaps (no Indonesian hyphenation) */}
+                          <p className="text-zinc-600 text-sm leading-relaxed">{dance.synopsis || dance.description}</p>
+                        </>
+                      )}
                       {(dance.choreographer || dance.composer) && (
                         <dl className="mt-1 space-y-0.5 border-t border-zinc-100 pt-2 text-xs text-zinc-500">
                           {dance.choreographer && (

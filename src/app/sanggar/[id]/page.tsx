@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
-import SanggarDetailClient, { SanggarDetailData } from "./SanggarDetailClient";
+import { DANCE_WORKS_TITLE, danceWorksSummary, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
+import SanggarDetailClient, { SanggarDetailData, TariItem } from "./SanggarDetailClient";
 import { SPECIFIC_PROFILES, curatedPhoneOf, findCuratedProfile, generateFallbackSanggar } from "@/data/sanggarProfiles";
 import { resolveWilayah } from "@/lib/wilayah";
 
@@ -72,8 +72,28 @@ export default async function SanggarDetail({
     address: data?.alamat || specific?.address || specific?.alamatSanggar || fallback?.address || fallback?.alamatSanggar || '',
     logo: data?.logo_url || specific?.logo,
     services: dbLayanan.length > 0 ? undefined : specific?.services,
+    // A service with sub-works (sub_karya) is a works card: it opens its works, like "Karya Tari Unggulan Sanggar"
     layanan: dbLayanan.length > 0
-      ? dbLayanan.map((l) => ({ title: l.title, description: l.description, image: l.image || undefined }))
+      ? dbLayanan.map((l) => {
+          const works: TariItem[] = (l.sub_karya ?? []).map((s) => ({
+            name: s.judul,
+            synopsis: s.sinopsis,
+            choreographer: s.penata_tari,
+            composer: s.penata_musik,
+            image: s.gambar_url,
+          }));
+          if (works.length === 0) return { title: l.title, description: l.description, image: l.image || undefined };
+          const summary = danceWorksSummary(works.map((w) => w.name));
+          return {
+            title: l.title,
+            titleEn: l.title === DANCE_WORKS_TITLE.id ? DANCE_WORKS_TITLE.en : undefined,
+            description: l.description || summary.id,
+            descriptionEn: l.description ? undefined : summary.en,
+            image: l.image || works.find((w) => w.image)?.image,
+            featuresDanceWorks: true,
+            works,
+          };
+        })
       : specific?.layanan || specific?.services || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
     danceSpecialties: specific?.danceSpecialties || specific?.tariUnggulan || fallback.tariUnggulan,
     tariUnggulan: specific?.tariUnggulan || specific?.danceSpecialties || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0

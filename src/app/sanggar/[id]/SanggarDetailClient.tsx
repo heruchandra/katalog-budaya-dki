@@ -7,7 +7,7 @@ import { playfair } from '@/lib/fonts';
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
-import { DANCE_WORKS_TITLE, danceWorksOf, isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
+import { DANCE_WORKS_TITLE, danceWorksOf, danceWorksSummary, isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
 import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
 import type { SosialMedia } from "@/types/musik";
@@ -50,6 +50,8 @@ export interface ServiceItem {
   image?: string;
   /** Tampilkan Karya Tari Unggulan sanggar di dalam modal layanan ini */
   featuresDanceWorks?: boolean;
+  /** This service's own works (its sub_karya from the admin panel); without them the sanggar's curated works are used */
+  works?: TariItem[];
 }
 
 export interface SanggarDetailData {
@@ -355,15 +357,15 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
               const workNames = new Set(works.map((w) => w.name.trim().toLowerCase()));
               const itemTitle = (item: string | ServiceItem) => (typeof item === 'object' && item !== null ? item.title : item);
               const hasWorksCard = baseList.some((item) => typeof item === 'object' && item !== null && item.featuresDanceWorks);
-              const workList = works.map((w) => w.name).join(", ");
+              const summary = danceWorksSummary(works.map((w) => w.name));
               const serviceList: (string | ServiceItem)[] = works.length > 0 && !hasWorksCard
                 ? [
                     ...baseList.filter((item) => !workNames.has(String(itemTitle(item) || '').trim().toLowerCase())),
                     {
                       title: DANCE_WORKS_TITLE.id,
                       titleEn: DANCE_WORKS_TITLE.en,
-                      description: `Pertunjukan karya tari unggulan sanggar: ${workList}.`,
-                      descriptionEn: `Performances of the studio's featured dance works: ${workList}.`,
+                      description: summary.id,
+                      descriptionEn: summary.en,
                       image: works.find((w) => w.image)?.image,
                       featuresDanceWorks: true,
                     },

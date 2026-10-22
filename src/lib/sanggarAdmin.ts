@@ -1,5 +1,5 @@
 import { MEDIA_BUCKET, SaveResult, deleteRow, getTableColumns, saveRow, uploadImage as uploadToBucket } from "@/lib/adminDb";
-import { GalleryItem, LayananItem, PrestasiItem, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
+import { GalleryItem, LayananItem, PrestasiItem, SubKarya, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
 
 export { isDraft, parseGallery, parseLayanan, parsePrestasi };
 export type { GalleryItem, LayananItem, PrestasiItem };
@@ -69,11 +69,37 @@ export interface GalleryFormItem extends ImageValue {
   caption: string;
 }
 
+/** A sub-work (dance) of a service, as edited in the form; `id` keeps it stable while the list changes */
+export interface SubKaryaFormItem {
+  id: string;
+  judul: string;
+  sinopsis: string;
+  penata_tari: string;
+  penata_musik: string;
+  image: ImageValue;
+}
+
 export interface LayananFormItem {
   title: string;
   description: string;
   image: ImageValue;
+  sub_karya: SubKaryaFormItem[];
 }
+
+/** An id for a new sub-work (crypto.randomUUID needs a secure context, so plain http on a LAN address falls back) */
+export const newSubKaryaId = () =>
+  typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+
+export const emptySubKarya = (): SubKaryaFormItem => ({
+  id: newSubKaryaId(),
+  judul: "",
+  sinopsis: "",
+  penata_tari: "",
+  penata_musik: "",
+  image: { url: null },
+});
 
 export interface SanggarFormValues {
   // Tab 1: Informasi Umum
@@ -156,7 +182,19 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
     foto_ketua: { url: str(row.foto_ketua_url) || null },
     foto_grup: { url: str(row.foto_grup_url) || null },
     galeri: parseGallery(row).map((g) => ({ url: g.url, caption: g.caption })),
-    layanan: parseLayanan(row).map((l) => ({ title: l.title, description: l.description, image: { url: l.image } })),
+    layanan: parseLayanan(row).map((l) => ({
+      title: l.title,
+      description: l.description,
+      image: { url: l.image },
+      sub_karya: (l.sub_karya ?? []).map((s) => ({
+        id: s.id || newSubKaryaId(),
+        judul: s.judul,
+        sinopsis: s.sinopsis,
+        penata_tari: s.penata_tari ?? "",
+        penata_musik: s.penata_musik ?? "",
+        image: { url: s.gambar_url ?? null },
+      })),
+    })),
     prestasi: parsePrestasi(row),
   };
 }
@@ -193,10 +231,25 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
   const layanan_items: LayananItem[] = [];
   for (const item of values.layanan) {
     if (!item.title.trim()) continue;
+    // its works: a work needs a title (like a service); empty optional fields are left out
+    const sub_karya: SubKarya[] = [];
+    for (const sub of item.sub_karya) {
+      if (!sub.judul.trim()) continue;
+      const gambar_url = await resolveImage(sub.image, "karya");
+      sub_karya.push({
+        id: sub.id,
+        judul: sub.judul.trim(),
+        sinopsis: sub.sinopsis.trim(),
+        ...(sub.penata_tari.trim() ? { penata_tari: sub.penata_tari.trim() } : {}),
+        ...(sub.penata_musik.trim() ? { penata_musik: sub.penata_musik.trim() } : {}),
+        ...(gambar_url ? { gambar_url } : {}),
+      });
+    }
     layanan_items.push({
       title: item.title.trim(),
       description: item.description.trim(),
       image: await resolveImage(item.image, "layanan"),
+      ...(sub_karya.length > 0 ? { sub_karya } : {}),
     });
   }
 
