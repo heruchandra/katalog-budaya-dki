@@ -213,6 +213,17 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             {/* Left Column: studio name (the page's main heading) + Ketua Sanggar photo & info */}
             <div className="lg:col-span-7">
+              {/* Grade pill above the title (only when the sanggar has a grade); aligned like the title */}
+              {sanggar.grade && (
+                <div className="mb-2 flex justify-center sm:justify-start">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 shadow-sm">
+                    <svg className="w-3.5 h-3.5 text-amber-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {sanggar.grade}
+                  </span>
+                </div>
+              )}
               {/* Same title style as the seniman musik page; leading-normal leaves room for the script's swashes */}
               <h1 className="font-script text-3xl sm:text-4xl lg:text-5xl text-orange-600 leading-normal font-normal text-center sm:text-left">
                 {studioName}
