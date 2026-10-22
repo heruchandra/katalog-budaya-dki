@@ -148,22 +148,6 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
                           })()}
                         </>
                       )}
-                      {(dance.choreographer || dance.composer) && (
-                        <dl className="mt-1 space-y-0.5 border-t border-zinc-100 pt-2 text-xs text-zinc-500">
-                          {dance.choreographer && (
-                            <div>
-                              <dt className="inline font-semibold text-zinc-600">{isEn ? "Choreography: " : "Penata tari: "}</dt>
-                              <dd className="inline">{dance.choreographer}</dd>
-                            </div>
-                          )}
-                          {dance.composer && (
-                            <div>
-                              <dt className="inline font-semibold text-zinc-600">{isEn ? "Music: " : "Penata musik: "}</dt>
-                              <dd className="inline">{dance.composer}</dd>
-                            </div>
-                          )}
-                        </dl>
-                      )}
                     </div>
                   </div>
                 );
