@@ -170,18 +170,22 @@ export default function GalleryLightbox({
         >
           {/* Viewer top bar */}
           <div
-            className="shrink-0 flex items-center justify-between gap-3 px-4 sm:px-8 pt-4 pb-3"
+            className="relative shrink-0 flex items-center justify-between gap-3 px-4 sm:px-8 pt-4 pb-3"
             style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={onBackToGrid}
-              className="px-3.5 py-1.5 rounded-none bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium transition-colors"
+              aria-label={isEn ? "Back to Grid" : "Kembali ke Grid"}
+              className="px-3.5 py-1.5 rounded-none bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium whitespace-nowrap transition-colors"
             >
-              {isEn ? "← Back to Grid" : "← Kembali ke Grid"}
+              {/* short on phones so it stays clear of the centred counter */}
+              <span className="sm:hidden" aria-hidden="true">← Grid</span>
+              <span className="hidden sm:inline" aria-hidden="true">{isEn ? "← Back to Grid" : "← Kembali ke Grid"}</span>
             </button>
-            <span className="text-xs sm:text-sm text-zinc-300 font-medium" aria-live="polite">
+            {/* centred on the bar itself, not between the two (unequal) buttons */}
+            <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none text-xs sm:text-sm text-white/90 font-medium" aria-live="polite">
               {isEn ? `Photo ${activeIndex + 1} of ${photos.length}` : `Foto ${activeIndex + 1} dari ${photos.length}`}
             </span>
             <button
