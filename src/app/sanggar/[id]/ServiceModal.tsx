@@ -5,6 +5,7 @@ import { Drama } from "lucide-react";
 import type { SanggarDetailData, ServiceItem, TariItem } from "./SanggarDetailClient";
 import { ownDanceImage, ownServiceImage } from "@/lib/sanggarImages";
 import { danceWorksOf, isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
+import { hyphenateId, looksIndonesian } from "@/lib/hyphenate";
 import { WHATSAPP_CTA } from "@/components/SocialPills";
 import PracticeInfo from "./PracticeInfo";
 
@@ -133,8 +134,18 @@ export default function ServiceModal({ service, sanggar, isEn, waNumber, studioN
                       {(dance.synopsis || dance.description) && (
                         <>
                           <p className="text-[11px] font-bold tracking-wider text-zinc-400 uppercase">{isEn ? "Work Synopsis:" : "Sinopsis Karya:"}</p>
-                          {/* left-aligned: justified text in these narrow cards opens wide gaps (no Indonesian hyphenation) */}
-                          <p className="text-zinc-600 text-sm leading-relaxed">{dance.synopsis || dance.description}</p>
+                          {/* justified (rata kanan-kiri). Long words may break at a syllable so the word gaps stay even in
+                              these narrow cards: soft hyphens for Indonesian (no browser dictionary), the browser's own
+                              hyphenation for English */}
+                          {(() => {
+                            const text = dance.synopsis || dance.description || "";
+                            const id = looksIndonesian(text);
+                            return (
+                              <p lang={id ? "id" : "en"} className="text-zinc-600 text-sm leading-relaxed text-justify hyphens-auto break-words">
+                                {id ? hyphenateId(text) : text}
+                              </p>
+                            );
+                          })()}
                         </>
                       )}
                       {(dance.choreographer || dance.composer) && (
