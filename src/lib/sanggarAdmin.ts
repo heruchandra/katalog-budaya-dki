@@ -89,13 +89,13 @@ export interface LayananFormItem {
 }
 
 /** An id for a new form item (crypto.randomUUID needs a secure context, so plain http on a LAN address falls back) */
-export const newSubKaryaId = () =>
+export const newFormId = () =>
   typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
     ? crypto.randomUUID()
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
 export const emptyLayanan = (): LayananFormItem => ({
-  uid: newSubKaryaId(),
+  uid: newFormId(),
   title: "",
   description: "",
   image: { url: null },
@@ -103,13 +103,28 @@ export const emptyLayanan = (): LayananFormItem => ({
 });
 
 export const emptySubKarya = (): SubKaryaFormItem => ({
-  id: newSubKaryaId(),
+  id: newFormId(),
   judul: "",
   sinopsis: "",
   penata_tari: "",
   penata_musik: "",
   image: { url: null },
 });
+
+/** A Prestasi row in the sanggar and seniman musik forms; `uid` is form-only (never saved), so rows added at the top
+ *  keep their keys */
+export interface PrestasiFormItem {
+  uid: string;
+  title: string;
+  organizer: string;
+  year: string;
+}
+
+export const emptyPrestasi = (): PrestasiFormItem => ({ uid: newFormId(), title: "", organizer: "", year: "" });
+
+/** Saved prestasi items as form rows */
+export const toPrestasiForm = (items: { title: string; organizer: string; year: string }[]): PrestasiFormItem[] =>
+  items.map((p) => ({ uid: newFormId(), title: p.title, organizer: p.organizer, year: p.year }));
 
 export interface SanggarFormValues {
   // Tab 1: Informasi Umum
@@ -138,7 +153,7 @@ export interface SanggarFormValues {
   // Tab 4: Galeri & Layanan
   galeri: GalleryFormItem[];
   layanan: LayananFormItem[];
-  prestasi: PrestasiItem[];
+  prestasi: PrestasiFormItem[];
 }
 
 export const EMPTY_FORM: SanggarFormValues = {
@@ -193,12 +208,12 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
     foto_grup: { url: str(row.foto_grup_url) || null },
     galeri: parseGallery(row).map((g) => ({ url: g.url, caption: g.caption })),
     layanan: parseLayanan(row).map((l) => ({
-      uid: newSubKaryaId(),
+      uid: newFormId(),
       title: l.title,
       description: l.description,
       image: { url: l.image },
       sub_karya: (l.sub_karya ?? []).map((s) => ({
-        id: s.id || newSubKaryaId(),
+        id: s.id || newFormId(),
         judul: s.judul,
         sinopsis: s.sinopsis,
         penata_tari: s.penata_tari ?? "",
@@ -206,7 +221,7 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
         image: { url: s.gambar_url ?? null },
       })),
     })),
-    prestasi: parsePrestasi(row),
+    prestasi: toPrestasiForm(parsePrestasi(row)),
   };
 }
 

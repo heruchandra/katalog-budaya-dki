@@ -15,6 +15,7 @@ import ExperienceList from "@/components/ExperienceList";
 import { pengalamanLine } from "@/lib/pemusikData";
 import {
   EMPTY_PEMUSIK_FORM,
+  emptyPrestasi,
   KATEGORI_MUSIK_OPTIONS,
   PEMUSIK_MIGRATION_COLUMNS,
   PEMUSIK_MIGRATION_FILE,
@@ -576,7 +577,8 @@ export default function PemusikForm({ id }: { id?: string }) {
                     <h2 className="text-base font-bold text-zinc-900">{tr("Prestasi & Penghargaan", "Achievements & Awards")}</h2>
                     <p className="text-xs text-zinc-500">{tr("Tahun tampil sebagai badge di kartu prestasi.", "The year shows as a badge on the award card.")}</p>
                   </div>
-                  <button type="button" disabled={isMissing("prestasi_items")} onClick={() => set("prestasi", [...values.prestasi, { title: "", organizer: "", year: "" }])} className={secondaryButtonClass}>
+                  {/* new achievements go on top, right under this button */}
+                  <button type="button" disabled={isMissing("prestasi_items")} onClick={() => set("prestasi", [emptyPrestasi(), ...values.prestasi])} className={secondaryButtonClass}>
                     <Plus className="h-4 w-4" /> {tr("Tambah Prestasi", "Add Achievement")}
                   </button>
                 </div>
@@ -585,7 +587,7 @@ export default function PemusikForm({ id }: { id?: string }) {
                   {values.prestasi.map((item, i) => {
                     const update = (patch: Partial<typeof item>) => set("prestasi", values.prestasi.map((p, j) => (j === i ? { ...p, ...patch } : p)));
                     return (
-                      <div key={i} className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1fr_1fr_100px_auto]">
+                      <div key={item.uid} className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1fr_1fr_100px_auto]">
                         <input type="text" value={item.title} onChange={(e) => update({ title: e.target.value })} placeholder={tr("Nama prestasi", "Achievement")} aria-label={tr("Nama prestasi", "Achievement")} className={inputClass} />
                         <input type="text" value={item.organizer} onChange={(e) => update({ organizer: e.target.value })} placeholder={tr("Penyelenggara", "Organizer")} aria-label={tr("Penyelenggara", "Organizer")} className={inputClass} />
                         <input type="text" inputMode="numeric" value={item.year} onChange={(e) => update({ year: e.target.value })} placeholder={tr("Tahun", "Year")} aria-label={tr("Tahun", "Year")} className={inputClass} />

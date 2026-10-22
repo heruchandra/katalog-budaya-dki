@@ -9,7 +9,6 @@ import {
   KATEGORI_OF,
   PemusikKaryaItem,
   PemusikPengalamanItem,
-  PemusikPrestasiItem,
   isDraftRow,
   normalizeKategori,
   parsePemusikGaleri,
@@ -19,7 +18,17 @@ import {
   parsePemusikPrestasi,
   splitPhoneList,
 } from "@/lib/pemusikData";
-import { STATUS_OPTIONS, type GalleryFormItem, type ImageValue, type SanggarStatus } from "@/lib/sanggarAdmin";
+import {
+  STATUS_OPTIONS,
+  emptyPrestasi,
+  toPrestasiForm,
+  type GalleryFormItem,
+  type ImageValue,
+  type PrestasiFormItem,
+  type SanggarStatus,
+} from "@/lib/sanggarAdmin";
+
+export { emptyPrestasi };
 
 export { KATEGORI_MUSIK_OPTIONS, STATUS_OPTIONS, isDraftRow };
 export type { PemusikRow };
@@ -87,7 +96,7 @@ export interface PemusikFormValues {
   // Tab 4: Layanan & Karya
   layanan: string[];
   karya: PemusikKaryaItem[];
-  prestasi: PemusikPrestasiItem[];
+  prestasi: PrestasiFormItem[];
   // Tab 5: Pengalaman Berkesenian
   pengalaman: PemusikPengalamanItem[];
 }
@@ -155,7 +164,7 @@ export function pemusikRowToForm(row: PemusikRow): PemusikFormValues {
     video_url: str(row.video_url),
     layanan: parsePemusikLayanan(row),
     karya: parsePemusikKarya(row),
-    prestasi: parsePemusikPrestasi(row),
+    prestasi: toPrestasiForm(parsePemusikPrestasi(row)),
     pengalaman: parsePemusikPengalaman(row),
   };
 }
@@ -196,7 +205,7 @@ export function masterToForm(m: MusikEntity): PemusikFormValues {
     video_url: m.videoUrl ?? "",
     layanan: [...m.layanan],
     karya: m.karyaUnggulan.map((k) => ({ judul: k.judul, deskripsi: k.deskripsi ?? "", tahun: k.tahun ?? "", link: k.link ?? "" })),
-    prestasi: m.prestasi.map((p) => (typeof p === "string" ? { title: p, organizer: "", year: "" } : { title: p.title, organizer: p.organizer ?? "", year: p.year ?? "" })),
+    prestasi: toPrestasiForm(m.prestasi.map((p) => (typeof p === "string" ? { title: p, organizer: "", year: "" } : { title: p.title, organizer: p.organizer ?? "", year: p.year ?? "" }))),
     pengalaman: m.pengalamanBerkesenian.map((line) => {
       const { text, year } = splitYear(line);
       return { kegiatan: text, tahun: year ?? "" };

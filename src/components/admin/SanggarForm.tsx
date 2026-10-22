@@ -20,6 +20,7 @@ import {
   SubKaryaFormItem,
   buildPayload,
   emptyLayanan,
+  emptyPrestasi,
   emptySubKarya,
   getSanggarColumns,
   rowToForm,
@@ -542,7 +543,8 @@ export default function SanggarForm({ id }: { id?: string }) {
                   <button
                     type="button"
                     disabled={isMissing("prestasi_items")}
-                    onClick={() => set("prestasi", [...values.prestasi, { title: "", organizer: "", year: "" }])}
+                    // new achievements go on top, right under this button
+                    onClick={() => set("prestasi", [emptyPrestasi(), ...values.prestasi])}
                     className="inline-flex items-center gap-2 rounded-sm border border-zinc-200 bg-white px-3.5 py-2 text-sm font-semibold text-zinc-800 hover:border-orange-400 hover:text-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Plus className="h-4 w-4" /> {tr("Tambah Prestasi", "Add Achievement")}
@@ -555,7 +557,7 @@ export default function SanggarForm({ id }: { id?: string }) {
                   {values.prestasi.map((item, i) => {
                     const update = (patch: Partial<typeof item>) => set("prestasi", values.prestasi.map((p, j) => (j === i ? { ...p, ...patch } : p)));
                     return (
-                      <div key={i} className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1fr_1fr_100px_auto]">
+                      <div key={item.uid} className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1fr_1fr_100px_auto]">
                         <input type="text" value={item.title} onChange={(e) => update({ title: e.target.value })} placeholder={tr("Nama prestasi", "Achievement")} aria-label={tr("Nama prestasi", "Achievement")} className={inputClass} />
                         <input type="text" value={item.organizer} onChange={(e) => update({ organizer: e.target.value })} placeholder={tr("Penyelenggara", "Organizer")} aria-label={tr("Penyelenggara", "Organizer")} className={inputClass} />
                         <input type="text" inputMode="numeric" value={item.year} onChange={(e) => update({ year: e.target.value })} placeholder={tr("Tahun", "Year")} aria-label={tr("Tahun", "Year")} className={inputClass} />
