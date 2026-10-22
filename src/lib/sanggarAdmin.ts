@@ -1,5 +1,18 @@
 import { MEDIA_BUCKET, SaveResult, deleteRow, getTableColumns, saveRow, uploadImage as uploadToBucket } from "@/lib/adminDb";
-import { GalleryItem, LayananItem, PrestasiItem, SubKarya, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
+import {
+  DANCE_WORKS_TITLE,
+  GalleryItem,
+  KARYA_TARI_KIND,
+  LayananItem,
+  PrestasiItem,
+  SubKarya,
+  isClearedKaryaTari,
+  isDraft,
+  isKaryaTariService,
+  parseGallery,
+  parseLayanan,
+  parsePrestasi,
+} from "@/lib/sanggarData";
 
 export { isDraft, parseGallery, parseLayanan, parsePrestasi };
 export type { GalleryItem, LayananItem, PrestasiItem };
@@ -69,7 +82,10 @@ export interface GalleryFormItem extends ImageValue {
   caption: string;
 }
 
-/** A sub-work (dance) of a service, as edited in the form; `id` keeps it stable while the list changes */
+/**
+ * One Karya Tari Unggulan (a dance), as edited in the form; `id` keeps it stable while the list changes. Penata tari /
+ * musik aren't edited in the form any more: a value saved earlier is carried through and saved back unchanged.
+ */
 export interface SubKaryaFormItem {
   id: string;
   judul: string;
@@ -85,7 +101,6 @@ export interface LayananFormItem {
   title: string;
   description: string;
   image: ImageValue;
-  sub_karya: SubKaryaFormItem[];
 }
 
 /** An id for a new form item (crypto.randomUUID needs a secure context, so plain http on a LAN address falls back) */
@@ -99,7 +114,6 @@ export const emptyLayanan = (): LayananFormItem => ({
   title: "",
   description: "",
   image: { url: null },
-  sub_karya: [],
 });
 
 export const emptySubKarya = (): SubKaryaFormItem => ({
@@ -153,6 +167,17 @@ export interface SanggarFormValues {
   // Tab 4: Galeri & Layanan
   galeri: GalleryFormItem[];
   layanan: LayananFormItem[];
+  /**
+   * Karya Tari Unggulan Sanggar (its own section). Saved as one layanan_items entry (kind KARYA_TARI_KIND) holding the
+   * dances as sub_karya, which the detail page shows as its "Karya Tari Unggulan Sanggar" card.
+   */
+  karya_tari: SubKaryaFormItem[];
+  /** That entry's own card text and image: not edited in the form, saved back as they were */
+  karya_tari_card: { description: string; image: ImageValue };
+  /** The row had that entry (or the list was pre-filled): an emptied list is then saved as "all removed" */
+  karya_tari_tracked: boolean;
+  /** The list was filled from the curated profile and isn't in the database yet */
+  karya_tari_prefilled: boolean;
   prestasi: PrestasiFormItem[];
 }
 
@@ -179,12 +204,51 @@ export const EMPTY_FORM: SanggarFormValues = {
   foto_grup: { url: null },
   galeri: [],
   layanan: [],
+  karya_tari: [],
+  karya_tari_card: { description: "", image: { url: null } },
+  karya_tari_tracked: false,
+  karya_tari_prefilled: false,
   prestasi: [],
 };
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");
 
-export function rowToForm(row: SanggarRow): SanggarFormValues {
+/** A curated featured dance (src/data/sanggarProfiles.ts), as far as the form needs it */
+export interface CuratedWork {
+  name: string;
+  synopsis?: string;
+  choreographer?: string;
+  composer?: string;
+  image?: string;
+}
+
+const slugId = (name: string) =>
+  name.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || newFormId();
+
+const subKaryaToForm = (s: SubKarya): SubKaryaFormItem => ({
+  id: s.id || newFormId(),
+  judul: s.judul,
+  sinopsis: s.sinopsis,
+  penata_tari: s.penata_tari ?? "",
+  penata_musik: s.penata_musik ?? "",
+  image: { url: s.gambar_url ?? null },
+});
+
+/**
+ * A row as form values. layanan_items is split: the normal services, and the Karya Tari Unggulan (the sub_karya of
+ * its own entry; works that an older form saved under a normal service move into the list too). When the row has
+ * services but no Karya Tari Unggulan yet, the list starts from `curatedWorks` (what the public page shows from the
+ * curated profile), so saving moves them into the database. Without services in the database the public page shows
+ * the curated services, which saving only the works would replace, so nothing is pre-filled then.
+ */
+export function rowToForm(row: SanggarRow, curatedWorks: CuratedWork[] = []): SanggarFormValues {
+  const services = parseLayanan(row);
+  const worksEntries = services.filter(isKaryaTariService);
+  const standard = services.filter((l) => !isKaryaTariService(l));
+  const saved = services.flatMap((l) => (l.sub_karya ?? []).map(subKaryaToForm));
+  const cleared = services.some(isClearedKaryaTari);
+  const prefill = saved.length === 0 && worksEntries.length === 0 && !cleared && standard.length > 0 && curatedWorks.length > 0;
+  const card = worksEntries[0];
   return {
     nama_sanggar: str(row.nama_sanggar),
     kategori: str(row.kategori) || "Seni Tari",
@@ -207,20 +271,20 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
     foto_ketua: { url: str(row.foto_ketua_url) || null },
     foto_grup: { url: str(row.foto_grup_url) || null },
     galeri: parseGallery(row).map((g) => ({ url: g.url, caption: g.caption })),
-    layanan: parseLayanan(row).map((l) => ({
-      uid: newFormId(),
-      title: l.title,
-      description: l.description,
-      image: { url: l.image },
-      sub_karya: (l.sub_karya ?? []).map((s) => ({
-        id: s.id || newFormId(),
-        judul: s.judul,
-        sinopsis: s.sinopsis,
-        penata_tari: s.penata_tari ?? "",
-        penata_musik: s.penata_musik ?? "",
-        image: { url: s.gambar_url ?? null },
-      })),
-    })),
+    layanan: standard.map((l) => ({ uid: newFormId(), title: l.title, description: l.description, image: { url: l.image } })),
+    karya_tari: prefill
+      ? curatedWorks.map((w) => ({
+          id: slugId(w.name),
+          judul: w.name,
+          sinopsis: w.synopsis ?? "",
+          penata_tari: w.choreographer ?? "",
+          penata_musik: w.composer ?? "",
+          image: { url: w.image ?? null },
+        }))
+      : saved,
+    karya_tari_card: { description: card?.description ?? "", image: { url: card?.image ?? null } },
+    karya_tari_tracked: worksEntries.length > 0 || saved.length > 0 || prefill,
+    karya_tari_prefilled: prefill,
     prestasi: toPrestasiForm(parsePrestasi(row)),
   };
 }
@@ -257,25 +321,36 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
   const layanan_items: LayananItem[] = [];
   for (const item of values.layanan) {
     if (!item.title.trim()) continue;
-    // its works: a work needs a title (like a service); empty optional fields are left out
-    const sub_karya: SubKarya[] = [];
-    for (const sub of item.sub_karya) {
-      if (!sub.judul.trim()) continue;
-      const gambar_url = await resolveImage(sub.image, "karya");
-      sub_karya.push({
-        id: sub.id,
-        judul: sub.judul.trim(),
-        sinopsis: sub.sinopsis.trim(),
-        ...(sub.penata_tari.trim() ? { penata_tari: sub.penata_tari.trim() } : {}),
-        ...(sub.penata_musik.trim() ? { penata_musik: sub.penata_musik.trim() } : {}),
-        ...(gambar_url ? { gambar_url } : {}),
-      });
-    }
     layanan_items.push({
       title: item.title.trim(),
       description: item.description.trim(),
       image: await resolveImage(item.image, "layanan"),
-      ...(sub_karya.length > 0 ? { sub_karya } : {}),
+    });
+  }
+
+  // Karya Tari Unggulan: one entry after the services, holding the dances (a dance needs a title, like a service;
+  // empty optional fields are left out). An emptied list that the row had is kept as an entry with no works, which
+  // tells the detail page they were removed (rather than never added), so curated works don't come back either.
+  const sub_karya: SubKarya[] = [];
+  for (const sub of values.karya_tari) {
+    if (!sub.judul.trim()) continue;
+    const gambar_url = await resolveImage(sub.image, "karya");
+    sub_karya.push({
+      id: sub.id,
+      judul: sub.judul.trim(),
+      sinopsis: sub.sinopsis.trim(),
+      ...(sub.penata_tari.trim() ? { penata_tari: sub.penata_tari.trim() } : {}),
+      ...(sub.penata_musik.trim() ? { penata_musik: sub.penata_musik.trim() } : {}),
+      ...(gambar_url ? { gambar_url } : {}),
+    });
+  }
+  if (sub_karya.length > 0 || values.karya_tari_tracked) {
+    layanan_items.push({
+      title: DANCE_WORKS_TITLE.id,
+      kind: KARYA_TARI_KIND,
+      description: values.karya_tari_card.description.trim(),
+      image: await resolveImage(values.karya_tari_card.image, "layanan"),
+      sub_karya,
     });
   }
 

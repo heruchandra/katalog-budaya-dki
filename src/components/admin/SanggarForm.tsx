@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, ArrowLeft, ChevronDown, ExternalLink, Loader2, Plus, Save, Trash2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ExternalLink, Info, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { danceWorksOf } from "@/lib/sanggarData";
+import { findCuratedProfile } from "@/data/sanggarProfiles";
 import { JAKARTA_WILAYAH } from "@/lib/wilayah";
 import { useLanguage } from "@/context/LanguageContext";
 import ImageField from "@/components/admin/ImageField";
@@ -43,15 +45,6 @@ export default function SanggarForm({ id }: { id?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState(false);
   const [gradeError, setGradeError] = useState(false);
-  // Services whose sub-work list is folded away (by the service's form uid, so it survives cards added above it)
-  const [foldedSubs, setFoldedSubs] = useState<Set<string>>(() => new Set());
-  const setSubsFolded = (uid: string, folded: boolean) =>
-    setFoldedSubs((prev) => {
-      const next = new Set(prev);
-      if (folded) next.add(uid);
-      else next.delete(uid);
-      return next;
-    });
   const hasValidGrade = (GRADE_OPTIONS as readonly string[]).includes(values.grade);
 
   useEffect(() => {
@@ -67,7 +60,10 @@ export default function SanggarForm({ id }: { id?: string }) {
         if (rowResult.error || !rowResult.data) {
           setError(language === "en" ? "Could not load this sanggar." : "Gagal memuat data sanggar.");
         } else {
-          setValues(rowToForm(rowResult.data as SanggarRow));
+          const row = rowResult.data as SanggarRow;
+          // the curated featured dances (with a synopsis) the public page shows while the database has none
+          const curatedWorks = danceWorksOf(findCuratedProfile(String(id), row.nama_sanggar)?.tariUnggulan);
+          setValues(rowToForm(row, curatedWorks));
         }
       }
       setIsLoading(false);
@@ -383,11 +379,6 @@ export default function SanggarForm({ id }: { id?: string }) {
                 <div className="mt-3 space-y-4">
                   {values.layanan.map((item, i) => {
                     const update = (patch: Partial<typeof item>) => set("layanan", values.layanan.map((l, j) => (j === i ? { ...l, ...patch } : l)));
-                    const subs = item.sub_karya;
-                    const setSubs = (next: SubKaryaFormItem[]) => update({ sub_karya: next });
-                    const updateSub = (id: string, patch: Partial<SubKaryaFormItem>) =>
-                      setSubs(subs.map((s) => (s.id === id ? { ...s, ...patch } : s)));
-                    const subsOpen = !foldedSubs.has(item.uid);
                     return (
                       <div key={item.uid} className="grid grid-cols-1 gap-4 rounded-sm border border-zinc-200 bg-zinc-50/60 p-4 md:grid-cols-[200px_1fr]">
                         <ImageField
@@ -409,108 +400,112 @@ export default function SanggarForm({ id }: { id?: string }) {
                           <div className="flex justify-end">
                             <button
                               type="button"
-                              onClick={() => {
-                                set("layanan", values.layanan.filter((_, j) => j !== i));
-                                setSubsFolded(item.uid, false);
-                              }}
+                              onClick={() => set("layanan", values.layanan.filter((_, j) => j !== i))}
                               className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800"
                             >
                               <Trash2 className="h-3.5 w-3.5" /> {tr("Hapus layanan", "Remove service")}
                             </button>
                           </div>
                         </div>
-
-                        {/* Sub-karya: the works (dances) grouped under this service, e.g. "Karya Tari Unggulan Sanggar" */}
-                        <div className="md:col-span-2 border-t border-zinc-200 pt-4">
-                          <div className="flex flex-wrap items-start justify-between gap-2">
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-zinc-900">
-                                {tr("Sub-Karya / Tarian", "Sub-works / Dances")}
-                                {subs.length > 0 && <span className="ml-1.5 font-normal text-zinc-400">({subs.length})</span>}
-                              </p>
-                              <p className="text-xs text-zinc-500">
-                                {tr(
-                                  "Opsional, mis. tarian di dalam “Karya Tari Unggulan Sanggar”. Di halaman detail, layanan ini membuka kartu karya-karyanya; bila deskripsinya kosong, ringkasannya disusun dari judul tarian.",
-                                  "Optional, e.g. the dances of “Karya Tari Unggulan Sanggar”. On the detail page this service opens its works; without a description, its summary lists the dance titles."
-                                )}
-                              </p>
-                            </div>
-                            {subs.length > 0 && (
-                              <button
-                                type="button"
-                                aria-expanded={subsOpen}
-                                onClick={() => setSubsFolded(item.uid, subsOpen)}
-                                className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-orange-600 transition-colors"
-                              >
-                                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${subsOpen ? "rotate-180" : ""}`} aria-hidden="true" />
-                                {subsOpen ? tr("Sembunyikan", "Hide") : tr("Tampilkan", "Show")}
-                              </button>
-                            )}
-                          </div>
-
-                          {subsOpen && subs.length > 0 && (
-                            <ol className="mt-3 space-y-3">
-                              {subs.map((sub, k) => (
-                                <li key={sub.id} className="rounded-sm border border-zinc-200 bg-white p-3">
-                                  <div className="mb-3 flex items-center justify-between gap-2">
-                                    <span className="inline-flex min-w-0 items-center gap-2 text-xs font-semibold text-zinc-500">
-                                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-brand text-[10px] font-bold text-white">
-                                        {String(k + 1).padStart(2, "0")}
-                                      </span>
-                                      <span className="truncate">{sub.judul.trim() || tr("Tarian baru", "New dance")}</span>
-                                    </span>
-                                    <button
-                                      type="button"
-                                      onClick={() => setSubs(subs.filter((s) => s.id !== sub.id))}
-                                      aria-label={`${tr("Hapus Tarian", "Remove Dance")} ${k + 1}`}
-                                      className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800"
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" /> {tr("Hapus Tarian", "Remove Dance")}
-                                    </button>
-                                  </div>
-                                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-[160px_1fr]">
-                                    <ImageField
-                                      label={tr("Foto karya", "Work photo")}
-                                      hint={tr("Opsional (16:9).", "Optional (16:9).")}
-                                      value={sub.image}
-                                      aspect={16 / 9}
-                                      previewClass="aspect-video"
-                                      onChange={(v) => updateSub(sub.id, { image: v })}
-                                    />
-                                    {/* Only photo, title and synopsis are edited here. Penata tari / musik saved earlier (e.g.
-                                        Ayodya Pala's, from its seed) stay in the form state and are saved back unchanged */}
-                                    <div className="grid grid-cols-1 gap-3">
-                                      <label>
-                                        <FieldLabel>{tr("Judul Tarian / Karya", "Dance / Work Title")}</FieldLabel>
-                                        <input type="text" value={sub.judul} onChange={(e) => updateSub(sub.id, { judul: e.target.value })} className={inputClass} placeholder={tr("Mis. Tari Mpok Cantik", "e.g. Tari Mpok Cantik")} />
-                                      </label>
-                                      <label>
-                                        <FieldLabel>{tr("Sinopsis Karya", "Work Synopsis")}</FieldLabel>
-                                        <textarea rows={4} value={sub.sinopsis} onChange={(e) => updateSub(sub.id, { sinopsis: e.target.value })} className={inputClass} />
-                                      </label>
-                                    </div>
-                                  </div>
-                                </li>
-                              ))}
-                            </ol>
-                          )}
-
-                          <button
-                            type="button"
-                            disabled={isMissing("layanan_items")}
-                            onClick={() => {
-                              setSubs([...subs, emptySubKarya()]);
-                              setSubsFolded(item.uid, false);
-                            }}
-                            className="mt-3 inline-flex items-center gap-1.5 rounded-sm border border-dashed border-orange-300 bg-orange-50/60 px-3 py-2 text-xs font-semibold text-orange-700 hover:border-orange-400 hover:bg-orange-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <Plus className="h-3.5 w-3.5" /> {tr("Tambah Tarian / Sub-Karya", "Add Dance / Sub-work")}
-                          </button>
-                        </div>
                       </div>
                     );
                   })}
                 </div>
+              </section>
+
+              {/* Karya Tari Unggulan Sanggar: the dances behind the "Karya Tari Unggulan Sanggar" card on the detail page
+                  (saved as one layanan_items entry holding them as sub_karya, see sanggarAdmin.ts) */}
+              <section>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-base font-bold text-zinc-900">
+                      {tr("Karya Tari Unggulan Sanggar", "Studio's Featured Dance Works")}{" "}
+                      <span className="font-normal text-zinc-400">{tr("(Opsional)", "(Optional)")}</span>
+                    </h2>
+                    <p className="text-xs text-zinc-500">
+                      {tr(
+                        "Tampil sebagai kartu “Karya Tari Unggulan Sanggar” di antara layanan halaman detail; kartunya membuka tarian-tarian ini.",
+                        "Shown as the “Studio's Featured Dance Works” card among the services on the detail page; it opens these dances."
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isMissing("layanan_items")}
+                    // new dances go on top, right under this button
+                    onClick={() => set("karya_tari", [emptySubKarya(), ...values.karya_tari])}
+                    className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-zinc-200 bg-white px-3.5 py-2 text-sm font-semibold text-zinc-800 hover:border-orange-400 hover:text-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Plus className="h-4 w-4" /> {tr("Tambah Karya Tari Unggulan", "Add Featured Dance")}
+                  </button>
+                </div>
+
+                <div className="mt-3"><SectionNotice text={sectionNotice("layanan_items")} /></div>
+
+                {values.karya_tari_prefilled && (
+                  <div className="mt-3 flex items-start gap-3 rounded-sm border border-sky-200 bg-sky-50 p-3 text-xs text-sky-900">
+                    <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    <p>
+                      {tr(
+                        "Tarian di bawah diambil dari data profil sanggar (src/data/sanggarProfiles.ts) karena belum ada di database, sama seperti yang tampil di situs publik. Tekan Simpan untuk menyimpannya ke database.",
+                        "The dances below come from the studio's profile data (src/data/sanggarProfiles.ts) because the database has none yet, as shown on the public site. Press Save to store them in the database."
+                      )}
+                    </p>
+                  </div>
+                )}
+
+                {values.karya_tari.length === 0 ? (
+                  <p className="mt-3 text-xs italic text-zinc-400">{tr("Belum ada karya tari unggulan.", "No featured dances yet.")}</p>
+                ) : (
+                  <ol className="mt-3 space-y-3">
+                    {values.karya_tari.map((sub, k) => {
+                      const updateKarya = (patch: Partial<SubKaryaFormItem>) =>
+                        set("karya_tari", values.karya_tari.map((s) => (s.id === sub.id ? { ...s, ...patch } : s)));
+                      return (
+                        <li key={sub.id} className="rounded-sm border border-zinc-200 bg-zinc-50/60 p-4">
+                          <div className="mb-3 flex items-center justify-between gap-2">
+                            <span className="inline-flex min-w-0 items-center gap-2 text-xs font-semibold text-zinc-500">
+                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-brand text-[10px] font-bold text-white">
+                                {String(k + 1).padStart(2, "0")}
+                              </span>
+                              <span className="truncate">{sub.judul.trim() || tr("Tarian baru", "New dance")}</span>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => set("karya_tari", values.karya_tari.filter((s) => s.id !== sub.id))}
+                              aria-label={`${tr("Hapus Tarian", "Remove Dance")} ${k + 1}`}
+                              className="inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" /> {tr("Hapus Tarian", "Remove Dance")}
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr]">
+                            <ImageField
+                              label={tr("Foto Karya", "Work Photo")}
+                              hint={tr("Opsional (16:9).", "Optional (16:9).")}
+                              value={sub.image}
+                              aspect={16 / 9}
+                              previewClass="aspect-video"
+                              onChange={(v) => updateKarya({ image: v })}
+                            />
+                            {/* Penata tari / musik saved earlier (e.g. Ayodya Pala's) aren't edited here; they stay in the form
+                                state and are saved back unchanged */}
+                            <div className="grid grid-cols-1 gap-3">
+                              <label>
+                                <FieldLabel>{tr("Judul Tarian / Karya", "Dance / Work Title")}</FieldLabel>
+                                <input type="text" value={sub.judul} onChange={(e) => updateKarya({ judul: e.target.value })} className={inputClass} placeholder={tr("Mis. Tari Mpok Cantik", "e.g. Tari Mpok Cantik")} />
+                              </label>
+                              <label>
+                                <FieldLabel>{tr("Sinopsis Karya", "Work Synopsis")}</FieldLabel>
+                                <textarea rows={4} value={sub.sinopsis} onChange={(e) => updateKarya({ sinopsis: e.target.value })} className={inputClass} />
+                              </label>
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
               </section>
 
               {/* Prestasi */}

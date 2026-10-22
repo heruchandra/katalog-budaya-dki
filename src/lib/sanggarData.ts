@@ -27,7 +27,12 @@ export interface LayananItem {
   image: string | null;
   /** Its works (dances), when the service groups some */
   sub_karya?: SubKarya[];
+  /** KARYA_TARI_KIND marks the entry holding the sanggar's Karya Tari Unggulan (the admin form's own section) */
+  kind?: string;
 }
+
+/** `kind` of the layanan_items entry that holds the Karya Tari Unggulan Sanggar as its sub_karya */
+export const KARYA_TARI_KIND = "karya_tari_unggulan";
 
 export interface PrestasiItem {
   title: string;
@@ -88,6 +93,7 @@ export function parseLayanan(row: { layanan_items?: unknown }): LayananItem[] {
         description: str(o?.description),
         image: str(o?.image) || null,
         ...(subKarya.length > 0 ? { sub_karya: subKarya } : {}),
+        ...(str(o?.kind) ? { kind: str(o?.kind) } : {}),
       };
     })
     .filter((l) => l.title);
@@ -119,6 +125,18 @@ export const danceWorksOf = <T extends { synopsis?: string }>(list?: T[] | null)
 
 /** Title of the service card that opens a sanggar's featured dance works */
 export const DANCE_WORKS_TITLE = { id: "Karya Tari Unggulan Sanggar", en: "Studio's Featured Dance Works" };
+
+/**
+ * The entry holding the Karya Tari Unggulan: marked by `kind`, or (rows saved before the mark) titled
+ * "Karya Tari Unggulan Sanggar" with sub_karya
+ */
+export const isKaryaTariService = (l: Pick<LayananItem, "title" | "kind" | "sub_karya">) =>
+  l.kind === KARYA_TARI_KIND ||
+  ((l.sub_karya?.length ?? 0) > 0 && l.title.trim().toLowerCase() === DANCE_WORKS_TITLE.id.toLowerCase());
+
+/** That entry with no works left: the admin removed them all, so no works card shows (curated works included) */
+export const isClearedKaryaTari = (l: Pick<LayananItem, "kind" | "sub_karya">) =>
+  l.kind === KARYA_TARI_KIND && !(l.sub_karya?.length);
 
 /** Summary of a works card that has no description of its own: the works' titles */
 export const danceWorksSummary = (names: string[]) => ({

@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
-import { DANCE_WORKS_TITLE, danceWorksSummary, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
+import { DANCE_WORKS_TITLE, danceWorksSummary, isClearedKaryaTari, isDraft, parseGallery, parseLayanan, parsePrestasi } from "@/lib/sanggarData";
 import SanggarDetailClient, { SanggarDetailData, TariItem } from "./SanggarDetailClient";
 import { SPECIFIC_PROFILES, curatedPhoneOf, findCuratedProfile, generateFallbackSanggar } from "@/data/sanggarProfiles";
 import { resolveWilayah } from "@/lib/wilayah";
@@ -46,7 +46,10 @@ export default async function SanggarDetail({
   // Anything the admin has filled in wins over the curated demo profile and the generated fallback.
   // (Name stays curated-first: several database names differ from the curated display names.)
   const dbGallery = data ? parseGallery(data) : [];
-  const dbLayanan = data ? parseLayanan(data) : [];
+  const dbLayananAll = data ? parseLayanan(data) : [];
+  // An emptied Karya Tari Unggulan entry: the admin removed every work, so no works card (curated ones included)
+  const worksCleared = dbLayananAll.some(isClearedKaryaTari);
+  const dbLayanan = dbLayananAll.filter((l) => !isClearedKaryaTari(l));
   const dbPrestasi = data ? parsePrestasi(data) : [];
   const dbDescription: string[] | null = data?.deskripsi
     ? String(data.deskripsi).split(/\r?\n\s*\r?\n|\r?\n/).map((p: string) => p.trim()).filter(Boolean)
@@ -95,8 +98,8 @@ export default async function SanggarDetail({
           };
         })
       : specific?.layanan || specific?.services || (data?.layanan && Array.isArray(data.layanan) ? data.layanan : fallback.layanan),
-    danceSpecialties: specific?.danceSpecialties || specific?.tariUnggulan || fallback.tariUnggulan,
-    tariUnggulan: specific?.tariUnggulan || specific?.danceSpecialties || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
+    danceSpecialties: worksCleared ? [] : specific?.danceSpecialties || specific?.tariUnggulan || fallback.tariUnggulan,
+    tariUnggulan: worksCleared ? [] : specific?.tariUnggulan || specific?.danceSpecialties || (data?.tari_unggulan && Array.isArray(data.tari_unggulan) && data.tari_unggulan.length > 0
       ? data.tari_unggulan
       : fallback.tariUnggulan),
     prestasi: dbPrestasi.length > 0

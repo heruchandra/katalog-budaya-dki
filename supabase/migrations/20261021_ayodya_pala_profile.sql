@@ -1,4 +1,4 @@
--- Katalog Seni DKI Jakarta: complete profile of Ayodya Pala Indonesia Art Center (sanggars.id = 17) (Phase 836, 839)
+-- Katalog Seni DKI Jakarta: complete profile of Ayodya Pala Indonesia Art Center (sanggars.id = 17) (Phase 836, 839, 850)
 -- Source: the sanggar's own form "INFORMASI SANGGAR AYODYA PALA" (texts as written, spelling tidied only). The same
 -- texts are the curated fallback in src/data/sanggarProfiles.ts.
 -- Run once in Supabase Dashboard > SQL Editor. Safe to re-run: it writes the same values again, but note that it
@@ -21,12 +21,13 @@ set
   -- searched by the public catalog (not shown on the card)
   jenis_tarian          = 'Tari Mpok Cantik, Tari Kembang Merona, Tari Godeg Ayu, Tari Jari Manis, Tari Goyang Ngamprok',
   deskripsi             = 'Yayasan Ayodya Pala dirintis mulai tahun 1978 dan dibentuk menjadi yayasan pada tanggal 24 April 1980, memiliki kurang lebih 2.400 siswa aktif dan mempunyai Motto “Membangun Bangsa Melalui Seni dan Budaya”. Ayodya Pala berasal dari kata AYODYA yang diambil dari Epos Ramayana yaitu suatu negara / kerajaan tempat Rama dilahirkan. Kerajaan tersebut makmur, aman, tentram, dan masyarakatnya berbudaya. Sedangkan kata PALA berasal dari sumpah palapa yang dikumandangkan oleh Maha Patih Gajah Mada yang berasal dari Kerajaan Majapahit yang intinya mempersatukan wilayah Nusantara.',
-  -- "Layanan Sanggar" (3), then "Karya Tari Unggulan Sanggar" holding the five Tari Unggulan as its sub_karya
+  -- "Layanan Sanggar" (3), then the Karya Tari Unggulan entry (kind karya_tari_unggulan, the admin form's own section)
+  -- holding the five Tari Unggulan as its sub_karya
   layanan_items = jsonb_build_array(
     jsonb_build_object('title', 'Tari Daerah Nusantara', 'description', '', 'image', null),
     jsonb_build_object('title', 'Modelling Anak', 'description', '', 'image', null),
     jsonb_build_object('title', 'Vokal dan Musik', 'description', '', 'image', null),
-    jsonb_build_object('title', 'Karya Tari Unggulan Sanggar', 'description', 'Karya tari unggulan Ayodya Pala Indonesia Art Center. Kostum: Rumah Kostum Ayodya Pala.', 'image', null, 'sub_karya', jsonb_build_array(
+    jsonb_build_object('title', 'Karya Tari Unggulan Sanggar', 'kind', 'karya_tari_unggulan', 'description', 'Karya tari unggulan Ayodya Pala Indonesia Art Center. Kostum: Rumah Kostum Ayodya Pala.', 'image', null, 'sub_karya', jsonb_build_array(
       jsonb_build_object('id', 'tari-mpok-cantik', 'judul', 'Tari Mpok Cantik', 'sinopsis', 'Tari Mpok Cantik ini berpijak pada Tari Betawi Tradisi yang dikembangkan kembali menjadi gerak kreasi Betawi, yang menceritakan tentang sekumpulan mpok-mpok remaja cantik yang berkumpul dan bersenda gurau bersama. Cerita ini diambil dari kehidupan sehari-hari layaknya remaja. “Pisang kapok mau dipetik / Pohon nangke jangan ditebang / Mpok mpok yang paling cantik / Boleh tau sape namanye.”', 'penata_tari', 'Wahyu Kardinata Suroso, S.Pd', 'penata_musik', 'Rizki Aidul Akbar, S.Sn', 'gambar_url', '/images/sanggar/ayodya-pala/card/card-4.webp'),
       jsonb_build_object('id', 'tari-kembang-merona', 'judul', 'Tari Kembang Merona', 'sinopsis', 'Merupakan Tari Kreasi Baru yang berpijak dari kesenian Cokek Betawi. Menggambarkan gadis-gadis yang sedang kasmaran adalah fase di mana bunga berada dalam kondisi terbaiknya—mekar sempurna, wangi, dan menawan. Ini melambangkan manusia yang telah mencapai potensi maksimal atau kedewasaan diri yang utuh. Divisualisasikan dalam bentuk gerak-gerak tari Betawi yang dikembangkan dengan unsur-unsur keindahan, keberanian, dan semangat hidup. Dengan kostum dominan merah serta menggunakan saputangan merah, sebagai simbol wanita yang mandiri, kecantikan yang mempesona, kekuatan diri, dan kebahagiaan yang terpancar.', 'penata_tari', 'Yulli Fajar & Ratna Kurniasih', 'penata_musik', 'Ricky'),
       jsonb_build_object('id', 'tari-godeg-ayu', 'judul', 'Tari Godeg Ayu', 'sinopsis', 'Merupakan Tari Kreasi Depok. Menggambarkan perjalanan kehidupan seorang gadis yang menginjak dewasa, disempurnakan oleh berbagai sifatnya yang khas, semuanya terpadu dalam pribadi yang penuh dengan harapan, cita-cita dan cinta. Tak lepas pula dari kodratnya sebagai manusia, konflik, dilema dan tantangan kadang kala hadir menyelimuti kehidupannya.', 'penata_tari', 'Wulandari, S.Sn', 'penata_musik', 'Mang Ujang & Imam Firmansyah, S.Sn'),
