@@ -19,6 +19,7 @@ import {
   SanggarRow,
   SubKaryaFormItem,
   buildPayload,
+  emptyLayanan,
   emptySubKarya,
   getSanggarColumns,
   rowToForm,
@@ -41,13 +42,13 @@ export default function SanggarForm({ id }: { id?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState(false);
   const [gradeError, setGradeError] = useState(false);
-  // Services whose sub-work list is folded away (by index; cleared when a service is removed)
-  const [foldedSubs, setFoldedSubs] = useState<Set<number>>(() => new Set());
-  const setSubsFolded = (i: number, folded: boolean) =>
+  // Services whose sub-work list is folded away (by the service's form uid, so it survives cards added above it)
+  const [foldedSubs, setFoldedSubs] = useState<Set<string>>(() => new Set());
+  const setSubsFolded = (uid: string, folded: boolean) =>
     setFoldedSubs((prev) => {
       const next = new Set(prev);
-      if (folded) next.add(i);
-      else next.delete(i);
+      if (folded) next.add(uid);
+      else next.delete(uid);
       return next;
     });
   const hasValidGrade = (GRADE_OPTIONS as readonly string[]).includes(values.grade);
@@ -382,7 +383,8 @@ export default function SanggarForm({ id }: { id?: string }) {
                   <button
                     type="button"
                     disabled={isMissing("layanan_items")}
-                    onClick={() => set("layanan", [...values.layanan, { title: "", description: "", image: { url: null }, sub_karya: [] }])}
+                    // new services go on top, right under this button
+                    onClick={() => set("layanan", [emptyLayanan(), ...values.layanan])}
                     className="inline-flex items-center gap-2 rounded-sm border border-zinc-200 bg-white px-3.5 py-2 text-sm font-semibold text-zinc-800 hover:border-orange-400 hover:text-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Plus className="h-4 w-4" /> {tr("Tambah Layanan", "Add Service")}
@@ -398,9 +400,9 @@ export default function SanggarForm({ id }: { id?: string }) {
                     const setSubs = (next: SubKaryaFormItem[]) => update({ sub_karya: next });
                     const updateSub = (id: string, patch: Partial<SubKaryaFormItem>) =>
                       setSubs(subs.map((s) => (s.id === id ? { ...s, ...patch } : s)));
-                    const subsOpen = !foldedSubs.has(i);
+                    const subsOpen = !foldedSubs.has(item.uid);
                     return (
-                      <div key={i} className="grid grid-cols-1 gap-4 rounded-sm border border-zinc-200 bg-zinc-50/60 p-4 md:grid-cols-[200px_1fr]">
+                      <div key={item.uid} className="grid grid-cols-1 gap-4 rounded-sm border border-zinc-200 bg-zinc-50/60 p-4 md:grid-cols-[200px_1fr]">
                         <ImageField
                           label={tr("Gambar layanan", "Service image")}
                           value={item.image}
@@ -422,7 +424,7 @@ export default function SanggarForm({ id }: { id?: string }) {
                               type="button"
                               onClick={() => {
                                 set("layanan", values.layanan.filter((_, j) => j !== i));
-                                setFoldedSubs(new Set());
+                                setSubsFolded(item.uid, false);
                               }}
                               className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800"
                             >
@@ -450,7 +452,7 @@ export default function SanggarForm({ id }: { id?: string }) {
                               <button
                                 type="button"
                                 aria-expanded={subsOpen}
-                                onClick={() => setSubsFolded(i, subsOpen)}
+                                onClick={() => setSubsFolded(item.uid, subsOpen)}
                                 className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-orange-600 transition-colors"
                               >
                                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${subsOpen ? "rotate-180" : ""}`} aria-hidden="true" />
@@ -517,7 +519,7 @@ export default function SanggarForm({ id }: { id?: string }) {
                             disabled={isMissing("layanan_items")}
                             onClick={() => {
                               setSubs([...subs, emptySubKarya()]);
-                              setSubsFolded(i, false);
+                              setSubsFolded(item.uid, false);
                             }}
                             className="mt-3 inline-flex items-center gap-1.5 rounded-sm border border-dashed border-orange-300 bg-orange-50/60 px-3 py-2 text-xs font-semibold text-orange-700 hover:border-orange-400 hover:bg-orange-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >

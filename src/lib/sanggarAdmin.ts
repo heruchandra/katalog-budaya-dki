@@ -80,17 +80,27 @@ export interface SubKaryaFormItem {
 }
 
 export interface LayananFormItem {
+  /** Form-only key, never saved: keeps each card's state with it when cards are added at the top or removed */
+  uid: string;
   title: string;
   description: string;
   image: ImageValue;
   sub_karya: SubKaryaFormItem[];
 }
 
-/** An id for a new sub-work (crypto.randomUUID needs a secure context, so plain http on a LAN address falls back) */
+/** An id for a new form item (crypto.randomUUID needs a secure context, so plain http on a LAN address falls back) */
 export const newSubKaryaId = () =>
   typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
     ? crypto.randomUUID()
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+
+export const emptyLayanan = (): LayananFormItem => ({
+  uid: newSubKaryaId(),
+  title: "",
+  description: "",
+  image: { url: null },
+  sub_karya: [],
+});
 
 export const emptySubKarya = (): SubKaryaFormItem => ({
   id: newSubKaryaId(),
@@ -183,6 +193,7 @@ export function rowToForm(row: SanggarRow): SanggarFormValues {
     foto_grup: { url: str(row.foto_grup_url) || null },
     galeri: parseGallery(row).map((g) => ({ url: g.url, caption: g.caption })),
     layanan: parseLayanan(row).map((l) => ({
+      uid: newSubKaryaId(),
       title: l.title,
       description: l.description,
       image: { url: l.image },
