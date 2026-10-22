@@ -166,9 +166,10 @@ export default function ContactWidget() {
           aria-expanded={open}
           aria-controls={open ? panelId : undefined}
           aria-label={open ? (isEn ? "Close contact person" : "Tutup narahubung") : isEn ? "Contact person" : "Narahubung"}
-          className="peer w-14 h-14 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
+          className="peer w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-300"
         >
-          {open ? <X className="h-6 w-6" aria-hidden="true" /> : <ContactPersonIcon className="h-7 w-7" />}
+          {/* same size as the hero's music button (w-10 / sm:w-12); the icon fills half of it */}
+          {open ? <X className="h-5 w-5" aria-hidden="true" /> : <ContactPersonIcon className="h-5 w-5 sm:h-6 sm:w-6" />}
         </button>
         {!open && (
           <span
