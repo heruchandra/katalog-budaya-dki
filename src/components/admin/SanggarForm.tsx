@@ -523,7 +523,7 @@ export default function SanggarForm({ id }: { id?: string }) {
                             }}
                             className="mt-3 inline-flex items-center gap-1.5 rounded-sm border border-dashed border-orange-300 bg-orange-50/60 px-3 py-2 text-xs font-semibold text-orange-700 hover:border-orange-400 hover:bg-orange-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Plus className="h-3.5 w-3.5" /> {tr("Tambah Sub-Karya / Tarian", "Add Sub-work / Dance")}
+                            <Plus className="h-3.5 w-3.5" /> {tr("Tambah Tarian / Sub-Karya", "Add Dance / Sub-work")}
                           </button>
                         </div>
                       </div>
