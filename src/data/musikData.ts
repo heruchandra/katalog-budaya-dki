@@ -159,6 +159,27 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
 
 export const findMusikMaster = (id: string) => MUSIK_MASTER_DATA.find((m) => m.id === id);
 
+const nameKey = (s?: string | null) => (s ?? "").toLowerCase().replace(/\s+/g, " ").trim();
+
+/**
+ * The master entry a database row stands for: the one with the row's id, else a master-only entry (slug id, like
+ * "betawi-section") that was saved from the admin panel and so got a new numeric id; that one is matched by name.
+ */
+export function masterOfRow(row: Pick<PemusikRow, "id" | "nama_seniman">): MusikEntity | undefined {
+  return (
+    findMusikMaster(String(row.id)) ??
+    MUSIK_MASTER_DATA.find((m) => !/^\d+$/.test(m.id) && nameKey(m.nama) === nameKey(row.nama_seniman))
+  );
+}
+
+/** Ids of the master entries that database rows stand for: those are listed through their rows, not on their own */
+export const claimedMasterIds = (rows: Pick<PemusikRow, "id" | "nama_seniman">[]) =>
+  new Set(rows.map((r) => masterOfRow(r)?.id).filter((id): id is string => !!id));
+
+/** The database row standing for a master entry, if it has one */
+export const rowOfMaster = <R extends Pick<PemusikRow, "id" | "nama_seniman">>(rows: R[], masterId: string) =>
+  rows.find((r) => masterOfRow(r)?.id === masterId);
+
 /** Sub-category of a `pemusiks` row: "Komunitas Musik" (older values: "Komunitas", "Grup", …) or a solo musician */
 export function categoryOfRow(row: Pick<PemusikRow, "jenis_seniman">): MusikCategory {
   return normalizeKategori(row.jenis_seniman) === "Komunitas Musik" ? "komunitas" : "pemusik";
@@ -238,6 +259,8 @@ export function mergeProfile(master: MusikEntity | undefined, row: PemusikRow | 
   return {
     ...master,
     ...filled,
+    // the row's id (differs from the master's for a master-only entry saved from the admin panel)
+    id: String(row.id),
     category: text(row.jenis_seniman) ? fromRow.category : master.category,
     isDummyMedia: fromRow.fotoGallery.length > 0 ? false : master.isDummyMedia,
   };
@@ -272,9 +295,9 @@ export function toCardData(m: MusikEntity): MusikCardData {
  * database. Draft rows are hidden, and so is the master entry of a draft row.
  */
 export function buildMusikCatalog(rows: PemusikRow[]): MusikCardData[] {
-  const rowIds = new Set(rows.map((r) => String(r.id)));
-  const fromRows = rows.filter((row) => !isDraftRow(row)).map((row) => mergeProfile(findMusikMaster(String(row.id)), row)!);
-  const masterOnly = MUSIK_MASTER_DATA.filter((m) => !rowIds.has(m.id));
+  const claimed = claimedMasterIds(rows);
+  const fromRows = rows.filter((row) => !isDraftRow(row)).map((row) => mergeProfile(masterOfRow(row), row)!);
+  const masterOnly = MUSIK_MASTER_DATA.filter((m) => !claimed.has(m.id));
   return [...masterOnly, ...fromRows].map(toCardData);
 }
 

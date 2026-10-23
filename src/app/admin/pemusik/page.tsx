@@ -3,11 +3,11 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CheckCircle2, Eye, ImageOff, Info, Lock, Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { CheckCircle2, Eye, ImageOff, Info, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
-import { MUSIK_MASTER_DATA, findMusikMaster, mergeProfile, waNumberOf } from "@/data/musikData";
+import { MUSIK_MASTER_DATA, claimedMasterIds, findMusikMaster, masterOfRow, mergeProfile, waNumberOf } from "@/data/musikData";
 import { KATEGORI_OF, normalizeKategori } from "@/lib/pemusikData";
 import {
   KATEGORI_MUSIK_OPTIONS,
@@ -48,7 +48,7 @@ interface ListItem {
 
 function toListItem(row: PemusikRow | null, masterId?: string): ListItem | null {
   const id = row ? String(row.id) : masterId!;
-  const profile = mergeProfile(findMusikMaster(id), row);
+  const profile = mergeProfile(row ? masterOfRow(row) : findMusikMaster(id), row);
   if (!profile) return null;
   // the same two categories as the public catalog (older stored values are mapped onto them)
   const kategori = row ? normalizeKategori(row.jenis_seniman) || KATEGORI_OF[profile.category] : KATEGORI_OF[profile.category];
@@ -147,11 +147,11 @@ function AdminPemusikContent() {
 
   const hasStatusColumn = rows.length > 0 && "status" in rows[0];
 
-  // Database rows, plus master-data entries that have no row (listed read-only)
+  // Database rows, plus master-data entries that have no row yet (editing one saves it as a new row)
   const items = useMemo(() => {
-    const rowIds = new Set(rows.map((r) => String(r.id)));
+    const claimed = claimedMasterIds(rows);
     const fromRows = rows.map((row) => toListItem(row));
-    const masterOnly = MUSIK_MASTER_DATA.filter((m) => !rowIds.has(m.id)).map((m) => toListItem(null, m.id));
+    const masterOnly = MUSIK_MASTER_DATA.filter((m) => !claimed.has(m.id)).map((m) => toListItem(null, m.id));
     return [...fromRows, ...masterOnly].filter((i): i is ListItem => i !== null).sort((a, b) => a.nama.localeCompare(b.nama));
   }, [rows]);
 
@@ -327,13 +327,16 @@ function AdminPemusikContent() {
                           </button>
                         </>
                       ) : (
-                        <span
-                          className="flex h-8 w-8 items-center justify-center text-zinc-300"
-                          title={tr("Profil bawaan dari src/data/musikData.ts: belum ada di database, jadi belum bisa diedit di sini.", "Built-in profile from src/data/musikData.ts: not in the database yet, so it can't be edited here.")}
-                          aria-label={tr(`${item.nama}: data bawaan, tidak dapat diedit`, `${item.nama}: built-in data, not editable`)}
+                        // built-in profile (src/data/musikData.ts) without a row yet: the form opens it with that data and
+                        // saving stores it as a new row, which takes its place here and on the public site
+                        <Link
+                          href={`/admin/pemusik/edit/${item.id}`}
+                          className="flex h-8 w-8 items-center justify-center rounded-sm text-zinc-500 hover:bg-orange-50 hover:text-orange-600"
+                          title={tr("Edit (profil bawaan; tersimpan ke database saat disimpan)", "Edit (built-in profile; stored in the database on save)")}
+                          aria-label={`Edit ${item.nama}`}
                         >
-                          <Lock className="h-4 w-4" />
-                        </span>
+                          <Pencil className="h-4 w-4" />
+                        </Link>
                       )}
                     </div>
                   </td>

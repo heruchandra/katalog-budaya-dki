@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, ArrowDown, ArrowLeft, ArrowUp, CheckCircle2, ExternalLink, Info, Loader2, Plus, Save, Trash2 } from "lucide-react";
-import { findMusikMaster } from "@/data/musikData";
+import { findMusikMaster, rowOfMaster } from "@/data/musikData";
 import { supabase } from "@/lib/supabase";
 import { JAKARTA_WILAYAH } from "@/lib/wilayah";
 import { isVideoFile, youTubeId } from "@/lib/video";
@@ -39,6 +39,8 @@ type FieldErrors = Partial<Record<"nama" | "kategori" | "whatsapp" | "anggota" |
 
 export default function PemusikForm({ id }: { id?: string }) {
   const isEdit = Boolean(id);
+  // a slug id ("betawi-section") is a built-in profile that has no database row yet
+  const isBuiltIn = isEdit && !/^\d+$/.test(id!);
   const router = useRouter();
   const { language } = useLanguage();
   const tr = (idText: string, enText: string) => (language === "en" ? enText : idText);
@@ -58,11 +60,24 @@ export default function PemusikForm({ id }: { id?: string }) {
     (async () => {
       const [cols, rowResult] = await Promise.all([
         getPemusikColumns(),
-        isEdit ? supabase.from(PEMUSIK_TABLE).select("*").eq("id", id).single() : Promise.resolve(null),
+        isEdit && !isBuiltIn ? supabase.from(PEMUSIK_TABLE).select("*").eq("id", id).single() : Promise.resolve(null),
       ]);
       if (cancelled) return;
       setColumns(cols);
-      if (rowResult) {
+      if (isBuiltIn) {
+        // A built-in profile (src/data/musikData.ts) with no row yet: start from its data; saving inserts it as a new
+        // row, which then stands for it everywhere. Already saved once? Edit that row instead.
+        const master = findMusikMaster(id!);
+        const { data: rows } = await supabase.from(PEMUSIK_TABLE).select("id, nama_seniman");
+        if (cancelled) return;
+        const saved = master && rows ? rowOfMaster(rows as Pick<PemusikRow, "id" | "nama_seniman">[], master.id) : undefined;
+        if (saved) {
+          router.replace(`/admin/pemusik/edit/${saved.id}`);
+          return;
+        }
+        if (!master) setError(language === "en" ? "Could not load this music artist." : "Gagal memuat data seniman musik.");
+        else setValues(fillFromMaster(EMPTY_PEMUSIK_FORM, masterToForm(master)).values);
+      } else if (rowResult) {
         if (rowResult.error || !rowResult.data) {
           setError(language === "en" ? "Could not load this music artist." : "Gagal memuat data seniman musik.");
         } else {
@@ -139,7 +154,8 @@ export default function PemusikForm({ id }: { id?: string }) {
     setIsSaving(true);
     try {
       const payload = await buildPemusikPayload(values);
-      const result = await savePemusik(isEdit ? id! : null, payload, columns);
+      // a built-in profile is inserted as a new row; any other edit updates its row
+      const result = await savePemusik(isEdit && !isBuiltIn ? id! : null, payload, columns);
       const skipped = result.skipped.length > 0 ? `&skipped=${encodeURIComponent(result.skipped.join(","))}` : "";
       router.push(`/admin/pemusik?success=1${skipped}`);
       router.refresh();
@@ -207,6 +223,18 @@ export default function PemusikForm({ id }: { id?: string }) {
               <code className="rounded-sm bg-amber-100 px-1 py-0.5 text-xs">{PEMUSIK_MIGRATION_FILE}</code>
             </p>
           </div>
+        </div>
+      )}
+
+      {isBuiltIn && !error && (
+        <div className="mb-5 flex items-start gap-3 rounded-sm border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+          <Info className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+          <p>
+            {tr(
+              `Profil bawaan dari src/data/musikData.ts yang belum ada di database. Tekan Simpan untuk menyimpannya sebagai data baru di database; setelah itu profil ini tampil dan diedit dari data tersebut. Biarkan namanya tetap “${values.nama_seniman}” agar profil bawaannya tidak tampil ganda.`,
+              `Built-in profile from src/data/musikData.ts that isn't in the database yet. Press Save to store it as a new database entry; from then on that entry is shown and edited. Keep the name “${values.nama_seniman}” so the built-in profile isn't listed twice.`
+            )}
+          </p>
         </div>
       )}
 

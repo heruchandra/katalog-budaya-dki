@@ -13,7 +13,7 @@ import { KATEGORI_MUSIK_OPTIONS, KATEGORI_OF, isDraftRow } from "@/lib/pemusikDa
 import { curatedPhoneOf, findCuratedProfile } from "@/data/sanggarProfiles";
 import { ownCardImage } from "@/lib/sanggarImages";
 import { toWaNumber } from "@/lib/phone";
-import { MUSIK_MASTER_DATA, findMusikMaster, mergeProfile } from "@/data/musikData";
+import { MUSIK_MASTER_DATA, claimedMasterIds, masterOfRow, mergeProfile } from "@/data/musikData";
 import type { MusikEntity } from "@/types/musik";
 
 // recharts is heavy: load the chart after the stat cards render (grey placeholder meanwhile)
@@ -97,10 +97,10 @@ export default function AdminDashboard() {
   // Seniman Musik as the public catalog (/pemusik) lists them: every pemusiks row merged with its master data, plus
   // the master-only entries of src/data/musikData.ts (e.g. Komunitas Betawi Section) that have no row yet
   const musikProfiles = useMemo<MusikEntity[]>(() => {
-    const rowIds = new Set(pemusiks.map((row) => String(row.id)));
+    const claimed = claimedMasterIds(pemusiks);
     return [
-      ...MUSIK_MASTER_DATA.filter((m) => !rowIds.has(m.id)),
-      ...pemusiks.map((row) => mergeProfile(findMusikMaster(String(row.id)), row)!),
+      ...MUSIK_MASTER_DATA.filter((m) => !claimed.has(m.id)),
+      ...pemusiks.map((row) => mergeProfile(masterOfRow(row), row)!),
     ];
   }, [pemusiks]);
 
