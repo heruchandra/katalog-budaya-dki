@@ -1,4 +1,4 @@
-import { MEDIA_BUCKET, SaveResult, deleteRow, getTableColumns, saveRow, uploadImage as uploadToBucket } from "@/lib/adminDb";
+import { MEDIA_BUCKET, SaveResult, deleteRow, getTableColumns, saveRow, uploadImage as uploadToBucket, uploadVideo } from "@/lib/adminDb";
 import {
   DANCE_WORKS_TITLE,
   GalleryItem,
@@ -58,6 +58,8 @@ export interface SanggarRow {
   galeri?: unknown;
   layanan_items?: unknown;
   prestasi_items?: unknown;
+  // (video migration, SANGGAR_VIDEO_MIGRATION_FILE)
+  video_url?: string | null;
 }
 
 /** Columns created by supabase/migrations/20260930_admin_sanggar_fields.sql, with the form label they belong to. */
@@ -71,6 +73,9 @@ export const MIGRATION_COLUMNS: Record<string, string> = {
   layanan_items: "Layanan / Karya",
   prestasi_items: "Prestasi & Penghargaan",
 };
+
+/** Adds the sanggars.video_url column (Video Penampilan); separate from the migration above. */
+export const SANGGAR_VIDEO_MIGRATION_FILE = "supabase/migrations/20261024_sanggar_video.sql";
 
 /** An image in the form: an already-saved URL, or a freshly cropped blob waiting to be uploaded on save. */
 export interface ImageValue {
@@ -164,6 +169,9 @@ export interface SanggarFormValues {
   logo: ImageValue;
   foto_ketua: ImageValue;
   foto_grup: ImageValue;
+  video_url: string;
+  /** A video file picked in the form, uploaded on save (replaces video_url) */
+  video_file: File | null;
   // Tab 4: Galeri & Layanan
   galeri: GalleryFormItem[];
   layanan: LayananFormItem[];
@@ -202,6 +210,8 @@ export const EMPTY_FORM: SanggarFormValues = {
   logo: { url: null },
   foto_ketua: { url: null },
   foto_grup: { url: null },
+  video_url: "",
+  video_file: null,
   galeri: [],
   layanan: [],
   karya_tari: [],
@@ -270,6 +280,8 @@ export function rowToForm(row: SanggarRow, curatedWorks: CuratedWork[] = []): Sa
     logo: { url: str(row.logo_url) || null },
     foto_ketua: { url: str(row.foto_ketua_url) || null },
     foto_grup: { url: str(row.foto_grup_url) || null },
+    video_url: str(row.video_url),
+    video_file: null,
     galeri: parseGallery(row).map((g) => ({ url: g.url, caption: g.caption })),
     layanan: standard.map((l) => ({ uid: newFormId(), title: l.title, description: l.description, image: { url: l.image } })),
     karya_tari: prefill
@@ -301,7 +313,7 @@ const resolveImage = async (image: ImageValue, prefix: string): Promise<string |
 const nullable = (v: string) => (v.trim() ? v.trim() : null);
 
 /**
- * Upload any pending images, then build the full row payload (all columns, including migration ones).
+ * Upload any pending images (and a picked video), then build the full row payload (all columns, including migration ones).
  * `jenis_tarian` is no longer edited in the form, so it is left out: an update keeps the stored value.
  */
 export async function buildPayload(values: SanggarFormValues): Promise<Record<string, unknown>> {
@@ -317,6 +329,7 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
     const url = await resolveImage(item, "galeri");
     if (url) galeri.push({ url, caption: item.caption.trim() });
   }
+  const video_url = values.video_file ? await uploadVideo(values.video_file, "video", "sanggar") : nullable(values.video_url);
 
   const layanan_items: LayananItem[] = [];
   for (const item of values.layanan) {
@@ -383,6 +396,7 @@ export async function buildPayload(values: SanggarFormValues): Promise<Record<st
     galeri,
     layanan_items,
     prestasi_items,
+    video_url,
   };
 }
 

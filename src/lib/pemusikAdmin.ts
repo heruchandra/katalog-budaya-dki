@@ -1,4 +1,4 @@
-import { deleteRow, getTableColumns, saveRow, uploadImage } from "@/lib/adminDb";
+import { deleteRow, getTableColumns, saveRow, uploadImage, uploadVideo } from "@/lib/adminDb";
 import { toWaNumber } from "@/lib/phone";
 import { resolveWilayah } from "@/lib/wilayah";
 import { splitYear } from "@/components/ExperienceList";
@@ -93,6 +93,8 @@ export interface PemusikFormValues {
   foto_card: ImageValue;
   galeri: GalleryFormItem[];
   video_url: string;
+  /** A video file picked in the form, uploaded on save (replaces video_url) */
+  video_file: File | null;
   // Tab 4: Layanan & Karya
   layanan: string[];
   karya: PemusikKaryaItem[];
@@ -127,6 +129,7 @@ export const EMPTY_PEMUSIK_FORM: PemusikFormValues = {
   foto_card: { url: null },
   galeri: [],
   video_url: "",
+  video_file: null,
   layanan: [],
   karya: [],
   prestasi: [],
@@ -162,6 +165,7 @@ export function pemusikRowToForm(row: PemusikRow): PemusikFormValues {
     foto_card: { url: str(row.foto_card_url) || null },
     galeri: parsePemusikGaleri(row).map((g) => ({ url: g.url, caption: g.caption })),
     video_url: str(row.video_url),
+    video_file: null,
     layanan: parsePemusikLayanan(row),
     karya: parsePemusikKarya(row),
     prestasi: toPrestasiForm(parsePemusikPrestasi(row)),
@@ -203,6 +207,7 @@ export function masterToForm(m: MusikEntity): PemusikFormValues {
     foto_card: { url: ownPhotos ? m.fotoCard ?? null : null },
     galeri: ownPhotos ? m.fotoGallery.filter((p) => !p.pending).map((p) => ({ url: p.url, caption: p.caption })) : [],
     video_url: m.videoUrl ?? "",
+    video_file: null,
     layanan: [...m.layanan],
     karya: m.karyaUnggulan.map((k) => ({ judul: k.judul, deskripsi: k.deskripsi ?? "", tahun: k.tahun ?? "", link: k.link ?? "" })),
     prestasi: toPrestasiForm(m.prestasi.map((p) => (typeof p === "string" ? { title: p, organizer: "", year: "" } : { title: p.title, organizer: p.organizer ?? "", year: p.year ?? "" }))),
@@ -255,7 +260,7 @@ export const isValidWaNumber = (wa: string) => /^62\d{8,13}$/.test(wa);
 
 const nullable = (v: string) => (v.trim() ? v.trim() : null);
 
-/** Upload any pending images, then build the full row payload (all columns, including the migration ones). */
+/** Upload any pending images (and a picked video), then build the full row payload (all columns, including the migration ones). */
 export async function buildPemusikPayload(values: PemusikFormValues): Promise<Record<string, unknown>> {
   const resolve = (image: ImageValue, prefix: string) => (image.blob ? uploadImage(image.blob, prefix, "musik") : Promise.resolve(image.url));
   const [logo_url, foto_card_url] = await Promise.all([resolve(values.logo, "logo"), resolve(values.foto_card, "card")]);
@@ -265,6 +270,7 @@ export async function buildPemusikPayload(values: PemusikFormValues): Promise<Re
     const url = await resolve(item, "galeri");
     if (url) galeri.push({ url, caption: item.caption.trim() });
   }
+  const video_url = values.video_file ? await uploadVideo(values.video_file, "video", "musik") : nullable(values.video_url);
 
   const pengalaman_items = values.pengalaman
     .filter((p) => p.kegiatan.trim())
@@ -300,7 +306,7 @@ export async function buildPemusikPayload(values: PemusikFormValues): Promise<Re
     logo_url,
     foto_card_url,
     galeri,
-    video_url: nullable(values.video_url),
+    video_url,
     layanan_items: values.layanan.map((l) => l.trim()).filter(Boolean),
     karya_items: values.karya
       .filter((k) => k.judul.trim())

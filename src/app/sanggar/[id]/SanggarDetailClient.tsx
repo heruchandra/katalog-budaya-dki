@@ -9,7 +9,8 @@ import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { DANCE_WORKS_TITLE, danceWorksOf, danceWorksSummary, isDanceClassService, splitPracticeInfo } from "@/lib/sanggarData";
 import PracticeInfo from "./PracticeInfo";
-import { SocialPills, WhatsAppButton } from "@/components/SocialPills";
+import { SOCIAL_ICONS, SocialPills, WhatsAppButton } from "@/components/SocialPills";
+import PerformanceVideo from "@/components/PerformanceVideo";
 import type { SosialMedia } from "@/types/musik";
 import { ownServiceImage } from "@/lib/sanggarImages";
 import { toWaNumber } from "@/lib/phone";
@@ -96,6 +97,8 @@ export interface SanggarDetailData {
   logoUrl?: string | null;
   fotoKetuaUrl?: string | null;
   youtubeUrl?: string | null;
+  /** Performance video saved in the admin panel: a YouTube link, a video file link, or an uploaded file */
+  videoUrl?: string | null;
   gallery?: GalleryPhoto[];
   /** True when `gallery` holds photos uploaded through the admin panel (always shown, whatever the count) */
   galleryIsUploaded?: boolean;
@@ -554,6 +557,44 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
         </div>
       </div>
+
+      {/* Performance video: YouTube link → embed; video file → native player; none → placeholder (with the
+          sanggar's YouTube channel when there is one) */}
+      <section id="video-penampilan" className="mt-6 sm:mt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6 sm:mb-8 border-b border-zinc-200 pb-4 sm:pb-6">
+            <h2 className={`text-3xl sm:text-4xl font-normal text-zinc-900 tracking-tight ${playfair.className}`}>
+              {isEn ? "Performance Video" : "Video Penampilan"}
+            </h2>
+            <div className="w-16 h-0.5 bg-orange-600 mt-4" />
+          </div>
+          <div className="p-4 sm:p-6 bg-zinc-50/60 border border-zinc-200/80 rounded-none">
+            <div className="max-w-3xl mx-auto">
+              <PerformanceVideo
+                videoUrl={sanggar.videoUrl}
+                poster={galleryList[0]?.url}
+                title={isEn ? `Performance video of ${studioName}` : `Video penampilan ${studioName}`}
+                isEn={isEn}
+                placeholderActions={
+                  ytUrl && (
+                    <a
+                      href={ytUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-[#DC2626] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90"
+                    >
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d={SOCIAL_ICONS.youtube.path} />
+                      </svg>
+                      {isEn ? "YouTube channel" : "Kanal YouTube"}
+                    </a>
+                  )
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Gallery Section */}
       <section className="mt-6 sm:mt-8 pt-0 pb-12 sm:pb-16">

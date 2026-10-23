@@ -8,8 +8,10 @@ import { supabase } from "@/lib/supabase";
 import { danceWorksOf } from "@/lib/sanggarData";
 import { findCuratedProfile } from "@/data/sanggarProfiles";
 import { JAKARTA_WILAYAH } from "@/lib/wilayah";
+import { isVideoFile, youTubeId } from "@/lib/video";
 import { useLanguage } from "@/context/LanguageContext";
 import ImageField from "@/components/admin/ImageField";
+import VideoField from "@/components/admin/VideoField";
 import { FieldLabel, GalleryEditor, SectionNotice, inputClass } from "@/components/admin/FormParts";
 import {
   EMPTY_FORM,
@@ -17,6 +19,7 @@ import {
   KATEGORI_OPTIONS,
   MIGRATION_COLUMNS,
   SANGGAR_TABLE,
+  SANGGAR_VIDEO_MIGRATION_FILE,
   SanggarFormValues,
   SanggarRow,
   SubKaryaFormItem,
@@ -45,6 +48,7 @@ export default function SanggarForm({ id }: { id?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState(false);
   const [gradeError, setGradeError] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const hasValidGrade = (GRADE_OPTIONS as readonly string[]).includes(values.grade);
 
   useEffect(() => {
@@ -96,6 +100,12 @@ export default function SanggarForm({ id }: { id?: string }) {
       setNameError(missingName);
       setGradeError(!hasValidGrade);
       setActiveTab("umum");
+      return;
+    }
+    // a pasted link that is neither YouTube nor a video file
+    if (values.video_url.trim() && !youTubeId(values.video_url) && !isVideoFile(values.video_url)) {
+      setVideoError(true);
+      setActiveTab("media");
       return;
     }
     setIsSaving(true);
@@ -322,26 +332,59 @@ export default function SanggarForm({ id }: { id?: string }) {
 
           {/* ===== Tab 3: Media ===== */}
           {activeTab === "media" && (
-            // The two photos the site shows. (Leader and group photos were dropped from the form; a value saved
-            // earlier stays in the form state and is saved back unchanged.) max-w-2xl keeps the 3:4 preview modest.
-            <div role="tabpanel" className="grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
-              <ImageField
-                label={tr("Thumbnail Katalog", "Catalog Thumbnail")}
-                hint={tr("Poster kartu di halaman katalog (3:4).", "Card poster on the catalog page (3:4).")}
-                value={values.thumbnail}
-                aspect={3 / 4}
-                lockAspect
-                previewClass="aspect-[3/4]"
-                onChange={(v) => set("thumbnail", v)}
-              />
-              <ImageField
-                label={tr("Logo / Foto Profil", "Logo / Profile Photo")}
-                hint={tr("Tampil bulat di halaman detail (1:1).", "Shown round on the detail page (1:1).")}
-                value={values.logo}
-                aspect={1}
-                previewClass="aspect-square"
-                onChange={(v) => set("logo", v)}
-              />
+            // The two photos the site shows, then the performance video. (Leader and group photos were dropped from the
+            // form; a value saved earlier stays in the form state and is saved back unchanged.) max-w-2xl keeps the
+            // 3:4 preview modest.
+            <div role="tabpanel" className="space-y-10">
+              <div className="grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
+                <ImageField
+                  label={tr("Thumbnail Katalog", "Catalog Thumbnail")}
+                  hint={tr("Poster kartu di halaman katalog (3:4).", "Card poster on the catalog page (3:4).")}
+                  value={values.thumbnail}
+                  aspect={3 / 4}
+                  lockAspect
+                  previewClass="aspect-[3/4]"
+                  onChange={(v) => set("thumbnail", v)}
+                />
+                <ImageField
+                  label={tr("Logo / Foto Profil", "Logo / Profile Photo")}
+                  hint={tr("Tampil bulat di halaman detail (1:1).", "Shown round on the detail page (1:1).")}
+                  value={values.logo}
+                  aspect={1}
+                  previewClass="aspect-square"
+                  onChange={(v) => set("logo", v)}
+                />
+              </div>
+              <div>
+                <VideoField
+                  value={{ url: values.video_url, file: values.video_file }}
+                  onChange={(v) => {
+                    setValues((prev) => ({ ...prev, video_url: v.url, video_file: v.file }));
+                    setVideoError(false);
+                  }}
+                  isEn={language === "en"}
+                  disabled={isMissing("video_url")}
+                  tag={migrationTag("video_url")}
+                  notice={
+                    isMissing("video_url") && (
+                      <div className="mb-2">
+                        <SectionNotice
+                          text={tr(
+                            `Video belum bisa disimpan: kolom "video_url" belum ada di database. Jalankan berkas ${SANGGAR_VIDEO_MIGRATION_FILE} di Supabase SQL Editor.`,
+                            `The video cannot be saved yet: the "video_url" column does not exist in the database. Run ${SANGGAR_VIDEO_MIGRATION_FILE} in the Supabase SQL Editor.`
+                          )}
+                        />
+                      </div>
+                    )
+                  }
+                  invalid={videoError}
+                />
+                {!values.video_url.trim() && !values.video_file && (
+                  <span className="mt-1 block text-xs text-zinc-500">
+                    {tr("Tampil di bagian “Video Penampilan” halaman detail. Kosong: tampil “Video penampilan belum tersedia”.", "Shown in the detail page’s “Performance Video” section. Empty: shows “performance video not available yet”.")}
+                  </span>
+                )}
+              </div>
             </div>
           )}
 
@@ -551,7 +594,7 @@ export default function SanggarForm({ id }: { id?: string }) {
         {/* Sticky action bar */}
         <div className="sticky bottom-0 flex flex-col-reverse gap-2.5 border-t border-zinc-200 bg-white/95 px-5 py-3.5 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <p className="text-xs text-zinc-500">
-            {tr("Gambar baru diunggah saat Anda menekan Simpan.", "New images are uploaded when you press Save.")}
+            {tr("Gambar & video baru diunggah saat Anda menekan Simpan.", "New images & videos are uploaded when you press Save.")}
           </p>
           <div className="flex gap-2.5">
             <Link href="/admin/sanggar" className="flex-1 sm:flex-none rounded-sm border border-zinc-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors">

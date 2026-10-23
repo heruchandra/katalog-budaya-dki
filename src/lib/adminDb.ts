@@ -10,16 +10,22 @@ export async function getTableColumns(table: string): Promise<Set<string> | null
   return new Set(Object.keys(data[0]));
 }
 
-/** Upload a cropped/resized image to `<folder>/` in the media bucket and return its public URL. */
-export async function uploadImage(blob: Blob, prefix: string, folder = "sanggar"): Promise<string> {
-  const ext = blob.type.split("/")[1] || "jpg";
+/** Upload a file to `<folder>/` in the media bucket and return its public URL (`what` names it in the error). */
+async function uploadFile(blob: Blob, prefix: string, folder: string, what: string, fallbackExt: string): Promise<string> {
+  const ext = blob.type.split("/")[1] || fallbackExt;
   const path = `${folder}/${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
   const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, blob, { contentType: blob.type, upsert: false });
   if (error) {
-    throw new Error(`Gagal mengunggah gambar ke bucket "${MEDIA_BUCKET}": ${error.message}`);
+    throw new Error(`Gagal mengunggah ${what} ke bucket "${MEDIA_BUCKET}": ${error.message}`);
   }
   return supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path).data.publicUrl;
 }
+
+/** Upload a cropped/resized image to `<folder>/` in the media bucket and return its public URL. */
+export const uploadImage = (blob: Blob, prefix: string, folder = "sanggar") => uploadFile(blob, prefix, folder, "gambar", "jpg");
+
+/** Upload a video file (.mp4 / .webm) to `<folder>/` in the media bucket and return its public URL. */
+export const uploadVideo = (file: Blob, prefix: string, folder: string) => uploadFile(file, prefix, folder, "video", "mp4");
 
 export interface SaveResult {
   id: number | string;

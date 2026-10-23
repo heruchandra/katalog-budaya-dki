@@ -51,7 +51,8 @@ const contentSecurityPolicy = buildCsp({
     isVercelPreview && "https://vercel.live",
     isVercelPreview && "wss://ws-us3.pusher.com",
   ],
-  "media-src": ["'self'"],
+  // performance videos: site files, videos uploaded to Supabase Storage, and blob: previews of a file picked in the admin
+  "media-src": ["'self'", "blob:", `https://${SUPABASE_HOST}`],
   // Google Maps embeds (sanggar + seniman musik detail pages) and the seniman musik video slot (YouTube, no-cookie)
   "frame-src": [
     "https://maps.google.com",

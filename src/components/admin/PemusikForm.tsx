@@ -10,6 +10,7 @@ import { JAKARTA_WILAYAH } from "@/lib/wilayah";
 import { isVideoFile, youTubeId } from "@/lib/video";
 import { useLanguage } from "@/context/LanguageContext";
 import ImageField from "@/components/admin/ImageField";
+import VideoField from "@/components/admin/VideoField";
 import { FieldLabel, GalleryEditor, SectionNotice, inputClass, secondaryButtonClass } from "@/components/admin/FormParts";
 import ExperienceList from "@/components/ExperienceList";
 import { pengalamanLine } from "@/lib/pemusikData";
@@ -123,9 +124,8 @@ export default function PemusikForm({ id }: { id?: string }) {
   // the number the WhatsApp button would use; anything typed that isn't a valid number blocks the save
   const waNumber = typedWaDigits(values);
   const waInvalid = waNumber !== "" && !isValidWaNumber(waNumber);
-  const videoKind = values.video_url.trim()
-    ? youTubeId(values.video_url) ? "youtube" : isVideoFile(values.video_url) ? "file" : "invalid"
-    : null;
+  // a pasted link that is neither YouTube nor a video file blocks the save
+  const videoInvalid = !!values.video_url.trim() && !youTubeId(values.video_url) && !isVideoFile(values.video_url);
 
   const tabs: { key: TabKey; label: string }[] = [
     { key: "utama", label: tr("Informasi Utama", "Main Info") },
@@ -144,7 +144,7 @@ export default function PemusikForm({ id }: { id?: string }) {
       ...(!values.kategori && { kategori: true }),
       ...(anggota && !/^\d+$/.test(anggota) && { anggota: true }),
       ...(waInvalid && { whatsapp: true }),
-      ...(videoKind === "invalid" && { video: true }),
+      ...(videoInvalid && { video: true }),
     };
     setErrors(next);
     if (next.nama || next.kategori || next.anggota) return setActiveTab("utama");
@@ -492,22 +492,21 @@ export default function PemusikForm({ id }: { id?: string }) {
                   />
                   <div className="mt-2"><SectionNotice text={sectionNotice("foto_card_url")} /></div>
                 </div>
-                <label className="sm:col-span-2">
-                  <FieldLabel tag={migrationTag("video_url")}>{tr("Video Penampilan", "Performance Video")}</FieldLabel>
-                  <input
-                    type="text"
-                    value={values.video_url}
-                    onChange={(e) => { set("video_url", e.target.value); setErrors((p) => ({ ...p, video: undefined })); }}
+                <div className="sm:col-span-2">
+                  <VideoField
+                    value={{ url: values.video_url, file: values.video_file }}
+                    onChange={(v) => {
+                      setValues((prev) => ({ ...prev, video_url: v.url, video_file: v.file }));
+                      setErrors((p) => ({ ...p, video: undefined }));
+                    }}
+                    isEn={language === "en"}
                     disabled={isMissing("video_url")}
-                    aria-invalid={!!errors.video}
-                    className={`${inputClass} ${errorClass(errors.video)}`}
-                    placeholder="https://youtu.be/… · /images/musik/<slug>/video/video.mp4"
+                    tag={migrationTag("video_url")}
+                    notice={sectionNotice("video_url") && <div className="mb-2"><SectionNotice text={sectionNotice("video_url")} /></div>}
+                    invalid={!!errors.video}
                   />
-                  {videoKind === "youtube" && hint(tr("Link YouTube: tampil sebagai video YouTube di halaman detail.", "YouTube link: shown as a YouTube video on the detail page."))}
-                  {videoKind === "file" && hint(tr("File video (.mp4 / .webm): diputar langsung di halaman detail.", "Video file (.mp4 / .webm): played directly on the detail page."))}
-                  {videoKind === "invalid" && errorText(tr("Bukan link YouTube atau file video (.mp4 / .webm).", "Not a YouTube link or a video file (.mp4 / .webm)."))}
-                  {!videoKind && hint(tr("Link YouTube atau file video (.mp4 / .webm). Kosong: tampil “Video penampilan belum tersedia”.", "A YouTube link or a video file (.mp4 / .webm). Empty: shows “not available yet”."))}
-                </label>
+                  {!values.video_url.trim() && !values.video_file && hint(tr("Kosong: halaman detail menampilkan “Video penampilan belum tersedia”.", "Empty: the detail page shows “performance video not available yet”."))}
+                </div>
               </div>
 
               <GalleryEditor
@@ -691,7 +690,7 @@ export default function PemusikForm({ id }: { id?: string }) {
         {/* Sticky action bar */}
         <div className="sticky bottom-0 flex flex-col-reverse gap-2.5 border-t border-zinc-200 bg-white/95 px-5 py-3.5 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <p className="text-xs text-zinc-500">
-            {tr("Gambar baru diunggah saat Anda menekan Simpan.", "New images are uploaded when you press Save.")}
+            {tr("Gambar & video baru diunggah saat Anda menekan Simpan.", "New images & videos are uploaded when you press Save.")}
           </p>
           <div className="flex gap-2.5">
             <Link href="/admin/pemusik" className="flex-1 sm:flex-none rounded-sm border border-zinc-200 bg-white px-4 py-2.5 text-center text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors">
