@@ -263,36 +263,39 @@ export default function SanggarDetailClient({ sanggar }: { sanggar: SanggarDetai
 
             {/* Right Column: PIC details & WhatsApp button (inner content unchanged) */}
             <div className="lg:col-span-5 space-y-4">
-              {/* Phones: label stacked above the value, no colon. From sm: a fixed label column + colon column,
-                  so the three colons line up vertically */}
-              <dl className="divide-y divide-zinc-100">
+              {/* Same contact block as the seniman musik page: phones stack the label above the value; from sm the
+                  label sits left and the value right on one row (no colon), rows split by a thin divider */}
+              <dl className="divide-y divide-zinc-100 text-sm">
                 {[
                   {
                     label: isEn ? "Contact Person (PIC)" : "Nama PIC Kontak",
                     value: sanggar.kontak?.pic || sanggar.leader || sanggar.kontak?.ketua,
                   },
                   {
-                    label: isEn ? "WhatsApp Number" : "Nomor WhatsApp",
+                    label: isEn ? "Contact / WhatsApp" : "Nomor Kontak / WhatsApp",
                     value: Array.isArray(sanggar.contacts?.phone) ? sanggar.contacts.phone.join(' / ') : (sanggar.whatsappNumber || sanggar.kontak?.phone),
                   },
-                  ...(sanggar.kontak?.email ? [{ label: "Email", value: sanggar.kontak.email }] : []),
+                  ...(sanggar.kontak?.email ? [{ label: "Email", value: sanggar.kontak.email, href: `mailto:${sanggar.kontak.email}` }] : []),
                 ].map((row) => (
-                  <div key={row.label} className="flex flex-col sm:grid sm:grid-cols-[150px_auto_1fr] sm:gap-x-3 sm:items-center py-2.5 first:pt-0 last:pb-0">
-                    <dt className="text-[10px] sm:text-[11px] font-bold sm:font-semibold text-zinc-500 uppercase tracking-wider">{row.label}</dt>
-                    <span className="hidden sm:inline-block text-zinc-400 font-medium" aria-hidden="true">:</span>
-                    <dd className="mt-0.5 sm:mt-0 text-sm font-semibold sm:font-bold text-zinc-900 sm:text-right [overflow-wrap:anywhere]">
-                      {row.value || <span className="font-medium text-zinc-400">{notAvailable}</span>}
+                  <div key={row.label} className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between sm:gap-x-4 py-2.5 first:pt-0 last:pb-0">
+                    <dt className="shrink-0 text-xs font-semibold uppercase tracking-wider text-zinc-500">{row.label}</dt>
+                    <dd className="min-w-0 font-bold text-zinc-900 sm:text-right [overflow-wrap:anywhere]">
+                      {!row.value ? (
+                        <span className="font-medium text-zinc-400">{notAvailable}</span>
+                      ) : "href" in row && row.href ? (
+                        <a href={row.href} className="hover:text-orange-700 transition-colors">{row.value}</a>
+                      ) : (
+                        row.value
+                      )}
                     </dd>
                   </div>
                 ))}
               </dl>
 
-              {/* Direct WhatsApp button + social media pills, the same design as the seniman musik page. Only this
-                  sanggar's own contacts: no fallback to another sanggar's number or account */}
-              <div className="pt-3 space-y-3">
-                {waLink && <WhatsAppButton href={waLink} isEn={isEn} />}
-                <SocialPills items={socialItems} isEn={isEn} />
-              </div>
+              {/* Direct WhatsApp button + social media pills, spaced as on the seniman musik page. Only this sanggar's
+                  own contacts: no fallback to another sanggar's number or account */}
+              {waLink && <WhatsAppButton href={waLink} isEn={isEn} />}
+              <SocialPills items={socialItems} isEn={isEn} />
             </div>
           </div>
         </section>

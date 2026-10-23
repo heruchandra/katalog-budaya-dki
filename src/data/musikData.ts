@@ -256,13 +256,17 @@ export function mergeProfile(master: MusikEntity | undefined, row: PemusikRow | 
   const filled = Object.fromEntries(
     Object.entries(fromRow).filter(([key, value]) => !["id", "category", "isDummyMedia"].includes(key) && isFilled(value))
   ) as Partial<MusikEntity>;
+  // Any photo saved in the admin (card, profile or gallery) is the entry's own: the master's illustration photos
+  // (isDummyMedia) then stop standing in, so none of them shows as if it were real, and the card uses the own photo
+  const ownPhotos = !!fromRow.fotoCard || !!fromRow.fotoProfil || fromRow.fotoGallery.length > 0;
+  const base = master.isDummyMedia && ownPhotos ? { ...master, fotoCard: undefined, fotoProfil: undefined, fotoGallery: [] } : master;
   return {
-    ...master,
+    ...base,
     ...filled,
     // the row's id (differs from the master's for a master-only entry saved from the admin panel)
     id: String(row.id),
     category: text(row.jenis_seniman) ? fromRow.category : master.category,
-    isDummyMedia: fromRow.fotoGallery.length > 0 ? false : master.isDummyMedia,
+    isDummyMedia: ownPhotos ? false : master.isDummyMedia,
   };
 }
 
@@ -276,7 +280,8 @@ export function toCardData(m: MusikEntity): MusikCardData {
     subtitle: subtitle || undefined,
     instrumen: m.instrumen.join(", ") || undefined,
     // An illustration as the card photo would make two different entries look like the same one
-    foto: m.isDummyMedia ? undefined : m.fotoCard ?? m.fotoGallery.find((p) => !p.pending)?.url,
+    // its card photo, else its first gallery photo, else its profile photo ("No Image" only when it has none)
+    foto: m.isDummyMedia ? undefined : m.fotoCard ?? m.fotoGallery.find((p) => !p.pending)?.url ?? m.fotoProfil,
     isDummyMedia: m.isDummyMedia,
     // master data, or a database profile with a description: listed before bare name-only entries
     hasProfile: !!findMusikMaster(m.id) || m.deskripsi.length > 0,
