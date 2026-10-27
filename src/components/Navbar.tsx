@@ -82,7 +82,7 @@ export default function Navbar() {
   const isEnglish = language === 'en';
   const brandTitle = isEnglish ? "Art Catalog" : "Katalog Seni";
 
-  const isAdmin = !!user && profileRole?.userId === user.id && isAdminRole(profileRole.role);
+  const isAdmin = !!user && ((profileRole?.userId === user.id && isAdminRole(profileRole.role)) || user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin');
   const displayName = profileName(user);
   const avatarUrl = profileAvatar(user);
 
@@ -547,6 +547,27 @@ export default function Navbar() {
                 {t('navMenuSection')}
               </span>
 
+              {/* Admin Dashboard: prominent quick-link for logged-in admin */}
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`w-full flex items-center justify-between text-sm tracking-wide uppercase px-4 py-3 rounded-none transition-all mb-1 font-bold ${
+                    pathname.startsWith("/admin")
+                      ? "bg-orange-600 text-white shadow-sm"
+                      : "bg-orange-50 text-orange-700 border border-orange-200/80 hover:bg-orange-100"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <LayoutDashboard className="h-4 w-4 text-orange-600 shrink-0" />
+                    <span>{t('navDashboardAdmin')}</span>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold tracking-widest bg-orange-200/70 text-orange-800 px-2 py-0.5 rounded-none">
+                    Admin
+                  </span>
+                </Link>
+              )}
+
               {/* Home */}
               <Link
                 href="/"
@@ -736,7 +757,7 @@ export default function Navbar() {
                   <Link
                     href="/admin"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center gap-2 text-sm font-semibold text-orange-700 bg-orange-50 hover:bg-orange-100 py-3 rounded-none transition-all"
+                    className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white bg-orange-600 hover:bg-orange-700 py-3 rounded-none transition-all shadow-sm tracking-wide uppercase"
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     <span>{t('navDashboardAdmin')}</span>
