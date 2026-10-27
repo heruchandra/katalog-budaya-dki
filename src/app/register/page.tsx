@@ -28,7 +28,7 @@ export default function RegisterPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBg((prev) => (prev + 1) % backgrounds.length);
-    }, 3000); // Changes image every 3 seconds
+    }, 3000); // Changes image every 3 seconds 
     return () => clearInterval(interval);
   }, []);
 

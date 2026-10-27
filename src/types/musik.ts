@@ -111,6 +111,8 @@ export interface MusikCardData {
   waNumber?: string;
   /** YouTube video, or the channel / channel search, for the card "Tonton" quick action */
   youtubeUrl?: string;
+  /** Direct YouTube link alias */
+  youtube?: string;
   /** Extra text the catalog search matches on */
   searchText: string;
 }

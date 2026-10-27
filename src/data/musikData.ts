@@ -125,6 +125,12 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
         isSearch: true,
       },
       { platform: "tiktok", handle: "@Sumitraadikusuma", url: "https://www.tiktok.com/@sumitraadikusuma" },
+      {
+        platform: "youtube",
+        handle: "Orkes Gambang Kromong Suara Lama",
+        url: "https://www.youtube.com/results?search_query=Orkes+Gambang+Kromong+Suara+Lama",
+        isSearch: true,
+      },
     ],
     genre: ["All Genre"],
     jenisMusik: [],
@@ -260,9 +266,19 @@ export function mergeProfile(master: MusikEntity | undefined, row: PemusikRow | 
   // (isDummyMedia) then stop standing in, so none of them shows as if it were real, and the card uses the own photo
   const ownPhotos = !!fromRow.fotoCard || !!fromRow.fotoProfil || fromRow.fotoGallery.length > 0;
   const base = master.isDummyMedia && ownPhotos ? { ...master, fotoCard: undefined, fotoProfil: undefined, fotoGallery: [] } : master;
+  // Merge sosialMedia by platform so master social links (like YouTube channel) aren't discarded when the row only has other platforms
+  const mergedSosialMedia = [...fromRow.sosialMedia];
+  if (base.sosialMedia) {
+    for (const s of base.sosialMedia) {
+      if (!mergedSosialMedia.some((m) => m.platform === s.platform)) {
+        mergedSosialMedia.push(s);
+      }
+    }
+  }
   return {
     ...base,
     ...filled,
+    sosialMedia: mergedSosialMedia,
     // the row's id (differs from the master's for a master-only entry saved from the admin panel)
     id: String(row.id),
     category: text(row.jenis_seniman) ? fromRow.category : master.category,
@@ -272,6 +288,7 @@ export function mergeProfile(master: MusikEntity | undefined, row: PemusikRow | 
 
 export function toCardData(m: MusikEntity): MusikCardData {
   const subtitle = [...m.jenisMusik, ...m.genre].join(", ");
+  const yt = (youTubeId(m.videoUrl) ? m.videoUrl : undefined) || m.sosialMedia.find((s) => s.platform === "youtube")?.url;
   return {
     id: m.id,
     category: m.category,
@@ -290,7 +307,8 @@ export function toCardData(m: MusikEntity): MusikCardData {
     waNumber: waNumberOf(m) || undefined,
     // the card's "Tonton" button opens YouTube: a YouTube demo video, else the YouTube account (a video file
     // plays on the detail page instead)
-    youtubeUrl: (youTubeId(m.videoUrl) ? m.videoUrl : undefined) || m.sosialMedia.find((s) => s.platform === "youtube")?.url,
+    youtubeUrl: yt,
+    youtube: yt,
     searchText: [m.nama, m.namaPanggung, subtitle, m.instrumen.join(" ")].filter(Boolean).join(" ").toLowerCase(),
   };
 }
