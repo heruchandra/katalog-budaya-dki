@@ -25,7 +25,7 @@ import { JAKARTA_WILAYAH, resolveWilayah } from "@/lib/wilayah";
  *
  * Komunitas Betawi Section: complete, from the community's registration document.
  * TODO (Sumitra Adi Kusuma): the description is cut short in the source brief ("…"); replace it with the full text.
- * Pengalaman berkesenian and layanan were not included for him and are left empty (sections stay hidden).
+ * Pengalaman berkesenian was not included for him and is left empty (section stays hidden).
  */
 export const MUSIK_MASTER_DATA: MusikEntity[] = [
   {
@@ -148,7 +148,10 @@ export const MUSIK_MASTER_DATA: MusikEntity[] = [
       },
     ],
     pengalamanBerkesenian: [],
-    layanan: [],
+    layanan: [
+      "Edukasi pengenalan musik tradisional Betawi",
+      "Pengembangan dan pelestarian musik Betawi melalui kegiatan kreatif dan pertunjukan",
+    ],
     prestasi: ["Pemain Tehyan Terbaik 2019", "Penata Musik Terbaik 2019", "Penata Musik Terbaik Parade Musik TMII 2022"],
     // No photo of Sumitra himself yet (his own folder, images/musik/sumitra-adi-kusuma/, is for when one arrives):
     // the community he leads, marked as an illustration
